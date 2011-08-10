@@ -25,9 +25,25 @@ namespace UrlQueryParser
 		private static readonly MethodInfo TrimMethod;
 		private static readonly ExpressionTokenizer Tokenizer;
 
+		private static readonly PropertyInfo DayProperty;
+		private static readonly PropertyInfo HourProperty;
+		private static readonly PropertyInfo MinuteProperty;
+		private static readonly PropertyInfo SecondProperty;
+		private static readonly PropertyInfo MonthProperty;
+		private static readonly PropertyInfo YearProperty;
+
+		private static readonly MethodInfo DoubleRoundMethod;
+		private static readonly MethodInfo DecimalRoundMethod;
+		private static readonly MethodInfo DoubleFloorMethod;
+		private static readonly MethodInfo DecimalFloorMethod;
+		private static readonly MethodInfo DoubleCeilingMethod;
+		private static readonly MethodInfo DecimalCeilingMethod;
+
 		static FilterExpressionFactory()
 		{
-			Type stringType = typeof(string);
+			var stringType = typeof(string);
+			var datetimeType = typeof(DateTime);
+			var mathType = typeof(Math);
 
 			Tokenizer = new ExpressionTokenizer();
 			IgnoreCaseExpression = Expression.Constant(StringComparison.OrdinalIgnoreCase);
@@ -40,6 +56,20 @@ namespace UrlQueryParser
 			ToLowerMethod = stringType.GetMethod("ToLowerInvariant", Type.EmptyTypes);
 			ToUpperMethod = stringType.GetMethod("ToUpperInvariant", Type.EmptyTypes);
 			TrimMethod = stringType.GetMethod("Trim", Type.EmptyTypes);
+
+			DayProperty = datetimeType.GetProperty("Day", Type.EmptyTypes);
+			HourProperty = datetimeType.GetProperty("Hour", Type.EmptyTypes);
+			MinuteProperty = datetimeType.GetProperty("Minute", Type.EmptyTypes);
+			SecondProperty = datetimeType.GetProperty("Second", Type.EmptyTypes);
+			MonthProperty = datetimeType.GetProperty("Month", Type.EmptyTypes);
+			YearProperty = datetimeType.GetProperty("Year", Type.EmptyTypes);
+
+			DoubleRoundMethod = mathType.GetMethod("Round", new[] { typeof(double) });
+			DecimalRoundMethod = mathType.GetMethod("Round", new[] { typeof(decimal) });
+			DoubleFloorMethod = mathType.GetMethod("Floor", new[] { typeof(double) });
+			DecimalFloorMethod = mathType.GetMethod("Floor", new[] { typeof(decimal) });
+			DoubleCeilingMethod = mathType.GetMethod("Ceiling", new[] { typeof(double) });
+			DecimalCeilingMethod = mathType.GetMethod("Ceiling", new[] { typeof(decimal) });
 		}
 
 		public Expression<Func<T, bool>> Create<T>(string filter)
@@ -270,9 +300,43 @@ namespace UrlQueryParser
 					return Expression.Call(left, ToUpperMethod);
 				case "trim":
 					return Expression.Call(left, TrimMethod);
+				case "hour":
+					return Expression.Property(left, HourProperty);
+				case "minute":
+					return Expression.Property(left, MinuteProperty);
+				case "second":
+					return Expression.Property(left, SecondProperty);
+				case "day":
+					return Expression.Property(left, DayProperty);
+				case "month":
+					return Expression.Property(left, MonthProperty);
+				case "year":
+					return Expression.Property(left, YearProperty);
+				case "round":
+					return Expression.Call(left.Type == typeof(double) ? DoubleRoundMethod : DecimalRoundMethod, left);
+				case "floor":
+					return Expression.Call(left.Type == typeof(double) ? DoubleFloorMethod : DecimalFloorMethod, left);
+				case "ceiling":
+					return Expression.Call(left.Type == typeof(double) ? DoubleCeilingMethod : DecimalCeilingMethod, left);
 				default:
 					return null;
 			}
+
+
+			/*
+string replace(string p0, string find, string replace)
+http://services.odata.org/Northwind/Northwind.svc/Customers?$filter=replace(CompanyName, ' ', '') eq 'AlfredsFutterkiste'
+string substring(string p0, int pos, int length)
+http://services.odata.org/Northwind/Northwind.svc/Customers?$filter=substring(CompanyName, 1, 2) eq 'lf'
+string concat(string p0, string p1)
+http://services.odata.org/Northwind/Northwind.svc/Customers?$filter=concat(concat(City, ', '), Country) eq 'Berlin, Germany'
+
+Type Functions
+bool IsOf(type p0)
+http://services.odata.org/Northwind/Northwind.svc/Orders?$filter=isof('NorthwindModel.Order')
+bool IsOf(expression p0, type p1)
+http://services.odata.org/Northwind/Northwind.svc/Orders?$filter=isof(ShipCountry, 'Edm.String')
+			 */
 		}
 	}
 

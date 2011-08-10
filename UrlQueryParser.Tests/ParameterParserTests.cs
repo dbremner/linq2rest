@@ -17,9 +17,9 @@
 			_parser = new ParameterParser(new FilterExpressionFactory(), new SortExpressionFactory());
 			_items = new[]
 				{
-					new FakeItem { IntValue = 2 }, 
-					new FakeItem { IntValue = 1 }, 
-					new FakeItem { IntValue = 3 }
+					new FakeItem { IntValue = 2, DoubleValue = 2 }, 
+					new FakeItem { IntValue = 1, DoubleValue = 1 }, 
+					new FakeItem { IntValue = 3, DoubleValue = 3 }
 				};
 		}
 
@@ -66,6 +66,24 @@
 			var filteredItems = filter.Filter(_items);
 
 			Assert.AreEqual(1, filteredItems.Count());
+		}
+
+		[Test]
+		public void WhenRequestContainsFilterParameterAndApplyingAsExtensionMethodThenReturnedModelFilterFilteringByValue()
+		{
+			var filter = GetModelFilter(new NameValueCollection { { "$filter", "IntValue eq 1" } });
+			var filteredItems = _items.Filter(filter);
+
+			Assert.AreEqual(1, filteredItems.Count());
+		}
+
+		[Test]
+		public void WhenRequestContainsMathFunctionFilterParameterThenReturnedModelFilterFilteringByValue()
+		{
+			var filter = GetModelFilter(new NameValueCollection { { "$filter", "floor(DoubleValue) gt 1" } });
+			var filteredItems = filter.Filter(_items);
+
+			Assert.AreEqual(2, filteredItems.Count());
 		}
 
 		[Test]
