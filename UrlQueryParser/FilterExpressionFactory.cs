@@ -133,11 +133,16 @@ namespace UrlQueryParser
 
 			if (tokens.Any())
 			{
-				for (int i = 0; i < tokens.Length; i++)
+				foreach (var tokenSet in tokens)
 				{
-					var tokenSet = tokens[i];
 					if (string.IsNullOrWhiteSpace(tokenSet.Left))
 					{
+						if (string.Equals(tokenSet.Operation, "not", StringComparison.OrdinalIgnoreCase))
+						{
+							var right = CreateExpression<T>(tokenSet.Right, parameter, type ?? GetExpressionType<T>(tokenSet, parameter), formatProvider);
+							return GetOperation(tokenSet.Operation, null, right);
+						}
+						
 						combiner = tokenSet.Operation;
 					}
 					else
@@ -214,6 +219,13 @@ namespace UrlQueryParser
 
 		private Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
 		{
+			var tokens = Tokenizer.GetTokens(propertyToken);
+			foreach (var token in tokens)
+			{
+				var expression = GetPropertyExpression<T>(token.Left, parameter) ?? GetPropertyExpression<T>(token.Right, parameter);
+				return expression;
+			}
+
 			var parentType = typeof(T);
 			Expression propertyExpression = null;
 			var propertyChain = propertyToken.Split('/');
@@ -263,7 +275,7 @@ namespace UrlQueryParser
 					return Expression.Not(right);
 				case "add":
 					return Expression.Add(left, right);
-				case "min":
+				case "sub":
 					return Expression.Subtract(left, right);
 				case "mul":
 					return Expression.Multiply(left, right);
@@ -271,9 +283,9 @@ namespace UrlQueryParser
 					return Expression.Divide(left, right);
 				case "mod":
 					return Expression.Modulo(left, right);
-				default:
-					return null;
 			}
+
+			throw new InvalidOperationException("Unsupported operation");
 		}
 
 		private Expression GetFunction(string function, Expression left, Expression right)

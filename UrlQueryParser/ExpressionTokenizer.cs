@@ -9,7 +9,7 @@
 	{
 		private static readonly Regex CleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
 		private static readonly string[] Operations = new[] { "eq", "ne", "gt", "ge", "lt", "le", "and", "or", "not", "add", "sub", "mul", "div", "mod" };
-		private static readonly string[] Combiners = new [] { "and", "or" };
+		private static readonly string[] Combiners = new [] { "and", "or", "not" };
 
 		public IEnumerable<TokenSet> GetTokens(string expression)
 		{

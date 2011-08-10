@@ -1,5 +1,6 @@
 namespace UrlQueryParser.Tests
 {
+	using System;
 	using System.Globalization;
 	using System.Threading;
 
@@ -39,6 +40,10 @@ namespace UrlQueryParser.Tests
 		[TestCase("DoubleValue ge 1", "x => (x.DoubleValue >= 1)")]
 		[TestCase("DoubleValue lt 1", "x => (x.DoubleValue < 1)")]
 		[TestCase("DoubleValue le 1", "x => (x.DoubleValue <= 1)")]
+		[TestCase("(DoubleValue add 2) eq 3", "x => ((x.DoubleValue + 2) == 3)")]
+		[TestCase("(DoubleValue sub 2) eq 3", "x => ((x.DoubleValue - 2) == 3)")]
+		[TestCase("(DoubleValue mul 2) eq 3", "x => ((x.DoubleValue * 2) == 3)")]
+		[TestCase("(DoubleValue div 2) eq 3", "x => ((x.DoubleValue / 2) == 3)")]
 		[TestCase("StringValue eq 1", "x => (x.StringValue == \"1\")")]
 		[TestCase("StringValue eq '1'", "x => (x.StringValue == \"1\")")]
 		[TestCase("StringValue eq 'something'", "x => (x.StringValue == \"something\")")]
@@ -57,6 +62,7 @@ namespace UrlQueryParser.Tests
 		[TestCase("startswith(StringValue, 'text') ne true", "x => (x.StringValue.StartsWith(\"text\", OrdinalIgnoreCase) != True)")]
 		[TestCase("startswith(StringValue, 'text') eq false", "x => (x.StringValue.StartsWith(\"text\", OrdinalIgnoreCase) == False)")]
 		[TestCase("startswith(StringValue, 'text') ne false", "x => (x.StringValue.StartsWith(\"text\", OrdinalIgnoreCase) != False)")]
+		[TestCase("not length(StringValue) eq 1", "x => Not((x.StringValue.Length == 1))")]
 		[TestCase("length(StringValue) eq 1", "x => (x.StringValue.Length == 1)")]
 		[TestCase("length(StringValue) ne 1", "x => (x.StringValue.Length != 1)")]
 		[TestCase("length(StringValue) gt 1", "x => (x.StringValue.Length > 1)")]
@@ -97,7 +103,7 @@ namespace UrlQueryParser.Tests
 		[TestCase("round(DecimalValue) gt 1", "x => (Round(x.DecimalValue) > 1)")]
 		[TestCase("floor(DecimalValue) gt 1", "x => (Floor(x.DecimalValue) > 1)")]
 		[TestCase("ceiling(DecimalValue) gt 1", "x => (Ceiling(x.DecimalValue) > 1)")]
-		[TestCase("(StringValue ne 'text') and IntValue gt 2", "x => ((x.StringValue != \"text\") AndAlso (x.IntValue > 2))")]
+		[TestCase("(StringValue ne 'text') or IntValue gt 2", "x => ((x.StringValue != \"text\") OrElse (x.IntValue > 2))")]
 		public void WhenProvidingValidInputThenGetsExpectedExpression(string filter, string expression)
 		{
 			var result = _factory.Create<FakeItem>(filter);
