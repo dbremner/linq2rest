@@ -38,17 +38,20 @@
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExpressionTokenizer.cs" />
-    <Compile Include="FilterExpressionFactory.cs" />
-    <Compile Include="IFilterExpressionFactory.cs" />
-    <Compile Include="IParameterParser.cs" />
-    <Compile Include="ModelFilter.cs" />
-    <Compile Include="ModelFilterBinder.cs" />
-    <Compile Include="ModelFilterExtensions.cs" />
-    <Compile Include="ParameterParser.cs" />
+    <Compile Include="Parser\ExpressionTokenizer.cs" />
+    <Compile Include="Parser\FilterExpressionFactory.cs" />
+    <Compile Include="Parser\IFilterExpressionFactory.cs" />
+    <Compile Include="Parser\IParameterParser.cs" />
+    <Compile Include="Mvc\ModelFilter.cs" />
+    <Compile Include="Mvc\ModelFilterBinder.cs" />
+    <Compile Include="Mvc\ModelFilterExtensions.cs" />
+    <Compile Include="Parser\ParameterParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SortDescription.cs" />
-    <Compile Include="SortExpressionFactory.cs" />
+    <Compile Include="Parser\SortDescription.cs" />
+    <Compile Include="Parser\SortExpressionFactory.cs" />
+    <Compile Include="Provider\RestContext.cs" />
+    <Compile Include="Provider\RestQueryable.cs" />
+    <Compile Include="Provider\RestQueryProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

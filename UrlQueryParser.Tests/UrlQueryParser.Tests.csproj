@@ -49,6 +49,7 @@
     <Compile Include="FilterExpressionFactoryTests.cs" />
     <Compile Include="ParameterParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Provider\RestQueryProviderTests.cs" />
     <Compile Include="SortExpressionFactoryTests.cs" />
     <Compile Include="TokenSetTests.cs" />
   </ItemGroup>
@@ -56,9 +57,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UrlQueryParser\UrlQueryParser.csproj">
+    <ProjectReference Include="..\UrlQueryParser\UrlQuery.csproj">
       <Project>{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}</Project>
-      <Name>UrlQueryParser</Name>
+      <Name>UrlQuery</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
