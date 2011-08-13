@@ -8,14 +8,17 @@ namespace UrlQueryParser.Provider
 
 	public class RestQueryable<T> : IQueryable<T>
 	{
-		public RestQueryable()
+		private readonly Uri _serviceBase;
+
+		public RestQueryable(Uri serviceBase)
 		{
-			Provider = new RestQueryProvider<T>();
+			_serviceBase = serviceBase;
+			Provider = new RestQueryProvider<T>(_serviceBase);
 			Expression = Expression.Constant(this);
 		}
 
-		public RestQueryable(Expression expression)
-			: this()
+		public RestQueryable(Uri serviceBase, Expression expression)
+			: this(serviceBase)
 		{
 			Expression = expression;
 		}
@@ -38,7 +41,10 @@ namespace UrlQueryParser.Provider
 		/// </summary>
 		public IQueryProvider Provider { get; private set; }
 
-		public IEnumerator<T> GetEnumerator() { return (Provider.Execute<IEnumerable<T>>(Expression)).GetEnumerator(); }
+		public IEnumerator<T> GetEnumerator()
+		{
+			return (Provider.Execute<IEnumerable<T>>(Expression)).GetEnumerator();
+		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{

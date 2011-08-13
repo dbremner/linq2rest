@@ -1,6 +1,6 @@
 namespace UrlQueryParser.Provider
 {
-	using System.Collections;
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
@@ -8,16 +8,23 @@ namespace UrlQueryParser.Provider
 
 	public class RestQueryProvider<T> : IQueryProvider
 	{
+		private readonly Uri _serviceBase;
+
 		private string _selectParameter;
 		private string _filterParameter;
 		private string _skipParameter;
 		private string _takeParameter;
 
-		public IQueryable CreateQuery(Expression expression) { return new RestQueryable<T>(expression); }
+		public RestQueryProvider(Uri serviceBase)
+		{
+			_serviceBase = serviceBase;
+		}
+
+		public IQueryable CreateQuery(Expression expression) { return new RestQueryable<T>(_serviceBase, expression); }
 
 		public IQueryable<TResult> CreateQuery<TResult>(Expression expression)
 		{
-			return new RestQueryable<TResult>(expression);
+			return new RestQueryable<TResult>(_serviceBase, expression);
 		}
 
 		public object Execute(Expression expression)
@@ -63,16 +70,17 @@ namespace UrlQueryParser.Provider
 
 		private IEnumerable<T> GetResults()
 		{
-			var url = string.Format("$filter={0}&$select={1}$skip={2}&take={3}", _filterParameter, _selectParameter, _skipParameter, _takeParameter);
-			var resultSet = new[] { url, _filterParameter, _selectParameter };
+			var parameters = string.Format("$filter={0}&$select={1}&$skip={2}&$take={3}", _filterParameter, _selectParameter, _skipParameter, _takeParameter);
+
+			var builder = new UriBuilder(_serviceBase);
+			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + parameters;
+			var resultSet = new[] { builder.Uri.AbsoluteUri, _filterParameter, _selectParameter };
 
 			return resultSet.OfType<T>();
 		}
 
 		private string ProcessExpression(Expression expression)
 		{
-			var type = expression.GetType();
-
 			if (expression is LambdaExpression)
 			{
 				return ProcessExpression((expression as LambdaExpression).Body);
