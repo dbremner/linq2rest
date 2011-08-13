@@ -2,7 +2,6 @@
 {
 	using System;
 	using System.Linq;
-	using System.Linq.Expressions;
 
 	using NUnit.Framework;
 
@@ -12,12 +11,12 @@
 	{
 		private readonly RestContext<string> _provider;
 
-		public RestQueryProviderTests() { _provider = new RestContext<string>(); }
+		public RestQueryProviderTests() { _provider = new RestContext<string>(new Uri("http://ws.reimers.dk")); }
 
 		[Test]
 		public void CanProcessExpression()
 		{
-			var result = _provider.Query.OfType<string>().Where(x => x.Length <= 3).Skip(1).Take(1).Count();
+			var result = _provider.Query.Where(x => x.Length <= 3).Skip(1).Take(1).Count();
 		}
 	}
 }

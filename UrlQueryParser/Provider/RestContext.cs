@@ -1,17 +1,27 @@
 ﻿namespace UrlQueryParser.Provider
 {
+	using System;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 
 	public class RestContext<T>
 	{
-		public RestContext() { }
+		private readonly RestQueryable<T> _queryable;
 
-		public IQueryable Query
+		public RestContext(Uri serviceBase)
 		{
-			get
-			{
-				return new RestQueryable<T>();
-			}
+			_queryable = new RestQueryable<T>(serviceBase);
+		}
+
+		public IQueryable<T> Query
+		{
+			get { return _queryable; }
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_queryable != null);
 		}
 	}
 }
