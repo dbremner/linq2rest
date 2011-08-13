@@ -26,7 +26,7 @@ namespace UrlQuery.Mvc
 			routes.MapRoute(
 				"Default", // Route name
 				"{controller}", // URL with parameters
-				new { controller = "Simple", action = "Index" } // Parameter defaults
+				new { controller = "Home", action = "Index" } // Parameter defaults
 			);
 
 		}
