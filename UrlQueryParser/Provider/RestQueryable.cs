@@ -5,20 +5,21 @@ namespace UrlQueryParser.Provider
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Web.Script.Serialization;
 
-	public class RestQueryable<T> : IQueryable<T>
+	public class RestQueryable<T> : IOrderedQueryable<T>
 	{
-		private readonly Uri _serviceBase;
+		private readonly IRestClient _client;
 
-		public RestQueryable(Uri serviceBase)
+		public RestQueryable(IRestClient client, JavaScriptSerializer serializer)
 		{
-			_serviceBase = serviceBase;
-			Provider = new RestQueryProvider<T>(_serviceBase);
+			_client = client;
+			Provider = new RestQueryProvider<T>(_client, serializer);
 			Expression = Expression.Constant(this);
 		}
 
-		public RestQueryable(Uri serviceBase, Expression expression)
-			: this(serviceBase)
+		public RestQueryable(IRestClient client, JavaScriptSerializer serializer, Expression expression)
+			: this(client, serializer)
 		{
 			Expression = expression;
 		}

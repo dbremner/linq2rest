@@ -5,26 +5,30 @@ namespace UrlQueryParser.Provider
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Threading;
+	using System.Web.Script.Serialization;
 
 	public class RestQueryProvider<T> : IQueryProvider
 	{
-		private readonly Uri _serviceBase;
+		private readonly IRestClient _client;
+		private readonly JavaScriptSerializer _serializer;
 
 		private string _selectParameter;
 		private string _filterParameter;
+		private readonly List<string> _orderByParameter = new List<string>();
 		private string _skipParameter;
 		private string _takeParameter;
 
-		public RestQueryProvider(Uri serviceBase)
+		public RestQueryProvider(IRestClient client, JavaScriptSerializer serializer)
 		{
-			_serviceBase = serviceBase;
+			_client = client;
+			_serializer = serializer;
 		}
 
-		public IQueryable CreateQuery(Expression expression) { return new RestQueryable<T>(_serviceBase, expression); }
+		public IQueryable CreateQuery(Expression expression) { return new RestQueryable<T>(_client, _serializer, expression); }
 
 		public IQueryable<TResult> CreateQuery<TResult>(Expression expression)
 		{
-			return new RestQueryable<TResult>(_serviceBase, expression);
+			return new RestQueryable<TResult>(_client, _serializer, expression);
 		}
 
 		public object Execute(Expression expression)
@@ -52,6 +56,22 @@ namespace UrlQueryParser.Provider
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_selectParameter = ProcessExpression(methodCall.Arguments[1]);
 					break;
+				case "OrderBy":
+					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
+					_orderByParameter.Add(ProcessExpression(methodCall.Arguments[1]));
+					break;
+				case "OrderByDescending":
+					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
+					_orderByParameter.Add(ProcessExpression(methodCall.Arguments[1]) + " desc");
+					break;
+				case "ThenBy":
+					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
+					_orderByParameter.Add(ProcessExpression(methodCall.Arguments[1]));
+					break;
+				case "ThenByDescending":
+					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
+					_orderByParameter.Add(ProcessExpression(methodCall.Arguments[1]) + " desc");
+					break;
 				case "Take":
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_takeParameter = ProcessExpression(methodCall.Arguments[1]);
@@ -60,23 +80,37 @@ namespace UrlQueryParser.Provider
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_skipParameter = ProcessExpression(methodCall.Arguments[1]);
 					break;
-				case "Count":
+				default:
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
-					return GetResults().Count();
+					var results = GetResults();
+					var final = methodCall.Method
+						.Invoke(
+						null,
+						new object[] { results.AsQueryable() }
+						.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue)).ToArray());
+					return final;
 			}
 
 			return null;
 		}
 
-		private IEnumerable<T> GetResults()
+		private List<T> GetResults()
 		{
-			var parameters = string.Format("$filter={0}&$select={1}&$skip={2}&$take={3}", _filterParameter, _selectParameter, _skipParameter, _takeParameter);
+			var parameters = string.Format(
+				"$filter={0}&$select={1}&$skip={2}&$take={3}&$orderby={4}",
+				_filterParameter,
+				_selectParameter,
+				_skipParameter,
+				_takeParameter,
+				string.Join(",", _orderByParameter));
 
-			var builder = new UriBuilder(_serviceBase);
+			var builder = new UriBuilder(_client.ServiceBase);
 			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + parameters;
-			var resultSet = new[] { builder.Uri.AbsoluteUri, _filterParameter, _selectParameter };
 
-			return resultSet.OfType<T>();
+			var response = _client.GetResponse(builder.Uri);
+			var resultSet = _serializer.Deserialize<List<T>>(response);
+
+			return resultSet;
 		}
 
 		private string ProcessExpression(Expression expression)
@@ -121,6 +155,20 @@ namespace UrlQueryParser.Provider
 			return string.Empty;
 		}
 
+		private object GetExpressionValue(Expression expression)
+		{
+			if(expression is UnaryExpression)
+			{
+				return (expression as UnaryExpression).Operand;
+			}
+			if(expression is ConstantExpression)
+			{
+				return (expression as ConstantExpression).Value;
+			}
+
+			return null;
+		}
+
 		private string GetOperation(Expression expression)
 		{
 			switch (expression.NodeType)
@@ -132,48 +180,22 @@ namespace UrlQueryParser.Provider
 				case ExpressionType.And:
 				case ExpressionType.AndAlso:
 					return "and";
-				case ExpressionType.Call:
-					break;
-				case ExpressionType.Conditional:
-					break;
-				case ExpressionType.Convert:
-					break;
-				case ExpressionType.ConvertChecked:
-					break;
 				case ExpressionType.Divide:
 					return "div";
 				case ExpressionType.Equal:
 					return "eq";
-				case ExpressionType.ExclusiveOr:
-					break;
 				case ExpressionType.GreaterThan:
 					return "gt";
 				case ExpressionType.GreaterThanOrEqual:
 					return "ge";
-				case ExpressionType.Invoke:
-					break;
-				case ExpressionType.LeftShift:
-					break;
 				case ExpressionType.LessThan:
-					break;
+					return "lt";
 				case ExpressionType.LessThanOrEqual:
 					return "le";
-				case ExpressionType.MemberAccess:
-					break;
-				case ExpressionType.MemberInit:
-					break;
 				case ExpressionType.Modulo:
 					return "mod";
 				case ExpressionType.Multiply:
 					return "mul";
-				case ExpressionType.MultiplyChecked:
-					break;
-				case ExpressionType.Negate:
-					break;
-				case ExpressionType.UnaryPlus:
-					break;
-				case ExpressionType.NegateChecked:
-					break;
 				case ExpressionType.Not:
 					return "not";
 				case ExpressionType.NotEqual:
@@ -181,78 +203,8 @@ namespace UrlQueryParser.Provider
 				case ExpressionType.Or:
 				case ExpressionType.OrElse:
 					return "or";
-				case ExpressionType.Power:
-					break;
-				case ExpressionType.RightShift:
-					break;
 				case ExpressionType.Subtract:
 					return "sub";
-				case ExpressionType.SubtractChecked:
-					break;
-				case ExpressionType.TypeAs:
-					break;
-				case ExpressionType.TypeIs:
-					break;
-				case ExpressionType.Assign:
-					break;
-				case ExpressionType.Block:
-					break;
-				case ExpressionType.DebugInfo:
-					break;
-				case ExpressionType.Decrement:
-					break;
-				case ExpressionType.Dynamic:
-					break;
-				case ExpressionType.Default:
-					break;
-				case ExpressionType.Increment:
-					break;
-				case ExpressionType.Index:
-					break;
-				case ExpressionType.AddAssign:
-					break;
-				case ExpressionType.AndAssign:
-					break;
-				case ExpressionType.DivideAssign:
-					break;
-				case ExpressionType.ExclusiveOrAssign:
-					break;
-				case ExpressionType.LeftShiftAssign:
-					break;
-				case ExpressionType.ModuloAssign:
-					break;
-				case ExpressionType.MultiplyAssign:
-					break;
-				case ExpressionType.OrAssign:
-					break;
-				case ExpressionType.PowerAssign:
-					break;
-				case ExpressionType.RightShiftAssign:
-					break;
-				case ExpressionType.SubtractAssign:
-					break;
-				case ExpressionType.AddAssignChecked:
-					break;
-				case ExpressionType.MultiplyAssignChecked:
-					break;
-				case ExpressionType.SubtractAssignChecked:
-					break;
-				case ExpressionType.PreIncrementAssign:
-					break;
-				case ExpressionType.PreDecrementAssign:
-					break;
-				case ExpressionType.PostIncrementAssign:
-					break;
-				case ExpressionType.PostDecrementAssign:
-					break;
-				case ExpressionType.TypeEqual:
-					break;
-				case ExpressionType.OnesComplement:
-					break;
-				case ExpressionType.IsTrue:
-					break;
-				case ExpressionType.IsFalse:
-					break;
 			}
 
 			return string.Empty;

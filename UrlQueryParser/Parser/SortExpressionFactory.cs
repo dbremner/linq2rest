@@ -54,6 +54,5 @@ namespace UrlQueryParser
 
 			return propertyExpression == null ? null : Expression.Lambda<Func<T, object>>(propertyExpression, parameter);
 		}
-
 	}
 }
