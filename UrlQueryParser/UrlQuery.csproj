@@ -94,7 +94,8 @@
     <Compile Include="Parser\FilterExpressionFactory.cs" />
     <Compile Include="Parser\IFilterExpressionFactory.cs" />
     <Compile Include="Parser\IParameterParser.cs" />
-    <Compile Include="Parser\LinqExtensions.cs" />
+    <Compile Include="LinqExtensions.cs" />
+    <Compile Include="Parser\ISelectExpressionFactory.cs" />
     <Compile Include="Parser\ModelFilter.cs" />
     <Compile Include="Mvc\ModelFilterBinder.cs" />
     <Compile Include="Mvc\ModelFilterExtensions.cs" />
