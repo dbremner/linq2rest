@@ -13,6 +13,7 @@ namespace UrlQueryParser
 	using System.Linq;
 	using System.Reflection;
 	using System.Reflection.Emit;
+	using System.Runtime.CompilerServices;
 	using System.Threading;
 
 	public static class LinqExtensions
@@ -26,6 +27,14 @@ namespace UrlQueryParser
 			ModuleBuilder = Thread.GetDomain()
 				.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess.Run)
 				.DefineDynamicModule(AssemblyName.Name);
+		}
+
+		public static bool IsAnonymousType(this Type type)
+		{
+			return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false) 
+				&& type.IsGenericType
+				&& type.Name.Contains("AnonymousType") && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
+				&& (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
 		}
 
 		private static string GetTypeKey(Dictionary<string, Type> fields)
