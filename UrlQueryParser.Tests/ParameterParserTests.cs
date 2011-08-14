@@ -10,14 +10,18 @@
 
 	public class ParameterParserTests
 	{
-		private ParameterParser _parser;
+		private ParameterParser<FakeItem> _parser;
 
 		private FakeItem[] _items;
 
 		[TestFixtureSetUp]
 		public void TestFixtureSetup()
 		{
-			_parser = new ParameterParser(new FilterExpressionFactory(), new SortExpressionFactory());
+			_parser = new ParameterParser<FakeItem>(
+				new FilterExpressionFactory(),
+				new SortExpressionFactory(),
+				new SelectExpressionFactory<FakeItem>());
+
 			_items = new[]
 				{
 					new FakeItem { IntValue = 2, DoubleValue = 2 }, 
@@ -109,7 +113,7 @@
 
 		private ModelFilter<FakeItem> GetModelFilter(NameValueCollection parameters)
 		{
-			var filter = _parser.Parse<FakeItem>(parameters);
+			var filter = _parser.Parse(parameters);
 			return filter;
 		}
 	}
