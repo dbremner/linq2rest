@@ -2,7 +2,7 @@
 {
 	using System;
 
-	internal class FakeItem
+	public class FakeItem
 	{
 		public int IntValue { get; set; }
 
