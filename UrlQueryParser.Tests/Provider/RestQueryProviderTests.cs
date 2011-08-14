@@ -2,6 +2,7 @@
 {
 	using System;
 	using System.Linq;
+	using System.Web.Script.Serialization;
 
 	using NUnit.Framework;
 
@@ -9,14 +10,34 @@
 
 	public class RestQueryProviderTests
 	{
-		private readonly RestContext<string> _provider;
+		private readonly RestContext<SimpleDto> _provider;
 
-		public RestQueryProviderTests() { _provider = new RestContext<string>(new Uri("http://ws.reimers.dk")); }
+		public RestQueryProviderTests()
+		{
+			var serializer = new JavaScriptSerializer();
+
+			_provider = new RestContext<SimpleDto>(
+				new RestClient(new Uri("http://localhost:33198/Simple/")), serializer);
+		}
 
 		[Test]
 		public void CanProcessExpression()
 		{
-			var result = _provider.Query.Where(x => x.Length <= 3).Skip(1).Take(1).Count();
+			var result = _provider.Query
+				.Where(x => x.Value <= 3)
+				.Count(x => x.ID != 0);
+
+			Assert.Equals(1, result);
+			//Assert.False(result.Any(x => x.Value == 0));
 		}
+	}
+
+	public class SimpleDto
+	{
+		public int ID { get; set; }
+
+		public string Content { get; set; }
+
+		public double Value { get; set; }
 	}
 }
