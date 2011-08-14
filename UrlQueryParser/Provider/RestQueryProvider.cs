@@ -24,7 +24,10 @@ namespace UrlQueryParser.Provider
 			_serializer = serializer;
 		}
 
-		public IQueryable CreateQuery(Expression expression) { return new RestQueryable<T>(_client, _serializer, expression); }
+		public IQueryable CreateQuery(Expression expression)
+		{
+			return new RestQueryable<T>(_client, _serializer, expression);
+		}
 
 		public IQueryable<TResult> CreateQuery<TResult>(Expression expression)
 		{
@@ -46,16 +49,37 @@ namespace UrlQueryParser.Provider
 
 		private object ProcessMethodCall(MethodCallExpression methodCall)
 		{
+			if (methodCall == null)
+			{
+				return null;
+			}
+
 			var method = methodCall.Method.Name;
 			switch (method)
 			{
 				case "Where":
+					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_filterParameter = ProcessExpression(methodCall.Arguments[1]);
 					break;
 				case "Select":
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
-					_selectParameter = ProcessExpression(methodCall.Arguments[1]);
-					var selectFunction = methodCall.Arguments[1];
+					//_selectParameter = ProcessExpression(methodCall.Arguments[1]);
+					var unaryExpression = methodCall.Arguments[1] as UnaryExpression;
+					if(unaryExpression != null)
+					{
+						var lambdaExpression = unaryExpression.Operand as LambdaExpression;
+						if (lambdaExpression != null)
+						{
+							var selectFunction = lambdaExpression.Body as NewExpression;
+						
+							if(selectFunction != null)
+							{
+								var args = selectFunction.Arguments.OfType<MemberExpression>().Select(x=>x.Member.Name);
+								_selectParameter = string.Join(",", args);
+							}
+						}
+					}
+					
 					break;
 				case "OrderBy":
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
@@ -158,11 +182,11 @@ namespace UrlQueryParser.Provider
 
 		private object GetExpressionValue(Expression expression)
 		{
-			if(expression is UnaryExpression)
+			if (expression is UnaryExpression)
 			{
 				return (expression as UnaryExpression).Operand;
 			}
-			if(expression is ConstantExpression)
+			if (expression is ConstantExpression)
 			{
 				return (expression as ConstantExpression).Value;
 			}
