@@ -96,20 +96,20 @@
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExpressionTokenizerTests.cs" />
+    <Compile Include="Parser\ExpressionTokenizerTests.cs" />
     <Compile Include="FakeItem.cs" />
-    <Compile Include="FilterExpressionFactoryTests.cs" />
+    <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
     <Compile Include="LinqExtensionsTests.cs" />
-    <Compile Include="ModelFilterBinderTests.cs" />
-    <Compile Include="ParameterParserTests.cs" />
+    <Compile Include="Mvc\ModelFilterBinderTests.cs" />
+    <Compile Include="Parser\ParameterParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\RestClientTests.cs" />
     <Compile Include="Provider\RestQueryableTests.cs" />
     <Compile Include="Provider\RestContextTests.cs" />
     <Compile Include="Provider\RestQueryProviderTests.cs" />
     <Compile Include="Provider\SimpleDto.cs" />
-    <Compile Include="SortExpressionFactoryTests.cs" />
-    <Compile Include="TokenSetTests.cs" />
+    <Compile Include="Parser\SortExpressionFactoryTests.cs" />
+    <Compile Include="Parser\TokenSetTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
