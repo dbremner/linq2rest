@@ -55,6 +55,12 @@ namespace UrlQueryParser.Tests.Provider
 		}
 
 		[Test]
+		public void WhenSelectQueryProjectsIntoMemberWithDifferentNameThenThrows()
+		{
+			Assert.Throws<InvalidOperationException>(() => _provider.Query.Select(x => new { Something = x.Value }).Count());
+		}
+
+		[Test]
 		public void WhenApplyingQueryWithSelectionThenCallsRestServiceWithSelectParameter()
 		{
 			var result = _provider.Query

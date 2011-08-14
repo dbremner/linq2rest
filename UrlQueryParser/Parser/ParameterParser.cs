@@ -16,7 +16,7 @@ namespace UrlQueryParser.Parser
 		private readonly ISelectExpressionFactory<T> _selectExpressionFactory;
 
 		public ParameterParser(
-			IFilterExpressionFactory filterExpressionFactory, 
+			IFilterExpressionFactory filterExpressionFactory,
 			ISortExpressionFactory sortExpressionFactory,
 			ISelectExpressionFactory<T> selectExpressionFactory)
 		{
@@ -27,6 +27,14 @@ namespace UrlQueryParser.Parser
 			_filterExpressionFactory = filterExpressionFactory;
 			_sortExpressionFactory = sortExpressionFactory;
 			_selectExpressionFactory = selectExpressionFactory;
+		}
+
+		public static IParameterParser<T> Create()
+		{
+			return new ParameterParser<T>(
+				new FilterExpressionFactory(),
+				new SortExpressionFactory(),
+				new SelectExpressionFactory<T>());
 		}
 
 		public ModelFilter<T> Parse(NameValueCollection queryParameters)

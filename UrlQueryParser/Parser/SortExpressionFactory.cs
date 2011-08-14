@@ -7,13 +7,12 @@ namespace UrlQueryParser.Parser
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Dynamic;
 	using System.Globalization;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Web.UI.WebControls;
 
-	public class SortExpressionFactory : ISortExpressionFactory
+	internal class SortExpressionFactory : ISortExpressionFactory
 	{
 		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
 

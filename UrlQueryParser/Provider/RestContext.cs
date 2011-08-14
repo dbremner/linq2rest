@@ -5,6 +5,7 @@
 
 namespace UrlQueryParser.Provider
 {
+	using System;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Web.Script.Serialization;
@@ -15,6 +16,9 @@ namespace UrlQueryParser.Provider
 
 		public RestContext(IRestClient client, JavaScriptSerializer serializer)
 		{
+			Contract.Requires<ArgumentNullException>(client != null);
+			Contract.Requires<ArgumentNullException>(serializer != null);
+
 			_queryable = new RestQueryable<T>(client, serializer);
 		}
 

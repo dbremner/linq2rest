@@ -11,7 +11,7 @@ namespace UrlQueryParser.Parser
 	using System.Linq.Expressions;
 	using System.Threading;
 
-	public class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
+	internal class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{
 		private readonly IDictionary<string, Func<T, object>> _knownSelections;
 

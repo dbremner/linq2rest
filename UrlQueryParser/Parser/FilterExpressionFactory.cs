@@ -12,7 +12,7 @@ namespace UrlQueryParser.Parser
 	using System.Reflection;
 	using System.Text.RegularExpressions;
 
-	public class FilterExpressionFactory : IFilterExpressionFactory
+	internal class FilterExpressionFactory : IFilterExpressionFactory
 	{
 		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
 		private static readonly Regex StringRx = new Regex(@"^'([^']*?)'$", RegexOptions.Compiled);
