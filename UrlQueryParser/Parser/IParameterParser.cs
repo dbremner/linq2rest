@@ -2,10 +2,8 @@ namespace UrlQueryParser.Parser
 {
 	using System.Collections.Specialized;
 
-	using UrlQueryParser.Mvc;
-
-	public interface IParameterParser
+	public interface IParameterParser<T>
 	{
-		ModelFilter<T> Parse<T>(NameValueCollection queryParameters);
+		ModelFilter<T> Parse(NameValueCollection queryParameters);
 	}
 }

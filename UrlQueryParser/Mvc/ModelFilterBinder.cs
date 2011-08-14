@@ -6,9 +6,9 @@
 
 	public class ModelFilterBinder<T> : IModelBinder
 	{
-		private readonly IParameterParser _parser;
+		private readonly IParameterParser<T> _parser;
 
-		public ModelFilterBinder(IParameterParser parser)
+		public ModelFilterBinder(IParameterParser<T> parser)
 		{
 			_parser = parser;
 		}
@@ -18,7 +18,7 @@
 			var request = controllerContext.RequestContext.HttpContext.Request;
 			var queryParameters = request.Params;
 
-			return _parser.Parse<T>(queryParameters);
+			return _parser.Parse(queryParameters);
 		}
 	}
 }

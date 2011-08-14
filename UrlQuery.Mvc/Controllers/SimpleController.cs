@@ -1,14 +1,11 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using UrlQuery.Mvc.Models;
-
-namespace UrlQuery.Mvc.Controllers
+﻿namespace UrlQuery.Mvc.Controllers
 {
+	using System.Web.Mvc;
 	using System;
-
+	using UrlQuery.Mvc.Models;
 	using UrlQuery.Mvc.Support;
-
-	using UrlQueryParser;
+	using UrlQueryParser.Mvc;
+	using UrlQueryParser.Parser;
 
 	public class SimpleController : Controller
 	{
@@ -24,7 +21,7 @@ namespace UrlQuery.Mvc.Controllers
 				case ResponseFormat.JS:
 					return Json(model, JsonRequestBehavior.AllowGet);
 				case ResponseFormat.HTML:
-					return View(model.OfType<SimpleDto>());
+					return View(model);
 				default:
 					throw new ArgumentOutOfRangeException("format");
 			}

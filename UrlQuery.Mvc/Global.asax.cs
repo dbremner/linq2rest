@@ -8,6 +8,8 @@ namespace UrlQuery.Mvc
 	using UrlQuery.Mvc.Support;
 
 	using UrlQueryParser;
+	using UrlQueryParser.Mvc;
+	using UrlQueryParser.Parser;
 
 	// Note: For instructions on enabling IIS6 or IIS7 classic mode, 
 	// visit http://go.microsoft.com/?LinkId=9394801
@@ -37,9 +39,12 @@ namespace UrlQuery.Mvc
 
 			RegisterGlobalFilters(GlobalFilters.Filters);
 			RegisterRoutes(RouteTable.Routes);
+
+			var binder = new ModelFilterBinder<SimpleDto>(
+				new ParameterParser<SimpleDto>(new FilterExpressionFactory(), new SortExpressionFactory(), new SelectExpressionFactory<SimpleDto>()));
 			ModelBinders.Binders.Add(
 				typeof(ModelFilter<SimpleDto>),
-				new ModelFilterBinder<SimpleDto>(new ParameterParser(new FilterExpressionFactory(), new SortExpressionFactory())));
+				binder);
 			ModelBinders.Binders.Add(typeof(ResponseFormat), new ResponseFormatBinder());
 		}
 	}
