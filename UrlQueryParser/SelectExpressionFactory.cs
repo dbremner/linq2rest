@@ -6,8 +6,6 @@ namespace UrlQueryParser
 	using System.Linq.Expressions;
 	using System.Threading;
 
-	using UrlQueryParser.Parser;
-
 	public interface ISelectExpressionFactory<T>
 	{
 		Func<T, object> Create(string selection);

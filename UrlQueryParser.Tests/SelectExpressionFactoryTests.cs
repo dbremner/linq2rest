@@ -4,8 +4,6 @@ namespace UrlQueryParser.Tests
 
 	using NUnit.Framework;
 
-	using UrlQueryParser.Parser;
-
 	public class SelectExpressionFactoryTests
 	{
 		private FakeItem[] _items;

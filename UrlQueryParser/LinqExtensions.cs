@@ -1,7 +1,8 @@
-namespace UrlQueryParser.Parser
+namespace UrlQueryParser
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Reflection;
 	using System.Reflection.Emit;
@@ -25,21 +26,21 @@ namespace UrlQueryParser.Parser
 			return fields.Aggregate(string.Empty, (current, field) => current + (field.Key + ";" + field.Value.Name + ";"));
 		}
 
-		private static Type GetDynamicType(this Dictionary<string, Type> fields)
+		public static Type GetDynamicType(this IEnumerable<PropertyInfo> fields)
 		{
-			if (null == fields)
-			{
-				throw new ArgumentNullException("fields");
-			}
-			if (0 == fields.Count)
+			Contract.Requires<ArgumentNullException>(fields != null);
+
+			if (!fields.Any())
 			{
 				throw new ArgumentOutOfRangeException("fields", "fields must have at least 1 field definition");
 			}
 
+			var dictionary = fields.ToDictionary(f => f.Name, f => f.PropertyType);
+
 			try
 			{
 				Monitor.Enter(BuiltTypes);
-				var className = GetTypeKey(fields);
+				var className = GetTypeKey(dictionary);
 
 				if (BuiltTypes.ContainsKey(className))
 				{
@@ -48,7 +49,7 @@ namespace UrlQueryParser.Parser
 
 				var typeBuilder = ModuleBuilder.DefineType(className, TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable);
 
-				foreach (var field in fields)
+				foreach (var field in dictionary)
 					typeBuilder.DefineField(field.Key, field.Value, FieldAttributes.Public);
 
 				BuiltTypes[className] = typeBuilder.CreateType();
@@ -63,16 +64,6 @@ namespace UrlQueryParser.Parser
 			{
 				Monitor.Exit(BuiltTypes);
 			}
-		}
-		
-		private static string GetTypeKey(IEnumerable<PropertyInfo> fields)
-		{
-			return GetTypeKey(fields.ToDictionary(f => f.Name, f => f.PropertyType));
-		}
-
-		public static Type GetDynamicType(this IEnumerable<PropertyInfo> fields)
-		{
-			return GetDynamicType(fields.ToDictionary(f => f.Name, f => f.PropertyType));
 		}
 	}
 }
