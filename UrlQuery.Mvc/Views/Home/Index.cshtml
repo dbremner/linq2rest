@@ -1,10 +1,9 @@
 ﻿@{
-    ViewBag.Title = "Index";
+	ViewBag.Title = "Index";
 }
-
 <h2>Demo</h2>
-
 <p>The site demos parsing url parameters into LINQ queries used to query a database using Entity Framework.</p>
 <p>Example: <a href="../Simple/?$filter=Value+ge+3">All items with value greater than or equal to 3.</a></p>
+<p>Example: <a href="../Simple/?$filter=Value+ge+3&$select=Value">Value property of all items with value greater than or equal to 3.</a></p>
 <p>Example: <a href="../Simple/?$filter=substringof('item', Content)">All items where Content contains the word 'item'.</a></p>
 <p>Have a look at the <a href="http://www.odata.org/developers/protocols/uri-conventions#QueryStringOptions">OData site</a> for other possible queries.</p>

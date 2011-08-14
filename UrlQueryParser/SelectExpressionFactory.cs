@@ -31,8 +31,6 @@ namespace UrlQueryParser
 
 			var key = string.Join(",", fieldNames);
 
-			Monitor.Enter(_knownSelections);
-
 			if (_knownSelections.ContainsKey(key))
 			{
 				return _knownSelections[key];
@@ -53,9 +51,12 @@ namespace UrlQueryParser
 					Expression.MemberInit(Expression.New(constructorInfo), bindings), sourceItem)
 					.Compile();
 
-			_knownSelections.Add(key, selector);
+			if (Monitor.TryEnter(_knownSelections, 1000))
+			{
+				_knownSelections.Add(key, selector);
 
-			Monitor.Exit(_knownSelections);
+				Monitor.Exit(_knownSelections);
+			}
 
 			return selector;
 		}

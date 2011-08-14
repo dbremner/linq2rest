@@ -24,7 +24,7 @@ namespace UrlQuery.Mvc.Controllers
 				case ResponseFormat.JS:
 					return Json(model, JsonRequestBehavior.AllowGet);
 				case ResponseFormat.HTML:
-					return View(model.OfType<SimpleDto>());
+					return View(model);
 				default:
 					throw new ArgumentOutOfRangeException("format");
 			}
