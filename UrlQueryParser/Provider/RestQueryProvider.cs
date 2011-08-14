@@ -6,15 +6,18 @@
 namespace UrlQueryParser.Provider
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Reflection;
 	using System.Threading;
 	using System.Web.Script.Serialization;
 
 	internal class RestQueryProvider<T> : IQueryProvider
 	{
+		private static readonly MethodInfo ChangeTypeMethod = typeof(Convert).GetMethod("ChangeType", new[] { typeof(object), typeof(Type) });
 		private readonly IRestClient _client;
 		private readonly JavaScriptSerializer _serializer;
 
@@ -132,6 +135,8 @@ namespace UrlQueryParser.Provider
 					_skipParameter = ProcessExpression(methodCall.Arguments[1]);
 					break;
 				default:
+					Contract.Assume(methodCall.Arguments.Count >= 1);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					var results = GetResults();
 
@@ -161,10 +166,53 @@ namespace UrlQueryParser.Provider
 			var builder = new UriBuilder(_client.ServiceBase);
 			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + parameters;
 
-			var response = _client.GetResponse(builder.Uri);
-			var resultSet = _serializer.Deserialize<List<T>>(response);
+			var response = _client.Get(builder.Uri);
 
-			return resultSet ?? new List<T>();
+			var elementType = typeof(T);
+
+			List<T> resultSet = elementType.IsAnonymousType()
+			                 	? ReadToAnonymousType(response, elementType)
+			                 	: _serializer.Deserialize<List<T>>(response);
+
+			return resultSet;
+		}
+
+		private List<T> ReadToAnonymousType(string response, Type elementType)
+		{
+			var deserializeObject = _serializer.DeserializeObject(response);
+			var enumerable = deserializeObject as IEnumerable;
+
+			if (enumerable == null || !enumerable.OfType<object>().Any())
+			{
+				return new List<T>();
+			}
+
+			var first = enumerable.OfType<object>().First();
+			var deserializedType = first.GetType();
+			var objectParameter = Expression.Parameter(typeof(object), "x");
+			var fields = elementType.GetProperties();
+
+			var bindings =
+				fields.Select(
+					p =>
+					Expression.Convert(
+						Expression.Call(
+							ChangeTypeMethod,
+							Expression.MakeIndex(
+								Expression.Convert(objectParameter, deserializedType),
+								deserializedType.GetProperty("Item"),
+								new[] { Expression.Constant(p.Name) }),
+							Expression.Constant(p.PropertyType)),
+						p.PropertyType)).ToArray();
+
+			var constructorInfo = elementType.GetConstructors().First();
+
+			var selector =
+				Expression.Lambda<Func<object, T>>(
+					Expression.New(constructorInfo, bindings), objectParameter);
+			var selectorFunction = selector.Compile();
+
+			return enumerable.OfType<object>().Select<object, T>(selectorFunction).ToList();
 		}
 
 		private string ProcessExpression(Expression expression)

@@ -12,7 +12,7 @@ namespace UrlQueryParser.Provider
 	{
 		Uri ServiceBase { get; }
 
-		string GetResponse(Uri uri);
+		string Get(Uri uri);
 	}
 
 	public class RestClient : IRestClient
@@ -29,7 +29,7 @@ namespace UrlQueryParser.Provider
 
 		public Uri ServiceBase { get; private set; }
 
-		public string GetResponse(Uri uri)
+		public string Get(Uri uri)
 		{
 			return _client.DownloadString(uri);
 		}

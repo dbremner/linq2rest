@@ -28,7 +28,7 @@ namespace UrlQueryParser.Tests.Provider
 
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
-			_mockClient.Setup(x => x.GetResponse(It.IsAny<Uri>())).Returns("[]");
+			_mockClient.Setup(x => x.Get(It.IsAny<Uri>())).Returns("[{Value : 2, Content : \"blah\" }]");
 
 			_provider = new RestContext<SimpleDto>(_mockClient.Object, serializer);
 		}
@@ -40,7 +40,7 @@ namespace UrlQueryParser.Tests.Provider
 				.Where(x => x.Value <= 3)
 				.Count(x => x.ID != 0);
 
-			_mockClient.Verify(x => x.GetResponse(It.IsAny<Uri>()), Times.Once());
+			_mockClient.Verify(x => x.Get(It.IsAny<Uri>()), Times.Once());
 		}
 
 		[Test]
@@ -51,7 +51,7 @@ namespace UrlQueryParser.Tests.Provider
 				.Count();
 
 			var uri = new Uri("http://localhost/?$filter=Value%20le%203&$select=&$skip=&$take=&$orderby=");
-			_mockClient.Verify(x => x.GetResponse(uri), Times.Once());
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
@@ -68,7 +68,7 @@ namespace UrlQueryParser.Tests.Provider
 				.Count();
 
 			var uri = new Uri("http://localhost/?$filter=&$select=Value&$skip=&$take=&$orderby=");
-			_mockClient.Verify(x => x.GetResponse(uri), Times.Once());
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
@@ -79,7 +79,7 @@ namespace UrlQueryParser.Tests.Provider
 				.Count();
 
 			var uri = new Uri("http://localhost/?$filter=&$select=Value,Content&$skip=&$take=&$orderby=");
-			_mockClient.Verify(x => x.GetResponse(uri), Times.Once());
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
@@ -90,7 +90,7 @@ namespace UrlQueryParser.Tests.Provider
 				.Count();
 
 			var uri = new Uri("http://localhost/?$filter=&$select=&$skip=1&$take=&$orderby=");
-			_mockClient.Verify(x => x.GetResponse(uri), Times.Once());
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
@@ -101,7 +101,7 @@ namespace UrlQueryParser.Tests.Provider
 				.Count();
 
 			var uri = new Uri("http://localhost/?$filter=&$select=&$skip=&$take=1&$orderby=");
-			_mockClient.Verify(x => x.GetResponse(uri), Times.Once());
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
@@ -112,7 +112,7 @@ namespace UrlQueryParser.Tests.Provider
 				.Count();
 
 			var uri = new Uri("http://localhost/?$filter=&$select=&$skip=&$take=&$orderby=Value");
-			_mockClient.Verify(x => x.GetResponse(uri), Times.Once());
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
@@ -127,7 +127,7 @@ namespace UrlQueryParser.Tests.Provider
 				.Count();
 
 			var uri = new Uri("http://localhost/?$filter=Value%20le%203&$select=Value,Content&$skip=1&$take=1&$orderby=Value");
-			_mockClient.Verify(x => x.GetResponse(uri), Times.Once());
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		private class SelectionObject : DynamicObject { }
