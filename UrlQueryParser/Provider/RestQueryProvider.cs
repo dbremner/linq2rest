@@ -7,12 +7,13 @@ namespace UrlQueryParser.Provider
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Threading;
 	using System.Web.Script.Serialization;
 
-	public class RestQueryProvider<T> : IQueryProvider
+	internal class RestQueryProvider<T> : IQueryProvider
 	{
 		private readonly IRestClient _client;
 		private readonly JavaScriptSerializer _serializer;
@@ -63,61 +64,82 @@ namespace UrlQueryParser.Provider
 			switch (method)
 			{
 				case "Where":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_filterParameter = ProcessExpression(methodCall.Arguments[1]);
 					break;
 				case "Select":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
-					//_selectParameter = ProcessExpression(methodCall.Arguments[1]);
 					var unaryExpression = methodCall.Arguments[1] as UnaryExpression;
-					if(unaryExpression != null)
+					if (unaryExpression != null)
 					{
 						var lambdaExpression = unaryExpression.Operand as LambdaExpression;
 						if (lambdaExpression != null)
 						{
 							var selectFunction = lambdaExpression.Body as NewExpression;
-						
-							if(selectFunction != null)
+
+							if (selectFunction != null)
 							{
-								var args = selectFunction.Arguments.OfType<MemberExpression>().Select(x=>x.Member.Name);
+								var members = selectFunction.Members.Select(x => x.Name).ToArray();
+								var args = selectFunction.Arguments.OfType<MemberExpression>().Select(x => x.Member.Name).ToArray();
+								if (members.Intersect(args).Count() != members.Length)
+								{
+									throw new InvalidOperationException("Projection into new member names is not supported.");
+								}
 								_selectParameter = string.Join(",", args);
 							}
 						}
 					}
-					
+
 					break;
 				case "OrderBy":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_orderByParameter.Add(ProcessExpression(methodCall.Arguments[1]));
 					break;
 				case "OrderByDescending":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_orderByParameter.Add(ProcessExpression(methodCall.Arguments[1]) + " desc");
 					break;
 				case "ThenBy":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_orderByParameter.Add(ProcessExpression(methodCall.Arguments[1]));
 					break;
 				case "ThenByDescending":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_orderByParameter.Add(ProcessExpression(methodCall.Arguments[1]) + " desc");
 					break;
 				case "Take":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_takeParameter = ProcessExpression(methodCall.Arguments[1]);
 					break;
 				case "Skip":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_skipParameter = ProcessExpression(methodCall.Arguments[1]);
 					break;
 				default:
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					var results = GetResults();
-					var final = methodCall.Method
-						.Invoke(
-						null,
-						new object[] { results.AsQueryable() }
-						.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue)).ToArray());
+
+					var parameters = new object[] { results.AsQueryable() }
+						.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue))
+						.ToArray();
+
+					var final = methodCall.Method.Invoke(null, parameters);
 					return final;
 			}
 
@@ -126,6 +148,8 @@ namespace UrlQueryParser.Provider
 
 		private List<T> GetResults()
 		{
+			Contract.Ensures(Contract.Result<List<T>>() != null);
+
 			var parameters = string.Format(
 				"$filter={0}&$select={1}&$skip={2}&$take={3}&$orderby={4}",
 				_filterParameter,
@@ -140,7 +164,7 @@ namespace UrlQueryParser.Provider
 			var response = _client.GetResponse(builder.Uri);
 			var resultSet = _serializer.Deserialize<List<T>>(response);
 
-			return resultSet;
+			return resultSet ?? new List<T>();
 		}
 
 		private string ProcessExpression(Expression expression)
@@ -182,6 +206,7 @@ namespace UrlQueryParser.Provider
 				return string.Format
 					("{0} {1} {2}", ProcessExpression(binaryExpression.Left), operation, ProcessExpression(binaryExpression.Right));
 			}
+
 			return string.Empty;
 		}
 

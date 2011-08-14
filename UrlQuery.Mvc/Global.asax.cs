@@ -6,8 +6,6 @@ namespace UrlQuery.Mvc
 {
 	using UrlQuery.Mvc.Models;
 	using UrlQuery.Mvc.Support;
-
-	using UrlQueryParser;
 	using UrlQueryParser.Mvc;
 	using UrlQueryParser.Parser;
 
@@ -40,11 +38,9 @@ namespace UrlQuery.Mvc
 			RegisterGlobalFilters(GlobalFilters.Filters);
 			RegisterRoutes(RouteTable.Routes);
 
-			var binder = new ModelFilterBinder<SimpleDto>(
-				new ParameterParser<SimpleDto>(new FilterExpressionFactory(), new SortExpressionFactory(), new SelectExpressionFactory<SimpleDto>()));
-			ModelBinders.Binders.Add(
-				typeof(ModelFilter<SimpleDto>),
-				binder);
+			var binder = new ModelFilterBinder<SimpleDto>(ParameterParser<SimpleDto>.Create());
+
+			ModelBinders.Binders.Add(typeof(ModelFilter<SimpleDto>), binder);
 			ModelBinders.Binders.Add(typeof(ResponseFormat), new ResponseFormatBinder());
 		}
 	}

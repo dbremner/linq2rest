@@ -2,6 +2,8 @@
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
+// Based on code from http://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-with-anonymous-type-in-it
+
 
 namespace UrlQueryParser
 {
@@ -21,13 +23,13 @@ namespace UrlQueryParser
 
 		static LinqExtensions()
 		{
-			ModuleBuilder = Thread.GetDomain().DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess.Run).DefineDynamicModule(AssemblyName.Name);
+			ModuleBuilder = Thread.GetDomain()
+				.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess.Run)
+				.DefineDynamicModule(AssemblyName.Name);
 		}
 
 		private static string GetTypeKey(Dictionary<string, Type> fields)
 		{
-			//TODO: optimize the type caching -- if fields are simply reordered, that doesn't mean that they're actually different types, so this needs to be smarter
-
 			return fields.Aggregate(string.Empty, (current, field) => current + (field.Key + ";" + field.Value.Name + ";"));
 		}
 
