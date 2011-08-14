@@ -102,7 +102,7 @@
     <Content Include="Views\Simple\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UrlQueryParser\UrlQueryParser.csproj">
+    <ProjectReference Include="..\UrlQueryParser\UrlQuery.csproj">
       <Project>{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}</Project>
       <Name>UrlQuery</Name>
     </ProjectReference>
