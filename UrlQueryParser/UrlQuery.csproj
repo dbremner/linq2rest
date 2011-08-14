@@ -43,7 +43,7 @@
     <Compile Include="Parser\FilterExpressionFactory.cs" />
     <Compile Include="Parser\IFilterExpressionFactory.cs" />
     <Compile Include="Parser\IParameterParser.cs" />
-    <Compile Include="Mvc\ModelFilter.cs" />
+    <Compile Include="Parser\ModelFilter.cs" />
     <Compile Include="Mvc\ModelFilterBinder.cs" />
     <Compile Include="Mvc\ModelFilterExtensions.cs" />
     <Compile Include="Parser\ParameterParser.cs" />

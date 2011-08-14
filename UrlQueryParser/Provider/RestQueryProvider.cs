@@ -55,6 +55,7 @@ namespace UrlQueryParser.Provider
 				case "Select":
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);
 					_selectParameter = ProcessExpression(methodCall.Arguments[1]);
+					var selectFunction = methodCall.Arguments[1];
 					break;
 				case "OrderBy":
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression);

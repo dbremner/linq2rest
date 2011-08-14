@@ -1,7 +1,8 @@
-namespace UrlQueryParser
+namespace UrlQueryParser.Parser
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Dynamic;
 	using System.Globalization;
 	using System.Linq;
 	using System.Linq.Expressions;
@@ -22,7 +23,7 @@ namespace UrlQueryParser
 			{
 				return new SortDescription<T>[0];
 			}
-			
+
 			var parameterExpression = Expression.Parameter(typeof(T), "x");
 
 			var sortTokens = filter.Split(',');

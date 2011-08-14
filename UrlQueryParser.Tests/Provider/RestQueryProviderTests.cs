@@ -1,11 +1,11 @@
 ﻿namespace UrlQueryParser.Tests.Provider
 {
 	using System;
+	using System.Dynamic;
 	using System.Linq;
+	using System.Linq.Expressions;
 	using System.Web.Script.Serialization;
-
 	using NUnit.Framework;
-
 	using UrlQueryParser.Provider;
 
 	public class RestQueryProviderTests
@@ -30,6 +30,8 @@
 			Assert.Equals(1, result);
 			//Assert.False(result.Any(x => x.Value == 0));
 		}
+
+		private class SelectionObject : DynamicObject{}
 	}
 
 	public class SimpleDto

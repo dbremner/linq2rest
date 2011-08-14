@@ -1,6 +1,8 @@
-namespace UrlQueryParser
+namespace UrlQueryParser.Mvc
 {
 	using System.Collections.Generic;
+
+	using UrlQueryParser.Parser;
 
 	public static class ModelFilterExtensions
 	{

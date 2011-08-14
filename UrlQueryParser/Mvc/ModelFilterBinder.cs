@@ -1,6 +1,8 @@
-﻿namespace UrlQueryParser
+﻿namespace UrlQueryParser.Mvc
 {
 	using System.Web.Mvc;
+
+	using UrlQueryParser.Parser;
 
 	public class ModelFilterBinder<T> : IModelBinder
 	{

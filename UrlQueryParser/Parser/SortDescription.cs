@@ -1,4 +1,4 @@
-namespace UrlQueryParser
+namespace UrlQueryParser.Parser
 {
 	using System;
 	using System.Web.UI.WebControls;

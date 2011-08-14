@@ -4,6 +4,8 @@
 
 	using NUnit.Framework;
 
+	using UrlQueryParser.Parser;
+
 	public class ExpressionTokenizerTests
 	{
 		private ExpressionTokenizer _tokenizer;
