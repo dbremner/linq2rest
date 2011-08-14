@@ -5,6 +5,9 @@
 
 	using NUnit.Framework;
 
+	using UrlQueryParser.Mvc;
+	using UrlQueryParser.Parser;
+
 	public class ParameterParserTests
 	{
 		private ParameterParser _parser;

@@ -1,7 +1,9 @@
-namespace UrlQueryParser
+namespace UrlQueryParser.Parser
 {
 	using System;
 	using System.Collections.Specialized;
+
+	using UrlQueryParser.Mvc;
 
 	public class ParameterParser : IParameterParser
 	{

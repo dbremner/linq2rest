@@ -6,6 +6,8 @@ namespace UrlQueryParser.Tests
 
 	using NUnit.Framework;
 
+	using UrlQueryParser.Parser;
+
 	public class FilterExpressionFactoryTests
 	{
 		private FilterExpressionFactory _factory;

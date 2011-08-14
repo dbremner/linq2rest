@@ -9,6 +9,9 @@
 
 	using NUnit.Framework;
 
+	using UrlQueryParser.Mvc;
+	using UrlQueryParser.Parser;
+
 	public class TokenSetTests
 	{
 		[Test]

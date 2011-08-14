@@ -4,10 +4,12 @@
 
 	using NUnit.Framework;
 
+	using UrlQueryParser.Mvc;
+	using UrlQueryParser.Parser;
+
 	public class SortExpressionFactoryTests
 	{
 		private FakeItem[] _items;
-
 		private SortExpressionFactory _factory;
 
 		[TestFixtureSetUp]
