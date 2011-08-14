@@ -1,3 +1,8 @@
+// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+// All other rights reserved.
+
 namespace UrlQueryParser.Parser
 {
 	using System;
@@ -5,11 +10,6 @@ namespace UrlQueryParser.Parser
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Threading;
-
-	public interface ISelectExpressionFactory<T>
-	{
-		Func<T, object> Create(string selection);
-	}
 
 	public class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{

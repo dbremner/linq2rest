@@ -1,5 +1,9 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+// All other rights reserved.
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -8,9 +12,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("UrlQuery.Mvc")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("Reimers.dk")]
 [assembly: AssemblyProduct("UrlQuery.Mvc")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2011")]
+[assembly: AssemblyCopyright("Copyright © Reimers.dk 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
