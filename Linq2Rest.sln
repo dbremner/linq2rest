@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlQuery", "UrlQueryParser\UrlQuery.csproj", "{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest", "UrlQueryParser\Linq2Rest.csproj", "{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlQueryParser.Tests", "UrlQueryParser.Tests\UrlQueryParser.Tests.csproj", "{0D3564AF-F8C9-42A4-8A01-A4C95526FA28}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Tests", "UrlQueryParser.Tests\Linq2Rest.Tests.csproj", "{0D3564AF-F8C9-42A4-8A01-A4C95526FA28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlQuery.Mvc", "UrlQuery.Mvc\UrlQuery.Mvc.csproj", "{E0D84C0C-2286-4370-8635-0FFB673DCEA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Mvc", "UrlQuery.Mvc\Linq2Rest.Mvc.csproj", "{E0D84C0C-2286-4370-8635-0FFB673DCEA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
