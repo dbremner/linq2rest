@@ -1,13 +1,12 @@
-﻿using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
-
-namespace UrlQuery.Mvc
+﻿namespace Linq2Rest.Mvc
 {
-	using UrlQuery.Mvc.Models;
-	using UrlQuery.Mvc.Support;
-	using UrlQueryParser.Mvc;
-	using UrlQueryParser.Parser;
+	using System.Web;
+	using System.Web.Mvc;
+	using System.Web.Routing;
+
+	using Linq2Rest.Mvc.Models;
+	using Linq2Rest.Mvc.Support;
+	using Linq2Rest.Parser;
 
 	// Note: For instructions on enabling IIS6 or IIS7 classic mode, 
 	// visit http://go.microsoft.com/?LinkId=9394801

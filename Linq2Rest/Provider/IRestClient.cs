@@ -3,11 +3,12 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Provider
+namespace Linq2Rest.Provider
 {
 	using System;
-	using System.Net;
+	using System.Diagnostics.Contracts;
 
+	[ContractClass(typeof(RestClientContracts))]
 	public interface IRestClient
 	{
 		Uri ServiceBase { get; }
@@ -15,23 +16,23 @@ namespace UrlQueryParser.Provider
 		string Get(Uri uri);
 	}
 
-	public class RestClient : IRestClient
+	[ContractClassFor(typeof(IRestClient))]
+	public abstract class RestClientContracts : IRestClient
 	{
-		private readonly WebClient _client;
-
-		public RestClient(Uri uri)
+		public Uri ServiceBase
 		{
-			_client = new WebClient();
-			_client.Headers["Accept"] = "text/javascript";
-
-			ServiceBase = uri;
+			get
+			{
+				Contract.Ensures(Contract.Result<Uri>() != null);
+				throw new NotImplementedException();
+			}
 		}
-
-		public Uri ServiceBase { get; private set; }
 
 		public string Get(Uri uri)
 		{
-			return _client.DownloadString(uri);
+			Contract.Requires<ArgumentNullException>(uri != null);
+
+			throw new NotImplementedException();
 		}
 	}
 }

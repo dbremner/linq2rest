@@ -3,19 +3,19 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Tests
+namespace Linq2Rest.Tests.Mvc
 {
 	using System.Collections.Specialized;
 	using System.Web;
 	using System.Web.Mvc;
 	using System.Web.Routing;
 
+	using Linq2Rest.Mvc;
+	using Linq2Rest.Parser;
+
 	using Moq;
 
 	using NUnit.Framework;
-
-	using UrlQueryParser.Mvc;
-	using UrlQueryParser.Parser;
 
 	public class ModelFilterBinderTests
 	{

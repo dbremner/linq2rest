@@ -3,16 +3,12 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Tests.Provider
+namespace Linq2Rest.Tests.Provider
 {
 	using System.Linq.Expressions;
-	using System.Web.Script.Serialization;
-
+	using Linq2Rest.Provider;
 	using Moq;
-
 	using NUnit.Framework;
-
-	using UrlQueryParser.Provider;
 
 	public class RestQueryProviderTests
 	{
@@ -21,7 +17,7 @@ namespace UrlQueryParser.Tests.Provider
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
-			_provider = new RestQueryProvider<FakeItem>(new Mock<IRestClient>().Object, new JavaScriptSerializer());
+			_provider = new RestQueryProvider<FakeItem>(new Mock<IRestClient>().Object, new TestSerializerFactory());
 		}
 
 		[Test]

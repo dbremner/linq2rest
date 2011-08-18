@@ -3,11 +3,11 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-using System.Web.Mvc;
-
-namespace UrlQuery.Mvc.Controllers
+namespace Linq2Rest.Mvc.Controllers
 {
-    public class HomeController : Controller
+	using System.Web.Mvc;
+
+	public class HomeController : Controller
     {
         //
         // GET: /Home/

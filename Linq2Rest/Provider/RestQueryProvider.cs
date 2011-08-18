@@ -3,44 +3,53 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Provider
+namespace Linq2Rest.Provider
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Reflection;
 	using System.Threading;
-	using System.Web.Script.Serialization;
 
 	internal class RestQueryProvider<T> : IQueryProvider
 	{
-		private static readonly MethodInfo ChangeTypeMethod = typeof(Convert).GetMethod("ChangeType", new[] { typeof(object), typeof(Type) });
 		private readonly IRestClient _client;
-		private readonly JavaScriptSerializer _serializer;
+		private readonly ISerializerFactory _serializerFactory;
+		private readonly List<string> _orderByParameter = new List<string>();
 
 		private string _selectParameter;
 		private string _filterParameter;
-		private readonly List<string> _orderByParameter = new List<string>();
 		private string _skipParameter;
 		private string _takeParameter;
 
-		public RestQueryProvider(IRestClient client, JavaScriptSerializer serializer)
+		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory)
 		{
+			Contract.Requires<ArgumentNullException>(client != null);
+			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+
 			_client = client;
-			_serializer = serializer;
+			_serializerFactory = serializerFactory;
 		}
 
 		public IQueryable CreateQuery(Expression expression)
 		{
-			return new RestQueryable<T>(_client, _serializer, expression);
+			if (expression == null)
+			{
+				throw new ArgumentNullException("expression");
+			}
+
+			return new RestQueryable<T>(_client, _serializerFactory, expression);
 		}
 
 		public IQueryable<TResult> CreateQuery<TResult>(Expression expression)
 		{
-			return new RestQueryable<TResult>(_client, _serializer, expression);
+			if (expression == null)
+			{
+				throw new ArgumentNullException("expression");
+			}
+
+			return new RestQueryable<TResult>(_client, _serializerFactory, expression);
 		}
 
 		public object Execute(Expression expression)
@@ -151,9 +160,9 @@ namespace UrlQueryParser.Provider
 			return null;
 		}
 
-		private List<T> GetResults()
+		private IList<T> GetResults()
 		{
-			Contract.Ensures(Contract.Result<List<T>>() != null);
+			Contract.Ensures(Contract.Result<IList<T>>() != null);
 
 			var parameters = string.Format(
 				"$filter={0}&$select={1}&$skip={2}&$take={3}&$orderby={4}",
@@ -165,54 +174,16 @@ namespace UrlQueryParser.Provider
 
 			var builder = new UriBuilder(_client.ServiceBase);
 			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + parameters;
-
+			var t = typeof(T);
 			var response = _client.Get(builder.Uri);
 
-			var elementType = typeof(T);
+			var serializer = _serializerFactory.Create<T>();
 
-			List<T> resultSet = elementType.IsAnonymousType()
-			                 	? ReadToAnonymousType(response, elementType)
-			                 	: _serializer.Deserialize<List<T>>(response);
+			var resultSet = serializer.DeserializeList(response);
+
+			Contract.Assume(resultSet != null);
 
 			return resultSet;
-		}
-
-		private List<T> ReadToAnonymousType(string response, Type elementType)
-		{
-			var deserializeObject = _serializer.DeserializeObject(response);
-			var enumerable = deserializeObject as IEnumerable;
-
-			if (enumerable == null || !enumerable.OfType<object>().Any())
-			{
-				return new List<T>();
-			}
-
-			var first = enumerable.OfType<object>().First();
-			var deserializedType = first.GetType();
-			var objectParameter = Expression.Parameter(typeof(object), "x");
-			var fields = elementType.GetProperties();
-
-			var bindings =
-				fields.Select(
-					p =>
-					Expression.Convert(
-						Expression.Call(
-							ChangeTypeMethod,
-							Expression.MakeIndex(
-								Expression.Convert(objectParameter, deserializedType),
-								deserializedType.GetProperty("Item"),
-								new[] { Expression.Constant(p.Name) }),
-							Expression.Constant(p.PropertyType)),
-						p.PropertyType)).ToArray();
-
-			var constructorInfo = elementType.GetConstructors().First();
-
-			var selector =
-				Expression.Lambda<Func<object, T>>(
-					Expression.New(constructorInfo, bindings), objectParameter);
-			var selectorFunction = selector.Compile();
-
-			return enumerable.OfType<object>().Select<object, T>(selectorFunction).ToList();
 		}
 
 		private string ProcessExpression(Expression expression)
@@ -274,6 +245,8 @@ namespace UrlQueryParser.Provider
 
 		private string GetOperation(Expression expression)
 		{
+			Contract.Requires(expression != null);
+
 			switch (expression.NodeType)
 			{
 				case ExpressionType.Add:
@@ -311,6 +284,14 @@ namespace UrlQueryParser.Provider
 			}
 
 			return string.Empty;
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_client != null);
+			Contract.Invariant(_serializerFactory != null);
+			Contract.Invariant(_orderByParameter != null);
 		}
 	}
 }

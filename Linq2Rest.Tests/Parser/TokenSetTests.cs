@@ -3,11 +3,11 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Tests
+namespace Linq2Rest.Tests.Parser
 {
-	using NUnit.Framework;
+	using Linq2Rest.Parser;
 
-	using UrlQueryParser.Parser;
+	using NUnit.Framework;
 
 	public class TokenSetTests
 	{

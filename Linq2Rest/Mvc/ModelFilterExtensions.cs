@@ -3,16 +3,21 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Mvc
+namespace Linq2Rest.Mvc
 {
+	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 
-	using UrlQueryParser.Parser;
+	using Linq2Rest.Parser;
 
 	public static class ModelFilterExtensions
 	{
 		public static IEnumerable<object> Filter<T>(this IEnumerable<T> source, ModelFilter<T> filter)
 		{
+			Contract.Requires<ArgumentNullException>(source != null);
+			Contract.Requires<ArgumentNullException>(filter != null);
+
 			return filter.Filter(source);
 		}
 	}

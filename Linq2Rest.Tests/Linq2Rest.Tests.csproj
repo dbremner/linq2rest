@@ -8,8 +8,8 @@
     <ProjectGuid>{0D3564AF-F8C9-42A4-8A01-A4C95526FA28}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UrlQueryParser.Tests</RootNamespace>
-    <AssemblyName>UrlQueryParser.Tests</AssemblyName>
+    <RootNamespace>Linq2Rest.Tests</RootNamespace>
+    <AssemblyName>Linq2Rest.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
@@ -110,12 +110,13 @@
     <Compile Include="Provider\SimpleDto.cs" />
     <Compile Include="Parser\SortExpressionFactoryTests.cs" />
     <Compile Include="Parser\TokenSetTests.cs" />
+    <Compile Include="Provider\TestSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UrlQueryParser\UrlQuery.csproj">
+    <ProjectReference Include="..\Linq2Rest\Linq2Rest.csproj">
       <Project>{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}</Project>
       <Name>UrlQuery</Name>
     </ProjectReference>

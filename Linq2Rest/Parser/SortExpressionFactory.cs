@@ -3,10 +3,11 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Parser
+namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Globalization;
 	using System.Linq;
 	using System.Linq.Expressions;
@@ -42,6 +43,8 @@ namespace UrlQueryParser.Parser
 
 		private Expression<Func<T, object>> GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
 		{
+			Contract.Requires(propertyToken != null);
+
 			var parentType = typeof(T);
 			Expression propertyExpression = null;
 			var propertyChain = propertyToken.Split('/');
