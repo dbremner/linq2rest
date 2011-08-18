@@ -3,9 +3,10 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Parser
+namespace Linq2Rest.Parser
 {
 	using System;
+	using System.Diagnostics.Contracts;
 	using System.Globalization;
 	using System.Linq;
 	using System.Linq.Expressions;
@@ -98,6 +99,8 @@ namespace UrlQueryParser.Parser
 
 		private TokenSet GetFunctionTokens(string filter)
 		{
+			Contract.Requires(filter != null);
+
 			var functionMatch = FunctionRx.Match(filter);
 			if (!functionMatch.Success)
 			{
@@ -145,15 +148,27 @@ namespace UrlQueryParser.Parser
 						if (string.Equals(tokenSet.Operation, "not", StringComparison.OrdinalIgnoreCase))
 						{
 							var right = CreateExpression<T>(tokenSet.Right, parameter, type ?? GetExpressionType<T>(tokenSet, parameter), formatProvider);
+
+							if (right == null)
+							{
+								return null;
+							}
+
 							return GetOperation(tokenSet.Operation, null, right);
 						}
-						
+
 						combiner = tokenSet.Operation;
 					}
 					else
 					{
 						var left = CreateExpression<T>(tokenSet.Left, parameter, type ?? GetExpressionType<T>(tokenSet, parameter), formatProvider);
 						var right = CreateExpression<T>(tokenSet.Right, parameter, left.Type, formatProvider);
+
+						if (right == null)
+						{
+							return null;
+						}
+
 						if (existing != null && !string.IsNullOrWhiteSpace(combiner))
 						{
 							var current = GetOperation(tokenSet.Operation, left, right);
@@ -186,6 +201,8 @@ namespace UrlQueryParser.Parser
 			}
 			if (expression == null)
 			{
+				Contract.Assume(type != null);
+
 				expression = Expression.Constant(Convert.ChangeType(filter, type, formatProvider), type);
 			}
 
@@ -194,6 +211,8 @@ namespace UrlQueryParser.Parser
 
 		private Expression GetFunctionExpression<T>(string filter, ParameterExpression parameter, Type type, IFormatProvider formatProvider)
 		{
+			Contract.Requires(filter != null);
+
 			var functionTokens = GetFunctionTokens(filter);
 			if (functionTokens == null)
 			{
@@ -213,6 +232,8 @@ namespace UrlQueryParser.Parser
 
 		private Type GetFunctionParameterType(string operation)
 		{
+			Contract.Requires(operation != null);
+
 			switch (operation.ToLowerInvariant())
 			{
 				case "substring":
@@ -224,6 +245,8 @@ namespace UrlQueryParser.Parser
 
 		private Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
 		{
+			Contract.Requires(propertyToken != null);
+
 			var tokens = Tokenizer.GetTokens(propertyToken);
 			foreach (var token in tokens)
 			{
@@ -233,6 +256,7 @@ namespace UrlQueryParser.Parser
 
 			var parentType = typeof(T);
 			Expression propertyExpression = null;
+
 			var propertyChain = propertyToken.Split('/');
 			foreach (var propertyName in propertyChain)
 			{
@@ -251,6 +275,8 @@ namespace UrlQueryParser.Parser
 
 		private Type GetExpressionType<T>(TokenSet set, ParameterExpression parameter)
 		{
+			Contract.Requires(set != null);
+
 			var property = GetPropertyExpression<T>(set.Left, parameter) ?? GetPropertyExpression<T>(set.Right, parameter);
 
 			return property == null ? null : property.Type;
@@ -258,6 +284,27 @@ namespace UrlQueryParser.Parser
 
 		private Expression GetOperation(string token, Expression left, Expression right)
 		{
+			Contract.Requires(token != null);
+			Contract.Requires(right != null);
+
+			token = token.ToLowerInvariant();
+
+			if (string.Equals("not", token, StringComparison.OrdinalIgnoreCase))
+			{
+				return GetRightOperation(token, right);
+			}
+
+			Contract.Assume(left != null);
+
+			return GetLeftRightOperation(token, left, right);
+		}
+
+		private Expression GetLeftRightOperation(string token, Expression left, Expression right)
+		{
+			Contract.Requires(token != null);
+			Contract.Requires(left != null);
+			Contract.Requires(right != null);
+
 			switch (token.ToLowerInvariant())
 			{
 				case "eq":
@@ -276,8 +323,6 @@ namespace UrlQueryParser.Parser
 					return Expression.AndAlso(left, right);
 				case "or":
 					return Expression.OrElse(left, right);
-				case "not":
-					return Expression.Not(right);
 				case "add":
 					return Expression.Add(left, right);
 				case "sub":
@@ -293,8 +338,24 @@ namespace UrlQueryParser.Parser
 			throw new InvalidOperationException("Unsupported operation");
 		}
 
+		private Expression GetRightOperation(string token, Expression right)
+		{
+			Contract.Requires(token != null);
+			Contract.Requires(right != null);
+
+			switch (token.ToLowerInvariant())
+			{
+				case "not":
+					return Expression.Not(right);
+			}
+
+			throw new InvalidOperationException("Unsupported operation");
+		}
+
 		private Expression GetFunction(string function, Expression left, Expression right)
 		{
+			Contract.Requires(function != null);
+
 			switch (function.ToLowerInvariant())
 			{
 				case "substringof":
@@ -330,10 +391,16 @@ namespace UrlQueryParser.Parser
 				case "year":
 					return Expression.Property(left, YearProperty);
 				case "round":
+					Contract.Assume(left != null);
+
 					return Expression.Call(left.Type == typeof(double) ? DoubleRoundMethod : DecimalRoundMethod, left);
 				case "floor":
+					Contract.Assume(left != null);
+
 					return Expression.Call(left.Type == typeof(double) ? DoubleFloorMethod : DecimalFloorMethod, left);
 				case "ceiling":
+					Contract.Assume(left != null);
+
 					return Expression.Call(left.Type == typeof(double) ? DoubleCeilingMethod : DecimalCeilingMethod, left);
 				default:
 					return null;
@@ -362,21 +429,6 @@ http://services.odata.org/Northwind/Northwind.svc/Orders?$filter=isof(ShipCountr
 		public override string ToString()
 		{
 			return string.Format("{0} {1} {2}", Operation, Left, Right);
-		}
-	}
-
-
-	internal class TokenSet
-	{
-		public string Left { get; set; }
-
-		public string Operation { get; set; }
-
-		public string Right { get; set; }
-
-		public override string ToString()
-		{
-			return string.Format("{0} {1} {2}", Left, Operation, Right);
 		}
 	}
 }

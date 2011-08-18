@@ -3,10 +3,10 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-using System.Data.Entity;
-
-namespace UrlQuery.Mvc.Models
+namespace Linq2Rest.Mvc.Models
 {
+	using System.Data.Entity;
+
 	public class SimpleContext : DbContext
 	{
         // You can add custom code to this file. Changes will not be overwritten.

@@ -3,7 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQuery.Mvc.Support
+namespace Linq2Rest.Mvc.Support
 {
 	/// <summary>
 	/// 	Enumeration of supported response formats.

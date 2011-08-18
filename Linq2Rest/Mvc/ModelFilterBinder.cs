@@ -3,11 +3,11 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Mvc
+namespace Linq2Rest.Mvc
 {
 	using System.Web.Mvc;
 
-	using UrlQueryParser.Parser;
+	using Linq2Rest.Parser;
 
 	public class ModelFilterBinder<T> : IModelBinder
 	{

@@ -5,7 +5,7 @@
 // Based on code from http://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-with-anonymous-type-in-it
 
 
-namespace UrlQueryParser
+namespace Linq2Rest
 {
 	using System;
 	using System.Collections.Generic;
@@ -31,7 +31,9 @@ namespace UrlQueryParser
 
 		public static bool IsAnonymousType(this Type type)
 		{
-			return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false) 
+			Contract.Requires<ArgumentNullException>(type != null);
+
+			return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
 				&& type.IsGenericType
 				&& type.Name.Contains("AnonymousType") && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
 				&& (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;

@@ -3,14 +3,14 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQuery.Mvc.Controllers
+namespace Linq2Rest.Mvc.Controllers
 {
 	using System.Web.Mvc;
 	using System;
-	using UrlQuery.Mvc.Models;
-	using UrlQuery.Mvc.Support;
-	using UrlQueryParser.Mvc;
-	using UrlQueryParser.Parser;
+
+	using Linq2Rest.Mvc.Models;
+	using Linq2Rest.Mvc.Support;
+	using Linq2Rest.Parser;
 
 	public class SimpleController : Controller
 	{

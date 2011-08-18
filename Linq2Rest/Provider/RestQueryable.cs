@@ -3,7 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Provider
+namespace Linq2Rest.Provider
 {
 	using System;
 	using System.Collections;
@@ -11,25 +11,28 @@ namespace UrlQueryParser.Provider
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Web.Script.Serialization;
 
 	internal class RestQueryable<T> : IOrderedQueryable<T>
 	{
 		private readonly IRestClient _client;
 
-		public RestQueryable(IRestClient client, JavaScriptSerializer serializer)
+		public RestQueryable(IRestClient client, ISerializerFactory serializerFactory)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
-			Contract.Requires<ArgumentNullException>(serializer != null);
+			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 
 			_client = client;
-			Provider = new RestQueryProvider<T>(_client, serializer);
+			Provider = new RestQueryProvider<T>(_client, serializerFactory);
 			Expression = Expression.Constant(this);
 		}
 
-		public RestQueryable(IRestClient client, JavaScriptSerializer serializer, Expression expression)
-			: this(client, serializer)
+		public RestQueryable(IRestClient client, ISerializerFactory serializerFactory, Expression expression)
+			: this(client, serializerFactory)
 		{
+			Contract.Requires<ArgumentNullException>(client != null);
+			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+			Contract.Requires<ArgumentNullException>(expression != null);
+
 			Expression = expression;
 		}
 
@@ -59,6 +62,13 @@ namespace UrlQueryParser.Provider
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return (Provider.Execute<IEnumerable>(Expression)).GetEnumerator();
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_client != null);
+			Contract.Invariant(Expression != null);
 		}
 	}
 }

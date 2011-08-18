@@ -3,23 +3,20 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Parser
+namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Web.UI.WebControls;
 
 	public class ModelFilter<T>
 	{
 		private readonly int _skip;
-
 		private readonly int _top;
-
 		private readonly Func<T, bool> _filterExpression;
-
 		private readonly Func<T, object> _selectExpression;
-
 		private readonly IEnumerable<SortDescription<T>> _sortDescriptions;
 
 		public ModelFilter(Func<T, bool> filterExpression, Func<T, object> selectExpression, IEnumerable<SortDescription<T>> sortDescriptions, int skip, int top)
@@ -33,7 +30,9 @@ namespace UrlQueryParser.Parser
 
 		public IEnumerable<object> Filter(IEnumerable<T> model)
 		{
-			var result = model.Where(_filterExpression);
+			Contract.Requires<ArgumentNullException>(model != null);
+
+			var result = _filterExpression != null ? model.Where(_filterExpression) : model;
 
 			if (_sortDescriptions != null && _sortDescriptions.Any())
 			{
@@ -49,9 +48,13 @@ namespace UrlQueryParser.Parser
 					}
 					else
 					{
+						var orderedEnumerable = result as IOrderedEnumerable<T>;
+
+						Contract.Assume(orderedEnumerable != null);
+
 						result = sortDescription.Direction == SortDirection.Ascending
-									? (result as IOrderedEnumerable<T>).ThenBy(sortDescription.KeySelector)
-									: (result as IOrderedEnumerable<T>).ThenByDescending(sortDescription.KeySelector);
+									? orderedEnumerable.ThenBy(sortDescription.KeySelector)
+									: orderedEnumerable.ThenByDescending(sortDescription.KeySelector);
 					}
 				}
 			}

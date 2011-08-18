@@ -39,4 +39,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.1.0.0")]
 [assembly: AssemblyFileVersion("0.1.0.0")]
-[assembly: InternalsVisibleTo("UrlQueryParser.Tests")]
+[assembly: InternalsVisibleTo("Linq2Rest.Tests")]

@@ -3,7 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Tests.Provider
+namespace Linq2Rest.Tests.Provider
 {
 	public class SimpleDto
 	{

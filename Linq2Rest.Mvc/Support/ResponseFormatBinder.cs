@@ -3,10 +3,11 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQuery.Mvc.Support
+namespace Linq2Rest.Mvc.Support
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Web;
 	using System.Web.Mvc;
@@ -37,6 +38,8 @@ namespace UrlQuery.Mvc.Support
 			/// <returns>The preferred supported content type.</returns>
 			public string GetPreferredContentType(HttpRequestBase request, IEnumerable<string> supportedContentTypes)
 			{
+				Contract.Requires(supportedContentTypes != null);
+
 				return request == null
 					|| request.AcceptTypes == null
 						? null

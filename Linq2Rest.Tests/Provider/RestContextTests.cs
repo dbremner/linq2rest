@@ -3,17 +3,18 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace UrlQueryParser.Tests.Provider
+namespace Linq2Rest.Tests.Provider
 {
 	using System;
 	using System.Dynamic;
 	using System.Linq;
 	using System.Web.Script.Serialization;
 
+	using Linq2Rest.Provider;
+
 	using Moq;
 
 	using NUnit.Framework;
-	using UrlQueryParser.Provider;
 
 	public class RestContextTests
 	{
@@ -24,13 +25,13 @@ namespace UrlQueryParser.Tests.Provider
 		public void TestSetup()
 		{
 			var baseUri = new Uri("http://localhost");
-			var serializer = new JavaScriptSerializer();
+			var serializerFactory = new TestSerializerFactory();
 
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
 			_mockClient.Setup(x => x.Get(It.IsAny<Uri>())).Returns("[{Value : 2, Content : \"blah\" }]");
 
-			_provider = new RestContext<SimpleDto>(_mockClient.Object, serializer);
+			_provider = new RestContext<SimpleDto>(_mockClient.Object, serializerFactory);
 		}
 
 		[Test]
@@ -129,7 +130,5 @@ namespace UrlQueryParser.Tests.Provider
 			var uri = new Uri("http://localhost/?$filter=Value%20le%203&$select=Value,Content&$skip=1&$take=1&$orderby=Value");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
-
-		private class SelectionObject : DynamicObject { }
 	}
 }
