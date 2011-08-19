@@ -228,6 +228,24 @@ namespace Linq2Rest.Tests.Provider
 			VerifyCall(x => x.Date.Year == 10, "http://localhost/?$filter=year(Date) eq 10&$select=&$skip=&$take=&$orderby=");
 		}
 
+		[Test]
+		public void WhenApplyingRoundExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => Math.Round(x.Value) == 10d, "http://localhost/?$filter=round(Value) eq 10&$select=&$skip=&$take=&$orderby=");
+		}
+
+		[Test]
+		public void WhenApplyingFloorExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => Math.Floor(x.Value) == 10d, "http://localhost/?$filter=floor(Value) eq 10&$select=&$skip=&$take=&$orderby=");
+		}
+
+		[Test]
+		public void WhenApplyingCeilingExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => Math.Ceiling(x.Value) == 10d, "http://localhost/?$filter=ceiling(Value) eq 10&$select=&$skip=&$take=&$orderby=");
+		}
+
 		private void VerifyCall(Expression<Func<SimpleDto, bool>> selection, string expectedUri)
 		{
 			var result = _provider.Query
