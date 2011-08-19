@@ -275,62 +275,76 @@ namespace Linq2Rest.Provider
 			Contract.Requires(expression != null);
 
 			var methodName = expression.Method.Name;
-			switch (methodName)
+			var declaringType = expression.Method.DeclaringType;
+			if (declaringType == typeof(string))
 			{
-				case "Trim":
-					return string.Format("trim({0})", ProcessExpression(expression.Object));
-				case "ToLower":
-				case "ToLowerInvariant":
-					return string.Format("tolower({0})", ProcessExpression(expression.Object));
-				case "ToUpper":
-				case "ToUpperInvariant":
-					return string.Format("toupper({0})", ProcessExpression(expression.Object));
-				case "Substring":
-					Contract.Assume(expression.Arguments.Count > 0);
+				switch (methodName)
+				{
+					case "Trim":
+						return string.Format("trim({0})", ProcessExpression(expression.Object));
+					case "ToLower":
+					case "ToLowerInvariant":
+						return string.Format("tolower({0})", ProcessExpression(expression.Object));
+					case "ToUpper":
+					case "ToUpperInvariant":
+						return string.Format("toupper({0})", ProcessExpression(expression.Object));
+					case "Substring":
+						Contract.Assume(expression.Arguments.Count > 0);
 
-					if (expression.Arguments.Count == 1)
-					{
-						var argumentExpression = expression.Arguments[0];
+						if (expression.Arguments.Count == 1)
+						{
+							var argumentExpression = expression.Arguments[0];
+							return string.Format(
+								"substring({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+						}
+
+						var firstArgument = expression.Arguments[0];
+						var secondArgument = expression.Arguments[1];
 						return string.Format(
-							"substring({0}, {1})",
+							"substring({0}, {1}, {2})",
 							ProcessExpression(expression.Object),
-							ProcessExpression(argumentExpression));
-					}
+							ProcessExpression(firstArgument),
+							ProcessExpression(secondArgument));
+					case "IndexOf":
+						{
+							Contract.Assume(expression.Arguments.Count > 0);
 
-					var firstArgument = expression.Arguments[0];
-					var secondArgument = expression.Arguments[1];
-					return string.Format(
-						"substring({0}, {1}, {2})",
-						ProcessExpression(expression.Object),
-						ProcessExpression(firstArgument),
-						ProcessExpression(secondArgument));
-				case "IndexOf":
-					{
-						Contract.Assume(expression.Arguments.Count > 0);
+							var argumentExpression = expression.Arguments[0];
+							return string.Format(
+								"indexof({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+						}
+					case "EndsWith":
+						{
+							Contract.Assume(expression.Arguments.Count > 0);
 
-						var argumentExpression = expression.Arguments[0];
-						return string.Format(
-							"indexof({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
-					}
-				case "EndsWith":
-					{
-						Contract.Assume(expression.Arguments.Count > 0);
+							var argumentExpression = expression.Arguments[0];
+							return string.Format(
+								"endswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+						}
+					case "StartsWith":
+						{
+							Contract.Assume(expression.Arguments.Count > 0);
 
-						var argumentExpression = expression.Arguments[0];
-						return string.Format(
-							"endswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
-					}
-				case "StartsWith":
-					{
-						Contract.Assume(expression.Arguments.Count > 0);
-
-						var argumentExpression = expression.Arguments[0];
-						return string.Format(
-							"startswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
-					}
-				default:
-					return string.Empty;
+							var argumentExpression = expression.Arguments[0];
+							return string.Format(
+								"startswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+						}
+				}
 			}
+			else if (declaringType == typeof(Math))
+			{
+				switch (methodName)
+				{
+					case "Round":
+						return string.Format("round({0})", ProcessExpression(expression.Arguments[0]));
+					case "Floor":
+						return string.Format("floor({0})", ProcessExpression(expression.Arguments[0]));
+					case "Ceiling":
+						return string.Format("ceiling({0})", ProcessExpression(expression.Arguments[0]));
+				}
+			}
+
+			return string.Empty;
 		}
 
 		private object GetExpressionValue(Expression expression)
