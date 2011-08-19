@@ -1,3 +1,8 @@
+// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+// All other rights reserved.
+
 namespace Linq2Rest.Provider
 {
 	using System;
@@ -6,12 +11,10 @@ namespace Linq2Rest.Provider
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Reflection;
 	using System.Web.Script.Serialization;
 
 	public class SimpleAnonymousTypeSerializer<T> : ISerializer<T>
 	{
-		private static readonly MethodInfo ChangeTypeMethod = typeof(Convert).GetMethod("ChangeType", new[] { typeof(object), typeof(Type) });
 		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 		private readonly Type _elementType = typeof(T);
 
@@ -57,7 +60,7 @@ namespace Linq2Rest.Provider
 					p =>
 					Expression.Convert(
 						Expression.Call(
-							ChangeTypeMethod,
+							MethodProvider.ChangeTypeMethod,
 							Expression.MakeIndex(
 								Expression.Convert(objectParameter, deserializedType),
 								deserializedType.GetProperty("Item"),

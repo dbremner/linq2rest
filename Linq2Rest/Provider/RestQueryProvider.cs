@@ -174,7 +174,6 @@ namespace Linq2Rest.Provider
 
 			var builder = new UriBuilder(_client.ServiceBase);
 			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + parameters;
-			var t = typeof(T);
 			var response = _client.Get(builder.Uri);
 
 			var serializer = _serializerFactory.Create<T>();
@@ -194,7 +193,12 @@ namespace Linq2Rest.Provider
 			}
 			if (expression is MemberExpression)
 			{
-				return (expression as MemberExpression).Member.Name;
+				var memberExpression = expression as MemberExpression;
+				var memberCall = GetMemberCall(memberExpression);
+
+				return string.IsNullOrWhiteSpace(memberCall)
+						? memberExpression.Member.Name
+						: string.Format("{0}({1})", memberCall, ProcessExpression(memberExpression.Expression));
 			}
 			if (expression is ConstantExpression)
 			{
@@ -211,6 +215,8 @@ namespace Linq2Rest.Provider
 				var operand = unaryExpression.Operand;
 				switch (unaryExpression.NodeType)
 				{
+					case ExpressionType.Not:
+						return string.Format("not({0})", ProcessExpression(operand));
 					case ExpressionType.Quote:
 						return ProcessExpression(operand);
 				}
@@ -225,8 +231,106 @@ namespace Linq2Rest.Provider
 				return string.Format
 					("{0} {1} {2}", ProcessExpression(binaryExpression.Left), operation, ProcessExpression(binaryExpression.Right));
 			}
+			if (expression is MethodCallExpression)
+			{
+				return GetMethodCall(expression as MethodCallExpression);
+			}
 
 			return string.Empty;
+		}
+
+		private string GetMemberCall(MemberExpression memberExpression)
+		{
+			Contract.Requires(memberExpression != null);
+
+			var declaringType = memberExpression.Member.DeclaringType;
+			var name = memberExpression.Member.Name;
+
+			if (declaringType == typeof(string))
+			{
+				if (name == "Length")
+				{
+					return name.ToLowerInvariant();
+				}
+			}
+			else if (declaringType == typeof(DateTime))
+			{
+				switch (name)
+				{
+					case "Hour":
+					case "Minute":
+					case "Second":
+					case "Day":
+					case "Month":
+					case "Year":
+						return name.ToLowerInvariant();
+				}
+			}
+
+			return string.Empty;
+		}
+
+		private string GetMethodCall(MethodCallExpression expression)
+		{
+			Contract.Requires(expression != null);
+
+			var methodName = expression.Method.Name;
+			switch (methodName)
+			{
+				case "Trim":
+					return string.Format("trim({0})", ProcessExpression(expression.Object));
+				case "ToLower":
+				case "ToLowerInvariant":
+					return string.Format("tolower({0})", ProcessExpression(expression.Object));
+				case "ToUpper":
+				case "ToUpperInvariant":
+					return string.Format("toupper({0})", ProcessExpression(expression.Object));
+				case "Substring":
+					Contract.Assume(expression.Arguments.Count > 0);
+
+					if (expression.Arguments.Count == 1)
+					{
+						var argumentExpression = expression.Arguments[0];
+						return string.Format(
+							"substring({0}, {1})",
+							ProcessExpression(expression.Object),
+							ProcessExpression(argumentExpression));
+					}
+
+					var firstArgument = expression.Arguments[0];
+					var secondArgument = expression.Arguments[1];
+					return string.Format(
+						"substring({0}, {1}, {2})",
+						ProcessExpression(expression.Object),
+						ProcessExpression(firstArgument),
+						ProcessExpression(secondArgument));
+				case "IndexOf":
+					{
+						Contract.Assume(expression.Arguments.Count > 0);
+
+						var argumentExpression = expression.Arguments[0];
+						return string.Format(
+							"indexof({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+					}
+				case "EndsWith":
+					{
+						Contract.Assume(expression.Arguments.Count > 0);
+
+						var argumentExpression = expression.Arguments[0];
+						return string.Format(
+							"endswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+					}
+				case "StartsWith":
+					{
+						Contract.Assume(expression.Arguments.Count > 0);
+
+						var argumentExpression = expression.Arguments[0];
+						return string.Format(
+							"startswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+					}
+				default:
+					return string.Empty;
+			}
 		}
 
 		private object GetExpressionValue(Expression expression)
