@@ -10,7 +10,6 @@ namespace Linq2Rest.Parser
 	using System.Globalization;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Reflection;
 	using System.Text.RegularExpressions;
 
 	internal class FilterExpressionFactory : IFilterExpressionFactory
@@ -19,63 +18,11 @@ namespace Linq2Rest.Parser
 		private static readonly Regex StringRx = new Regex(@"^'([^']*?)'$", RegexOptions.Compiled);
 		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$");
 		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
-
-		private static readonly ConstantExpression IgnoreCaseExpression;
-		private static readonly MethodInfo IndexOfMethod;
-		private static readonly MethodInfo EndsWithMethod;
-		private static readonly MethodInfo StartsWithMethod;
-		private static readonly PropertyInfo LengthProperty;
-		private static readonly MethodInfo SubstringMethod;
-		private static readonly MethodInfo ToLowerMethod;
-		private static readonly MethodInfo ToUpperMethod;
-		private static readonly MethodInfo TrimMethod;
 		private static readonly ExpressionTokenizer Tokenizer;
-
-		private static readonly PropertyInfo DayProperty;
-		private static readonly PropertyInfo HourProperty;
-		private static readonly PropertyInfo MinuteProperty;
-		private static readonly PropertyInfo SecondProperty;
-		private static readonly PropertyInfo MonthProperty;
-		private static readonly PropertyInfo YearProperty;
-
-		private static readonly MethodInfo DoubleRoundMethod;
-		private static readonly MethodInfo DecimalRoundMethod;
-		private static readonly MethodInfo DoubleFloorMethod;
-		private static readonly MethodInfo DecimalFloorMethod;
-		private static readonly MethodInfo DoubleCeilingMethod;
-		private static readonly MethodInfo DecimalCeilingMethod;
 
 		static FilterExpressionFactory()
 		{
-			var stringType = typeof(string);
-			var datetimeType = typeof(DateTime);
-			var mathType = typeof(Math);
-
 			Tokenizer = new ExpressionTokenizer();
-			IgnoreCaseExpression = Expression.Constant(StringComparison.OrdinalIgnoreCase);
-
-			IndexOfMethod = stringType.GetMethod("IndexOf", new[] { stringType, typeof(StringComparison) });
-			EndsWithMethod = stringType.GetMethod("EndsWith", new[] { stringType, typeof(StringComparison) });
-			StartsWithMethod = stringType.GetMethod("StartsWith", new[] { stringType, typeof(StringComparison) });
-			LengthProperty = stringType.GetProperty("Length", Type.EmptyTypes);
-			SubstringMethod = stringType.GetMethod("Substring", new[] { typeof(int) });
-			ToLowerMethod = stringType.GetMethod("ToLowerInvariant", Type.EmptyTypes);
-			ToUpperMethod = stringType.GetMethod("ToUpperInvariant", Type.EmptyTypes);
-			TrimMethod = stringType.GetMethod("Trim", Type.EmptyTypes);
-
-			DayProperty = datetimeType.GetProperty("Day", Type.EmptyTypes);
-			HourProperty = datetimeType.GetProperty("Hour", Type.EmptyTypes);
-			MinuteProperty = datetimeType.GetProperty("Minute", Type.EmptyTypes);
-			SecondProperty = datetimeType.GetProperty("Second", Type.EmptyTypes);
-			MonthProperty = datetimeType.GetProperty("Month", Type.EmptyTypes);
-			YearProperty = datetimeType.GetProperty("Year", Type.EmptyTypes);
-
-			DoubleRoundMethod = mathType.GetMethod("Round", new[] { typeof(double) });
-			DecimalRoundMethod = mathType.GetMethod("Round", new[] { typeof(decimal) });
-			DoubleFloorMethod = mathType.GetMethod("Floor", new[] { typeof(double) });
-			DecimalFloorMethod = mathType.GetMethod("Floor", new[] { typeof(decimal) });
-			DoubleCeilingMethod = mathType.GetMethod("Ceiling", new[] { typeof(double) });
-			DecimalCeilingMethod = mathType.GetMethod("Ceiling", new[] { typeof(decimal) });
 		}
 
 		public Expression<Func<T, bool>> Create<T>(string filter)
@@ -360,48 +307,48 @@ namespace Linq2Rest.Parser
 			{
 				case "substringof":
 					return Expression.GreaterThan(
-						Expression.Call(right, IndexOfMethod, new[] { left, IgnoreCaseExpression }),
+						Expression.Call(right, MethodProvider.IndexOfMethod, new[] { left, MethodProvider.IgnoreCaseExpression }),
 						Expression.Constant(-1, typeof(int)));
 				case "endswith":
-					return Expression.Call(left, EndsWithMethod, new[] { right, IgnoreCaseExpression });
+					return Expression.Call(left, MethodProvider.EndsWithMethod, new[] { right, MethodProvider.IgnoreCaseExpression });
 				case "startswith":
-					return Expression.Call(left, StartsWithMethod, new[] { right, IgnoreCaseExpression });
+					return Expression.Call(left, MethodProvider.StartsWithMethod, new[] { right, MethodProvider.IgnoreCaseExpression });
 				case "length":
-					return Expression.Property(left, LengthProperty);
+					return Expression.Property(left, MethodProvider.LengthProperty);
 				case "indexof":
-					return Expression.Call(left, IndexOfMethod, new[] { right, IgnoreCaseExpression });
+					return Expression.Call(left, MethodProvider.IndexOfMethod, new[] { right, MethodProvider.IgnoreCaseExpression });
 				case "substring":
-					return Expression.Call(left, SubstringMethod, new[] { right });
+					return Expression.Call(left, MethodProvider.SubstringMethod, new[] { right });
 				case "tolower":
-					return Expression.Call(left, ToLowerMethod);
+					return Expression.Call(left, MethodProvider.ToLowerMethod);
 				case "toupper":
-					return Expression.Call(left, ToUpperMethod);
+					return Expression.Call(left, MethodProvider.ToUpperMethod);
 				case "trim":
-					return Expression.Call(left, TrimMethod);
+					return Expression.Call(left, MethodProvider.TrimMethod);
 				case "hour":
-					return Expression.Property(left, HourProperty);
+					return Expression.Property(left, MethodProvider.HourProperty);
 				case "minute":
-					return Expression.Property(left, MinuteProperty);
+					return Expression.Property(left, MethodProvider.MinuteProperty);
 				case "second":
-					return Expression.Property(left, SecondProperty);
+					return Expression.Property(left, MethodProvider.SecondProperty);
 				case "day":
-					return Expression.Property(left, DayProperty);
+					return Expression.Property(left, MethodProvider.DayProperty);
 				case "month":
-					return Expression.Property(left, MonthProperty);
+					return Expression.Property(left, MethodProvider.MonthProperty);
 				case "year":
-					return Expression.Property(left, YearProperty);
+					return Expression.Property(left, MethodProvider.YearProperty);
 				case "round":
 					Contract.Assume(left != null);
 
-					return Expression.Call(left.Type == typeof(double) ? DoubleRoundMethod : DecimalRoundMethod, left);
+					return Expression.Call(left.Type == typeof(double) ? MethodProvider.DoubleRoundMethod : MethodProvider.DecimalRoundMethod, left);
 				case "floor":
 					Contract.Assume(left != null);
 
-					return Expression.Call(left.Type == typeof(double) ? DoubleFloorMethod : DecimalFloorMethod, left);
+					return Expression.Call(left.Type == typeof(double) ? MethodProvider.DoubleFloorMethod : MethodProvider.DecimalFloorMethod, left);
 				case "ceiling":
 					Contract.Assume(left != null);
 
-					return Expression.Call(left.Type == typeof(double) ? DoubleCeilingMethod : DecimalCeilingMethod, left);
+					return Expression.Call(left.Type == typeof(double) ? MethodProvider.DoubleCeilingMethod : MethodProvider.DecimalCeilingMethod, left);
 				default:
 					return null;
 			}

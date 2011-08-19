@@ -4,7 +4,6 @@
 // All other rights reserved.
 // Based on code from http://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-with-anonymous-type-in-it
 
-
 namespace Linq2Rest
 {
 	using System;

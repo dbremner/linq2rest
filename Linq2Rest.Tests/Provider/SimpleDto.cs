@@ -5,6 +5,8 @@
 
 namespace Linq2Rest.Tests.Provider
 {
+	using System;
+
 	public class SimpleDto
 	{
 		public int ID { get; set; }
@@ -12,5 +14,7 @@ namespace Linq2Rest.Tests.Provider
 		public string Content { get; set; }
 
 		public double Value { get; set; }
+
+		public DateTime Date { get; set; }
 	}
 }
