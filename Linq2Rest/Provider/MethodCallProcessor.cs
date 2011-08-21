@@ -10,6 +10,9 @@ namespace Linq2Rest.Provider
 	{
 		public static object ProcessMethodCall<T>(this MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader)
 		{
+			Contract.Requires(builder != null);
+			Contract.Requires(resultLoader != null);
+
 			if (methodCall == null)
 			{
 				return null;
@@ -91,6 +94,8 @@ namespace Linq2Rest.Provider
 
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					var results = resultLoader(builder);
+
+					Contract.Assume(results != null);
 
 					var parameters = new object[] { results.AsQueryable() }
 						.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(x => x.GetExpressionValue()))
