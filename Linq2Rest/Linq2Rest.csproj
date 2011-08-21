@@ -106,8 +106,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser\SortDescription.cs" />
     <Compile Include="Parser\SortExpressionFactory.cs" />
+    <Compile Include="Provider\ExpressionProcessor.cs" />
     <Compile Include="Provider\IRestClient.cs" />
     <Compile Include="Provider\ISerializer.cs" />
+    <Compile Include="Provider\MethodCallProcessor.cs" />
+    <Compile Include="Provider\ParameterBuilder.cs" />
     <Compile Include="Provider\RestClient.cs" />
     <Compile Include="Provider\RestContext.cs" />
     <Compile Include="Provider\RestQueryable.cs" />

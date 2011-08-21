@@ -5,6 +5,7 @@
 
 namespace Linq2Rest.Tests.Provider
 {
+	using System;
 	using System.Collections;
 
 	using Linq2Rest.Provider;
@@ -20,7 +21,9 @@ namespace Linq2Rest.Tests.Provider
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
-			_queryable = new RestQueryable<FakeItem>(new Mock<IRestClient>().Object, new TestSerializerFactory());
+			var mockClient = new Mock<IRestClient>();
+			mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
+			_queryable = new RestQueryable<FakeItem>(mockClient.Object, new TestSerializerFactory());
 		}
 
 		[Test]

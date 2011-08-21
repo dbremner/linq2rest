@@ -18,7 +18,9 @@ namespace Linq2Rest.Tests.Provider
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
-			_provider = new RestQueryProvider<FakeItem>(new Mock<IRestClient>().Object, new TestSerializerFactory());
+			var mockClient = new Mock<IRestClient>();
+			mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
+			_provider = new RestQueryProvider<FakeItem>(mockClient.Object, new TestSerializerFactory());
 		}
 
 		[Test]
