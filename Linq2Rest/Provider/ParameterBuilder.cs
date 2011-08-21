@@ -46,7 +46,7 @@ namespace Linq2Rest.Provider
 			}
 			if (!string.IsNullOrWhiteSpace(TakeParameter))
 			{
-				parameters.Add("$take=" + TakeParameter);
+				parameters.Add("$top=" + TakeParameter);
 			}
 			if (OrderByParameter.Any())
 			{

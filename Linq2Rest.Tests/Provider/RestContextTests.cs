@@ -102,7 +102,7 @@ namespace Linq2Rest.Tests.Provider
 				.Take(1)
 				.Count();
 
-			var uri = new Uri("http://localhost/?$take=1");
+			var uri = new Uri("http://localhost/?$top=1");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -128,7 +128,7 @@ namespace Linq2Rest.Tests.Provider
 				.Take(1)
 				.Count();
 
-			var uri = new Uri("http://localhost/?$filter=Value+le+3&$select=Value,Content&$skip=1&$take=1&$orderby=Value");
+			var uri = new Uri("http://localhost/?$filter=Value+le+3&$select=Value,Content&$skip=1&$top=1&$orderby=Value");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
