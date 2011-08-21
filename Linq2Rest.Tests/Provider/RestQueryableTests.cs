@@ -5,6 +5,8 @@
 
 namespace Linq2Rest.Tests.Provider
 {
+	using System.Collections;
+
 	using Linq2Rest.Provider;
 
 	using Moq;
@@ -13,12 +15,24 @@ namespace Linq2Rest.Tests.Provider
 
 	public class RestQueryableTests
 	{
+		private RestQueryable<FakeItem> _queryable;
+
+		[TestFixtureSetUp]
+		public void FixtureSetup()
+		{
+			_queryable = new RestQueryable<FakeItem>(new Mock<IRestClient>().Object, new TestSerializerFactory());
+		}
+
 		[Test]
 		public void ElementTypeIsSameAsGenericParameter()
 		{
-			var queryable = new RestQueryable<FakeItem>(new Mock<IRestClient>().Object, new TestSerializerFactory());
+			Assert.AreEqual(typeof(FakeItem), _queryable.ElementType);
+		}
 
-			Assert.AreEqual(typeof(FakeItem), queryable.ElementType);
+		[Test]
+		public void WhenGettingNonGenericEnumeratorThenDoesNotReturnNull()
+		{
+			Assert.NotNull((_queryable as IEnumerable).GetEnumerator());
 		}
 	}
 }

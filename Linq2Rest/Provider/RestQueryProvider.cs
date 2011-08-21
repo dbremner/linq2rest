@@ -236,8 +236,6 @@ namespace Linq2Rest.Provider
 					case ExpressionType.Quote:
 						return ProcessExpression(operand);
 				}
-
-				return string.Empty;
 			}
 			if (expression is BinaryExpression)
 			{

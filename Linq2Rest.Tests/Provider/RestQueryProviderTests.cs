@@ -5,6 +5,7 @@
 
 namespace Linq2Rest.Tests.Provider
 {
+	using System;
 	using System.Linq.Expressions;
 	using Linq2Rest.Provider;
 	using Moq;
@@ -38,6 +39,18 @@ namespace Linq2Rest.Tests.Provider
 			var queryable = _provider.CreateQuery<FakeItem>(expression);
 
 			Assert.AreSame(expression, queryable.Expression);
+		}
+
+		[Test]
+		public void WhenCreatingGenericQueryWithNullExpressionThenThrows()
+		{
+			Assert.Throws<ArgumentNullException>(() => _provider.CreateQuery<FakeItem>(null));
+		}
+
+		[Test]
+		public void WhenCreatingNonGenericQueryWithNullExpressionThenThrows()
+		{
+			Assert.Throws<ArgumentNullException>(() => _provider.CreateQuery(null));
 		}
 	}
 }
