@@ -1,9 +1,6 @@
 param(
-[string]$apiKey = "Your API Key",
 $configuration = "Release"
 )
-
-Write-Host $apiKey
 
 function UpdatePackages
 {
