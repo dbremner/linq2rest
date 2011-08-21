@@ -155,7 +155,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Linq2Rest\Linq2Rest.csproj">
       <Project>{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}</Project>
-      <Name>UrlQuery</Name>
+      <Name>Linq2Rest</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

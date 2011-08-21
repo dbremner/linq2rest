@@ -8,6 +8,7 @@ namespace Linq2Rest.Mvc
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
+	using System.Linq;
 
 	using Linq2Rest.Parser;
 
@@ -16,9 +17,8 @@ namespace Linq2Rest.Mvc
 		public static IEnumerable<object> Filter<T>(this IEnumerable<T> source, ModelFilter<T> filter)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
-			Contract.Requires<ArgumentNullException>(filter != null);
 
-			return filter.Filter(source);
+			return filter == null ? source.OfType<object>() : filter.Filter(source);
 		}
 	}
 }
