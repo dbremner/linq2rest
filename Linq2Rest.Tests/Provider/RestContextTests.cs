@@ -52,7 +52,7 @@ namespace Linq2Rest.Tests.Provider
 				.Where(x => x.Value <= 3)
 				.Count();
 
-			var uri = new Uri("http://localhost/?$filter=Value%20le%203&$select=&$skip=&$take=&$orderby=");
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -69,7 +69,7 @@ namespace Linq2Rest.Tests.Provider
 				.Select(x => new { x.Value })
 				.Count();
 
-			var uri = new Uri("http://localhost/?$filter=&$select=Value&$skip=&$take=&$orderby=");
+			var uri = new Uri("http://localhost/?$select=Value");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -80,7 +80,7 @@ namespace Linq2Rest.Tests.Provider
 				.Select(x => new { x.Value, x.Content })
 				.Count();
 
-			var uri = new Uri("http://localhost/?$filter=&$select=Value,Content&$skip=&$take=&$orderby=");
+			var uri = new Uri("http://localhost/?$select=Value,Content");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -91,7 +91,7 @@ namespace Linq2Rest.Tests.Provider
 				.Skip(1)
 				.Count();
 
-			var uri = new Uri("http://localhost/?$filter=&$select=&$skip=1&$take=&$orderby=");
+			var uri = new Uri("http://localhost/?$skip=1");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -102,7 +102,7 @@ namespace Linq2Rest.Tests.Provider
 				.Take(1)
 				.Count();
 
-			var uri = new Uri("http://localhost/?$filter=&$select=&$skip=&$take=1&$orderby=");
+			var uri = new Uri("http://localhost/?$take=1");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -113,7 +113,7 @@ namespace Linq2Rest.Tests.Provider
 				.OrderBy(x => x.Value)
 				.Count();
 
-			var uri = new Uri("http://localhost/?$filter=&$select=&$skip=&$take=&$orderby=Value");
+			var uri = new Uri("http://localhost/?$orderby=Value");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -128,122 +128,122 @@ namespace Linq2Rest.Tests.Provider
 				.Take(1)
 				.Count();
 
-			var uri = new Uri("http://localhost/?$filter=Value%20le%203&$select=Value,Content&$skip=1&$take=1&$orderby=Value");
+			var uri = new Uri("http://localhost/?$filter=Value+le+3&$select=Value,Content&$skip=1&$take=1&$orderby=Value");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
 		public void WhenApplyingNotExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => !(x.Value <= 3), "http://localhost/?$filter=not(Value%20le%203)&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => !(x.Value <= 3), "http://localhost/?$filter=not(Value+le+3)");
 		}
 
 		[Test]
 		public void WhenApplyingIndexOfExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Content.IndexOf("text") > -1, "http://localhost/?$filter=indexof(Content,%20'text')%20gt%20-1&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Content.IndexOf("text") > -1, "http://localhost/?$filter=indexof(Content,+'text')+gt+-1");
 		}
 
 		[Test]
 		public void WhenApplyingStartsWithExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Content.StartsWith("text"), "http://localhost/?$filter=startswith(Content,%20'text')&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Content.StartsWith("text"), "http://localhost/?$filter=startswith(Content,+'text')");
 		}
 
 		[Test]
 		public void WhenApplyingEndsWithExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Content.EndsWith("text"), "http://localhost/?$filter=endswith(Content,%20'text')&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Content.EndsWith("text"), "http://localhost/?$filter=endswith(Content,+'text')");
 		}
 
 		[Test]
 		public void WhenApplyingLengthExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Content.Length > 32, "http://localhost/?$filter=length(Content) gt 32&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Content.Length > 32, "http://localhost/?$filter=length(Content)+gt+32");
 		}
 
 		[Test]
 		public void WhenApplyingToLowerExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Content.ToLower() == "text", "http://localhost/?$filter=tolower(Content) eq 'text'&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Content.ToLower() == "text", "http://localhost/?$filter=tolower(Content)+eq+'text'");
 		}
 
 		[Test]
 		public void WhenApplyingToLowerInvariantExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Content.ToLowerInvariant() == "text", "http://localhost/?$filter=tolower(Content) eq 'text'&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Content.ToLowerInvariant() == "text", "http://localhost/?$filter=tolower(Content)+eq+'text'");
 		}
 
 		[Test]
 		public void WhenApplyingToUpperExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Content.ToUpper() == "text", "http://localhost/?$filter=toupper(Content) eq 'text'&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Content.ToUpper() == "text", "http://localhost/?$filter=toupper(Content)+eq+'text'");
 		}
 
 		[Test]
 		public void WhenApplyingToUpperInvariantExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Content.ToUpperInvariant() == "text", "http://localhost/?$filter=toupper(Content) eq 'text'&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Content.ToUpperInvariant() == "text", "http://localhost/?$filter=toupper(Content)+eq+'text'");
 		}
 
 		[Test]
 		public void WhenApplyingTrimExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Content.Trim() == "text", "http://localhost/?$filter=trim(Content) eq 'text'&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Content.Trim() == "text", "http://localhost/?$filter=trim(Content)+eq+'text'");
 		}
 
 		[Test]
 		public void WhenApplyingSecondExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Date.Second == 10, "http://localhost/?$filter=second(Date) eq 10&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Date.Second == 10, "http://localhost/?$filter=second(Date)+eq+10");
 		}
 
 		[Test]
 		public void WhenApplyingMinuteExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Date.Minute == 10, "http://localhost/?$filter=minute(Date) eq 10&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Date.Minute == 10, "http://localhost/?$filter=minute(Date)+eq+10");
 		}
 
 		[Test]
 		public void WhenApplyingHourExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Date.Hour == 10, "http://localhost/?$filter=hour(Date) eq 10&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Date.Hour == 10, "http://localhost/?$filter=hour(Date)+eq+10");
 		}
 
 		[Test]
 		public void WhenApplyingDayExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Date.Day == 10, "http://localhost/?$filter=day(Date) eq 10&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Date.Day == 10, "http://localhost/?$filter=day(Date)+eq+10");
 		}
 
 		[Test]
 		public void WhenApplyingMonthExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Date.Month == 10, "http://localhost/?$filter=month(Date) eq 10&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Date.Month == 10, "http://localhost/?$filter=month(Date)+eq+10");
 		}
 
 		[Test]
 		public void WhenApplyingYearExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Date.Year == 10, "http://localhost/?$filter=year(Date) eq 10&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => x.Date.Year == 10, "http://localhost/?$filter=year(Date)+eq+10");
 		}
 
 		[Test]
 		public void WhenApplyingRoundExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => Math.Round(x.Value) == 10d, "http://localhost/?$filter=round(Value) eq 10&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => Math.Round(x.Value) == 10d, "http://localhost/?$filter=round(Value)+eq+10");
 		}
 
 		[Test]
 		public void WhenApplyingFloorExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => Math.Floor(x.Value) == 10d, "http://localhost/?$filter=floor(Value) eq 10&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => Math.Floor(x.Value) == 10d, "http://localhost/?$filter=floor(Value)+eq+10");
 		}
 
 		[Test]
 		public void WhenApplyingCeilingExpressionThenCallRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => Math.Ceiling(x.Value) == 10d, "http://localhost/?$filter=ceiling(Value) eq 10&$select=&$skip=&$take=&$orderby=");
+			VerifyCall(x => Math.Ceiling(x.Value) == 10d, "http://localhost/?$filter=ceiling(Value)+eq+10");
 		}
 
 		private void VerifyCall(Expression<Func<SimpleDto, bool>> selection, string expectedUri)
@@ -252,7 +252,7 @@ namespace Linq2Rest.Tests.Provider
 				.Where(selection)
 				.Count();
 
-			_mockClient.Verify(x => x.Get(new Uri(expectedUri)), Times.Once());
+			_mockClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == expectedUri)), Times.Once());
 		}
 	}
 }

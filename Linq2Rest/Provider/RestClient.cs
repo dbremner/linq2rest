@@ -15,8 +15,7 @@ namespace Linq2Rest.Provider
 		public RestClient(Uri uri)
 		{
 			_client = new WebClient();
-			_client.Headers["Accept"] = "text/javascript";
-
+			
 			ServiceBase = uri;
 		}
 
@@ -24,6 +23,8 @@ namespace Linq2Rest.Provider
 
 		public string Get(Uri uri)
 		{
+			_client.Headers["Accept"] = "application/json";
+
 			return _client.DownloadString(uri);
 		}
 	}

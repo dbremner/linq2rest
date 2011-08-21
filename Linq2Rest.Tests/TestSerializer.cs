@@ -1,22 +1,10 @@
-namespace Linq2Rest.Tests.Provider
+namespace Linq2Rest.Tests
 {
 	using System.Collections.Generic;
 	using System.Web.Script.Serialization;
 
 	using Linq2Rest.Provider;
-
-	public class TestSerializerFactory : ISerializerFactory
-	{
-		public ISerializer<T> Create<T>()
-		{
-			if (typeof(T).IsAnonymousType())
-			{
-				return new SimpleAnonymousTypeSerializer<T>();
-			}
-
-			return new TestSerializer() as ISerializer<T>;
-		}
-	}
+	using Linq2Rest.Tests.Provider;
 
 	public class TestSerializer : ISerializer<SimpleDto>
 	{

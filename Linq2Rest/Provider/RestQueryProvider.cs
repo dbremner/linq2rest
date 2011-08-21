@@ -11,6 +11,7 @@ namespace Linq2Rest.Provider
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Threading;
+	using System.Web;
 
 	internal class RestQueryProvider<T> : IQueryProvider
 	{
@@ -164,16 +165,31 @@ namespace Linq2Rest.Provider
 		{
 			Contract.Ensures(Contract.Result<IList<T>>() != null);
 
-			var parameters = string.Format(
-				"$filter={0}&$select={1}&$skip={2}&$take={3}&$orderby={4}",
-				_filterParameter,
-				_selectParameter,
-				_skipParameter,
-				_takeParameter,
-				string.Join(",", _orderByParameter));
+			var parameters = new List<string>();
+			if (!string.IsNullOrWhiteSpace(_filterParameter))
+			{
+				parameters.Add("$filter=" + HttpUtility.UrlEncode(_filterParameter));
+				// &$select={1}&$skip={2}&$take={3}&$orderby={4}
+			}
+			if (!string.IsNullOrWhiteSpace(_selectParameter))
+			{
+				parameters.Add("$select=" + _selectParameter);
+			}
+			if (!string.IsNullOrWhiteSpace(_skipParameter))
+			{
+				parameters.Add("$skip=" + _skipParameter);
+			}
+			if (!string.IsNullOrWhiteSpace(_takeParameter))
+			{
+				parameters.Add("$take=" + _takeParameter);
+			}
+			if (_orderByParameter.Any())
+			{
+				parameters.Add("$orderby=" + string.Join(",", _orderByParameter));
+			}
 
 			var builder = new UriBuilder(_client.ServiceBase);
-			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + parameters;
+			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
 			var response = _client.Get(builder.Uri);
 
 			var serializer = _serializerFactory.Create<T>();

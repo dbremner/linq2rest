@@ -96,6 +96,8 @@
     <Reference Include="System.Web.Mvc" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NorthwindCustomer.cs" />
+    <Compile Include="ODataCustomerServiceTests.cs" />
     <Compile Include="Parser\ExpressionTokenizerTests.cs" />
     <Compile Include="FakeItem.cs" />
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
@@ -110,7 +112,9 @@
     <Compile Include="Provider\SimpleDto.cs" />
     <Compile Include="Parser\SortExpressionFactoryTests.cs" />
     <Compile Include="Parser\TokenSetTests.cs" />
-    <Compile Include="Provider\TestSerializer.cs" />
+    <Compile Include="TestODataSerializer.cs" />
+    <Compile Include="TestSerializer.cs" />
+    <Compile Include="TestSerializerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
