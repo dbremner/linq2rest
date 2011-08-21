@@ -280,6 +280,19 @@ namespace Linq2Rest.Provider
 			{
 				switch (methodName)
 				{
+					case "Replace":
+						{
+							Contract.Assume(expression.Arguments.Count > 1);
+
+							var firstArgument = expression.Arguments[0];
+							var secondArgument = expression.Arguments[1];
+
+							return string.Format(
+								"replace({0}, {1}, {2})",
+								ProcessExpression(expression.Object),
+								ProcessExpression(firstArgument),
+								ProcessExpression(secondArgument));
+						}
 					case "Trim":
 						return string.Format("trim({0})", ProcessExpression(expression.Object));
 					case "ToLower":
@@ -289,22 +302,24 @@ namespace Linq2Rest.Provider
 					case "ToUpperInvariant":
 						return string.Format("toupper({0})", ProcessExpression(expression.Object));
 					case "Substring":
-						Contract.Assume(expression.Arguments.Count > 0);
-
-						if (expression.Arguments.Count == 1)
 						{
-							var argumentExpression = expression.Arguments[0];
-							return string.Format(
-								"substring({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
-						}
+							Contract.Assume(expression.Arguments.Count > 0);
 
-						var firstArgument = expression.Arguments[0];
-						var secondArgument = expression.Arguments[1];
-						return string.Format(
-							"substring({0}, {1}, {2})",
-							ProcessExpression(expression.Object),
-							ProcessExpression(firstArgument),
-							ProcessExpression(secondArgument));
+							if (expression.Arguments.Count == 1)
+							{
+								var argumentExpression = expression.Arguments[0];
+								return string.Format(
+									"substring({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+							}
+
+							var firstArgument = expression.Arguments[0];
+							var secondArgument = expression.Arguments[1];
+							return string.Format(
+								"substring({0}, {1}, {2})",
+								ProcessExpression(expression.Object),
+								ProcessExpression(firstArgument),
+								ProcessExpression(secondArgument));
+						}
 					case "IndexOf":
 						{
 							Contract.Assume(expression.Arguments.Count > 0);
@@ -333,14 +348,18 @@ namespace Linq2Rest.Provider
 			}
 			else if (declaringType == typeof(Math))
 			{
+				Contract.Assume(expression.Arguments.Count > 0);
+
+				var mathArgument = expression.Arguments[0];
+
 				switch (methodName)
 				{
 					case "Round":
-						return string.Format("round({0})", ProcessExpression(expression.Arguments[0]));
+						return string.Format("round({0})", ProcessExpression(mathArgument));
 					case "Floor":
-						return string.Format("floor({0})", ProcessExpression(expression.Arguments[0]));
+						return string.Format("floor({0})", ProcessExpression(mathArgument));
 					case "Ceiling":
-						return string.Format("ceiling({0})", ProcessExpression(expression.Arguments[0]));
+						return string.Format("ceiling({0})", ProcessExpression(mathArgument));
 				}
 			}
 
