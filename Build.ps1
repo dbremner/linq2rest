@@ -6,7 +6,7 @@ function UpdatePackages
 {
 	$packageConfigs = Get-ChildItem -Path .\ -Include "packages.config" -Recurse
 	foreach($config in $packageConfigs){
-		nuget i $config.FullName -o packages -x
+		.\nuget.exe i $config.FullName -o packages -x
 	}
 }
 
@@ -17,7 +17,7 @@ function BuildSolution
 
 function PublishPackage
 {
-	nuget pack Linq2Rest.nuspec
+	.\nuget.exe pack Linq2Rest.nuspec
 }
 
 UpdatePackages
