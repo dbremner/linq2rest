@@ -56,12 +56,12 @@ namespace Linq2Rest.Provider
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			return (Provider.Execute<IEnumerable<T>>(Expression)).GetEnumerator();
+			return Provider.Execute<IEnumerable<T>>(Expression).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return (Provider.Execute<IEnumerable>(Expression)).GetEnumerator();
+			return Provider.Execute<IEnumerable>(Expression).GetEnumerator();
 		}
 
 		[ContractInvariantMethod]

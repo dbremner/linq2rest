@@ -63,6 +63,7 @@ namespace Linq2Rest.Parser
 			{
 				result = result.Skip(_skip);
 			}
+
 			if (_top > -1)
 			{
 				result = result.Take(_top);

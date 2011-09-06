@@ -5,8 +5,8 @@
 
 namespace Linq2Rest.Mvc.Controllers
 {
-	using System.Web.Mvc;
 	using System;
+	using System.Web.Mvc;
 
 	using Linq2Rest.Mvc.Models;
 	using Linq2Rest.Mvc.Support;

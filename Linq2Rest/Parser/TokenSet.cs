@@ -28,6 +28,7 @@ namespace Linq2Rest.Parser
 				Contract.Ensures(Contract.Result<string>() != null);
 				return _left;
 			}
+
 			set
 			{
 				Contract.Requires<ArgumentNullException>(value != null);
@@ -42,6 +43,7 @@ namespace Linq2Rest.Parser
 				Contract.Ensures(Contract.Result<string>() != null);
 				return _operation;
 			}
+
 			set
 			{
 				Contract.Requires<ArgumentNullException>(value != null);
@@ -56,6 +58,7 @@ namespace Linq2Rest.Parser
 				Contract.Ensures(Contract.Result<string>() != null);
 				return _right;
 			}
+
 			set
 			{
 				Contract.Requires<ArgumentNullException>(value != null);

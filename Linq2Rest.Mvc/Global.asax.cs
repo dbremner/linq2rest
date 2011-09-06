@@ -8,9 +8,6 @@
 	using Linq2Rest.Mvc.Support;
 	using Linq2Rest.Parser;
 
-	// Note: For instructions on enabling IIS6 or IIS7 classic mode, 
-	// visit http://go.microsoft.com/?LinkId=9394801
-
 	public class MvcApplication : HttpApplication
 	{
 		public static void RegisterGlobalFilters(GlobalFilterCollection filters)
@@ -25,9 +22,7 @@
 			routes.MapRoute(
 				"Default", // Route name
 				"{controller}", // URL with parameters
-				new { controller = "Home", action = "Index" } // Parameter defaults
-			);
-
+				new { controller = "Home", action = "Index" }); // Parameter defaults
 		}
 
 		protected void Application_Start()

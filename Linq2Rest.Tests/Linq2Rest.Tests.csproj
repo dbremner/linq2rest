@@ -98,6 +98,8 @@
   <ItemGroup>
     <Compile Include="NorthwindCustomer.cs" />
     <Compile Include="ODataCustomerServiceTests.cs" />
+    <Compile Include="ODataResponse.cs" />
+    <Compile Include="ODataResult.cs" />
     <Compile Include="Parser\ExpressionTokenizerTests.cs" />
     <Compile Include="FakeItem.cs" />
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Parser\SortExpressionFactoryTests.cs" />
     <Compile Include="Parser\TokenSetTests.cs" />
     <Compile Include="TestODataSerializer.cs" />
+    <Compile Include="TestODataSerializerFactory.cs" />
     <Compile Include="TestSerializer.cs" />
     <Compile Include="TestSerializerFactory.cs" />
   </ItemGroup>

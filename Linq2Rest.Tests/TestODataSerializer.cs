@@ -24,12 +24,4 @@ namespace Linq2Rest.Tests
 			return items;
 		}
 	}
-
-	public class TestODataSerializerFactory : ISerializerFactory
-	{
-		public ISerializer<T> Create<T>()
-		{
-			return new TestODataSerializer<T>();
-		}
-	}
 }
