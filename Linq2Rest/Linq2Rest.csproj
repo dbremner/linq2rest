@@ -93,6 +93,7 @@
     <Compile Include="MethodProvider.cs" />
     <Compile Include="Parser\ExpressionTokenizer.cs" />
     <Compile Include="Parser\FilterExpressionFactory.cs" />
+    <Compile Include="Parser\FunctionTokenSet.cs" />
     <Compile Include="Parser\IFilterExpressionFactory.cs" />
     <Compile Include="Parser\IParameterParser.cs" />
     <Compile Include="LinqExtensions.cs" />
@@ -116,6 +117,9 @@
     <Compile Include="Provider\RestQueryable.cs" />
     <Compile Include="Provider\RestQueryProvider.cs" />
     <Compile Include="Provider\SimpleAnonymousTypeSerializer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Settings.StyleCop" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

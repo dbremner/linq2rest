@@ -55,18 +55,24 @@ namespace Linq2Rest.Provider
 			var objectParameter = Expression.Parameter(typeof(object), "x");
 			var fields = _elementType.GetProperties();
 
-			var bindings =
-				fields.Select(
-					p =>
-					Expression.Convert(
-						Expression.Call(
+			var bindings = fields.Select(
+				p =>
+				{
+					var arguments = new[] { Expression.Constant(p.Name) };
+
+					var indexExpression = Expression.MakeIndex(
+						Expression.Convert(objectParameter, deserializedType),
+						deserializedType.GetProperty("Item"),
+						arguments);
+
+					return
+						Expression.Convert(
+							Expression.Call(
 							MethodProvider.ChangeTypeMethod,
-							Expression.MakeIndex(
-								Expression.Convert(objectParameter, deserializedType),
-								deserializedType.GetProperty("Item"),
-								new[] { Expression.Constant(p.Name) }),
+							indexExpression,
 							Expression.Constant(p.PropertyType)),
-						p.PropertyType)).ToArray();
+							p.PropertyType);
+				}).ToArray();
 
 			var constructorInfos = _elementType.GetConstructors().ToArray();
 			var constructorInfo = constructorInfos.First();

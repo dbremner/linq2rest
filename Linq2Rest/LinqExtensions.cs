@@ -17,7 +17,7 @@ namespace Linq2Rest
 
 	public static class LinqExtensions
 	{
-		private static readonly AssemblyName AssemblyName = new AssemblyName() { Name = "DynamicLinqTypes" };
+		private static readonly AssemblyName AssemblyName = new AssemblyName { Name = "DynamicLinqTypes" };
 		private static readonly ModuleBuilder ModuleBuilder;
 		private static readonly Dictionary<string, Type> BuiltTypes = new Dictionary<string, Type>();
 
@@ -36,11 +36,6 @@ namespace Linq2Rest
 				&& type.IsGenericType
 				&& type.Name.Contains("AnonymousType") && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
 				&& (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
-		}
-
-		private static string GetTypeKey(Dictionary<string, Type> fields)
-		{
-			return fields.Aggregate(string.Empty, (current, field) => current + (field.Key + ";" + field.Value.Name + ";"));
 		}
 
 		public static Type GetDynamicType(this IEnumerable<PropertyInfo> fields)
@@ -67,7 +62,9 @@ namespace Linq2Rest
 				var typeBuilder = ModuleBuilder.DefineType(className, TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable);
 
 				foreach (var field in dictionary)
+				{
 					typeBuilder.DefineField(field.Key, field.Value, FieldAttributes.Public);
+				}
 
 				BuiltTypes[className] = typeBuilder.CreateType();
 
@@ -81,6 +78,11 @@ namespace Linq2Rest
 			{
 				Monitor.Exit(BuiltTypes);
 			}
+		}
+
+		private static string GetTypeKey(Dictionary<string, Type> fields)
+		{
+			return fields.Aggregate(string.Empty, (current, field) => current + (field.Key + ";" + field.Value.Name + ";"));
 		}
 	}
 }

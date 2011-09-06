@@ -48,9 +48,9 @@ namespace Linq2Rest.Mvc.Support
 					return ResponseFormat.Png;
 				case "text/plain":
 					return ResponseFormat.Txt;
-					//case "application/xml":
-					//case "text/xml":
-					//    return ResponseFormat.XML;
+					////case "application/xml":
+					////case "text/xml":
+					////    return ResponseFormat.XML;
 				default:
 					break;
 			}

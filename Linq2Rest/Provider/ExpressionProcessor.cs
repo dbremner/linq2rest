@@ -13,24 +13,27 @@ namespace Linq2Rest.Provider
 			{
 				return ProcessExpression((expression as LambdaExpression).Body);
 			}
+
 			if (expression is MemberExpression)
 			{
 				var memberExpression = expression as MemberExpression;
 				var memberCall = GetMemberCall(memberExpression);
 
 				return string.IsNullOrWhiteSpace(memberCall)
-				       	? memberExpression.Member.Name
-				       	: string.Format("{0}({1})", memberCall, ProcessExpression(memberExpression.Expression));
+						? memberExpression.Member.Name
+						: string.Format("{0}({1})", memberCall, ProcessExpression(memberExpression.Expression));
 			}
+
 			if (expression is ConstantExpression)
 			{
 				var value = (expression as ConstantExpression).Value;
-				return string.Format
-					(Thread.CurrentThread.CurrentCulture,
-						"{0}{1}{0}",
-						value is string ? "'" : string.Empty,
-						value);
+				return string.Format(
+					Thread.CurrentThread.CurrentCulture,
+					"{0}{1}{0}",
+					value is string ? "'" : string.Empty,
+					value);
 			}
+
 			if (expression is UnaryExpression)
 			{
 				var unaryExpression = expression as UnaryExpression;
@@ -38,25 +41,46 @@ namespace Linq2Rest.Provider
 				switch (unaryExpression.NodeType)
 				{
 					case ExpressionType.Not:
+					case ExpressionType.IsFalse:
 						return string.Format("not({0})", ProcessExpression(operand));
-					case ExpressionType.Quote:
+					default:
 						return ProcessExpression(operand);
 				}
 			}
+
 			if (expression is BinaryExpression)
 			{
 				var binaryExpression = expression as BinaryExpression;
 				var operation = GetOperation(binaryExpression);
 
-				return string.Format
-					("{0} {1} {2}", ProcessExpression(binaryExpression.Left), operation, ProcessExpression(binaryExpression.Right));
+				return string.Format(
+					"{0} {1} {2}",
+					ProcessExpression(binaryExpression.Left),
+					operation,
+					ProcessExpression(binaryExpression.Right));
 			}
+
 			if (expression is MethodCallExpression)
 			{
 				return GetMethodCall(expression as MethodCallExpression);
 			}
 
-			return string.Empty;
+			throw new InvalidOperationException("Expression is not recognized or supported");
+		}
+
+		public static object GetExpressionValue(this Expression expression)
+		{
+			if (expression is UnaryExpression)
+			{
+				return (expression as UnaryExpression).Operand;
+			}
+
+			if (expression is ConstantExpression)
+			{
+				return (expression as ConstantExpression).Value;
+			}
+
+			return null;
 		}
 
 		private static string GetMemberCall(MemberExpression memberExpression)
@@ -113,6 +137,7 @@ namespace Linq2Rest.Provider
 								ProcessExpression(firstArgument),
 								ProcessExpression(secondArgument));
 						}
+
 					case "Trim":
 						return string.Format("trim({0})", ProcessExpression(expression.Object));
 					case "ToLower":
@@ -140,6 +165,7 @@ namespace Linq2Rest.Provider
 								ProcessExpression(firstArgument),
 								ProcessExpression(secondArgument));
 						}
+
 					case "IndexOf":
 						{
 							Contract.Assume(expression.Arguments.Count > 0);
@@ -148,6 +174,7 @@ namespace Linq2Rest.Provider
 							return string.Format(
 								"indexof({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
 						}
+
 					case "EndsWith":
 						{
 							Contract.Assume(expression.Arguments.Count > 0);
@@ -156,6 +183,7 @@ namespace Linq2Rest.Provider
 							return string.Format(
 								"endswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
 						}
+
 					case "StartsWith":
 						{
 							Contract.Assume(expression.Arguments.Count > 0);
@@ -184,20 +212,6 @@ namespace Linq2Rest.Provider
 			}
 
 			return string.Empty;
-		}
-
-		public static object GetExpressionValue(this Expression expression)
-		{
-			if (expression is UnaryExpression)
-			{
-				return (expression as UnaryExpression).Operand;
-			}
-			if (expression is ConstantExpression)
-			{
-				return (expression as ConstantExpression).Value;
-			}
-
-			return null;
 		}
 
 		private static string GetOperation(Expression expression)
@@ -242,6 +256,5 @@ namespace Linq2Rest.Provider
 
 			return string.Empty;
 		}
-
 	}
 }

@@ -34,20 +34,23 @@ namespace Linq2Rest.Provider
 			if (!string.IsNullOrWhiteSpace(FilterParameter))
 			{
 				parameters.Add("$filter=" + HttpUtility.UrlEncode(FilterParameter));
-				// &$select={1}&$skip={2}&$take={3}&$orderby={4}
 			}
+
 			if (!string.IsNullOrWhiteSpace(SelectParameter))
 			{
 				parameters.Add("$select=" + SelectParameter);
 			}
+
 			if (!string.IsNullOrWhiteSpace(SkipParameter))
 			{
 				parameters.Add("$skip=" + SkipParameter);
 			}
+
 			if (!string.IsNullOrWhiteSpace(TakeParameter))
 			{
 				parameters.Add("$top=" + TakeParameter);
 			}
+
 			if (OrderByParameter.Any())
 			{
 				parameters.Add("$orderby=" + string.Join(",", OrderByParameter));

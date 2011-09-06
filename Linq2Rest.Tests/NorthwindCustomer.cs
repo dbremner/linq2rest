@@ -1,7 +1,5 @@
 namespace Linq2Rest.Tests
 {
-	using System.Collections.Generic;
-
 	public class NorthwindCustomer
 	{
 		public string CustomerID { get; set; }
@@ -23,15 +21,5 @@ namespace Linq2Rest.Tests
 		public string Country { get; set; }
 		
 		public string Phone { get; set; }
-	}
-
-	public class ODataResponse<T>
-	{
-		public ODataResult<T> d { get; set; }
-	}
-
-	public class ODataResult<T>
-	{
-		public List<T> results { get; set; }
 	}
 }

@@ -9,3 +9,4 @@ packages/EntityFramework
 packages/Moq
 packages/NUnit
 *.nupkg
+*.Cache

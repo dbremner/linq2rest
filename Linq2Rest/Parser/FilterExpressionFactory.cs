@@ -138,14 +138,17 @@ namespace Linq2Rest.Parser
 			{
 				expression = Expression.Constant(stringMatch.Groups[1].Value, typeof(string));
 			}
+
 			if (expression == null)
 			{
 				expression = GetFunctionExpression<T>(filter, parameter, type, formatProvider);
 			}
+
 			if (expression == null)
 			{
 				expression = GetPropertyExpression<T>(filter, parameter);
 			}
+
 			if (expression == null)
 			{
 				Contract.Assume(type != null);
@@ -352,30 +355,6 @@ namespace Linq2Rest.Parser
 				default:
 					return null;
 			}
-
-
-			/*
-string replace(string p0, string find, string replace)
-http://services.odata.org/Northwind/Northwind.svc/Customers?$filter=replace(CompanyName, ' ', '') eq 'AlfredsFutterkiste'
-string substring(string p0, int pos, int length)
-http://services.odata.org/Northwind/Northwind.svc/Customers?$filter=substring(CompanyName, 1, 2) eq 'lf'
-string concat(string p0, string p1)
-http://services.odata.org/Northwind/Northwind.svc/Customers?$filter=concat(concat(City, ', '), Country) eq 'Berlin, Germany'
-
-Type Functions
-bool IsOf(type p0)
-http://services.odata.org/Northwind/Northwind.svc/Orders?$filter=isof('NorthwindModel.Order')
-bool IsOf(expression p0, type p1)
-http://services.odata.org/Northwind/Northwind.svc/Orders?$filter=isof(ShipCountry, 'Edm.String')
-			 */
-		}
-	}
-
-	internal class FunctionTokenSet : TokenSet
-	{
-		public override string ToString()
-		{
-			return string.Format("{0} {1} {2}", Operation, Left, Right);
 		}
 	}
 }

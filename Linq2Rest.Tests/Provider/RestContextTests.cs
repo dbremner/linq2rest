@@ -6,10 +6,8 @@
 namespace Linq2Rest.Tests.Provider
 {
 	using System;
-	using System.Dynamic;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Web.Script.Serialization;
 
 	using Linq2Rest.Provider;
 
@@ -33,6 +31,24 @@ namespace Linq2Rest.Tests.Provider
 			_mockClient.Setup(x => x.Get(It.IsAny<Uri>())).Returns("[{Value : 2, Content : \"blah\" }]");
 
 			_provider = new RestContext<SimpleDto>(_mockClient.Object, serializerFactory);
+		}
+
+		[Test]
+		public void WhenMainExpressionIsContainedInIsTrueExpressionThenUsesOperandExpression()
+		{
+			var parameter = Expression.Parameter(typeof(SimpleDto), "x");
+			var trueExpression =
+				Expression.IsTrue(
+				Expression.LessThanOrEqual(Expression.Property(parameter, "Value"), Expression.Constant(3d)));
+
+			var result =
+				_provider
+				.Query
+				.Where(Expression.Lambda<Func<SimpleDto, bool>>(trueExpression, parameter))
+				.Count(x => x.ID != 0);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]

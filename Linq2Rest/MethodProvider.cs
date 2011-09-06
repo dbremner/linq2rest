@@ -11,9 +11,9 @@ namespace Linq2Rest
 
 	public static class MethodProvider
 	{
-		private static readonly MethodInfo InnerChangeTypeMethod;
 		public static readonly ConstantExpression IgnoreCaseExpression;
 
+		private static readonly MethodInfo InnerChangeTypeMethod;
 		private static readonly MethodInfo InnerIndexOfMethod;
 		private static readonly MethodInfo EndsWithMethod1;
 		private static readonly MethodInfo StartsWithMethod1;

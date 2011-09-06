@@ -30,7 +30,7 @@ namespace Linq2Rest.Tests.Mvc
 			var mockParser = new Mock<IParameterParser<FakeItem>>();
 			var binder = new ModelFilterBinder<FakeItem>(mockParser.Object);
 
-			binder.BindModel(new ControllerContext{ RequestContext = new RequestContext(mockContext.Object, new RouteData()) }, new ModelBindingContext());
+			binder.BindModel(new ControllerContext { RequestContext = new RequestContext(mockContext.Object, new RouteData()) }, new ModelBindingContext());
 
 			mockParser.Verify(x => x.Parse(It.IsAny<NameValueCollection>()), Times.Once());
 		}

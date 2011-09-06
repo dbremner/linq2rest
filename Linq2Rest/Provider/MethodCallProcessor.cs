@@ -47,6 +47,7 @@ namespace Linq2Rest.Provider
 								{
 									throw new InvalidOperationException("Projection into new member names is not supported.");
 								}
+
 								builder.SelectParameter = string.Join(",", args);
 							}
 						}
@@ -107,6 +108,5 @@ namespace Linq2Rest.Provider
 
 			return null;
 		}
-
 	}
 }

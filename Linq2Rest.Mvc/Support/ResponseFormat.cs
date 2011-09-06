@@ -10,9 +10,9 @@ namespace Linq2Rest.Mvc.Support
 	/// </summary>
 	public enum ResponseFormat
 	{
-		///<summary>
-		/// Unknown format.
-		///</summary>
+		/// <summary>
+		///		Unknown format.
+		/// </summary>
 		Unknown,
 
 		/// <summary>

@@ -18,7 +18,6 @@ namespace Linq2Rest.Mvc.Support
 
 		public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
 		{
-
 			var preferred = _headerParser.GetPreferredContentType(
 				controllerContext.HttpContext.Request,
 				ResponseFormatExtensions.SupportedFormats());
