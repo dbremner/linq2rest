@@ -8,16 +8,27 @@ namespace Linq2Rest.Provider
 	using System;
 	using System.Diagnostics.Contracts;
 
+	/// <summary>
+	/// Defines the public interface for a REST client.
+	/// </summary>
 	[ContractClass(typeof(RestClientContracts))]
 	public interface IRestClient
 	{
+		/// <summary>
+		/// Gets the base <see cref="Uri"/> for the REST service.
+		/// </summary>
 		Uri ServiceBase { get; }
 
+		/// <summary>
+		/// Gets a service response.
+		/// </summary>
+		/// <param name="uri">The <see cref="Uri"/> to load the resource from.</param>
+		/// <returns>A string representation of the resource.</returns>
 		string Get(Uri uri);
 	}
 
 	[ContractClassFor(typeof(IRestClient))]
-	public abstract class RestClientContracts : IRestClient
+	internal abstract class RestClientContracts : IRestClient
 	{
 		public Uri ServiceBase
 		{

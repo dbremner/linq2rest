@@ -10,6 +10,10 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Parses OData system query parameters to create a LINQ query that can be used to filter a model set. Also exposes a LINQ provider for web services supporting the OData query parameters.</description>
 		<tags>OData LINQ REST</tags>
+		<references>
+			<reference file="Linq2Rest.dll" />
+			<reference file="Linq2Rest.xml" />
+		</references>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System.Web"
 							   targetFramework="net40" />
@@ -21,6 +25,8 @@
 	</metadata>
 	<files>
 		<file src="Linq2Rest\bin\Release\Linq2Rest.dll"
+			  target="lib" />
+		<file src="Linq2Rest\bin\Release\Linq2Rest.xml"
 			  target="lib" />
 		<file src="Linq2Rest\bin\Release\CodeContracts\Linq2Rest.Contracts.dll"
 			  target="lib\CodeContracts" />
