@@ -6,27 +6,17 @@
 namespace Linq2Rest.Tests.Parser
 {
 	using System.Linq;
-
 	using Linq2Rest.Parser;
-
 	using NUnit.Framework;
 
 	public class ExpressionTokenizerTests
 	{
-		private ExpressionTokenizer _tokenizer;
-
-		[TestFixtureSetUp]
-		public void FixtureSetup()
-		{
-			_tokenizer = new ExpressionTokenizer();
-		}
-
 		[Test]
 		public void WhenParsingStringWithOneExpressionThenCreatesOneToken()
 		{
 			const string Expression = "Value eq 1";
 
-			var tokens = _tokenizer.GetTokens(Expression);
+			var tokens = Expression.GetTokens();
 
 			Assert.AreEqual(1, tokens.Count());
 		}
@@ -36,7 +26,7 @@ namespace Linq2Rest.Tests.Parser
 		{
 			const string Expression = "(Name eq 'test') eq true";
 
-			var tokens = _tokenizer.GetTokens(Expression);
+			var tokens = Expression.GetTokens();
 
 			Assert.AreEqual(1, tokens.Count());
 		}
@@ -46,7 +36,7 @@ namespace Linq2Rest.Tests.Parser
 		{
 			const string Expression = "Value eq 1 and Name eq 'test'";
 
-			var tokens = _tokenizer.GetTokens(Expression).ToArray();
+			var tokens = Expression.GetTokens().ToArray();
 
 			Assert.AreEqual(3, tokens.Length);
 			Assert.AreEqual("and", tokens[1].Operation);
@@ -59,7 +49,7 @@ namespace Linq2Rest.Tests.Parser
 		{
 			const string Expression = "(Value eq 1 or Number gt 2) and Name eq 'test'";
 
-			var tokens = _tokenizer.GetTokens(Expression).ToArray();
+			var tokens = Expression.GetTokens().ToArray();
 
 			Assert.AreEqual(1, tokens.Length);
 			Assert.AreEqual("and", tokens[0].Operation);

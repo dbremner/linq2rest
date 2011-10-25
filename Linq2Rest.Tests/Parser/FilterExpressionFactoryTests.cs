@@ -114,7 +114,7 @@ namespace Linq2Rest.Tests.Parser
 		{
 			var result = _factory.Create<FakeItem>(filter);
 
-			Assert.AreEqual(expression, result.ToString());
+			Assert.AreEqual(expression, result.ToString(), "Failed for " + filter);
 		}
 	}
 }
