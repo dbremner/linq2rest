@@ -10,17 +10,15 @@ namespace Linq2Rest.Parser
 	using System.Linq;
 	using System.Text.RegularExpressions;
 
-	internal class ExpressionTokenizer
+	internal static class ExpressionTokenizer
 	{
 		private static readonly Regex CleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
-		private static readonly string[] Operations = new[] { "eq", "ne", "gt", "ge", "lt", "le", "and", "or", "not", "add", "sub", "mul", "div", "mod" };
-		private static readonly string[] Combiners = new[] { "and", "or", "not" };
 
-		public IEnumerable<TokenSet> GetTokens(string expression)
+		public static IEnumerable<TokenSet> GetTokens(this string expression)
 		{
 			var cleanMatch = CleanRx.Match(expression);
 
-			if (cleanMatch.Success)
+			if (cleanMatch.Success && !HasOrphanedOpenParenthesis(cleanMatch.Groups[1].Value))
 			{
 				expression = cleanMatch.Groups[1].Value;
 			}
@@ -45,7 +43,8 @@ namespace Linq2Rest.Parser
 
 				if (openGroups == 0)
 				{
-					if (Operations.Any(x => string.Equals(x, blocks[i], StringComparison.OrdinalIgnoreCase)))
+					int i1 = i;
+					if (blocks[i1].IsOperation())
 					{
 						int i1 = i;
 						var expression1 = startExpression;
@@ -53,27 +52,32 @@ namespace Linq2Rest.Parser
 
 						if (string.IsNullOrWhiteSpace(currentTokens.Left))
 						{
-							currentTokens.Left = string.Join(" ", blocks.Where(predicate));
+							var expression1 = startExpression;
+							int i1 = i;
+							currentTokens.Left = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
 							currentTokens.Operation = blocks[i];
 							startExpression = i + 1;
 
-							if (Combiners.Any(x => string.Equals(x, blocks[i], StringComparison.OrdinalIgnoreCase)))
+							if (blocks[i1].IsCombinationOperation())
 							{
 								currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j > i1));
+
 								yield return currentTokens;
 								yield break;
 							}
 						}
 						else
 						{
-							currentTokens.Right = string.Join(" ", blocks.Where(predicate));
+							var expression1 = startExpression;
+							int i1 = i;
+							currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
 
 							yield return currentTokens;
 
-							startExpression = i + 1;
+							startExpression = i1 + 1;
 							currentTokens = new TokenSet();
 
-							if (Combiners.Any(x => string.Equals(x, blocks[i], StringComparison.OrdinalIgnoreCase)))
+							if (blocks[i1].IsCombinationOperation())
 							{
 								yield return new TokenSet { Operation = blocks[i].ToLowerInvariant() };
 							}
@@ -82,11 +86,26 @@ namespace Linq2Rest.Parser
 				}
 			}
 
+			var remainingToken = string.Join(" ", blocks.Where((x, j) => j >= startExpression));
+
 			if (!string.IsNullOrWhiteSpace(currentTokens.Left))
 			{
-				currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j >= startExpression));
+				currentTokens.Right = remainingToken;
 				yield return currentTokens;
 			}
+			else if (CleanRx.IsMatch(remainingToken))
+			{
+				currentTokens.Left = remainingToken;
+				yield return currentTokens;
+			}
+		}
+
+		private static bool HasOrphanedOpenParenthesis(string expression)
+		{
+			var lastOpen = expression.LastIndexOf('(');
+			var lastClose = expression.LastIndexOf(')');
+
+			return lastOpen > lastClose;
 		}
 	}
 }
