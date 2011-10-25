@@ -103,6 +103,7 @@
     <Compile Include="Mvc\ModelFilterExtensions.cs" />
     <Compile Include="Parser\ParameterParser.cs" />
     <Compile Include="Parser\SelectExpressionFactory.cs" />
+    <Compile Include="Parser\TokenOperatorExtensions.cs" />
     <Compile Include="Parser\TokenSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser\SortDescription.cs" />

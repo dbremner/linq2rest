@@ -1,12 +1,20 @@
+// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+// All other rights reserved.
+
 namespace Linq2Rest.Provider
 {
 	using System;
 	using System.Diagnostics.Contracts;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Threading;
 
 	internal static class ExpressionProcessor
 	{
+		private static readonly ExpressionType[] _compositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
+
 		public static string ProcessExpression(this Expression expression)
 		{
 			if (expression is LambdaExpression)
@@ -31,7 +39,7 @@ namespace Linq2Rest.Provider
 					Thread.CurrentThread.CurrentCulture,
 					"{0}{1}{0}",
 					value is string ? "'" : string.Empty,
-					value);
+					value ?? "null");
 			}
 
 			if (expression is UnaryExpression)
@@ -53,16 +61,23 @@ namespace Linq2Rest.Provider
 				var binaryExpression = expression as BinaryExpression;
 				var operation = GetOperation(binaryExpression);
 
+				var isLeftComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
+				var isRightComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
 				return string.Format(
 					"{0} {1} {2}",
-					ProcessExpression(binaryExpression.Left),
+					string.Format(isLeftComposite ? "({0})" : "{0}", ProcessExpression(binaryExpression.Left)),
 					operation,
-					ProcessExpression(binaryExpression.Right));
+					string.Format(isRightComposite ? "({0})" : "{0}", ProcessExpression(binaryExpression.Right)));
 			}
 
 			if (expression is MethodCallExpression)
 			{
 				return GetMethodCall(expression as MethodCallExpression);
+			}
+
+			if (expression is NewExpression)
+			{
+				return expression.ToString();
 			}
 
 			throw new InvalidOperationException("Expression is not recognized or supported");
@@ -211,9 +226,14 @@ namespace Linq2Rest.Provider
 				}
 			}
 
+			if (expression.Method.IsStatic)
+			{
+				return expression.ToString();
+			}
+
 			return string.Empty;
 		}
-
+		
 		private static string GetOperation(Expression expression)
 		{
 			Contract.Requires(expression != null);
