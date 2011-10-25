@@ -6,24 +6,22 @@
 namespace Linq2Rest.Parser
 {
 	using System;
+	using System.Collections.Concurrent;
 	using System.Diagnostics.Contracts;
 	using System.Globalization;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Reflection;
 	using System.Text.RegularExpressions;
 
 	internal class FilterExpressionFactory : IFilterExpressionFactory
 	{
 		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
-		private static readonly Regex StringRx = new Regex(@"^'([^']*?)'$", RegexOptions.Compiled);
+		private static readonly Regex StringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
 		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$");
 		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
-		private static readonly ExpressionTokenizer Tokenizer;
-
-		static FilterExpressionFactory()
-		{
-			Tokenizer = new ExpressionTokenizer();
-		}
+		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$");
+		private static readonly ConcurrentDictionary<Type, MethodInfo> _parseMethods = new ConcurrentDictionary<Type, MethodInfo>();
 
 		public Expression<Func<T, bool>> Create<T>(string filter)
 		{
@@ -44,7 +42,7 @@ namespace Linq2Rest.Parser
 			return expression == null ? x => true : Expression.Lambda<Func<T, bool>>(expression, parameter);
 		}
 
-		private TokenSet GetFunctionTokens(string filter)
+		private static TokenSet GetFunctionTokens(string filter)
 		{
 			Contract.Requires(filter != null);
 
@@ -60,127 +58,35 @@ namespace Linq2Rest.Parser
 			if (!functionContentMatch.Success)
 			{
 				return new FunctionTokenSet
-					{
-						Operation = functionName,
-						Left = functionContent
-					};
+				{
+					Operation = functionName,
+					Left = functionContent
+				};
 			}
 
 			return new FunctionTokenSet
-				{
-					Operation = functionName,
-					Left = functionContentMatch.Groups[1].Value,
-					Right = functionContentMatch.Groups[2].Value
-				};
+			{
+				Operation = functionName,
+				Left = functionContentMatch.Groups[1].Value,
+				Right = functionContentMatch.Groups[2].Value
+			};
 		}
 
-		private Expression CreateExpression<T>(string filter, ParameterExpression parameter, Type type, IFormatProvider formatProvider)
-		{
-			if (string.IsNullOrWhiteSpace(filter))
-			{
-				return null;
-			}
-
-			var tokens = Tokenizer.GetTokens(filter).ToArray();
-
-			Expression existing = null;
-			string combiner = null;
-
-			if (tokens.Any())
-			{
-				foreach (var tokenSet in tokens)
-				{
-					if (string.IsNullOrWhiteSpace(tokenSet.Left))
-					{
-						if (string.Equals(tokenSet.Operation, "not", StringComparison.OrdinalIgnoreCase))
-						{
-							var right = CreateExpression<T>(tokenSet.Right, parameter, type ?? GetExpressionType<T>(tokenSet, parameter), formatProvider);
-
-							if (right == null)
-							{
-								return null;
-							}
-
-							return GetOperation(tokenSet.Operation, null, right);
-						}
-
-						combiner = tokenSet.Operation;
-					}
-					else
-					{
-						var left = CreateExpression<T>(tokenSet.Left, parameter, type ?? GetExpressionType<T>(tokenSet, parameter), formatProvider);
-						var right = CreateExpression<T>(tokenSet.Right, parameter, left.Type, formatProvider);
-
-						if (right == null)
-						{
-							return null;
-						}
-
-						if (existing != null && !string.IsNullOrWhiteSpace(combiner))
-						{
-							var current = GetOperation(tokenSet.Operation, left, right);
-							existing = GetOperation(combiner, existing, current);
-						}
-						else
-						{
-							existing = GetOperation(tokenSet.Operation, left, right);
-						}
-					}
-				}
-
-				return existing;
-			}
-
-			Expression expression = null;
-			var stringMatch = StringRx.Match(filter);
-
-			if (stringMatch.Success)
-			{
-				expression = Expression.Constant(stringMatch.Groups[1].Value, typeof(string));
-			}
-
-			if (expression == null)
-			{
-				expression = GetFunctionExpression<T>(filter, parameter, type, formatProvider);
-			}
-
-			if (expression == null)
-			{
-				expression = GetPropertyExpression<T>(filter, parameter);
-			}
-
-			if (expression == null)
-			{
-				Contract.Assume(type != null);
-
-				expression = Expression.Constant(Convert.ChangeType(filter, type, formatProvider), type);
-			}
-
-			return expression;
-		}
-
-		private Expression GetFunctionExpression<T>(string filter, ParameterExpression parameter, Type type, IFormatProvider formatProvider)
+		private static string[] GetConstructorTokens(string filter)
 		{
 			Contract.Requires(filter != null);
 
-			var functionTokens = GetFunctionTokens(filter);
-			if (functionTokens == null)
+			var constructorMatch = NewRx.Match(filter);
+			if (!constructorMatch.Success)
 			{
 				return null;
 			}
 
-			var left = CreateExpression<T>(
-				functionTokens.Left,
-				parameter,
-				type ?? GetExpressionType<T>(functionTokens, parameter),
-				formatProvider);
-
-			var right = CreateExpression<T>(functionTokens.Right, parameter, GetFunctionParameterType(functionTokens.Operation) ?? left.Type, formatProvider);
-
-			return GetFunction(functionTokens.Operation, left, right);
+			var constructorContent = constructorMatch.Groups["parameters"].Value;
+			return constructorContent.Split(',').Select(x => x.Trim().Trim(')', '(')).ToArray();
 		}
 
-		private Type GetFunctionParameterType(string operation)
+		private static Type GetFunctionParameterType(string operation)
 		{
 			Contract.Requires(operation != null);
 
@@ -193,11 +99,11 @@ namespace Linq2Rest.Parser
 			}
 		}
 
-		private Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
+		private static Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
 		{
 			Contract.Requires(propertyToken != null);
 
-			var tokens = Tokenizer.GetTokens(propertyToken);
+			var tokens = ExpressionTokenizer.GetTokens(propertyToken);
 			foreach (var token in tokens)
 			{
 				var expression = GetPropertyExpression<T>(token.Left, parameter) ?? GetPropertyExpression<T>(token.Right, parameter);
@@ -223,16 +129,21 @@ namespace Linq2Rest.Parser
 			return propertyExpression;
 		}
 
-		private Type GetExpressionType<T>(TokenSet set, ParameterExpression parameter)
+		private static Type GetExpressionType<T>(TokenSet set, ParameterExpression parameter)
 		{
 			Contract.Requires(set != null);
+
+			if (Regex.IsMatch(set.Left, @"^\(.*\)$") && set.Operation.IsCombinationOperation())
+			{
+				return null;
+			}
 
 			var property = GetPropertyExpression<T>(set.Left, parameter) ?? GetPropertyExpression<T>(set.Right, parameter);
 
 			return property == null ? null : property.Type;
 		}
 
-		private Expression GetOperation(string token, Expression left, Expression right)
+		private static Expression GetOperation(string token, Expression left, Expression right)
 		{
 			Contract.Requires(token != null);
 			Contract.Requires(right != null);
@@ -249,7 +160,7 @@ namespace Linq2Rest.Parser
 			return GetLeftRightOperation(token, left, right);
 		}
 
-		private Expression GetLeftRightOperation(string token, Expression left, Expression right)
+		private static Expression GetLeftRightOperation(string token, Expression left, Expression right)
 		{
 			Contract.Requires(token != null);
 			Contract.Requires(left != null);
@@ -288,7 +199,7 @@ namespace Linq2Rest.Parser
 			throw new InvalidOperationException("Unsupported operation");
 		}
 
-		private Expression GetRightOperation(string token, Expression right)
+		private static Expression GetRightOperation(string token, Expression right)
 		{
 			Contract.Requires(token != null);
 			Contract.Requires(right != null);
@@ -302,7 +213,7 @@ namespace Linq2Rest.Parser
 			throw new InvalidOperationException("Unsupported operation");
 		}
 
-		private Expression GetFunction(string function, Expression left, Expression right)
+		private static Expression GetFunction(string function, Expression left, Expression right)
 		{
 			Contract.Requires(function != null);
 
@@ -355,6 +266,209 @@ namespace Linq2Rest.Parser
 				default:
 					return null;
 			}
+		}
+
+		private static Expression GetKnownConstant(string token, Type type, IFormatProvider formatProvider)
+		{
+			if (string.Equals(token, "null", StringComparison.OrdinalIgnoreCase))
+			{
+				return Expression.Constant(null);
+			}
+
+			if (type == typeof(Guid) || type == typeof(Guid?))
+			{
+				return
+					string.Equals(token, "newguid()", StringComparison.OrdinalIgnoreCase)
+						? Expression.Convert(Expression.Constant(Guid.NewGuid()), type)
+						: string.Equals(token, "empty", StringComparison.OrdinalIgnoreCase)
+							? Expression.Convert(Expression.Constant(Guid.Empty), type)
+							: Expression.Convert(Expression.Constant(Guid.Parse(token)), type);
+			}
+
+			if (type != null)
+			{
+				var parseMethod = _parseMethods.GetOrAdd(type, ResolveParseMethod);
+				if (parseMethod != null)
+				{
+					var parseResult = parseMethod.Invoke(null, new object[] { token, formatProvider });
+					return Expression.Constant(parseResult);
+				}
+
+				if (type.IsEnum)
+				{
+					var enumValue = Enum.Parse(type, token, true);
+					return Expression.Constant(enumValue);
+				}
+
+				if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
+				{
+					var genericTypeArgument = type.GetGenericArguments().First();
+					var value = GetKnownConstant(token, genericTypeArgument, formatProvider);
+					if (value != null)
+					{
+						return Expression.Convert(value, type);
+					}
+				}
+			}
+
+			return null;
+		}
+
+		private static MethodInfo ResolveParseMethod(Type type)
+		{
+			return type.GetMethods(BindingFlags.Static | BindingFlags.Public)
+				.Where(x => x.Name == "Parse" && x.GetParameters().Length == 2)
+				.Where(x => x.GetParameters().First().ParameterType == typeof(string) && x.GetParameters().ElementAt(1).ParameterType == typeof(IFormatProvider))
+				.FirstOrDefault();
+		}
+
+		private Expression CreateExpression<T>(string filter, ParameterExpression parameter, Type type, IFormatProvider formatProvider)
+		{
+			if (string.IsNullOrWhiteSpace(filter))
+			{
+				return null;
+			}
+
+			var tokens = filter.GetTokens().ToArray();
+
+			Expression existing = null;
+			string combiner = null;
+
+			if (tokens.Any())
+			{
+				foreach (var tokenSet in tokens)
+				{
+					if (string.IsNullOrWhiteSpace(tokenSet.Left))
+					{
+						if (string.Equals(tokenSet.Operation, "not", StringComparison.OrdinalIgnoreCase))
+						{
+							var right = CreateExpression<T>(tokenSet.Right, parameter, type ?? GetExpressionType<T>(tokenSet, parameter), formatProvider);
+
+							if (right == null)
+							{
+								return null;
+							}
+
+							return GetOperation(tokenSet.Operation, null, right);
+						}
+
+						combiner = tokenSet.Operation;
+					}
+					else
+					{
+						var left = CreateExpression<T>(tokenSet.Left, parameter, type ?? GetExpressionType<T>(tokenSet, parameter), formatProvider);
+						var right = CreateExpression<T>(tokenSet.Right, parameter, left.Type, formatProvider);
+
+						if (existing != null && !string.IsNullOrWhiteSpace(combiner))
+						{
+							var current = right == null ? null : GetOperation(tokenSet.Operation, left, right);
+							existing = GetOperation(combiner, existing, current ?? left);
+						}
+						else
+						{
+							existing = GetOperation(tokenSet.Operation, left, right);
+						}
+					}
+				}
+
+				return existing;
+			}
+
+			Expression expression = null;
+			var stringMatch = StringRx.Match(filter);
+
+			if (stringMatch.Success)
+			{
+				expression = Expression.Constant(stringMatch.Groups[1].Value, typeof(string));
+			}
+
+			if (expression == null)
+			{
+				expression = GetConstructorExpression<T>(filter, parameter, type, formatProvider);
+			}
+
+			if (expression == null)
+			{
+				expression = GetFunctionExpression<T>(filter, parameter, type, formatProvider);
+			}
+
+			if (expression == null)
+			{
+				expression = GetPropertyExpression<T>(filter, parameter);
+			}
+
+			if (expression == null)
+			{
+				expression = GetKnownConstant(filter, type, formatProvider);
+			}
+
+			if (expression == null)
+			{
+				Contract.Assume(type != null);
+
+				expression = Expression.Constant(Convert.ChangeType(filter, type, formatProvider), type);
+			}
+
+			return expression;
+		}
+
+		private Expression GetConstructorExpression<T>(string filter, ParameterExpression parameter, Type resultType, IFormatProvider formatProvider)
+		{
+			var newMatch = NewRx.Match(filter);
+			if (newMatch.Success)
+			{
+				var typeName = newMatch.Groups["type"].Value;
+				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+				var type = assemblies
+					.SelectMany(x => x.GetTypes().Where(t => t.Name == typeName))
+					.FirstOrDefault();
+
+				if (type == null)
+				{
+					return null;
+				}
+
+				var constructorTokens = GetConstructorTokens(filter);
+
+				var constructorInfos = type.GetConstructors().Where(x => x.GetParameters().Length == constructorTokens.Length);
+				foreach (var constructorInfo in constructorInfos)
+				{
+					try
+					{
+						var parameterExpressions = constructorInfo
+							.GetParameters()
+							.Select((p, i) => CreateExpression<T>(constructorTokens[i], parameter, p.ParameterType, formatProvider))
+							.ToArray();
+
+						return Expression.Convert(Expression.New(constructorInfo, parameterExpressions), resultType);
+					}
+					catch
+					{
+					}
+				}
+			}
+			return null;
+		}
+
+		private Expression GetFunctionExpression<T>(string filter, ParameterExpression parameter, Type type, IFormatProvider formatProvider)
+		{
+			Contract.Requires(filter != null);
+
+			var functionTokens = GetFunctionTokens(filter);
+			if (functionTokens == null)
+			{
+				return null;
+			}
+
+			var left = CreateExpression<T>(
+				functionTokens.Left,
+				parameter,
+				type ?? GetExpressionType<T>(functionTokens, parameter),
+				formatProvider);
+
+			var right = CreateExpression<T>(functionTokens.Right, parameter, GetFunctionParameterType(functionTokens.Operation) ?? left.Type, formatProvider);
+
+			return GetFunction(functionTokens.Operation, left, right);
 		}
 	}
 }
