@@ -1,0 +1,12 @@
+syntax: glob
+_ReSharper.*
+*.suo
+bin
+obj
+*.dotCover
+*.user
+packages/EntityFramework
+packages/Moq
+packages/NUnit
+*.nupkg
+*.Cache
