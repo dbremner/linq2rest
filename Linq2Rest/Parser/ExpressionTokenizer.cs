@@ -7,15 +7,12 @@ namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Text.RegularExpressions;
 
 	internal static class ExpressionTokenizer
 	{
 		private static readonly Regex CleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
-		private static readonly string[] Operations = new[] { "eq", "ne", "gt", "ge", "lt", "le", "and", "or", "not", "add", "sub", "mul", "div", "mod" };
-		private static readonly string[] Combiners = new[] { "and", "or", "not" };
 
 		public static IEnumerable<TokenSet> GetTokens(this string expression)
 		{
@@ -36,34 +33,32 @@ namespace Linq2Rest.Parser
 			{
 				if (blocks[i].StartsWith("("))
 				{
-					var currentBlock = blocks[i];
-					var openBlocks = currentBlock.TakeWhile(c => c == '(').Count();
-					openGroups += openBlocks;
+					openGroups += 1;
 				}
 
 				if (openGroups > 0 && blocks[i].EndsWith(")"))
 				{
-					var currentBlock = blocks[i];
-					var openMethods = currentBlock.Count(c => c == '(');
-					var closeBlocks = currentBlock.Reverse().TakeWhile(c => c == ')').Count() - openMethods;
-
-					openGroups -= closeBlocks;
+					openGroups -= 1;
 				}
 
 				if (openGroups == 0)
 				{
 					int i1 = i;
-					if (Operations.Any(x => string.Equals(x, blocks[i1], StringComparison.OrdinalIgnoreCase)))
+					if (blocks[i1].IsOperation())
 					{
+						int i1 = i;
+						var expression1 = startExpression;
+						Func<string, int, bool> predicate = (x, j) => j >= expression1 && j < i1;
+
 						if (string.IsNullOrWhiteSpace(currentTokens.Left))
 						{
 							var expression1 = startExpression;
-
+							int i1 = i;
 							currentTokens.Left = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
 							currentTokens.Operation = blocks[i];
 							startExpression = i + 1;
 
-							if (Combiners.Any(x => string.Equals(x, blocks[i1], StringComparison.OrdinalIgnoreCase)))
+							if (blocks[i1].IsCombinationOperation())
 							{
 								currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j > i1));
 
@@ -74,14 +69,15 @@ namespace Linq2Rest.Parser
 						else
 						{
 							var expression1 = startExpression;
+
 							currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
 
 							yield return currentTokens;
 
-							startExpression = i + 1;
+							startExpression = i1 + 1;
 							currentTokens = new TokenSet();
 
-							if (Combiners.Any(x => string.Equals(x, blocks[i], StringComparison.OrdinalIgnoreCase)))
+							if (blocks[i1].IsCombinationOperation())
 							{
 								yield return new TokenSet { Operation = blocks[i].ToLowerInvariant() };
 							}
@@ -106,8 +102,6 @@ namespace Linq2Rest.Parser
 
 		private static bool HasOrphanedOpenParenthesis(string expression)
 		{
-			Contract.Requires(expression != null);
-
 			var lastOpen = expression.LastIndexOf('(');
 			var lastClose = expression.LastIndexOf(')');
 
