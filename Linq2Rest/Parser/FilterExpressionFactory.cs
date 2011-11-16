@@ -82,7 +82,11 @@ namespace Linq2Rest.Parser
 				return null;
 			}
 
-			var constructorContent = constructorMatch.Groups["parameters"].Value;
+			var matchGroup = constructorMatch.Groups["parameters"];
+
+			Contract.Assume(matchGroup != null, "Otherwise match is not success.");
+
+			var constructorContent = matchGroup.Value;
 			return constructorContent.Split(',').Select(x => x.Trim().Trim(')', '(')).ToArray();
 		}
 
@@ -270,6 +274,8 @@ namespace Linq2Rest.Parser
 
 		private static Expression GetKnownConstant(string token, Type type, IFormatProvider formatProvider)
 		{
+			Contract.Requires(token != null);
+
 			if (string.Equals(token, "null", StringComparison.OrdinalIgnoreCase))
 			{
 				return Expression.Constant(null);
@@ -316,6 +322,8 @@ namespace Linq2Rest.Parser
 
 		private static MethodInfo ResolveParseMethod(Type type)
 		{
+			Contract.Requires(type != null);
+
 			return type.GetMethods(BindingFlags.Static | BindingFlags.Public)
 				.Where(x => x.Name == "Parse" && x.GetParameters().Length == 2)
 				.Where(x => x.GetParameters().First().ParameterType == typeof(string) && x.GetParameters().ElementAt(1).ParameterType == typeof(IFormatProvider))
@@ -414,10 +422,16 @@ namespace Linq2Rest.Parser
 
 		private Expression GetConstructorExpression<T>(string filter, ParameterExpression parameter, Type resultType, IFormatProvider formatProvider)
 		{
+			Contract.Requires(filter != null);
+
 			var newMatch = NewRx.Match(filter);
 			if (newMatch.Success)
 			{
-				var typeName = newMatch.Groups["type"].Value;
+				var matchGroup = newMatch.Groups["type"];
+
+				Contract.Assume(matchGroup != null, "Otherwise match is not success.");
+
+				var typeName = matchGroup.Value;
 				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 				var type = assemblies
 					.SelectMany(x => x.GetTypes().Where(t => t.Name == typeName))
@@ -439,6 +453,11 @@ namespace Linq2Rest.Parser
 							.GetParameters()
 							.Select((p, i) => CreateExpression<T>(constructorTokens[i], parameter, p.ParameterType, formatProvider))
 							.ToArray();
+
+						if (resultType == null)
+						{
+							throw new ArgumentNullException("resultType");
+						}
 
 						return Expression.Convert(Expression.New(constructorInfo, parameterExpressions), resultType);
 					}
