@@ -7,6 +7,7 @@ namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Text.RegularExpressions;
 
@@ -46,14 +47,10 @@ namespace Linq2Rest.Parser
 					int i1 = i;
 					if (blocks[i1].IsOperation())
 					{
-						int i1 = i;
 						var expression1 = startExpression;
-						Func<string, int, bool> predicate = (x, j) => j >= expression1 && j < i1;
 
 						if (string.IsNullOrWhiteSpace(currentTokens.Left))
 						{
-							var expression1 = startExpression;
-							int i1 = i;
 							currentTokens.Left = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
 							currentTokens.Operation = blocks[i];
 							startExpression = i + 1;
@@ -68,8 +65,6 @@ namespace Linq2Rest.Parser
 						}
 						else
 						{
-							var expression1 = startExpression;
-
 							currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
 
 							yield return currentTokens;
@@ -102,6 +97,8 @@ namespace Linq2Rest.Parser
 
 		private static bool HasOrphanedOpenParenthesis(string expression)
 		{
+			Contract.Requires(expression != null);
+
 			var lastOpen = expression.LastIndexOf('(');
 			var lastClose = expression.LastIndexOf(')');
 

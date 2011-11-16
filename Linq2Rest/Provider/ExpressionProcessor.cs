@@ -14,7 +14,7 @@ namespace Linq2Rest.Provider
 
 	internal static class ExpressionProcessor
 	{
-		private static readonly ExpressionType[] _compositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
+		private static readonly ExpressionType[] CompositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
 
 		public static string ProcessExpression(this Expression expression)
 		{
@@ -98,8 +98,8 @@ namespace Linq2Rest.Provider
 				var binaryExpression = expression as BinaryExpression;
 				var operation = GetOperation(binaryExpression);
 
-				var isLeftComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
-				var isRightComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
+				var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
+				var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
 
 				var leftType = GetUnconvertedType(binaryExpression.Left);
 				var leftString = ProcessExpression(binaryExpression.Left);

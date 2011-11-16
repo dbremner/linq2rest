@@ -21,7 +21,7 @@ namespace Linq2Rest.Parser
 		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$");
 		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
 		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$");
-		private static readonly ConcurrentDictionary<Type, MethodInfo> _parseMethods = new ConcurrentDictionary<Type, MethodInfo>();
+		private static readonly ConcurrentDictionary<Type, MethodInfo> ParseMethods = new ConcurrentDictionary<Type, MethodInfo>();
 
 		public Expression<Func<T, bool>> Create<T>(string filter)
 		{
@@ -293,7 +293,7 @@ namespace Linq2Rest.Parser
 
 			if (type != null)
 			{
-				var parseMethod = _parseMethods.GetOrAdd(type, ResolveParseMethod);
+				var parseMethod = ParseMethods.GetOrAdd(type, ResolveParseMethod);
 				if (parseMethod != null)
 				{
 					var parseResult = parseMethod.Invoke(null, new object[] { token, formatProvider });
