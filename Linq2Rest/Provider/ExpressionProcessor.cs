@@ -18,6 +18,8 @@ namespace Linq2Rest.Provider
 
 		public static string ProcessExpression(this Expression expression)
 		{
+			Contract.Requires(expression != null);
+
 			if (expression is LambdaExpression)
 			{
 				return ProcessExpression((expression as LambdaExpression).Body);
@@ -112,7 +114,7 @@ namespace Linq2Rest.Provider
 
 		private static Expression CollapseCapturedOuterVariables(MemberExpression input)
 		{
-			if (input == null && input.NodeType != ExpressionType.MemberAccess)
+			if (input == null || input.NodeType != ExpressionType.MemberAccess)
 			{
 				return input;
 			}
