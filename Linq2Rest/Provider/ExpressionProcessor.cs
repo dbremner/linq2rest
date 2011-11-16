@@ -20,6 +20,28 @@ namespace Linq2Rest.Provider
 		{
 			Contract.Requires(expression != null);
 
+			return ProcessExpression(expression, expression.Type);
+		}
+		
+		public static object GetExpressionValue(this Expression expression)
+		{
+			if (expression is UnaryExpression)
+			{
+				return (expression as UnaryExpression).Operand;
+			}
+
+			if (expression is ConstantExpression)
+			{
+				return (expression as ConstantExpression).Value;
+			}
+
+			return null;
+		}
+		
+		private static string ProcessExpression(this Expression expression, Type type)
+		{
+			Contract.Requires(expression != null);
+
 			if (expression is LambdaExpression)
 			{
 				return ProcessExpression((expression as LambdaExpression).Body);
@@ -28,7 +50,7 @@ namespace Linq2Rest.Provider
 			if (expression is MemberExpression)
 			{
 				var memberExpression = expression as MemberExpression;
-				if (!memberExpression.IsMemberOfParameter())
+				if (!IsMemberOfParameter(memberExpression))
 				{
 					var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
 					if (!(collapsedExpression is MemberExpression))
@@ -49,11 +71,12 @@ namespace Linq2Rest.Provider
 			if (expression is ConstantExpression)
 			{
 				var value = (expression as ConstantExpression).Value;
+
 				return string.Format(
 					Thread.CurrentThread.CurrentCulture,
 					"{0}{1}{0}",
 					value is string ? "'" : string.Empty,
-					value ?? "null");
+					value == null ? "null" : GetValue(Expression.Convert(expression, type)));
 			}
 
 			if (expression is UnaryExpression)
@@ -77,11 +100,16 @@ namespace Linq2Rest.Provider
 
 				var isLeftComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
 				var isRightComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
+
+				var leftType = GetUnconvertedType(binaryExpression.Left);
+				var leftString = ProcessExpression(binaryExpression.Left);
+				var rightString = ProcessExpression(binaryExpression.Right, leftType);
+
 				return string.Format(
 					"{0} {1} {2}",
-					string.Format(isLeftComposite ? "({0})" : "{0}", ProcessExpression(binaryExpression.Left)),
+					string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
 					operation,
-					string.Format(isRightComposite ? "({0})" : "{0}", ProcessExpression(binaryExpression.Right)));
+					string.Format(isRightComposite ? "({0})" : "{0}", rightString));
 			}
 
 			if (expression is MethodCallExpression)
@@ -91,81 +119,23 @@ namespace Linq2Rest.Provider
 
 			if (expression is NewExpression)
 			{
-				return expression.ToString();
+				return GetValue(expression).ToString();
 			}
 
 			throw new InvalidOperationException("Expression is not recognized or supported");
 		}
 
-		public static object GetExpressionValue(this Expression expression)
+		private static Type GetUnconvertedType(Expression expression)
 		{
-			if (expression is UnaryExpression)
+			Contract.Requires(expression != null);
+
+			switch (expression.NodeType)
 			{
-				return (expression as UnaryExpression).Operand;
+				case ExpressionType.Convert:
+					return (expression as UnaryExpression).Operand.Type;
+				default:
+					return expression.Type;
 			}
-
-			if (expression is ConstantExpression)
-			{
-				return (expression as ConstantExpression).Value;
-			}
-
-			return null;
-		}
-
-		private static Expression CollapseCapturedOuterVariables(MemberExpression input)
-		{
-			if (input == null || input.NodeType != ExpressionType.MemberAccess)
-			{
-				return input;
-			}
-
-			if (input.Expression is MemberExpression)
-			{
-				var objectMember = Expression.Convert(input, typeof(object));
-
-				var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
-
-				return Expression.Constant(getterLambda());
-			}
-
-			if (input.Expression is ConstantExpression)
-			{
-				object obj = ((ConstantExpression)input.Expression).Value;
-				if (obj == null)
-				{
-					return input;
-				}
-
-				Type t = obj.GetType();
-				if (!t.IsNestedPrivate || !t.Name.StartsWith("<>"))
-				{
-					return input;
-				}
-
-				var fi = (FieldInfo)input.Member;
-				object result = fi.GetValue(obj);
-				return result is Expression ? (Expression)result : Expression.Constant(result);
-			}
-
-			return input;
-		}
-
-		private static bool IsMemberOfParameter(this MemberExpression input)
-		{
-			if (input.Expression == null)
-			{
-				return false;
-			}
-
-			var nodeType = input.Expression.NodeType;
-			var tempExpression = input.Expression as MemberExpression;
-			while (nodeType == ExpressionType.MemberAccess)
-			{
-				nodeType = tempExpression.Expression.NodeType;
-				tempExpression = tempExpression.Expression as MemberExpression;
-			}
-
-			return nodeType == ExpressionType.Parameter;
 		}
 
 		private static string GetMemberCall(MemberExpression memberExpression)
@@ -197,6 +167,65 @@ namespace Linq2Rest.Provider
 			}
 
 			return string.Empty;
+		}
+
+		private static Expression CollapseCapturedOuterVariables(MemberExpression input)
+		{
+			if (input == null || input.NodeType != ExpressionType.MemberAccess)
+			{
+				return input;
+			}
+
+			if (input.Expression is MemberExpression)
+			{
+				object value = GetValue(input);
+				return Expression.Constant(value);
+			}
+
+			if (input.Expression is ConstantExpression)
+			{
+				object obj = ((ConstantExpression)input.Expression).Value;
+				if (obj == null)
+				{
+					return input;
+				}
+
+				var fi = (FieldInfo)input.Member;
+				object result = fi.GetValue(obj);
+				return result is Expression ? (Expression)result : Expression.Constant(result);
+			}
+
+			return input;
+		}
+
+		private static object GetValue(Expression input)
+		{
+			Contract.Requires(input != null);
+
+			var objectMember = Expression.Convert(input, typeof(object));
+			var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
+
+			return getterLambda();
+		}
+
+		private static bool IsMemberOfParameter(MemberExpression input)
+		{
+			Contract.Requires(input != null);
+
+			if (input.Expression == null)
+			{
+				return false;
+			}
+
+			var nodeType = input.Expression.NodeType;
+			var tempExpression = input.Expression as MemberExpression;
+			while (nodeType == ExpressionType.MemberAccess)
+			{
+				nodeType = tempExpression.Expression.NodeType;
+				tempExpression = tempExpression.Expression as MemberExpression;
+			}
+
+			return nodeType == ExpressionType.Parameter;
 		}
 
 		private static string GetMethodCall(MethodCallExpression expression)
@@ -256,8 +285,7 @@ namespace Linq2Rest.Provider
 							Contract.Assume(expression.Arguments.Count > 0);
 
 							var argumentExpression = expression.Arguments[0];
-							return string.Format(
-								"indexof({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+							return string.Format("indexof({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
 						}
 
 					case "EndsWith":
@@ -265,8 +293,7 @@ namespace Linq2Rest.Provider
 							Contract.Assume(expression.Arguments.Count > 0);
 
 							var argumentExpression = expression.Arguments[0];
-							return string.Format(
-								"endswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+							return string.Format("endswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
 						}
 
 					case "StartsWith":
@@ -274,8 +301,7 @@ namespace Linq2Rest.Provider
 							Contract.Assume(expression.Arguments.Count > 0);
 
 							var argumentExpression = expression.Arguments[0];
-							return string.Format(
-								"startswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+							return string.Format("startswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
 						}
 				}
 			}
