@@ -9,6 +9,7 @@ namespace Linq2Rest.Provider
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Reflection;
 	using System.Threading;
 
 	internal static class ExpressionProcessor
@@ -25,6 +26,17 @@ namespace Linq2Rest.Provider
 			if (expression is MemberExpression)
 			{
 				var memberExpression = expression as MemberExpression;
+				if (!memberExpression.IsMemberOfParameter())
+				{
+					var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
+					if (!(collapsedExpression is MemberExpression))
+					{
+						return ProcessExpression(collapsedExpression);
+					}
+
+					memberExpression = (MemberExpression)collapsedExpression;
+				}
+
 				var memberCall = GetMemberCall(memberExpression);
 
 				return string.IsNullOrWhiteSpace(memberCall)
@@ -96,6 +108,62 @@ namespace Linq2Rest.Provider
 			}
 
 			return null;
+		}
+
+		private static Expression CollapseCapturedOuterVariables(MemberExpression input)
+		{
+			if (input == null && input.NodeType != ExpressionType.MemberAccess)
+			{
+				return input;
+			}
+
+			if (input.Expression is MemberExpression)
+			{
+				var objectMember = Expression.Convert(input, typeof(object));
+
+				var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
+
+				return Expression.Constant(getterLambda());
+			}
+
+			if (input.Expression is ConstantExpression)
+			{
+				object obj = ((ConstantExpression)input.Expression).Value;
+				if (obj == null)
+				{
+					return input;
+				}
+
+				Type t = obj.GetType();
+				if (!t.IsNestedPrivate || !t.Name.StartsWith("<>"))
+				{
+					return input;
+				}
+
+				var fi = (FieldInfo)input.Member;
+				object result = fi.GetValue(obj);
+				return result is Expression ? (Expression)result : Expression.Constant(result);
+			}
+
+			return input;
+		}
+
+		private static bool IsMemberOfParameter(this MemberExpression input)
+		{
+			if (input.Expression == null)
+			{
+				return false;
+			}
+
+			var nodeType = input.Expression.NodeType;
+			var tempExpression = input.Expression as MemberExpression;
+			while (nodeType == ExpressionType.MemberAccess)
+			{
+				nodeType = tempExpression.Expression.NodeType;
+				tempExpression = tempExpression.Expression as MemberExpression;
+			}
+
+			return nodeType == ExpressionType.Parameter;
 		}
 
 		private static string GetMemberCall(MemberExpression memberExpression)
@@ -233,7 +301,7 @@ namespace Linq2Rest.Provider
 
 			return string.Empty;
 		}
-		
+
 		private static string GetOperation(Expression expression)
 		{
 			Contract.Requires(expression != null);
