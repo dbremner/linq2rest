@@ -80,6 +80,7 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <DocumentationFile>bin\Release\Linq2Rest.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -111,6 +112,7 @@
     <Compile Include="Provider\ExpressionProcessor.cs" />
     <Compile Include="Provider\IRestClient.cs" />
     <Compile Include="Provider\ISerializer.cs" />
+    <Compile Include="Provider\ISerializerFactory.cs" />
     <Compile Include="Provider\MethodCallProcessor.cs" />
     <Compile Include="Provider\ParameterBuilder.cs" />
     <Compile Include="Provider\RestClient.cs" />

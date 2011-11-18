@@ -55,11 +55,13 @@ namespace Linq2Rest.Parser
 					int i1 = i;
 					if (Operations.Any(x => string.Equals(x, blocks[i1], StringComparison.OrdinalIgnoreCase)))
 					{
+						int i1 = i;
+						var expression1 = startExpression;
+						Func<string, int, bool> predicate = (x, j) => j >= expression1 && j < i1;
+
 						if (string.IsNullOrWhiteSpace(currentTokens.Left))
 						{
-							var expression1 = startExpression;
-
-							currentTokens.Left = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
+							currentTokens.Left = string.Join(" ", blocks.Where(predicate));
 							currentTokens.Operation = blocks[i];
 							startExpression = i + 1;
 
@@ -73,8 +75,7 @@ namespace Linq2Rest.Parser
 						}
 						else
 						{
-							var expression1 = startExpression;
-							currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
+							currentTokens.Right = string.Join(" ", blocks.Where(predicate));
 
 							yield return currentTokens;
 
