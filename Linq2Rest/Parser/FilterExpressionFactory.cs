@@ -107,11 +107,13 @@ namespace Linq2Rest.Parser
 		{
 			Contract.Requires(propertyToken != null);
 
-			var tokens = ExpressionTokenizer.GetTokens(propertyToken);
-			foreach (var token in tokens)
+			if (!propertyToken.IsImpliedBoolean())
 			{
-				var expression = GetPropertyExpression<T>(token.Left, parameter) ?? GetPropertyExpression<T>(token.Right, parameter);
-				return expression;
+				var token = propertyToken.GetTokens().FirstOrDefault();
+				if (token != null)
+				{
+					return GetPropertyExpression<T>(token.Left, parameter) ?? GetPropertyExpression<T>(token.Right, parameter);
+				}
 			}
 
 			var parentType = typeof(T);
