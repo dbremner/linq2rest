@@ -110,6 +110,9 @@ namespace Linq2Rest.Tests.Parser
 		[TestCase("floor(DecimalValue) gt 1", "x => (Floor(x.DecimalValue) > 1)")]
 		[TestCase("ceiling(DecimalValue) gt 1", "x => (Ceiling(x.DecimalValue) > 1)")]
 		[TestCase("(StringValue ne 'text') or IntValue gt 2", "x => ((x.StringValue != \"text\") OrElse (x.IntValue > 2))")]
+		[TestCase("(startswith(tolower(StringValue),'foo') eq true and endswith(tolower(StringValue),'1') eq true) and (tolower(StringValue) eq 'bar03')", "x => (((x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) == True) AndAlso (x.StringValue.ToLowerInvariant().EndsWith(\"1\", OrdinalIgnoreCase) == True)) AndAlso (x.StringValue.ToLowerInvariant() == \"bar03\"))")]
+		[TestCase("(startswith(tolower(StringValue),'foo') and endswith(tolower(StringValue),'1')) and (tolower(StringValue) eq 'bar03')", "x => ((x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) AndAlso x.StringValue.ToLowerInvariant().EndsWith(\"1\", OrdinalIgnoreCase)) AndAlso (x.StringValue.ToLowerInvariant() == \"bar03\"))")]
+		[TestCase("startswith(tolower(StringValue),'foo')", "x => x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase)")]
 		public void WhenProvidingValidInputThenGetsExpectedExpression(string filter, string expression)
 		{
 			var result = _factory.Create<FakeItem>(filter);

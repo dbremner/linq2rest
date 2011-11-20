@@ -9,19 +9,26 @@ namespace Linq2Rest.Parser
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
-	using System.Text.RegularExpressions;
 
 	internal static class ExpressionTokenizer
 	{
-		private static readonly Regex CleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
-
 		public static IEnumerable<TokenSet> GetTokens(this string expression)
 		{
-			var cleanMatch = CleanRx.Match(expression);
+			var tokens = new List<TokenSet>();
+			var cleanMatch = expression.EnclosedMatch();
 
-			if (cleanMatch.Success && !HasOrphanedOpenParenthesis(cleanMatch.Groups[1].Value))
+			if (cleanMatch.Success)
 			{
-				expression = cleanMatch.Groups[1].Value;
+				var match = cleanMatch.Groups[1].Value;
+				if (!HasOrphanedOpenParenthesis(match))
+				{
+					expression = match;
+				}
+			}
+
+			if (expression.IsImpliedBoolean())
+			{
+				return tokens;
 			}
 
 			var blocks = expression.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -32,14 +39,14 @@ namespace Linq2Rest.Parser
 
 			for (int i = 0; i < blocks.Length; i++)
 			{
-				if (blocks[i].StartsWith("("))
+				if (blocks[i].StartsWith("(") || openGroups > 0)
 				{
-					openGroups += 1;
+					openGroups += blocks[i].Where(c => c == '(').Count();
 				}
 
 				if (openGroups > 0 && blocks[i].EndsWith(")"))
 				{
-					openGroups -= 1;
+					openGroups -= blocks[i].Where(c => c == ')').Count();
 				}
 
 				if (openGroups == 0)
@@ -59,22 +66,26 @@ namespace Linq2Rest.Parser
 							{
 								currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j > i1));
 
-								yield return currentTokens;
-								yield break;
+								//yield return currentTokens;
+								//yield break;
+								tokens.Add(currentTokens);
+								return tokens;
 							}
 						}
 						else
 						{
 							currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
 
-							yield return currentTokens;
+							tokens.Add(currentTokens);
+							// yield return currentTokens;
 
 							startExpression = i1 + 1;
 							currentTokens = new TokenSet();
 
 							if (blocks[i1].IsCombinationOperation())
 							{
-								yield return new TokenSet { Operation = blocks[i].ToLowerInvariant() };
+								// yield return new TokenSet { Operation = blocks[i].ToLowerInvariant() };
+								tokens.Add(new TokenSet { Operation = blocks[i].ToLowerInvariant() });
 							}
 						}
 					}
@@ -86,23 +97,47 @@ namespace Linq2Rest.Parser
 			if (!string.IsNullOrWhiteSpace(currentTokens.Left))
 			{
 				currentTokens.Right = remainingToken;
-				yield return currentTokens;
+				//yield return currentTokens;
+				tokens.Add(currentTokens);
 			}
-			else if (CleanRx.IsMatch(remainingToken))
+			else if (remainingToken.IsEnclosed())
 			{
 				currentTokens.Left = remainingToken;
-				yield return currentTokens;
+				//yield return currentTokens;
+				tokens.Add(currentTokens);
 			}
+			//else if (!remainingToken.HasOperation())
+			//{
+			//    tokens.AddRange(GetTokens(remainingToken + " eq true"));
+			//}
+
+			return tokens;
 		}
 
 		private static bool HasOrphanedOpenParenthesis(string expression)
 		{
 			Contract.Requires(expression != null);
 
-			var lastOpen = expression.LastIndexOf('(');
-			var lastClose = expression.LastIndexOf(')');
+			var opens = new List<int>();
+			var closes = new List<int>();
+			var index = expression.IndexOf('(');
+			while (index > -1)
+			{
+				opens.Add(index);
+				index = expression.IndexOf('(', index + 1);
+			}
 
-			return lastOpen > lastClose;
+			index = expression.IndexOf(')');
+			while (index > -1)
+			{
+				closes.Add(index);
+				index = expression.IndexOf(')', index + 1);
+			}
+
+			var pairs = opens.Zip(closes, (o, c) => new Tuple<int, int>(o, c));
+			var hasOrphan = opens.Count == closes.Count && pairs.Any(x => x.Item2 < x.Item1);
+
+			return hasOrphan;
 		}
 	}
 }
