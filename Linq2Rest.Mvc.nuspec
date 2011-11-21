@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
-		<id>Linq2Rest</id>
+		<id>Linq2Rest.Mvc</id>
 		<version>0.8.0.0</version>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
@@ -11,20 +11,28 @@
 		<description>Parses OData system query parameters to create a LINQ query that can be used to filter a model set. Also exposes a LINQ provider for web services supporting the OData query parameters.</description>
 		<tags>OData LINQ REST</tags>
 		<references>
-			<reference file="Linq2Rest.dll" />
-			<reference file="Linq2Rest.xml" />
+			<reference file="Linq2Rest.Mvc.dll" />
+			<reference file="Linq2Rest.Mvc.xml" />
 		</references>
+		<dependencies>
+			<dependency id="Linq2Rest"
+						version="0.8.0.0" />
+		</dependencies>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System.Web"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Web.Extensions"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Web.Mvc"
 							   targetFramework="net40" />
 		</frameworkAssemblies>
 	</metadata>
 	<files>
-		<file src="Linq2Rest\bin\Release\Linq2Rest.dll"
+		<file src="Linq2Rest.Mvc\bin\Release\Linq2Rest.Mvc.dll"
 			  target="lib\Net40" />
-		<file src="Linq2Rest\bin\Release\Linq2Rest.xml"
+		<file src="Linq2Rest.Mvc\bin\Release\Linq2Rest.Mvc.xml"
 			  target="lib\Net40" />
-		<file src="Linq2Rest\bin\Release\CodeContracts\Linq2Rest.Contracts.dll"
+		<file src="Linq2Rest.Mvc\bin\Release\CodeContracts\Linq2Rest.Mvc.Contracts.dll"
 			  target="lib\Net40\CodeContracts" />
 	</files>
 </package>
