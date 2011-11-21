@@ -87,8 +87,6 @@
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Mvc" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MethodProvider.cs" />
@@ -100,8 +98,6 @@
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="Parser\ISelectExpressionFactory.cs" />
     <Compile Include="Parser\ModelFilter.cs" />
-    <Compile Include="Mvc\ModelFilterBinder.cs" />
-    <Compile Include="Mvc\ModelFilterExtensions.cs" />
     <Compile Include="Parser\ParameterParser.cs" />
     <Compile Include="Parser\SelectExpressionFactory.cs" />
     <Compile Include="Parser\TokenOperatorExtensions.cs" />
@@ -119,7 +115,6 @@
     <Compile Include="Provider\RestContext.cs" />
     <Compile Include="Provider\RestQueryable.cs" />
     <Compile Include="Provider\RestQueryProvider.cs" />
-    <Compile Include="Provider\SimpleAnonymousTypeSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Settings.StyleCop" />

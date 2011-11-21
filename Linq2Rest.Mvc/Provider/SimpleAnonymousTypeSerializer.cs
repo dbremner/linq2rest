@@ -3,7 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Provider
+namespace Linq2Rest.Mvc.Provider
 {
 	using System;
 	using System.Collections;
@@ -12,6 +12,8 @@ namespace Linq2Rest.Provider
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Web.Script.Serialization;
+
+	using Linq2Rest.Provider;
 
 	public class SimpleAnonymousTypeSerializer<T> : ISerializer<T>
 	{

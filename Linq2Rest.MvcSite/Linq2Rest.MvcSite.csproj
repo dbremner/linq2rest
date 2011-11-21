@@ -83,6 +83,7 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>DoNotBuild</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <DocumentationFile>bin\Linq2Rest.Mvc.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework">
@@ -155,6 +156,10 @@
     <Content Include="Views\Simple\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Linq2Rest.Mvc\Linq2Rest.Mvc.csproj">
+      <Project>{B4462F0E-AF9E-4955-81D7-5E487D9178A8}</Project>
+      <Name>Linq2Rest.Mvc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Linq2Rest\Linq2Rest.csproj">
       <Project>{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}</Project>
       <Name>Linq2Rest</Name>
