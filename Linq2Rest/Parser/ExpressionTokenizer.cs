@@ -14,7 +14,6 @@ namespace Linq2Rest.Parser
 	{
 		public static IEnumerable<TokenSet> GetTokens(this string expression)
 		{
-			var tokens = new List<TokenSet>();
 			var cleanMatch = expression.EnclosedMatch();
 
 			if (cleanMatch.Success)
@@ -28,7 +27,7 @@ namespace Linq2Rest.Parser
 
 			if (expression.IsImpliedBoolean())
 			{
-				return tokens;
+				yield break;
 			}
 
 			var blocks = expression.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -39,53 +38,43 @@ namespace Linq2Rest.Parser
 
 			for (int i = 0; i < blocks.Length; i++)
 			{
-				if (blocks[i].StartsWith("(") || openGroups > 0)
-				{
-					openGroups += blocks[i].Where(c => c == '(').Count();
-				}
-
-				if (openGroups > 0 && blocks[i].EndsWith(")"))
-				{
-					openGroups -= blocks[i].Where(c => c == ')').Count();
-				}
+				var netEnclosed = blocks[i].Count(c => c == '(') - blocks[i].Count(c => c == ')');
+				openGroups += netEnclosed;
 
 				if (openGroups == 0)
 				{
-					int i1 = i;
-					if (blocks[i1].IsOperation())
+					if (blocks[i].IsOperation())
 					{
 						var expression1 = startExpression;
 
 						if (string.IsNullOrWhiteSpace(currentTokens.Left))
 						{
+							int i1 = i;
 							currentTokens.Left = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
 							currentTokens.Operation = blocks[i];
 							startExpression = i + 1;
 
-							if (blocks[i1].IsCombinationOperation())
+							if (blocks[i].IsCombinationOperation())
 							{
-								currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j > i1));
+								currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j > i));
 
-								//yield return currentTokens;
-								//yield break;
-								tokens.Add(currentTokens);
-								return tokens;
+								yield return currentTokens;
+								yield break;
 							}
 						}
 						else
 						{
+							int i1 = i;
 							currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j >= expression1 && j < i1));
 
-							tokens.Add(currentTokens);
-							// yield return currentTokens;
+							yield return currentTokens;
 
-							startExpression = i1 + 1;
+							startExpression = i + 1;
 							currentTokens = new TokenSet();
 
-							if (blocks[i1].IsCombinationOperation())
+							if (blocks[i].IsCombinationOperation())
 							{
-								// yield return new TokenSet { Operation = blocks[i].ToLowerInvariant() };
-								tokens.Add(new TokenSet { Operation = blocks[i].ToLowerInvariant() });
+								yield return new TokenSet { Operation = blocks[i].ToLowerInvariant() };
 							}
 						}
 					}
@@ -97,21 +86,13 @@ namespace Linq2Rest.Parser
 			if (!string.IsNullOrWhiteSpace(currentTokens.Left))
 			{
 				currentTokens.Right = remainingToken;
-				//yield return currentTokens;
-				tokens.Add(currentTokens);
+				yield return currentTokens;
 			}
 			else if (remainingToken.IsEnclosed())
 			{
 				currentTokens.Left = remainingToken;
-				//yield return currentTokens;
-				tokens.Add(currentTokens);
+				yield return currentTokens;
 			}
-			//else if (!remainingToken.HasOperation())
-			//{
-			//    tokens.AddRange(GetTokens(remainingToken + " eq true"));
-			//}
-
-			return tokens;
 		}
 
 		private static bool HasOrphanedOpenParenthesis(string expression)
