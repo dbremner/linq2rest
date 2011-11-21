@@ -49,7 +49,7 @@ namespace Linq2Rest.Provider
 
 		public object Execute(Expression expression)
 		{
-			Contract.Requires(expression != null);
+			Contract.Assume(expression != null);
 
 			var methodCallExpression = expression as MethodCallExpression;
 
@@ -61,7 +61,7 @@ namespace Linq2Rest.Provider
 
 		public TResult Execute<TResult>(Expression expression)
 		{
-			Contract.Requires<ArgumentNullException>(expression != null);
+			Contract.Assume(expression != null);
 			return (TResult)Execute(expression);
 		}
 
