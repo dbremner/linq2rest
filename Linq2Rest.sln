@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest", "Linq2Rest\Linq
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Tests", "Linq2Rest.Tests\Linq2Rest.Tests.csproj", "{0D3564AF-F8C9-42A4-8A01-A4C95526FA28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Mvc", "Linq2Rest.Mvc\Linq2Rest.Mvc.csproj", "{E0D84C0C-2286-4370-8635-0FFB673DCEA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.MvcSite", "Linq2Rest.MvcSite\Linq2Rest.MvcSite.csproj", "{E0D84C0C-2286-4370-8635-0FFB673DCEA6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5D21EFA-44E8-4766-99B4-A4292F71CBCD}"
 	ProjectSection(SolutionItems) = preProject
