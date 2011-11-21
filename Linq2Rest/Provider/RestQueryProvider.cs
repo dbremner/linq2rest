@@ -61,6 +61,7 @@ namespace Linq2Rest.Provider
 
 		public TResult Execute<TResult>(Expression expression)
 		{
+			Contract.Requires<ArgumentNullException>(expression != null);
 			return (TResult)Execute(expression);
 		}
 

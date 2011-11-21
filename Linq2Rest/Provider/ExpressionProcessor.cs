@@ -47,14 +47,16 @@ namespace Linq2Rest.Provider
 				return ProcessExpression((expression as LambdaExpression).Body);
 			}
 
-			if (expression is MemberExpression)
+			var memberExpression = expression as MemberExpression;
+			if (memberExpression != null)
 			{
-				var memberExpression = expression as MemberExpression;
 				if (!IsMemberOfParameter(memberExpression))
 				{
 					var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
 					if (!(collapsedExpression is MemberExpression))
 					{
+						Contract.Assume(collapsedExpression != null);
+
 						return ProcessExpression(collapsedExpression);
 					}
 
@@ -63,16 +65,20 @@ namespace Linq2Rest.Provider
 
 				var memberCall = GetMemberCall(memberExpression);
 
+				var innerExpression = memberExpression.Expression;
+
+				Contract.Assume(innerExpression != null);
+
 				return string.IsNullOrWhiteSpace(memberCall)
 						? memberExpression.Member.Name
-						: string.Format("{0}({1})", memberCall, ProcessExpression(memberExpression.Expression));
+						: string.Format("{0}({1})", memberCall, ProcessExpression(innerExpression));
 			}
 
 			if (expression is ConstantExpression)
 			{
 				var value = (expression as ConstantExpression).Value;
 
-				Contract.Assert(type != null);
+				Contract.Assume(type != null);
 
 				return string.Format(
 					Thread.CurrentThread.CurrentCulture,
@@ -147,6 +153,7 @@ namespace Linq2Rest.Provider
 		private static string GetMemberCall(MemberExpression memberExpression)
 		{
 			Contract.Requires(memberExpression != null);
+			Contract.Ensures(Contract.Result<string>() != null);
 
 			var declaringType = memberExpression.Member.DeclaringType;
 			var name = memberExpression.Member.Name;
