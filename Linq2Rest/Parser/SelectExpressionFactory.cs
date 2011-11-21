@@ -7,6 +7,7 @@ namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Threading;
@@ -31,7 +32,11 @@ namespace Linq2Rest.Parser
 
 			if (_knownSelections.ContainsKey(key))
 			{
-				return _knownSelections[key];
+				var knownSelection = _knownSelections[key];
+
+				Contract.Assume(knownSelection != null);
+
+				return knownSelection;
 			}
 
 			var elementType = typeof(T);
@@ -55,6 +60,8 @@ namespace Linq2Rest.Parser
 
 				Monitor.Exit(_knownSelections);
 			}
+
+			Contract.Assume(selector != null, "Created above.");
 
 			return selector;
 		}

@@ -49,8 +49,12 @@ namespace Linq2Rest.Provider
 
 		public object Execute(Expression expression)
 		{
-			return (expression is MethodCallExpression
-					? (expression as MethodCallExpression).ProcessMethodCall(_parameterBuilder, GetResults)
+			Contract.Requires(expression != null);
+
+			var methodCallExpression = expression as MethodCallExpression;
+
+			return (methodCallExpression != null
+					? methodCallExpression.ProcessMethodCall(_parameterBuilder, GetResults)
 					: expression.ProcessExpression())
 					?? GetResults(_parameterBuilder);
 		}

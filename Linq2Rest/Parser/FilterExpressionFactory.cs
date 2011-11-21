@@ -374,7 +374,7 @@ namespace Linq2Rest.Parser
 							var current = right == null ? null : GetOperation(tokenSet.Operation, left, right);
 							existing = GetOperation(combiner, existing, current ?? left);
 						}
-						else
+						else if (right != null)
 						{
 							existing = GetOperation(tokenSet.Operation, left, right);
 						}
