@@ -24,6 +24,9 @@ namespace Linq2Rest.Provider
 			}
 
 			var method = methodCall.Method.Name;
+
+			Contract.Assume(methodCall.Arguments.Count > 1);
+
 			var firstArgument = methodCall.Arguments[1];
 
 			Contract.Assume(firstArgument != null);
@@ -31,14 +34,10 @@ namespace Linq2Rest.Provider
 			switch (method)
 			{
 				case "Where":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					builder.FilterParameter = firstArgument.ProcessExpression();
 					break;
 				case "Select":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					var unaryExpression = firstArgument as UnaryExpression;
 					if (unaryExpression != null)
@@ -64,44 +63,30 @@ namespace Linq2Rest.Provider
 
 					break;
 				case "OrderBy":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					builder.OrderByParameter.Add(firstArgument.ProcessExpression());
 					break;
 				case "OrderByDescending":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					builder.OrderByParameter.Add(firstArgument.ProcessExpression() + " desc");
 					break;
 				case "ThenBy":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					builder.OrderByParameter.Add(firstArgument.ProcessExpression());
 					break;
 				case "ThenByDescending":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					builder.OrderByParameter.Add(firstArgument.ProcessExpression() + " desc");
 					break;
 				case "Take":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					builder.TakeParameter = firstArgument.ProcessExpression();
 					break;
 				case "Skip":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					builder.SkipParameter = firstArgument.ProcessExpression();
 					break;
 				default:
-					Contract.Assume(methodCall.Arguments.Count >= 1);
-
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					var results = resultLoader(builder);
 
