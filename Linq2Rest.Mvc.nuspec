@@ -8,8 +8,8 @@
 		<licenseUrl>http://go.microsoft.com/fwlink/?LinkID=131993</licenseUrl>
 		<projectUrl>https://bitbucket.org/jjrdk/linq2rest</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>Parses OData system query parameters to create a LINQ query that can be used to filter a model set. Also exposes a LINQ provider for web services supporting the OData query parameters.</description>
-		<tags>OData LINQ REST</tags>
+		<description>ASP.NET MVC extensions for Linq2Rest to support binding a Linq2Rest ModelFilter using a ModelBinder.</description>
+		<tags>OData LINQ REST ASP.NET MVC</tags>
 		<references>
 			<reference file="Linq2Rest.Mvc.dll" />
 			<reference file="Linq2Rest.Mvc.xml" />
@@ -19,6 +19,8 @@
 						version="0.8.0.0" />
 		</dependencies>
 		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System"
+							   targetFramework="net40" />
 			<frameworkAssembly assemblyName="System.Web"
 							   targetFramework="net40" />
 			<frameworkAssembly assemblyName="System.Web.Extensions"
