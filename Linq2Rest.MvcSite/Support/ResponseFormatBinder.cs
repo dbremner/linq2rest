@@ -3,7 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Mvc.Support
+namespace Linq2Rest.MvcSite.Support
 {
 	using System;
 	using System.Collections.Generic;

@@ -3,13 +3,14 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Mvc.Controllers
+namespace Linq2Rest.MvcSite.Controllers
 {
 	using System;
 	using System.Web.Mvc;
 
-	using Linq2Rest.Mvc.Models;
-	using Linq2Rest.Mvc.Support;
+	using Linq2Rest.Mvc;
+	using Linq2Rest.MvcSite.Models;
+	using Linq2Rest.MvcSite.Support;
 	using Linq2Rest.Parser;
 
 	public class SimpleController : Controller
@@ -18,8 +19,7 @@ namespace Linq2Rest.Mvc.Controllers
 
 		public ActionResult Index(ModelFilter<SimpleDto> filter, ResponseFormat format)
 		{
-			var model = _db.SimpleDtos
-				.Filter(filter);
+			var model = _db.SimpleDtos.Filter(filter);
 
 			switch (format)
 			{
