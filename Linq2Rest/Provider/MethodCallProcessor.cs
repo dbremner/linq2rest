@@ -25,21 +25,19 @@ namespace Linq2Rest.Provider
 
 			var method = methodCall.Method.Name;
 
-			Contract.Assume(methodCall.Arguments.Count > 1);
-
-			var firstArgument = methodCall.Arguments[1];
-
-			Contract.Assume(firstArgument != null);
-
 			switch (method)
 			{
 				case "Where":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.FilterParameter = firstArgument.ProcessExpression();
+					builder.FilterParameter = methodCall.Arguments[1].ProcessExpression();
 					break;
 				case "Select":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					var unaryExpression = firstArgument as UnaryExpression;
+					var unaryExpression = methodCall.Arguments[1] as UnaryExpression;
 					if (unaryExpression != null)
 					{
 						var lambdaExpression = unaryExpression.Operand as LambdaExpression;
@@ -63,30 +61,44 @@ namespace Linq2Rest.Provider
 
 					break;
 				case "OrderBy":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.OrderByParameter.Add(firstArgument.ProcessExpression());
+					builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression());
 					break;
 				case "OrderByDescending":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.OrderByParameter.Add(firstArgument.ProcessExpression() + " desc");
+					builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression() + " desc");
 					break;
 				case "ThenBy":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.OrderByParameter.Add(firstArgument.ProcessExpression());
+					builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression());
 					break;
 				case "ThenByDescending":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.OrderByParameter.Add(firstArgument.ProcessExpression() + " desc");
+					builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression() + " desc");
 					break;
 				case "Take":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.TakeParameter = firstArgument.ProcessExpression();
+					builder.TakeParameter = methodCall.Arguments[1].ProcessExpression();
 					break;
 				case "Skip":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.SkipParameter = firstArgument.ProcessExpression();
+					builder.SkipParameter = methodCall.Arguments[1].ProcessExpression();
 					break;
 				default:
+					Contract.Assume(methodCall.Arguments.Count >= 1);
+
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 					var results = resultLoader(builder);
 
