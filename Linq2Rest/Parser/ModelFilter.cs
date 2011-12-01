@@ -9,17 +9,18 @@ namespace Linq2Rest.Parser
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
+	using System.Linq.Expressions;
 	using System.Web.UI.WebControls;
 
 	public class ModelFilter<T>
 	{
 		private readonly int _skip;
 		private readonly int _top;
-		private readonly Func<T, bool> _filterExpression;
-		private readonly Func<T, object> _selectExpression;
+		private readonly Expression<Func<T, bool>> _filterExpression;
+		private readonly Expression<Func<T, object>> _selectExpression;
 		private readonly IEnumerable<SortDescription<T>> _sortDescriptions;
 
-		public ModelFilter(Func<T, bool> filterExpression, Func<T, object> selectExpression, IEnumerable<SortDescription<T>> sortDescriptions, int skip, int top)
+		public ModelFilter(Expression<Func<T, bool>> filterExpression, Expression<Func<T, object>> selectExpression, IEnumerable<SortDescription<T>> sortDescriptions, int skip, int top)
 		{
 			_skip = skip;
 			_top = top;
@@ -32,7 +33,7 @@ namespace Linq2Rest.Parser
 		{
 			Contract.Requires<ArgumentNullException>(model != null);
 
-			var result = _filterExpression != null ? model.Where(_filterExpression) : model;
+			var result = _filterExpression != null ? model.AsQueryable().Where(_filterExpression) : model;
 
 			if (_sortDescriptions != null && _sortDescriptions.Any())
 			{
@@ -69,7 +70,7 @@ namespace Linq2Rest.Parser
 				result = result.Take(_top);
 			}
 
-			return _selectExpression == null ? result.Cast<object>() : result.Select(_selectExpression);
+			return _selectExpression == null ? result.Cast<object>() : result.AsQueryable().Select(_selectExpression);
 		}
 	}
 }

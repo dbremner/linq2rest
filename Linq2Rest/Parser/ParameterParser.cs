@@ -50,7 +50,7 @@ namespace Linq2Rest.Parser
 			var selectFunction = _selectExpressionFactory.Create(selects);
 
 			var modelFilter = new ModelFilter<T>(
-				filterExpression.Compile(),
+				filterExpression,
 				selectFunction,
 				sortDescriptions,
 				string.IsNullOrWhiteSpace(skip) ? -1 : Convert.ToInt32(skip),

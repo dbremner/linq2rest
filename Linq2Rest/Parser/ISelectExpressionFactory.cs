@@ -7,28 +7,29 @@ namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Diagnostics.Contracts;
+	using System.Linq.Expressions;
 
 	/// <summary>
 	/// Defines the public interface for a SelectExpressionFactory.
 	/// </summary>
 	/// <typeparam name="T">The <see cref="Type"/> to create expression for.</typeparam>
 	[ContractClass(typeof(SelectionExpressionFactoryContracts<>))]
-	public interface ISelectExpressionFactory<in T>
+	public interface ISelectExpressionFactory<T>
 	{
 		/// <summary>
 		/// Creates a select expression.
 		/// </summary>
 		/// <param name="selection">The properties to select.</param>
 		/// <returns>An instance of a <see cref="Func{T1,TResult}"/></returns>
-		Func<T, object> Create(string selection);
+		Expression<Func<T, object>> Create(string selection);
 	}
 
 	[ContractClassFor(typeof(ISelectExpressionFactory<>))]
 	internal abstract class SelectionExpressionFactoryContracts<T> : ISelectExpressionFactory<T>
 	{
-		public Func<T, object> Create(string selection)
+		public Expression<Func<T, object>> Create(string selection)
 		{
-			Contract.Ensures(Contract.Result<Func<T, object>>() != null);
+			Contract.Ensures(Contract.Result<Expression<Func<T, object>>>() != null);
 
 			throw new NotImplementedException();
 		}
