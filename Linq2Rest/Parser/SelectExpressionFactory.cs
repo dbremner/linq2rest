@@ -14,14 +14,14 @@ namespace Linq2Rest.Parser
 
 	internal class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{
-		private readonly IDictionary<string, Func<T, object>> _knownSelections;
+		private readonly IDictionary<string, Expression<Func<T, object>>> _knownSelections;
 
 		public SelectExpressionFactory()
 		{
-			_knownSelections = new Dictionary<string, Func<T, object>> { { string.Empty, x => x } };
+			_knownSelections = new Dictionary<string, Expression<Func<T, object>>> { { string.Empty, x => x } };
 		}
 
-		public Func<T, object> Create(string selection)
+		public Expression<Func<T, object>> Create(string selection)
 		{
 			var fieldNames = (selection ?? string.Empty).Split(',')
 				.Where(x => !string.IsNullOrWhiteSpace(x))
@@ -49,10 +49,9 @@ namespace Linq2Rest.Parser
 
 			var constructorInfo = dynamicType.GetConstructor(Type.EmptyTypes);
 
-			var selector =
-				Expression.Lambda<Func<T, object>>(
-					Expression.MemberInit(Expression.New(constructorInfo), bindings), sourceItem)
-					.Compile();
+			var selector = Expression.Lambda<Func<T, object>>(
+			                                                  Expression.MemberInit(Expression.New(constructorInfo), bindings),
+			                                                  sourceItem);
 
 			if (Monitor.TryEnter(_knownSelections, 1000))
 			{
