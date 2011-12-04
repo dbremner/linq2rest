@@ -70,7 +70,9 @@ namespace Linq2Rest.Parser
 				result = result.Take(_top);
 			}
 
-			return _selectExpression == null ? result.Cast<object>() : result.AsQueryable().Select(_selectExpression);
+			return _selectExpression == null
+			       	? result.OfType<object>()
+			       	: result.ToArray().AsQueryable().Select(_selectExpression);
 		}
 	}
 }

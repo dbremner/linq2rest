@@ -27,11 +27,6 @@ namespace Linq2Rest.Parser
 	[ContractClassFor(typeof(ISelectExpressionFactory<>))]
 	internal abstract class SelectionExpressionFactoryContracts<T> : ISelectExpressionFactory<T>
 	{
-		public Expression<Func<T, object>> Create(string selection)
-		{
-			Contract.Ensures(Contract.Result<Expression<Func<T, object>>>() != null);
-
-			throw new NotImplementedException();
-		}
+		public abstract Expression<Func<T, object>> Create(string selection);
 	}
 }

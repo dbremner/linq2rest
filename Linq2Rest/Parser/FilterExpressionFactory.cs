@@ -226,9 +226,7 @@ namespace Linq2Rest.Parser
 			switch (function.ToLowerInvariant())
 			{
 				case "substringof":
-					return Expression.GreaterThan(
-						Expression.Call(right, MethodProvider.IndexOfMethod, new[] { left, MethodProvider.IgnoreCaseExpression }),
-						Expression.Constant(-1, typeof(int)));
+					return Expression.Call(right, MethodProvider.ContainsMethod, new[] { left });
 				case "endswith":
 					return Expression.Call(left, MethodProvider.EndsWithMethod, new[] { right, MethodProvider.IgnoreCaseExpression });
 				case "startswith":

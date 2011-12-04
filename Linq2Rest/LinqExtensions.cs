@@ -49,9 +49,9 @@ namespace Linq2Rest
 
 			var dictionary = fields.ToDictionary(f => f.Name, f => f.PropertyType);
 
+			Monitor.Enter(BuiltTypes);
 			try
 			{
-				Monitor.Enter(BuiltTypes);
 				var className = GetTypeKey(dictionary);
 
 				if (BuiltTypes.ContainsKey(className))
