@@ -98,7 +98,7 @@
     <Compile Include="Parser\IParameterParser.cs" />
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="Parser\ISelectExpressionFactory.cs" />
-    <Compile Include="Parser\ModelFilter.cs" />
+    <Compile Include="ModelFilter.cs" />
     <Compile Include="Parser\ParameterParser.cs" />
     <Compile Include="Parser\SelectExpressionFactory.cs" />
     <Compile Include="Parser\TokenOperatorExtensions.cs" />

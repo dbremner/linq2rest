@@ -18,7 +18,10 @@ namespace Linq2Rest.Parser
 
 		public SelectExpressionFactory()
 		{
-			_knownSelections = new Dictionary<string, Expression<Func<T, object>>> { { string.Empty, x => x } };
+			_knownSelections = new Dictionary<string, Expression<Func<T, object>>>
+			                   	{
+			                   		{ string.Empty, null }
+			                   	};
 		}
 
 		public Expression<Func<T, object>> Create(string selection)
@@ -34,8 +37,6 @@ namespace Linq2Rest.Parser
 			{
 				var knownSelection = _knownSelections[key];
 
-				Contract.Assume(knownSelection != null);
-
 				return knownSelection;
 			}
 
@@ -44,8 +45,9 @@ namespace Linq2Rest.Parser
 			var dynamicType = sourceProperties.Values.GetDynamicType();
 
 			var sourceItem = Expression.Parameter(elementType, "t");
-			var bindings =
-				dynamicType.GetFields().Select(p => Expression.Bind(p, Expression.Property(sourceItem, sourceProperties[p.Name])));
+			var bindings = dynamicType
+				.GetFields()
+				.Select(p => Expression.Bind(p, Expression.Property(sourceItem, sourceProperties[p.Name])));
 
 			var constructorInfo = dynamicType.GetConstructor(Type.EmptyTypes);
 
