@@ -14,6 +14,7 @@ namespace Linq2Rest
 		public static readonly ConstantExpression IgnoreCaseExpression;
 
 		private static readonly MethodInfo InnerChangeTypeMethod;
+		private static readonly MethodInfo InnerContainsMethod;
 		private static readonly MethodInfo InnerIndexOfMethod;
 		private static readonly MethodInfo EndsWithMethod1;
 		private static readonly MethodInfo StartsWithMethod1;
@@ -40,13 +41,15 @@ namespace Linq2Rest
 			var stringType = typeof(string);
 			var datetimeType = typeof(DateTime);
 			var mathType = typeof(Math);
+			var stringComparisonType = typeof(StringComparison);
 
 			InnerChangeTypeMethod = typeof(Convert).GetMethod("ChangeType", new[] { typeof(object), typeof(Type) });
 			IgnoreCaseExpression = Expression.Constant(StringComparison.OrdinalIgnoreCase);
 
-			InnerIndexOfMethod = stringType.GetMethod("IndexOf", new[] { stringType, typeof(StringComparison) });
-			EndsWithMethod1 = stringType.GetMethod("EndsWith", new[] { stringType, typeof(StringComparison) });
-			StartsWithMethod1 = stringType.GetMethod("StartsWith", new[] { stringType, typeof(StringComparison) });
+			InnerContainsMethod = stringType.GetMethod("Contains", new[] { stringType });
+			InnerIndexOfMethod = stringType.GetMethod("IndexOf", new[] { stringType, stringComparisonType });
+			EndsWithMethod1 = stringType.GetMethod("EndsWith", new[] { stringType, stringComparisonType });
+			StartsWithMethod1 = stringType.GetMethod("StartsWith", new[] { stringType, stringComparisonType });
 			LengthProperty1 = stringType.GetProperty("Length", Type.EmptyTypes);
 			SubstringMethod1 = stringType.GetMethod("Substring", new[] { typeof(int) });
 			ToLowerMethod1 = stringType.GetMethod("ToLowerInvariant", Type.EmptyTypes);
@@ -76,6 +79,11 @@ namespace Linq2Rest
 		public static MethodInfo IndexOfMethod
 		{
 			get { return InnerIndexOfMethod; }
+		}
+
+		public static MethodInfo ContainsMethod
+		{
+			get { return InnerContainsMethod; }
 		}
 
 		public static MethodInfo EndsWithMethod
