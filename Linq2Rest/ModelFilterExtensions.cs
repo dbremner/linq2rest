@@ -3,14 +3,12 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Mvc
+namespace Linq2Rest
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
-
-	using Linq2Rest.Parser;
 
 	public static class ModelFilterExtensions
 	{

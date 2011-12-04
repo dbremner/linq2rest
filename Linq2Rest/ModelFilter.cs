@@ -3,7 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Parser
+namespace Linq2Rest
 {
 	using System;
 	using System.Collections.Generic;
@@ -11,6 +11,8 @@ namespace Linq2Rest.Parser
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Web.UI.WebControls;
+
+	using Linq2Rest.Parser;
 
 	public class ModelFilter<T>
 	{

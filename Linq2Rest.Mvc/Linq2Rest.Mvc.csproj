@@ -94,7 +94,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModelFilterBinder.cs" />
-    <Compile Include="ModelFilterExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\SimpleAnonymousTypeSerializer.cs" />
   </ItemGroup>

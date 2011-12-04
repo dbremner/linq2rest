@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MethodProvider.cs" />
+    <Compile Include="ModelFilterExtensions.cs" />
     <Compile Include="Parser\ExpressionTokenizer.cs" />
     <Compile Include="Parser\FilterExpressionFactory.cs" />
     <Compile Include="Parser\FunctionTokenSet.cs" />
