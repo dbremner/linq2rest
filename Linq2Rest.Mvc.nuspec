@@ -16,7 +16,7 @@
 		</references>
 		<dependencies>
 			<dependency id="Linq2Rest"
-						version="0.8.0.0" />
+						version="0.9.0.0" />
 		</dependencies>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System"
