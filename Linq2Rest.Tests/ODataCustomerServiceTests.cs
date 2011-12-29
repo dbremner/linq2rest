@@ -26,7 +26,6 @@ namespace Linq2Rest.Tests
 		}
 
 		[Test]
-		[Ignore("services.odata.org is down")]
 		public void WhenRequestingCustomerByNameThenLoadsCustomer()
 		{
 			var results = _customerContext.Query.Where(x => x.CompanyName.IndexOf("Alfreds") > -1).ToArray();
@@ -35,7 +34,6 @@ namespace Linq2Rest.Tests
 		}
 
 		[Test]
-		[Ignore("services.odata.org is down")]
 		public void WhenRequestingCustomerByNameEndsWithThenLoadsCustomer()
 		{
 			var results = _customerContext.Query.Where(x => x.CompanyName.EndsWith("Futterkiste")).ToArray();
@@ -44,7 +42,6 @@ namespace Linq2Rest.Tests
 		}
 
 		[Test]
-		[Ignore("services.odata.org is down")]
 		public void WhenRequestingCustomerByNameStartsWithThenLoadsCustomer()
 		{
 			var results = _customerContext.Query.Where(x => x.CompanyName.StartsWith("Alfr")).ToArray();
@@ -53,7 +50,6 @@ namespace Linq2Rest.Tests
 		}
 
 		[Test]
-		[Ignore("services.odata.org is down")]
 		public void WhenRequestingCustomerByNameLengthThenLoadsCustomer()
 		{
 			var results = _customerContext.Query.Where(x => x.CompanyName.Length > 10).ToArray();
