@@ -90,6 +90,7 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IModelFilter.cs" />
     <Compile Include="MethodProvider.cs" />
     <Compile Include="ModelFilterExtensions.cs" />
     <Compile Include="Parser\ExpressionTokenizer.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="Parser\ISelectExpressionFactory.cs" />
     <Compile Include="ModelFilter.cs" />
+    <Compile Include="Parser\ISortExpressionFactory.cs" />
     <Compile Include="Parser\ParameterParser.cs" />
     <Compile Include="Parser\SelectExpressionFactory.cs" />
     <Compile Include="Parser\TokenOperatorExtensions.cs" />

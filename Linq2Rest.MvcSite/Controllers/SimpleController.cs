@@ -8,16 +8,14 @@ namespace Linq2Rest.MvcSite.Controllers
 	using System;
 	using System.Web.Mvc;
 
-	using Linq2Rest.Mvc;
 	using Linq2Rest.MvcSite.Models;
 	using Linq2Rest.MvcSite.Support;
-	using Linq2Rest.Parser;
 
 	public class SimpleController : Controller
 	{
 		private readonly SimpleContext _db = new SimpleContext();
 
-		public ActionResult Index(ModelFilter<SimpleDto> filter, ResponseFormat format)
+		public ActionResult Index(IModelFilter<SimpleDto> filter, ResponseFormat format)
 		{
 			var model = _db.SimpleDtos.Filter(filter);
 

@@ -7,10 +7,7 @@ namespace Linq2Rest.Tests.Parser
 {
 	using System.Collections.Specialized;
 	using System.Linq;
-
-	using Linq2Rest.Mvc;
 	using Linq2Rest.Parser;
-
 	using NUnit.Framework;
 
 	public class ParameterParserTests
@@ -48,7 +45,7 @@ namespace Linq2Rest.Tests.Parser
 		public void WhenRequestContainsFilterParameterAndSortThenReturnedModelFilterFilteringAndSortedByValue()
 		{
 			var filter = GetModelFilter(new NameValueCollection { { "$filter", "IntValue ge 1" }, { "$orderby", "IntValue desc" } });
-			var filteredItems = filter.Filter(_items);
+			var filteredItems = filter.Filter(_items).ToArray();
 
 			Assert.AreEqual(3, filteredItems.OfType<FakeItem>().ElementAt(0).IntValue);
 			Assert.AreEqual(2, filteredItems.OfType<FakeItem>().ElementAt(1).IntValue);
@@ -65,7 +62,7 @@ namespace Linq2Rest.Tests.Parser
 					{ "$top", "1" },
 					{ "$orderby", "IntValue desc" }
 				});
-			var filteredItems = filter.Filter(_items);
+			var filteredItems = filter.Filter(_items).ToArray();
 
 			Assert.AreEqual(2, filteredItems.OfType<FakeItem>().ElementAt(0).IntValue);
 			Assert.AreEqual(1, filteredItems.Count());
@@ -116,7 +113,7 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(1, filteredItems.Count());
 		}
 
-		private ModelFilter<FakeItem> GetModelFilter(NameValueCollection parameters)
+		private IModelFilter<FakeItem> GetModelFilter(NameValueCollection parameters)
 		{
 			var filter = _parser.Parse(parameters);
 			return filter;

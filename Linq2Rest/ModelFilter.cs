@@ -14,7 +14,7 @@ namespace Linq2Rest
 
 	using Linq2Rest.Parser;
 
-	public class ModelFilter<T>
+	internal class ModelFilter<T> : IModelFilter<T>
 	{
 		private readonly int _skip;
 		private readonly int _top;

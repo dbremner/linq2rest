@@ -175,6 +175,15 @@ namespace Linq2Rest.Parser
 			switch (token.ToLowerInvariant())
 			{
 				case "eq":
+					if (left.Type.IsEnum && left.Type.GetCustomAttributes(typeof(FlagsAttribute), true).Any())
+					{
+						var underlyingType = Enum.GetUnderlyingType(left.Type);
+						var leftValue = Expression.Convert(left, underlyingType);
+						var rightValue = Expression.Convert(right, underlyingType);
+						var andExpression = Expression.And(leftValue, rightValue);
+						return Expression.Equal(andExpression, rightValue);
+					}
+
 					return Expression.Equal(left, right);
 				case "ne":
 					return Expression.NotEqual(left, right);
@@ -466,6 +475,7 @@ namespace Linq2Rest.Parser
 					}
 				}
 			}
+
 			return null;
 		}
 
