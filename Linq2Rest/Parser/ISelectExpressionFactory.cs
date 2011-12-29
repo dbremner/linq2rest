@@ -14,7 +14,7 @@ namespace Linq2Rest.Parser
 	/// </summary>
 	/// <typeparam name="T">The <see cref="Type"/> to create expression for.</typeparam>
 	[ContractClass(typeof(SelectionExpressionFactoryContracts<>))]
-	public interface ISelectExpressionFactory<in T>
+	public interface ISelectExpressionFactory<T>
 	{
 		/// <summary>
 		/// Creates a select expression.
@@ -27,9 +27,9 @@ namespace Linq2Rest.Parser
 	[ContractClassFor(typeof(ISelectExpressionFactory<>))]
 	internal abstract class SelectionExpressionFactoryContracts<T> : ISelectExpressionFactory<T>
 	{
-		public Func<T, object> Create(string selection)
+		public Expression<Func<T, object>> Create(string selection)
 		{
-			Contract.Ensures(Contract.Result<Func<T, object>>() != null);
+			Contract.Ensures(Contract.Result<Expression<Func<T, object>>>() != null);
 
 			throw new NotImplementedException();
 		}
