@@ -24,6 +24,7 @@ namespace Linq2Rest.Tests.Parser
 		}
 
 		[Test]
+		[TestCase("ChoiceValue eq This", "x => ((Convert(x.ChoiceValue) & Convert(This)) == Convert(This))")]
 		[TestCase("IntValue eq 1", "x => (x.IntValue == 1)")]
 		[TestCase("IntValue eq (10 mod 2)", "x => (x.IntValue == (10 % 2))")]
 		[TestCase("(10 mod 2) eq IntValue", "x => ((10 % 2) == x.IntValue)")]

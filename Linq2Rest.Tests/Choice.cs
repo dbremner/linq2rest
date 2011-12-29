@@ -5,13 +5,13 @@
 
 namespace Linq2Rest.Tests
 {
-	using Linq2Rest.Provider;
+	using System;
 
-	public class TestODataSerializerFactory : ISerializerFactory
+	[Flags]
+	public enum Choice
 	{
-		public ISerializer<T> Create<T>()
-		{
-			return new TestODataSerializer<T>();
-		}
+		This = 1,
+		That = 2,
+		Either = This | That
 	}
 }

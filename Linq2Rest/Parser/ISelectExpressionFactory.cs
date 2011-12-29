@@ -20,7 +20,7 @@ namespace Linq2Rest.Parser
 		/// Creates a select expression.
 		/// </summary>
 		/// <param name="selection">The properties to select.</param>
-		/// <returns>An instance of a <see cref="Func{T1,TResult}"/></returns>
+		/// <returns>An instance of a <see cref="Func{T1,TResult}"/>.</returns>
 		Expression<Func<T, object>> Create(string selection);
 	}
 

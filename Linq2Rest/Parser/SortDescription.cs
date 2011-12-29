@@ -19,7 +19,7 @@ namespace Linq2Rest.Parser
 		private readonly SortDirection _direction;
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="SortDescription{T}"/> class.
+		/// Initializes a new instance of the <see cref="SortDescription{T}"/> class.
 		/// </summary>
 		/// <param name="keySelector">The function to select the sort key.</param>
 		/// <param name="direction">The sort direction.</param>

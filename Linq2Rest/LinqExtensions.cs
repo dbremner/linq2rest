@@ -15,7 +15,7 @@ namespace Linq2Rest
 	using System.Runtime.CompilerServices;
 	using System.Threading;
 
-	public static class LinqExtensions
+	internal static class LinqExtensions
 	{
 		private static readonly AssemblyName AssemblyName = new AssemblyName { Name = "DynamicLinqTypes" };
 		private static readonly ModuleBuilder ModuleBuilder;
