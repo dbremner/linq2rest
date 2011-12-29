@@ -24,6 +24,7 @@ namespace Linq2Rest.Tests.Parser
 		}
 
 		[Test]
+		[TestCase("ChoiceValue eq This", "x => ((Convert(x.ChoiceValue) & Convert(This)) == Convert(This))")]
 		[TestCase("IntValue eq 1", "x => (x.IntValue == 1)")]
 		[TestCase("IntValue eq (10 mod 2)", "x => (x.IntValue == (10 % 2))")]
 		[TestCase("(10 mod 2) eq IntValue", "x => ((10 % 2) == x.IntValue)")]
@@ -56,10 +57,10 @@ namespace Linq2Rest.Tests.Parser
 		[TestCase("StringValue ne 1", "x => (x.StringValue != \"1\")")]
 		[TestCase("StringValue/Length eq 1", "x => (x.StringValue.Length == 1)")]
 		[TestCase("StringValue/Length ne 1", "x => (x.StringValue.Length != 1)")]
-		[TestCase("substringof('text', StringValue) eq true", "x => ((x.StringValue.IndexOf(\"text\", OrdinalIgnoreCase) > -1) == True)")]
-		[TestCase("substringof('text', StringValue) ne true", "x => ((x.StringValue.IndexOf(\"text\", OrdinalIgnoreCase) > -1) != True)")]
-		[TestCase("substringof('text', StringValue) eq false", "x => ((x.StringValue.IndexOf(\"text\", OrdinalIgnoreCase) > -1) == False)")]
-		[TestCase("substringof('text', StringValue) ne false", "x => ((x.StringValue.IndexOf(\"text\", OrdinalIgnoreCase) > -1) != False)")]
+		[TestCase("substringof('text', StringValue) eq true", "x => (x.StringValue.Contains(\"text\") == True)")]
+		[TestCase("substringof('text', StringValue) ne true", "x => (x.StringValue.Contains(\"text\") != True)")]
+		[TestCase("substringof('text', StringValue) eq false", "x => (x.StringValue.Contains(\"text\") == False)")]
+		[TestCase("substringof('text', StringValue) ne false", "x => (x.StringValue.Contains(\"text\") != False)")]
 		[TestCase("endswith(StringValue, 'text') eq true", "x => (x.StringValue.EndsWith(\"text\", OrdinalIgnoreCase) == True)")]
 		[TestCase("endswith(StringValue, 'text') ne true", "x => (x.StringValue.EndsWith(\"text\", OrdinalIgnoreCase) != True)")]
 		[TestCase("endswith(StringValue, 'text') eq false", "x => (x.StringValue.EndsWith(\"text\", OrdinalIgnoreCase) == False)")]
@@ -110,6 +111,9 @@ namespace Linq2Rest.Tests.Parser
 		[TestCase("floor(DecimalValue) gt 1", "x => (Floor(x.DecimalValue) > 1)")]
 		[TestCase("ceiling(DecimalValue) gt 1", "x => (Ceiling(x.DecimalValue) > 1)")]
 		[TestCase("(StringValue ne 'text') or IntValue gt 2", "x => ((x.StringValue != \"text\") OrElse (x.IntValue > 2))")]
+		[TestCase("(startswith(tolower(StringValue),'foo') eq true and endswith(tolower(StringValue),'1') eq true) and (tolower(StringValue) eq 'bar03')", "x => (((x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) == True) AndAlso (x.StringValue.ToLowerInvariant().EndsWith(\"1\", OrdinalIgnoreCase) == True)) AndAlso (x.StringValue.ToLowerInvariant() == \"bar03\"))")]
+		[TestCase("(startswith(tolower(StringValue),'foo') and endswith(tolower(StringValue),'1')) and (tolower(StringValue) eq 'bar03')", "x => ((x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) AndAlso x.StringValue.ToLowerInvariant().EndsWith(\"1\", OrdinalIgnoreCase)) AndAlso (x.StringValue.ToLowerInvariant() == \"bar03\"))")]
+		[TestCase("startswith(tolower(StringValue),'foo')", "x => x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase)")]
 		public void WhenProvidingValidInputThenGetsExpectedExpression(string filter, string expression)
 		{
 			var result = _factory.Create<FakeItem>(filter);

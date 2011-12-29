@@ -16,7 +16,7 @@ namespace Linq2Rest.Provider
 		private readonly WebClient _client;
 
 		/// <summary>
-		/// Creates a new instance of the <see cref="RestClient"/> class.
+		/// Initializes a new instance of the <see cref="RestClient"/> class.
 		/// </summary>
 		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
 		public RestClient(Uri uri)

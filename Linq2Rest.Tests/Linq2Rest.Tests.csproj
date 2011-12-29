@@ -83,10 +83,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq">
-      <HintPath>..\packages\Moq\lib\NET40\Moq.dll</HintPath>
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\packages\NUnit.2.5.9.10348\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -96,6 +96,7 @@
     <Reference Include="System.Web.Mvc" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Choice.cs" />
     <Compile Include="NorthwindCustomer.cs" />
     <Compile Include="ODataCustomerServiceTests.cs" />
     <Compile Include="ODataResponse.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
     <Compile Include="LinqExtensionsTests.cs" />
     <Compile Include="Mvc\ModelFilterBinderTests.cs" />
+    <Compile Include="Parser\FilterTests.cs" />
     <Compile Include="Parser\ParameterParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\RestClientTests.cs" />
@@ -123,6 +125,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Linq2Rest.Mvc\Linq2Rest.Mvc.csproj">
+      <Project>{B4462F0E-AF9E-4955-81D7-5E487D9178A8}</Project>
+      <Name>Linq2Rest.Mvc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Linq2Rest\Linq2Rest.csproj">
       <Project>{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}</Project>
       <Name>Linq2Rest</Name>

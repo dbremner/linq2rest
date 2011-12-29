@@ -24,6 +24,7 @@ namespace Linq2Rest.Provider
 			}
 
 			var method = methodCall.Method.Name;
+
 			switch (method)
 			{
 				case "Where":

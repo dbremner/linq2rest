@@ -1,11 +1,17 @@
-﻿namespace Linq2Rest.Mvc
+﻿// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+// All other rights reserved.
+
+namespace Linq2Rest.MvcSite
 {
 	using System.Web;
 	using System.Web.Mvc;
 	using System.Web.Routing;
 
-	using Linq2Rest.Mvc.Models;
-	using Linq2Rest.Mvc.Support;
+	using Linq2Rest.Mvc;
+	using Linq2Rest.MvcSite.Models;
+	using Linq2Rest.MvcSite.Support;
 	using Linq2Rest.Parser;
 
 	public class MvcApplication : HttpApplication
@@ -32,9 +38,9 @@
 			RegisterGlobalFilters(GlobalFilters.Filters);
 			RegisterRoutes(RouteTable.Routes);
 
-			var binder = new ModelFilterBinder<SimpleDto>(ParameterParser<SimpleDto>.Create());
+			var binder = new ModelFilterBinder<SimpleDto>(new ParameterParser<SimpleDto>());
 
-			ModelBinders.Binders.Add(typeof(ModelFilter<SimpleDto>), binder);
+			ModelBinders.Binders.Add(typeof(IModelFilter<SimpleDto>), binder);
 			ModelBinders.Binders.Add(typeof(ResponseFormat), new ResponseFormatBinder());
 		}
 	}

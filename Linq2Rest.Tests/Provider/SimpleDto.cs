@@ -16,5 +16,7 @@ namespace Linq2Rest.Tests.Provider
 		public double Value { get; set; }
 
 		public DateTime Date { get; set; }
+
+		public Choice Choice { get; set; }
 	}
 }

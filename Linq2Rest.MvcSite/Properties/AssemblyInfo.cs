@@ -4,17 +4,16 @@
 // All other rights reserved.
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Linq2Rest")]
-[assembly: AssemblyDescription("Generates OData style URL queries from LINQ queries and parses the queries to LINQ serverside.")]
+[assembly: AssemblyTitle("Linq2Rest.MvcSite")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Reimers.dk")]
-[assembly: AssemblyProduct("Linq2Rest")]
+[assembly: AssemblyProduct("Linq2Rest.Mvc")]
 [assembly: AssemblyCopyright("Copyright © Reimers.dk 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -25,7 +24,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("0228d133-29e3-4baf-9f91-671a6be391bc")]
+[assembly: Guid("ac764c1f-ef2c-419b-80a6-c49ecb125c8f")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,9 +33,7 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-// You can specify all the values or you can default the Build and Revision Numbers 
+// You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.9.0.0")]
 [assembly: AssemblyFileVersion("0.9.0.0")]
-[assembly: InternalsVisibleTo("Linq2Rest.Tests")]

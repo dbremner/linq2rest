@@ -14,7 +14,7 @@ namespace Linq2Rest.Provider
 
 	internal static class ExpressionProcessor
 	{
-		private static readonly ExpressionType[] _compositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
+		private static readonly ExpressionType[] CompositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
 
 		public static string ProcessExpression(this Expression expression)
 		{
@@ -22,7 +22,7 @@ namespace Linq2Rest.Provider
 
 			return ProcessExpression(expression, expression.Type);
 		}
-		
+
 		public static object GetExpressionValue(this Expression expression)
 		{
 			if (expression is UnaryExpression)
@@ -37,7 +37,7 @@ namespace Linq2Rest.Provider
 
 			return null;
 		}
-		
+
 		private static string ProcessExpression(this Expression expression, Type type)
 		{
 			Contract.Requires(expression != null);
@@ -47,14 +47,16 @@ namespace Linq2Rest.Provider
 				return ProcessExpression((expression as LambdaExpression).Body);
 			}
 
-			if (expression is MemberExpression)
+			var memberExpression = expression as MemberExpression;
+			if (memberExpression != null)
 			{
-				var memberExpression = expression as MemberExpression;
 				if (!IsMemberOfParameter(memberExpression))
 				{
 					var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
 					if (!(collapsedExpression is MemberExpression))
 					{
+						Contract.Assume(collapsedExpression != null);
+
 						return ProcessExpression(collapsedExpression);
 					}
 
@@ -63,14 +65,20 @@ namespace Linq2Rest.Provider
 
 				var memberCall = GetMemberCall(memberExpression);
 
+				var innerExpression = memberExpression.Expression;
+
+				Contract.Assume(innerExpression != null);
+
 				return string.IsNullOrWhiteSpace(memberCall)
 						? memberExpression.Member.Name
-						: string.Format("{0}({1})", memberCall, ProcessExpression(memberExpression.Expression));
+						: string.Format("{0}({1})", memberCall, ProcessExpression(innerExpression));
 			}
 
 			if (expression is ConstantExpression)
 			{
 				var value = (expression as ConstantExpression).Value;
+
+				Contract.Assume(type != null);
 
 				return string.Format(
 					Thread.CurrentThread.CurrentCulture,
@@ -98,8 +106,8 @@ namespace Linq2Rest.Provider
 				var binaryExpression = expression as BinaryExpression;
 				var operation = GetOperation(binaryExpression);
 
-				var isLeftComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
-				var isRightComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
+				var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
+				var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
 
 				var leftType = GetUnconvertedType(binaryExpression.Left);
 				var leftString = ProcessExpression(binaryExpression.Left);
@@ -132,7 +140,11 @@ namespace Linq2Rest.Provider
 			switch (expression.NodeType)
 			{
 				case ExpressionType.Convert:
-					return (expression as UnaryExpression).Operand.Type;
+					var unaryExpression = expression as UnaryExpression;
+
+					Contract.Assume(unaryExpression != null, "Matches node type.");
+
+					return unaryExpression.Operand.Type;
 				default:
 					return expression.Type;
 			}
@@ -141,6 +153,7 @@ namespace Linq2Rest.Provider
 		private static string GetMemberCall(MemberExpression memberExpression)
 		{
 			Contract.Requires(memberExpression != null);
+			Contract.Ensures(Contract.Result<string>() != null);
 
 			var declaringType = memberExpression.Member.DeclaringType;
 			var name = memberExpression.Member.Name;
@@ -221,6 +234,8 @@ namespace Linq2Rest.Provider
 			var tempExpression = input.Expression as MemberExpression;
 			while (nodeType == ExpressionType.MemberAccess)
 			{
+				Contract.Assume(tempExpression != null, "It's a member access");
+
 				nodeType = tempExpression.Expression.NodeType;
 				tempExpression = tempExpression.Expression as MemberExpression;
 			}
@@ -236,6 +251,10 @@ namespace Linq2Rest.Provider
 			var declaringType = expression.Method.DeclaringType;
 			if (declaringType == typeof(string))
 			{
+				var obj = expression.Object;
+
+				Contract.Assume(obj != null);
+
 				switch (methodName)
 				{
 					case "Replace":
@@ -245,21 +264,24 @@ namespace Linq2Rest.Provider
 							var firstArgument = expression.Arguments[0];
 							var secondArgument = expression.Arguments[1];
 
+							Contract.Assume(firstArgument != null);
+							Contract.Assume(secondArgument != null);
+
 							return string.Format(
 								"replace({0}, {1}, {2})",
-								ProcessExpression(expression.Object),
+								ProcessExpression(obj),
 								ProcessExpression(firstArgument),
 								ProcessExpression(secondArgument));
 						}
 
 					case "Trim":
-						return string.Format("trim({0})", ProcessExpression(expression.Object));
+						return string.Format("trim({0})", ProcessExpression(obj));
 					case "ToLower":
 					case "ToLowerInvariant":
-						return string.Format("tolower({0})", ProcessExpression(expression.Object));
+						return string.Format("tolower({0})", ProcessExpression(obj));
 					case "ToUpper":
 					case "ToUpperInvariant":
-						return string.Format("toupper({0})", ProcessExpression(expression.Object));
+						return string.Format("toupper({0})", ProcessExpression(obj));
 					case "Substring":
 						{
 							Contract.Assume(expression.Arguments.Count > 0);
@@ -267,15 +289,22 @@ namespace Linq2Rest.Provider
 							if (expression.Arguments.Count == 1)
 							{
 								var argumentExpression = expression.Arguments[0];
+
+								Contract.Assume(argumentExpression != null);
+
 								return string.Format(
-									"substring({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+									"substring({0}, {1})", ProcessExpression(obj), ProcessExpression(argumentExpression));
 							}
 
 							var firstArgument = expression.Arguments[0];
 							var secondArgument = expression.Arguments[1];
+
+							Contract.Assume(firstArgument != null);
+							Contract.Assume(secondArgument != null);
+
 							return string.Format(
 								"substring({0}, {1}, {2})",
-								ProcessExpression(expression.Object),
+								ProcessExpression(obj),
 								ProcessExpression(firstArgument),
 								ProcessExpression(secondArgument));
 						}
@@ -285,7 +314,10 @@ namespace Linq2Rest.Provider
 							Contract.Assume(expression.Arguments.Count > 0);
 
 							var argumentExpression = expression.Arguments[0];
-							return string.Format("indexof({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+
+							Contract.Assume(argumentExpression != null);
+
+							return string.Format("indexof({0}, {1})", ProcessExpression(obj), ProcessExpression(argumentExpression));
 						}
 
 					case "EndsWith":
@@ -293,7 +325,10 @@ namespace Linq2Rest.Provider
 							Contract.Assume(expression.Arguments.Count > 0);
 
 							var argumentExpression = expression.Arguments[0];
-							return string.Format("endswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+
+							Contract.Assume(argumentExpression != null);
+
+							return string.Format("endswith({0}, {1})", ProcessExpression(obj), ProcessExpression(argumentExpression));
 						}
 
 					case "StartsWith":
@@ -301,7 +336,10 @@ namespace Linq2Rest.Provider
 							Contract.Assume(expression.Arguments.Count > 0);
 
 							var argumentExpression = expression.Arguments[0];
-							return string.Format("startswith({0}, {1})", ProcessExpression(expression.Object), ProcessExpression(argumentExpression));
+
+							Contract.Assume(argumentExpression != null);
+
+							return string.Format("startswith({0}, {1})", ProcessExpression(obj), ProcessExpression(argumentExpression));
 						}
 				}
 			}
@@ -310,6 +348,8 @@ namespace Linq2Rest.Provider
 				Contract.Assume(expression.Arguments.Count > 0);
 
 				var mathArgument = expression.Arguments[0];
+
+				Contract.Assume(mathArgument != null);
 
 				switch (methodName)
 				{

@@ -18,6 +18,7 @@ function BuildSolution
 function PublishPackage
 {
 	.\nuget.exe pack Linq2Rest.nuspec
+	.\nuget.exe pack Linq2Rest.Mvc.nuspec
 }
 
 UpdatePackages
