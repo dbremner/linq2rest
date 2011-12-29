@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest</id>
-		<version>0.9.0.0</version>
+		<version>1.0.0.2</version>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
 		<licenseUrl>http://go.microsoft.com/fwlink/?LinkID=131993</licenseUrl>
 		<projectUrl>https://bitbucket.org/jjrdk/linq2rest</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>Parses OData system query parameters to create a LINQ query that can be used to filter a model set. Also exposes a LINQ provider for web services supporting the OData query parameters.</description>
+		<description>Parses OData system query parameters to create a LINQ query that can be used to filter a model set. Also exposes a LINQ provider for web services supporting the OData query parameters. Use extension method Filter (in Linq2Rest namespace) on any IEnumerable source.</description>
 		<tags>OData LINQ REST</tags>
 		<references>
 			<reference file="Linq2Rest.dll" />
