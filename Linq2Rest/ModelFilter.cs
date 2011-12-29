@@ -33,8 +33,6 @@ namespace Linq2Rest
 
 		public IEnumerable<object> Filter(IEnumerable<T> model)
 		{
-			Contract.Requires<ArgumentNullException>(model != null);
-
 			var result = _filterExpression != null ? model.AsQueryable().Where(_filterExpression) : model;
 
 			if (_sortDescriptions != null && _sortDescriptions.Any())

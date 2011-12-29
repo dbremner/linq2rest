@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5D2
 	ProjectSection(SolutionItems) = preProject
 		Build.ps1 = Build.ps1
 		Linq2Rest.Mvc.nuspec = Linq2Rest.Mvc.nuspec
+		Linq2Rest.nuspec = Linq2Rest.nuspec
 		RestorePackages.ps1 = RestorePackages.ps1
 	EndProjectSection
 EndProject
