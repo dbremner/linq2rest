@@ -28,7 +28,9 @@ namespace Linq2Rest.Tests.Provider
 
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
-			_mockClient.Setup(x => x.Get(It.IsAny<Uri>())).Returns("[{Value : 2, Content : \"blah\" }]");
+			_mockClient.Setup(x => x.Get(It.IsAny<Uri>()))
+				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
+				.Returns("[{Value : 2, Content : \"blah\" }]");
 
 			_provider = new RestContext<SimpleDto>(_mockClient.Object, serializerFactory);
 		}
@@ -146,6 +148,12 @@ namespace Linq2Rest.Tests.Provider
 
 			var uri = new Uri("http://localhost/?$filter=Value+le+3&$select=Value,Content&$skip=1&$top=1&$orderby=Value");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingEqualityExpressionForFlagsEnumThenCallsRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Choice == Choice.That, "http://localhost/?$filter=Choice+eq+That");
 		}
 
 		[Test]

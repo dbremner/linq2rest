@@ -3,7 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Mvc.Models
+namespace Linq2Rest.MvcSite.Models
 {
 	using System.ComponentModel.DataAnnotations;
 

@@ -7,6 +7,7 @@ namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Diagnostics.Contracts;
+	using System.Linq.Expressions;
 
 	/// <summary>
 	/// Defines the public interface for a SelectExpressionFactory.
@@ -19,8 +20,8 @@ namespace Linq2Rest.Parser
 		/// Creates a select expression.
 		/// </summary>
 		/// <param name="selection">The properties to select.</param>
-		/// <returns>An instance of a <see cref="Func{T1,TResult}"/></returns>
-		Func<T, object> Create(string selection);
+		/// <returns>An instance of a <see cref="Func{T1,TResult}"/>.</returns>
+		Expression<Func<T, object>> Create(string selection);
 	}
 
 	[ContractClassFor(typeof(ISelectExpressionFactory<>))]

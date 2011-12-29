@@ -15,7 +15,7 @@ namespace Linq2Rest
 	using System.Runtime.CompilerServices;
 	using System.Threading;
 
-	public static class LinqExtensions
+	internal static class LinqExtensions
 	{
 		private static readonly AssemblyName AssemblyName = new AssemblyName { Name = "DynamicLinqTypes" };
 		private static readonly ModuleBuilder ModuleBuilder;
@@ -49,9 +49,9 @@ namespace Linq2Rest
 
 			var dictionary = fields.ToDictionary(f => f.Name, f => f.PropertyType);
 
+			Monitor.Enter(BuiltTypes);
 			try
 			{
-				Monitor.Enter(BuiltTypes);
 				var className = GetTypeKey(dictionary);
 
 				if (BuiltTypes.ContainsKey(className))

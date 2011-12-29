@@ -18,10 +18,10 @@ namespace Linq2Rest.Parser
 	{
 		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
 		private static readonly Regex StringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
-		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$");
+		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$", RegexOptions.Compiled);
 		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
-		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$");
-		private static readonly ConcurrentDictionary<Type, MethodInfo> _parseMethods = new ConcurrentDictionary<Type, MethodInfo>();
+		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly ConcurrentDictionary<Type, MethodInfo> ParseMethods = new ConcurrentDictionary<Type, MethodInfo>();
 
 		public Expression<Func<T, bool>> Create<T>(string filter)
 		{
@@ -107,11 +107,13 @@ namespace Linq2Rest.Parser
 		{
 			Contract.Requires(propertyToken != null);
 
-			var tokens = ExpressionTokenizer.GetTokens(propertyToken);
-			foreach (var token in tokens)
+			if (!propertyToken.IsImpliedBoolean())
 			{
-				var expression = GetPropertyExpression<T>(token.Left, parameter) ?? GetPropertyExpression<T>(token.Right, parameter);
-				return expression;
+				var token = propertyToken.GetTokens().FirstOrDefault();
+				if (token != null)
+				{
+					return GetPropertyExpression<T>(token.Left, parameter) ?? GetPropertyExpression<T>(token.Right, parameter);
+				}
 			}
 
 			var parentType = typeof(T);
@@ -173,6 +175,15 @@ namespace Linq2Rest.Parser
 			switch (token.ToLowerInvariant())
 			{
 				case "eq":
+					if (left.Type.IsEnum && left.Type.GetCustomAttributes(typeof(FlagsAttribute), true).Any())
+					{
+						var underlyingType = Enum.GetUnderlyingType(left.Type);
+						var leftValue = Expression.Convert(left, underlyingType);
+						var rightValue = Expression.Convert(right, underlyingType);
+						var andExpression = Expression.And(leftValue, rightValue);
+						return Expression.Equal(andExpression, rightValue);
+					}
+
 					return Expression.Equal(left, right);
 				case "ne":
 					return Expression.NotEqual(left, right);
@@ -224,9 +235,7 @@ namespace Linq2Rest.Parser
 			switch (function.ToLowerInvariant())
 			{
 				case "substringof":
-					return Expression.GreaterThan(
-						Expression.Call(right, MethodProvider.IndexOfMethod, new[] { left, MethodProvider.IgnoreCaseExpression }),
-						Expression.Constant(-1, typeof(int)));
+					return Expression.Call(right, MethodProvider.ContainsMethod, new[] { left });
 				case "endswith":
 					return Expression.Call(left, MethodProvider.EndsWithMethod, new[] { right, MethodProvider.IgnoreCaseExpression });
 				case "startswith":
@@ -293,7 +302,7 @@ namespace Linq2Rest.Parser
 
 			if (type != null)
 			{
-				var parseMethod = _parseMethods.GetOrAdd(type, ResolveParseMethod);
+				var parseMethod = ParseMethods.GetOrAdd(type, ResolveParseMethod);
 				if (parseMethod != null)
 				{
 					var parseResult = parseMethod.Invoke(null, new object[] { token, formatProvider });
@@ -372,7 +381,7 @@ namespace Linq2Rest.Parser
 							var current = right == null ? null : GetOperation(tokenSet.Operation, left, right);
 							existing = GetOperation(combiner, existing, current ?? left);
 						}
-						else
+						else if (right != null)
 						{
 							existing = GetOperation(tokenSet.Operation, left, right);
 						}
@@ -466,6 +475,7 @@ namespace Linq2Rest.Parser
 					}
 				}
 			}
+
 			return null;
 		}
 

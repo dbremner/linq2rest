@@ -3,7 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Mvc.Controllers
+namespace Linq2Rest.MvcSite.Controllers
 {
 	using System.Web.Mvc;
 

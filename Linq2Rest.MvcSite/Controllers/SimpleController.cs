@@ -3,23 +3,21 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Mvc.Controllers
+namespace Linq2Rest.MvcSite.Controllers
 {
 	using System;
 	using System.Web.Mvc;
 
-	using Linq2Rest.Mvc.Models;
-	using Linq2Rest.Mvc.Support;
-	using Linq2Rest.Parser;
+	using Linq2Rest.MvcSite.Models;
+	using Linq2Rest.MvcSite.Support;
 
 	public class SimpleController : Controller
 	{
 		private readonly SimpleContext _db = new SimpleContext();
 
-		public ActionResult Index(ModelFilter<SimpleDto> filter, ResponseFormat format)
+		public ActionResult Index(IModelFilter<SimpleDto> filter, ResponseFormat format)
 		{
-			var model = _db.SimpleDtos
-				.Filter(filter);
+			var model = _db.SimpleDtos.Filter(filter);
 
 			switch (format)
 			{

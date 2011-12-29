@@ -37,7 +37,7 @@ namespace Linq2Rest.Provider
 		}
 
 		/// <summary>
-		/// 	type of T in IQueryable of T
+		/// 	<see cref="Type"/> of T in IQueryable of T.
 		/// </summary>
 		public Type ElementType
 		{
@@ -45,12 +45,12 @@ namespace Linq2Rest.Provider
 		}
 
 		/// <summary>
-		/// 	expression tree
+		/// 	The expression tree.
 		/// </summary>
 		public Expression Expression { get; private set; }
 
 		/// <summary>
-		/// 	IQueryProvider part of LINQ to Twitter
+		/// 	IQueryProvider part of RestQueryable.
 		/// </summary>
 		public IQueryProvider Provider { get; private set; }
 

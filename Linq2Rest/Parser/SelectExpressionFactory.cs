@@ -7,20 +7,24 @@ namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Threading;
 
 	internal class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{
-		private readonly IDictionary<string, Func<T, object>> _knownSelections;
+		private readonly IDictionary<string, Expression<Func<T, object>>> _knownSelections;
 
 		public SelectExpressionFactory()
 		{
-			_knownSelections = new Dictionary<string, Func<T, object>> { { string.Empty, x => x } };
+			_knownSelections = new Dictionary<string, Expression<Func<T, object>>>
+			                   	{
+			                   		{ string.Empty, null }
+			                   	};
 		}
 
-		public Func<T, object> Create(string selection)
+		public Expression<Func<T, object>> Create(string selection)
 		{
 			var fieldNames = (selection ?? string.Empty).Split(',')
 				.Where(x => !string.IsNullOrWhiteSpace(x))
@@ -31,7 +35,9 @@ namespace Linq2Rest.Parser
 
 			if (_knownSelections.ContainsKey(key))
 			{
-				return _knownSelections[key];
+				var knownSelection = _knownSelections[key];
+
+				return knownSelection;
 			}
 
 			var elementType = typeof(T);
@@ -39,15 +45,15 @@ namespace Linq2Rest.Parser
 			var dynamicType = sourceProperties.Values.GetDynamicType();
 
 			var sourceItem = Expression.Parameter(elementType, "t");
-			var bindings =
-				dynamicType.GetFields().Select(p => Expression.Bind(p, Expression.Property(sourceItem, sourceProperties[p.Name])));
+			var bindings = dynamicType
+				.GetFields()
+				.Select(p => Expression.Bind(p, Expression.Property(sourceItem, sourceProperties[p.Name])));
 
 			var constructorInfo = dynamicType.GetConstructor(Type.EmptyTypes);
 
-			var selector =
-				Expression.Lambda<Func<T, object>>(
-					Expression.MemberInit(Expression.New(constructorInfo), bindings), sourceItem)
-					.Compile();
+			var selector = Expression.Lambda<Func<T, object>>(
+			                                                  Expression.MemberInit(Expression.New(constructorInfo), bindings),
+			                                                  sourceItem);
 
 			if (Monitor.TryEnter(_knownSelections, 1000))
 			{
@@ -55,6 +61,8 @@ namespace Linq2Rest.Parser
 
 				Monitor.Exit(_knownSelections);
 			}
+
+			Contract.Assume(selector != null, "Created above.");
 
 			return selector;
 		}

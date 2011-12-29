@@ -5,6 +5,7 @@
 
 namespace Linq2Rest.Tests
 {
+	using Linq2Rest.Mvc.Provider;
 	using Linq2Rest.Provider;
 
 	public class TestSerializerFactory : ISerializerFactory

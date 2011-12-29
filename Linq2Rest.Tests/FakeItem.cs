@@ -18,5 +18,7 @@ namespace Linq2Rest.Tests
 		public string StringValue { get; set; }
 
 		public DateTime DateValue { get; set; }
+
+		public Choice ChoiceValue { get; set; }
 	}
 }
