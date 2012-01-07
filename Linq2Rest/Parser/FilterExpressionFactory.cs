@@ -357,47 +357,9 @@ namespace Linq2Rest.Parser
 
 			var tokens = filter.GetTokens().ToArray();
 
-			Expression existing = null;
-			string combiner = null;
-
 			if (tokens.Any())
 			{
-				foreach (var tokenSet in tokens)
-				{
-					if (string.IsNullOrWhiteSpace(tokenSet.Left))
-					{
-						if (string.Equals(tokenSet.Operation, "not", StringComparison.OrdinalIgnoreCase))
-						{
-							var right = CreateExpression<T>(tokenSet.Right, parameter, type ?? GetExpressionType<T>(tokenSet, parameter), formatProvider);
-
-							if (right == null)
-							{
-								return null;
-							}
-
-							return GetOperation(tokenSet.Operation, null, right);
-						}
-
-						combiner = tokenSet.Operation;
-					}
-					else
-					{
-						var left = CreateExpression<T>(tokenSet.Left, parameter, type ?? GetExpressionType<T>(tokenSet, parameter), formatProvider);
-						var right = CreateExpression<T>(tokenSet.Right, parameter, left.Type, formatProvider);
-
-						if (existing != null && !string.IsNullOrWhiteSpace(combiner))
-						{
-							var current = right == null ? null : GetOperation(tokenSet.Operation, left, right);
-							existing = GetOperation(combiner, existing, current ?? left);
-						}
-						else if (right != null)
-						{
-							existing = GetOperation(tokenSet.Operation, left, right);
-						}
-					}
-				}
-
-				return existing;
+				return GetTokenExpression<T>(parameter, type, formatProvider, tokens);
 			}
 
 			Expression expression = null;
@@ -441,6 +403,53 @@ namespace Linq2Rest.Parser
 			}
 
 			return expression;
+		}
+
+		private Expression GetTokenExpression<T>(ParameterExpression parameter, Type type, IFormatProvider formatProvider, TokenSet[] tokens)
+		{
+			string combiner = null;
+			Expression existing = null;
+			foreach (var tokenSet in tokens)
+			{
+				if (string.IsNullOrWhiteSpace(tokenSet.Left))
+				{
+					if (string.Equals(tokenSet.Operation, "not", StringComparison.OrdinalIgnoreCase))
+					{
+						var right = CreateExpression<T>(
+														tokenSet.Right,
+														parameter,
+														type ?? GetExpressionType<T>(tokenSet, parameter),
+														formatProvider);
+
+						return right == null
+								? null
+								: GetOperation(tokenSet.Operation, null, right);
+					}
+
+					combiner = tokenSet.Operation;
+				}
+				else
+				{
+					var left = CreateExpression<T>(
+												   tokenSet.Left,
+												   parameter,
+												   type ?? GetExpressionType<T>(tokenSet, parameter),
+												   formatProvider);
+					var right = CreateExpression<T>(tokenSet.Right, parameter, left.Type, formatProvider);
+
+					if (existing != null && !string.IsNullOrWhiteSpace(combiner))
+					{
+						var current = right == null ? null : GetOperation(tokenSet.Operation, left, right);
+						existing = GetOperation(combiner, existing, current ?? left);
+					}
+					else if (right != null)
+					{
+						existing = GetOperation(tokenSet.Operation, left, right);
+					}
+				}
+			}
+
+			return existing;
 		}
 
 		private Expression GetArithmeticExpression<T>(string filter, ParameterExpression parameter, Type type, IFormatProvider formatProvider)
