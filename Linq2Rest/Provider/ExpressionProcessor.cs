@@ -18,9 +18,7 @@ namespace Linq2Rest.Provider
 
 		public static string ProcessExpression(this Expression expression)
 		{
-			Contract.Requires(expression != null);
-
-			return ProcessExpression(expression, expression.Type);
+			return expression == null ? null : ProcessExpression(expression, expression.Type);
 		}
 
 		public static object GetExpressionValue(this Expression expression)

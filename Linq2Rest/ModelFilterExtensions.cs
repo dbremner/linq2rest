@@ -27,6 +27,8 @@ namespace Linq2Rest
 		/// <returns>A filtered and projected enumeration of the source collection.</returns>
 		public static IEnumerable<object> Filter<T>(this IEnumerable<T> source, NameValueCollection query)
 		{
+			Contract.Requires<ArgumentNullException>(source != null);
+
 			var parser = new ParameterParser<T>();
 
 			return Filter(source, parser.Parse(query));

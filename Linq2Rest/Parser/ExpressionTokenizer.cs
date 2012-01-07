@@ -96,6 +96,8 @@ namespace Linq2Rest.Parser
 
 		public static TokenSet GetArithmeticToken(this string expression)
 		{
+			Contract.Requires<ArgumentNullException>(expression != null);
+
 			var cleanMatch = expression.EnclosedMatch();
 
 			if (cleanMatch.Success)
@@ -125,14 +127,20 @@ namespace Linq2Rest.Parser
 
 		private static int GetArithmeticOperationIndex(IList<string> blocks)
 		{
+			Contract.Requires(blocks != null);
+
 			var openGroups = 0;
 			var operationIndex = -1;
 			for (var i = 0; i < blocks.Count; i++)
 			{
-				var netEnclosed = blocks[i].Count(c => c == '(') - blocks[i].Count(c => c == ')');
+				var source = blocks[i];
+
+				Contract.Assume(source != null, "Does not generate null token parts.");
+
+				var netEnclosed = source.Count(c => c == '(') - source.Count(c => c == ')');
 				openGroups += netEnclosed;
 
-				if (openGroups == 0 && blocks[i].IsArithmetic())
+				if (openGroups == 0 && source.IsArithmetic())
 				{
 					operationIndex = i;
 				}
