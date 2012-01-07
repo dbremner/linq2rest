@@ -12,8 +12,9 @@ namespace Linq2Rest.Parser
 
 	internal static class TokenOperatorExtensions
 	{
-		private static readonly string[] Operations = new[] { "eq", "ne", "gt", "ge", "lt", "le", "and", "or", "not", "add", "sub", "mul", "div", "mod" };
+		private static readonly string[] Operations = new[] { "eq", "ne", "gt", "ge", "lt", "le", "and", "or", "not" };
 		private static readonly string[] Combiners = new[] { "and", "or", "not" };
+		private static readonly string[] Arithmetic = new[] { "add", "sub", "mul", "div", "mod" };
 
 		private static readonly string[] BooleanFunctions = new[] { "substringof", "endswith", "startswith" };
 		private static readonly Regex CleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
@@ -30,6 +31,13 @@ namespace Linq2Rest.Parser
 			Contract.Requires<ArgumentNullException>(operation != null);
 
 			return Operations.Any(x => string.Equals(x, operation, StringComparison.OrdinalIgnoreCase));
+		}
+
+		public static bool IsArithmetic(this string operation)
+		{
+			Contract.Requires<ArgumentNullException>(operation != null);
+
+			return Arithmetic.Any(x => string.Equals(x, operation, StringComparison.OrdinalIgnoreCase));
 		}
 
 		public static bool IsImpliedBoolean(this string expression)

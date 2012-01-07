@@ -137,7 +137,10 @@ namespace Linq2Rest.Parser
 
 		private static Type GetExpressionType<T>(TokenSet set, ParameterExpression parameter)
 		{
-			Contract.Requires(set != null);
+			if (set == null)
+			{
+				return null;
+			}
 
 			if (Regex.IsMatch(set.Left, @"^\(.*\)$") && set.Operation.IsCombinationOperation())
 			{
@@ -145,8 +148,14 @@ namespace Linq2Rest.Parser
 			}
 
 			var property = GetPropertyExpression<T>(set.Left, parameter) ?? GetPropertyExpression<T>(set.Right, parameter);
+			if (property != null)
+			{
+				return property.Type;
+			}
 
-			return property == null ? null : property.Type;
+			var type = GetExpressionType<T>(set.Left.GetArithmeticToken(), parameter);
+
+			return type ?? GetExpressionType<T>(set.Right.GetArithmeticToken(), parameter);
 		}
 
 		private static Expression GetOperation(string token, Expression left, Expression right)
@@ -406,6 +415,11 @@ namespace Linq2Rest.Parser
 
 			if (expression == null)
 			{
+				expression = GetArithmeticExpression<T>(filter, parameter, type, formatProvider);
+			}
+
+			if (expression == null)
+			{
 				expression = GetFunctionExpression<T>(filter, parameter, type, formatProvider);
 			}
 
@@ -427,6 +441,21 @@ namespace Linq2Rest.Parser
 			}
 
 			return expression;
+		}
+
+		private Expression GetArithmeticExpression<T>(string filter, ParameterExpression parameter, Type type, IFormatProvider formatProvider)
+		{
+			var arithmeticToken = filter.GetArithmeticToken();
+			if (arithmeticToken == null)
+			{
+				return null;
+			}
+
+			Type type1 = type ?? GetExpressionType<T>(arithmeticToken, parameter);
+			var leftExpression = CreateExpression<T>(arithmeticToken.Left, parameter, type1, formatProvider);
+			var rightExpression = CreateExpression<T>(arithmeticToken.Right, parameter, type1, formatProvider);
+
+			return GetLeftRightOperation(arithmeticToken.Operation, leftExpression, rightExpression);
 		}
 
 		private Expression GetConstructorExpression<T>(string filter, ParameterExpression parameter, Type resultType, IFormatProvider formatProvider)

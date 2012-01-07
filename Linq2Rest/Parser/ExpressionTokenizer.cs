@@ -94,6 +94,52 @@ namespace Linq2Rest.Parser
 			}
 		}
 
+		public static TokenSet GetArithmeticToken(this string expression)
+		{
+			var cleanMatch = expression.EnclosedMatch();
+
+			if (cleanMatch.Success)
+			{
+				var match = cleanMatch.Groups[1].Value;
+				if (!HasOrphanedOpenParenthesis(match))
+				{
+					expression = match;
+				}
+			}
+
+			var blocks = expression.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			var hasOperation = blocks.Any(x => x.IsArithmetic());
+			if (!hasOperation)
+			{
+				return null;
+			}
+
+			var operationIndex = GetArithmeticOperationIndex(blocks);
+
+			var left = string.Join(" ", blocks.Where((x, i) => i < operationIndex));
+			var right = string.Join(" ", blocks.Where((x, i) => i > operationIndex));
+			var operation = blocks[operationIndex];
+
+			return new TokenSet { Left = left, Operation = operation, Right = right };
+		}
+
+		private static int GetArithmeticOperationIndex(IList<string> blocks)
+		{
+			var openGroups = 0;
+			var operationIndex = -1;
+			for (var i = 0; i < blocks.Count; i++)
+			{
+				var netEnclosed = blocks[i].Count(c => c == '(') - blocks[i].Count(c => c == ')');
+				openGroups += netEnclosed;
+
+				if (openGroups == 0 && blocks[i].IsArithmetic())
+				{
+					operationIndex = i;
+				}
+			}
+			return operationIndex;
+		}
+
 		private static bool HasOrphanedOpenParenthesis(string expression)
 		{
 			Contract.Requires(expression != null);
