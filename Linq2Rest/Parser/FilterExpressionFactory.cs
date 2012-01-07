@@ -326,7 +326,7 @@ namespace Linq2Rest.Parser
 
 				if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
 				{
-					var genericTypeArgument = type.GetGenericArguments().First();
+					var genericTypeArgument = type.GetGenericArguments()[0];
 					var value = GetKnownConstant(token, genericTypeArgument, formatProvider);
 					if (value != null)
 					{
@@ -407,6 +407,8 @@ namespace Linq2Rest.Parser
 
 		private Expression GetTokenExpression<T>(ParameterExpression parameter, Type type, IFormatProvider formatProvider, TokenSet[] tokens)
 		{
+			Contract.Requires(tokens != null);
+
 			string combiner = null;
 			Expression existing = null;
 			foreach (var tokenSet in tokens)
@@ -454,17 +456,21 @@ namespace Linq2Rest.Parser
 
 		private Expression GetArithmeticExpression<T>(string filter, ParameterExpression parameter, Type type, IFormatProvider formatProvider)
 		{
+			Contract.Requires(filter != null);
+
 			var arithmeticToken = filter.GetArithmeticToken();
 			if (arithmeticToken == null)
 			{
 				return null;
 			}
 
-			Type type1 = type ?? GetExpressionType<T>(arithmeticToken, parameter);
+			var type1 = type ?? GetExpressionType<T>(arithmeticToken, parameter);
 			var leftExpression = CreateExpression<T>(arithmeticToken.Left, parameter, type1, formatProvider);
 			var rightExpression = CreateExpression<T>(arithmeticToken.Right, parameter, type1, formatProvider);
 
-			return GetLeftRightOperation(arithmeticToken.Operation, leftExpression, rightExpression);
+			return leftExpression == null || rightExpression == null
+			       	? null
+			       	: GetLeftRightOperation(arithmeticToken.Operation, leftExpression, rightExpression);
 		}
 
 		private Expression GetConstructorExpression<T>(string filter, ParameterExpression parameter, Type resultType, IFormatProvider formatProvider)
