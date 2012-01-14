@@ -50,8 +50,7 @@ namespace Linq2Rest
 			var dictionary = fields.ToDictionary(f => f.Name, f => f.PropertyType);
 
 			Monitor.Enter(BuiltTypes);
-			try
-			{
+			
 				var className = GetTypeKey(dictionary);
 
 				if (BuiltTypes.ContainsKey(className))
@@ -68,16 +67,9 @@ namespace Linq2Rest
 
 				BuiltTypes[className] = typeBuilder.CreateType();
 
-				return BuiltTypes[className];
-			}
-			catch
-			{
-				return null;
-			}
-			finally
-			{
 				Monitor.Exit(BuiltTypes);
-			}
+			
+				return BuiltTypes[className];
 		}
 
 		private static string GetTypeKey(Dictionary<string, Type> fields)

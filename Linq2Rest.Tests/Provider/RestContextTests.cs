@@ -157,6 +157,20 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenApplyingEqualityExpressionForCatpuredVariableThenCallsRestServiceWithFilterParameter()
+		{
+			const double Variable = 2.0;
+			VerifyCall(x => x.Value == Variable, "http://localhost/?$filter=Value+eq+2");
+		}
+
+		[Test]
+		public void WhenApplyingEqualityExpressionForCatpuredVariablePropertyThenCallsRestServiceWithFilterParameter()
+		{
+			const string Variable = "blah";
+			VerifyCall(x => x.Value == Variable.Length, "http://localhost/?$filter=Value+eq+4");
+		}
+
+		[Test]
 		public void WhenApplyingNotExpressionThenCallRestServiceWithFilterParameter()
 		{
 			VerifyCall(x => !(x.Value <= 3), "http://localhost/?$filter=not(Value+le+3)");
