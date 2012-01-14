@@ -201,9 +201,19 @@ namespace Linq2Rest.Provider
 					return input;
 				}
 
-				var fi = (FieldInfo)input.Member;
-				object result = fi.GetValue(obj);
-				return result is Expression ? (Expression)result : Expression.Constant(result);
+				var fieldInfo = input.Member as FieldInfo;
+				if (fieldInfo != null)
+				{
+					var result = fieldInfo.GetValue(obj);
+					return result is Expression ? (Expression)result : Expression.Constant(result);
+				}
+
+				var propertyInfo = input.Member as PropertyInfo;
+				if (propertyInfo != null)
+				{
+					var result = propertyInfo.GetValue(obj, null);
+					return result is Expression ? (Expression)result : Expression.Constant(result);
+				}
 			}
 
 			return input;
