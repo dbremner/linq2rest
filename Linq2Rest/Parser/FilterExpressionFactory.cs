@@ -14,7 +14,7 @@ namespace Linq2Rest.Parser
 	using System.Reflection;
 	using System.Text.RegularExpressions;
 
-	internal class FilterExpressionFactory : IFilterExpressionFactory
+	public class FilterExpressionFactory : IFilterExpressionFactory
 	{
 		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
 		private static readonly Regex StringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
