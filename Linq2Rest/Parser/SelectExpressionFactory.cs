@@ -12,7 +12,7 @@ namespace Linq2Rest.Parser
 	using System.Linq.Expressions;
 	using System.Threading;
 
-	internal class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
+	public class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{
 		private readonly IDictionary<string, Expression<Func<T, object>>> _knownSelections;
 

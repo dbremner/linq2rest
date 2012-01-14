@@ -13,7 +13,7 @@ namespace Linq2Rest.Parser
 	using System.Linq.Expressions;
 	using System.Web.UI.WebControls;
 
-	internal class SortExpressionFactory : ISortExpressionFactory
+	public class SortExpressionFactory : ISortExpressionFactory
 	{
 		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
 
