@@ -81,7 +81,7 @@ namespace Linq2Rest.Mvc.Provider
 				}).ToArray();
 
 			var constructorInfos = _elementType.GetConstructors().ToArray();
-			var constructorInfo = constructorInfos.First();
+			var constructorInfo = constructorInfos.FirstOrDefault();
 
 			if (constructorInfo == null)
 			{
