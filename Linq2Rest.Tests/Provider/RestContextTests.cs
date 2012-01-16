@@ -66,7 +66,8 @@ namespace Linq2Rest.Tests.Provider
 		[Test]
 		public void WhenApplyingQueryWithFilterThenCallsRestServiceWithFilterParameter()
 		{
-			var result = _provider.Query
+			var result = _provider
+				.Query
 				.Where(x => x.Value <= 3)
 				.Count();
 
