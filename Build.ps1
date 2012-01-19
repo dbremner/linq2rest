@@ -15,7 +15,7 @@ function BuildSolution
 	msbuild .\Linq2Rest.sln /p:configuration=$configuration
 }
 
-function PublishPackage
+function CreatePackage
 {
 	.\nuget.exe pack Linq2Rest.nuspec
 	.\nuget.exe pack Linq2Rest.Mvc.nuspec
@@ -23,4 +23,4 @@ function PublishPackage
 
 UpdatePackages
 BuildSolution
-PublishPackage
+CreatePackage
