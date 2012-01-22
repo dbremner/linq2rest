@@ -11,6 +11,7 @@ namespace Linq2Rest.Mvc.Provider
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Reflection;
 	using System.Web.Script.Serialization;
 
 	using Linq2Rest.Provider;
@@ -21,6 +22,7 @@ namespace Linq2Rest.Mvc.Provider
 	/// <typeparam name="T">The <see cref="Type"/> to serialize.</typeparam>
 	public class SimpleAnonymousTypeSerializer<T> : ISerializer<T>
 	{
+		private static readonly MethodInfo InnerChangeTypeMethod = typeof(Convert).GetMethod("ChangeType", new[] { typeof(object), typeof(Type) });
 		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 		private readonly Type _elementType = typeof(T);
 
@@ -74,7 +76,7 @@ namespace Linq2Rest.Mvc.Provider
 					return
 						Expression.Convert(
 							Expression.Call(
-							MethodProvider.ChangeTypeMethod,
+							InnerChangeTypeMethod,
 							indexExpression,
 							Expression.Constant(p.PropertyType)),
 							p.PropertyType);

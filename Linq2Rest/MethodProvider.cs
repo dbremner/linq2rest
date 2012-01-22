@@ -6,10 +6,11 @@
 namespace Linq2Rest
 {
 	using System;
+	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 	using System.Reflection;
 
-	public static class MethodProvider
+	internal static class MethodProvider
 	{
 		public static readonly ConstantExpression IgnoreCaseExpression;
 
@@ -73,28 +74,45 @@ namespace Linq2Rest
 
 		public static MethodInfo ChangeTypeMethod
 		{
-			get { return InnerChangeTypeMethod; }
+			get
+			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
+				return InnerChangeTypeMethod;
+			}
 		}
 
 		public static MethodInfo IndexOfMethod
 		{
-			get { return InnerIndexOfMethod; }
+			get
+			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
+				return InnerIndexOfMethod;
+			}
 		}
 
 		public static MethodInfo ContainsMethod
 		{
-			get { return InnerContainsMethod; }
+			get
+			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
+				return InnerContainsMethod;
+			}
 		}
 
 		public static MethodInfo EndsWithMethod
 		{
-			get { return EndsWithMethod1; }
+			get
+			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
+				return EndsWithMethod1;
+			}
 		}
 
 		public static MethodInfo StartsWithMethod
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return StartsWithMethod1;
 			}
 		}
@@ -103,6 +121,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
 				return LengthProperty1;
 			}
 		}
@@ -111,6 +130,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return SubstringMethod1;
 			}
 		}
@@ -119,6 +139,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return ToLowerMethod1;
 			}
 		}
@@ -127,6 +148,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return ToUpperMethod1;
 			}
 		}
@@ -135,6 +157,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return TrimMethod1;
 			}
 		}
@@ -143,6 +166,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
 				return DayProperty1;
 			}
 		}
@@ -151,6 +175,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
 				return HourProperty1;
 			}
 		}
@@ -159,6 +184,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
 				return MinuteProperty1;
 			}
 		}
@@ -167,6 +193,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
 				return SecondProperty1;
 			}
 		}
@@ -175,6 +202,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
 				return MonthProperty1;
 			}
 		}
@@ -183,6 +211,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
 				return YearProperty1;
 			}
 		}
@@ -191,6 +220,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return DoubleRoundMethod1;
 			}
 		}
@@ -199,6 +229,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return DecimalRoundMethod1;
 			}
 		}
@@ -207,6 +238,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return DoubleFloorMethod1;
 			}
 		}
@@ -215,6 +247,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return DecimalFloorMethod1;
 			}
 		}
@@ -223,6 +256,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return DoubleCeilingMethod1;
 			}
 		}
@@ -231,6 +265,7 @@ namespace Linq2Rest
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 				return DecimalCeilingMethod1;
 			}
 		}
