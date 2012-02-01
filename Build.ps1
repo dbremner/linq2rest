@@ -15,6 +15,11 @@ function BuildSolution
 	msbuild .\Linq2Rest.sln /p:configuration=$configuration
 }
 
+function RunTests
+{
+	.\packages\NUnit.2.5.10.11092\tools\nunit-console.exe .\Linq2Rest.Tests\bin\$configuration\Linq2Rest.Tests.dll
+}
+
 function PublishPackage
 {
 	.\nuget.exe pack Linq2Rest.nuspec
@@ -23,4 +28,5 @@ function PublishPackage
 
 UpdatePackages
 BuildSolution
+RunTests
 PublishPackage
