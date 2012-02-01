@@ -6,6 +6,7 @@
 namespace Linq2Rest
 {
 	using System;
+	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 	using System.Reflection;
 
