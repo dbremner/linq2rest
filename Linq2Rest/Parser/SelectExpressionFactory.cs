@@ -12,10 +12,17 @@ namespace Linq2Rest.Parser
 	using System.Linq.Expressions;
 	using System.Threading;
 
+	/// <summary>
+	/// Defines the SelectExpressionFactory
+	/// </summary>
+	/// <typeparam name="T">The <see cref="Type"/> of object to project.</typeparam>
 	public class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{
 		private readonly IDictionary<string, Expression<Func<T, object>>> _knownSelections;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SelectExpressionFactory{T}"/> class.
+		/// </summary>
 		public SelectExpressionFactory()
 		{
 			_knownSelections = new Dictionary<string, Expression<Func<T, object>>>
@@ -24,6 +31,11 @@ namespace Linq2Rest.Parser
 			                   	};
 		}
 
+		/// <summary>
+		/// Creates a select expression.
+		/// </summary>
+		/// <param name="selection">The properties to select.</param>
+		/// <returns>An instance of a <see cref="Func{T1,TResult}"/>.</returns>
 		public Expression<Func<T, object>> Create(string selection)
 		{
 			var fieldNames = (selection ?? string.Empty).Split(',')

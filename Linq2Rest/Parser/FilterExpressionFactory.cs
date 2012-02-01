@@ -14,6 +14,9 @@ namespace Linq2Rest.Parser
 	using System.Reflection;
 	using System.Text.RegularExpressions;
 
+	/// <summary>
+	/// Defines the FilterExpressionFactory
+	/// </summary>
 	public class FilterExpressionFactory : IFilterExpressionFactory
 	{
 		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
@@ -23,11 +26,24 @@ namespace Linq2Rest.Parser
 		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 		private static readonly ConcurrentDictionary<Type, MethodInfo> ParseMethods = new ConcurrentDictionary<Type, MethodInfo>();
 
+		/// <summary>
+		/// Creates a filter expression from its string representation.
+		/// </summary>
+		/// <param name="filter">The string representation of the filter.</param>
+		/// <typeparam name="T">The <see cref="Type"/> of item to filter.</typeparam>
+		/// <returns>An <see cref="Expression{TDelegate}"/> if the passed filter is valid, otherwise null.</returns>
 		public Expression<Func<T, bool>> Create<T>(string filter)
 		{
 			return Create<T>(filter, DefaultCulture);
 		}
 
+		/// <summary>
+		/// Creates a filter expression from its string representation.
+		/// </summary>
+		/// <param name="filter">The string representation of the filter.</param>
+		/// <param name="formatProvider">The <see cref="IFormatProvider"/> to use when reading the filter.</param>
+		/// <typeparam name="T">The <see cref="Type"/> of item to filter.</typeparam>
+		/// <returns>An <see cref="Expression{TDelegate}"/> if the passed filter is valid, otherwise null.</returns>
 		public Expression<Func<T, bool>> Create<T>(string filter, IFormatProvider formatProvider)
 		{
 			if (string.IsNullOrWhiteSpace(filter))

@@ -9,11 +9,10 @@ namespace Linq2Rest
 	using System.Linq.Expressions;
 	using System.Reflection;
 
-	public static class MethodProvider
+	internal static class MethodProvider
 	{
 		public static readonly ConstantExpression IgnoreCaseExpression;
 
-		private static readonly MethodInfo InnerChangeTypeMethod;
 		private static readonly MethodInfo InnerContainsMethod;
 		private static readonly MethodInfo InnerIndexOfMethod;
 		private static readonly MethodInfo EndsWithMethod1;
@@ -43,7 +42,6 @@ namespace Linq2Rest
 			var mathType = typeof(Math);
 			var stringComparisonType = typeof(StringComparison);
 
-			InnerChangeTypeMethod = typeof(Convert).GetMethod("ChangeType", new[] { typeof(object), typeof(Type) });
 			IgnoreCaseExpression = Expression.Constant(StringComparison.OrdinalIgnoreCase);
 
 			InnerContainsMethod = stringType.GetMethod("Contains", new[] { stringType });
@@ -69,11 +67,6 @@ namespace Linq2Rest
 			DecimalFloorMethod1 = mathType.GetMethod("Floor", new[] { typeof(decimal) });
 			DoubleCeilingMethod1 = mathType.GetMethod("Ceiling", new[] { typeof(double) });
 			DecimalCeilingMethod1 = mathType.GetMethod("Ceiling", new[] { typeof(decimal) });
-		}
-
-		public static MethodInfo ChangeTypeMethod
-		{
-			get { return InnerChangeTypeMethod; }
 		}
 
 		public static MethodInfo IndexOfMethod

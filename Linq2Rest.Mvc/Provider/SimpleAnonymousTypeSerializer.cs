@@ -11,6 +11,7 @@ namespace Linq2Rest.Mvc.Provider
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Reflection;
 	using System.Web.Script.Serialization;
 
 	using Linq2Rest.Provider;
@@ -21,9 +22,15 @@ namespace Linq2Rest.Mvc.Provider
 	/// <typeparam name="T">The <see cref="Type"/> to serialize.</typeparam>
 	public class SimpleAnonymousTypeSerializer<T> : ISerializer<T>
 	{
+		private static readonly MethodInfo InnerChangeTypeMethod = typeof(Convert).GetMethod("ChangeType", new[] { typeof(object), typeof(Type) });
 		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 		private readonly Type _elementType = typeof(T);
 
+		/// <summary>
+		/// Deserializes a single item.
+		/// </summary>
+		/// <param name="input">The serialized item.</param>
+		/// <returns>An instance of the serialized item.</returns>
 		public T Deserialize(string input)
 		{
 			var selectorFunction = CreateSelector(typeof(IDictionary<string, object>));
@@ -32,6 +39,11 @@ namespace Linq2Rest.Mvc.Provider
 			return selectorFunction(dictionary);
 		}
 
+		/// <summary>
+		/// Deserializes a list of items.
+		/// </summary>
+		/// <param name="input">The serialized items.</param>
+		/// <returns>An list of the serialized items.</returns>
 		public IList<T> DeserializeList(string input)
 		{
 			return ReadToAnonymousType(input);
@@ -42,18 +54,25 @@ namespace Linq2Rest.Mvc.Provider
 			var deserializeObject = _innerSerializer.DeserializeObject(response);
 			var enumerable = deserializeObject as IEnumerable;
 
-			if (enumerable == null || !enumerable.OfType<object>().Any())
+			if (enumerable == null)
 			{
 				return new List<T>();
 			}
 
-			var first = enumerable.OfType<object>().First();
+			var objectEnumerable = enumerable.OfType<object>().ToArray();
+
+			if (objectEnumerable.Length == 0)
+			{
+				return new List<T>();
+			}
+
+			var first = objectEnumerable[0];
 			var deserializedType = first.GetType();
 			var selectorFunction = CreateSelector(deserializedType);
 
 			Contract.Assume(selectorFunction != null, "Compiled above.");
 
-			return enumerable.OfType<object>().Select<object, T>(selectorFunction).ToList();
+			return objectEnumerable.Select(selectorFunction).ToList();
 		}
 
 		private Func<object, T> CreateSelector(Type deserializedType)
@@ -61,24 +80,26 @@ namespace Linq2Rest.Mvc.Provider
 			var objectParameter = Expression.Parameter(typeof(object), "x");
 			var fields = _elementType.GetProperties();
 
-			var bindings = fields.Select(
-				p =>
-				{
-					var arguments = new[] { Expression.Constant(p.Name) };
+			var bindings = fields
+				.Select(
+				        p =>
+				        	{
+				        		var arguments = new[] { Expression.Constant(p.Name) };
 
-					var indexExpression = Expression.MakeIndex(
-						Expression.Convert(objectParameter, deserializedType),
-						deserializedType.GetProperty("Item"),
-						arguments);
+				        		var indexExpression = Expression.MakeIndex(
+				        		                                           Expression.Convert(objectParameter, deserializedType),
+				        		                                           deserializedType.GetProperty("Item"),
+				        		                                           arguments);
 
-					return
-						Expression.Convert(
-							Expression.Call(
-							MethodProvider.ChangeTypeMethod,
-							indexExpression,
-							Expression.Constant(p.PropertyType)),
-							p.PropertyType);
-				}).ToArray();
+				        		return
+				        			Expression.Convert(
+				        			                   Expression.Call(
+				        			                                   InnerChangeTypeMethod,
+				        			                                   indexExpression,
+				        			                                   Expression.Constant(p.PropertyType)),
+				        			                   p.PropertyType);
+				        	})
+				.ToArray();
 
 			var constructorInfos = _elementType.GetConstructors().ToArray();
 			var constructorInfo = constructorInfos.FirstOrDefault();
