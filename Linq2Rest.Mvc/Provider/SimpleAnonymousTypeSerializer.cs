@@ -26,6 +26,11 @@ namespace Linq2Rest.Mvc.Provider
 		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 		private readonly Type _elementType = typeof(T);
 
+		/// <summary>
+		/// Deserializes a single item.
+		/// </summary>
+		/// <param name="input">The serialized item.</param>
+		/// <returns>An instance of the serialized item.</returns>
 		public T Deserialize(string input)
 		{
 			var selectorFunction = CreateSelector(typeof(IDictionary<string, object>));
@@ -34,6 +39,11 @@ namespace Linq2Rest.Mvc.Provider
 			return selectorFunction(dictionary);
 		}
 
+		/// <summary>
+		/// Deserializes a list of items.
+		/// </summary>
+		/// <param name="input">The serialized items.</param>
+		/// <returns>An list of the serialized items.</returns>
 		public IList<T> DeserializeList(string input)
 		{
 			return ReadToAnonymousType(input);
@@ -44,18 +54,25 @@ namespace Linq2Rest.Mvc.Provider
 			var deserializeObject = _innerSerializer.DeserializeObject(response);
 			var enumerable = deserializeObject as IEnumerable;
 
-			if (enumerable == null || !enumerable.OfType<object>().Any())
+			if (enumerable == null)
 			{
 				return new List<T>();
 			}
 
-			var first = enumerable.OfType<object>().First();
+			var objectEnumerable = enumerable.OfType<object>().ToArray();
+
+			if (objectEnumerable.Length == 0)
+			{
+				return new List<T>();
+			}
+
+			var first = objectEnumerable[0];
 			var deserializedType = first.GetType();
 			var selectorFunction = CreateSelector(deserializedType);
 
 			Contract.Assume(selectorFunction != null, "Compiled above.");
 
-			return enumerable.OfType<object>().Select<object, T>(selectorFunction).ToList();
+			return objectEnumerable.Select(selectorFunction).ToList();
 		}
 
 		private Func<object, T> CreateSelector(Type deserializedType)
@@ -63,7 +80,8 @@ namespace Linq2Rest.Mvc.Provider
 			var objectParameter = Expression.Parameter(typeof(object), "x");
 			var fields = _elementType.GetProperties();
 
-			var bindings = fields.Select(
+			var bindings = fields
+				.Select(
 				p =>
 				{
 					var arguments = new[] { Expression.Constant(p.Name) };
@@ -76,11 +94,12 @@ namespace Linq2Rest.Mvc.Provider
 					return
 						Expression.Convert(
 							Expression.Call(
-							InnerChangeTypeMethod,
+				        			                                   InnerChangeTypeMethod,
 							indexExpression,
 							Expression.Constant(p.PropertyType)),
 							p.PropertyType);
-				}).ToArray();
+				        	})
+				.ToArray();
 
 			var constructorInfos = _elementType.GetConstructors().ToArray();
 			var constructorInfo = constructorInfos.FirstOrDefault();
