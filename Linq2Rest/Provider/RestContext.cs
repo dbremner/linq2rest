@@ -9,10 +9,19 @@ namespace Linq2Rest.Provider
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 
+	/// <summary>
+	/// Defines the RestContext.
+	/// </summary>
+	/// <typeparam name="T">The <see cref="Type"/> of object to query.</typeparam>
 	public class RestContext<T>
 	{
 		private readonly RestQueryable<T> _queryable;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RestContext{T}"/> class.
+		/// </summary>
+		/// <param name="client"></param>
+		/// <param name="serializerFactory"></param>
 		public RestContext(IRestClient client, ISerializerFactory serializerFactory)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
@@ -21,6 +30,9 @@ namespace Linq2Rest.Provider
 			_queryable = new RestQueryable<T>(client, serializerFactory);
 		}
 
+		/// <summary>
+		/// Gets the context query.
+		/// </summary>
 		public IQueryable<T> Query
 		{
 			get
