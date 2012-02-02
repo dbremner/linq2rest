@@ -21,21 +21,6 @@ namespace Linq2Rest.Provider
 			return expression == null ? null : ProcessExpression(expression, expression.Type);
 		}
 
-		public static object GetExpressionValue(this Expression expression)
-		{
-			if (expression is UnaryExpression)
-			{
-				return (expression as UnaryExpression).Operand;
-			}
-
-			if (expression is ConstantExpression)
-			{
-				return (expression as ConstantExpression).Value;
-			}
-
-			return null;
-		}
-
 		private static string ProcessExpression(this Expression expression, Type type)
 		{
 			Contract.Requires(expression != null);
