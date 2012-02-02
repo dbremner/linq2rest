@@ -15,6 +15,7 @@ namespace Linq2Rest.Tests.Provider
 
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class RestContextTests
 	{
 		private RestContext<SimpleDto> _provider;
@@ -49,7 +50,7 @@ namespace Linq2Rest.Tests.Provider
 				.Where(Expression.Lambda<Func<SimpleDto, bool>>(trueExpression, parameter))
 				.Count(x => x.ID != 0);
 
-			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			var uri = new Uri("http://localhost/?$filter=(Value+le+3)+and+(ID+ne+0)");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -64,12 +65,77 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenApplyingQueryWithFilterThenCallsRestServiceWithFilterParameter()
+		public void WhenApplyingQueryWithCountFilterThenCallsRestServiceWithFilterParameter()
 		{
 			var result = _provider
 				.Query
-				.Where(x => x.Value <= 3)
-				.Count();
+				.Count(x => x.Value <= 3);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithSingleOrDefaultFilterThenCallsRestServiceWithFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.FirstOrDefault(x => x.Value <= 3);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3&$top=1");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithSingleFilterThenCallsRestServiceWithFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.First(x => x.Value <= 3);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3&$top=1");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithFirstOrDefaultFilterThenCallsRestServiceWithFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.FirstOrDefault(x => x.Value <= 3);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3&$top=1");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithFirstFilterThenCallsRestServiceWithFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.First(x => x.Value <= 3);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3&$top=1");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithLastOrDefaultFilterThenCallsRestServiceWithFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.LastOrDefault(x => x.Value <= 3);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithLastFilterThenCallsRestServiceWithFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.Last(x => x.Value <= 3);
 
 			var uri = new Uri("http://localhost/?$filter=Value+le+3");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());

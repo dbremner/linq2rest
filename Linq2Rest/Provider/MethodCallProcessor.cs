@@ -27,6 +27,21 @@ namespace Linq2Rest.Provider
 
 			switch (method)
 			{
+				case "Single":
+				case "SingleOrDefault":
+				case "First":
+				case "FirstOrDefault":
+					builder.TakeParameter = "1";
+					return methodCall.Arguments.Count >= 2
+								? GetMethodResult(methodCall, builder, resultLoader)
+								: GetResult(methodCall, builder, resultLoader);
+				case "Last":
+				case "LastOrDefault":
+				case "Count":
+				case "LongCount":
+					return methodCall.Arguments.Count >= 2
+							? GetMethodResult(methodCall, builder, resultLoader)
+							: GetResult(methodCall, builder, resultLoader);
 				case "Where":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 
@@ -54,7 +69,7 @@ namespace Linq2Rest.Provider
 									throw new InvalidOperationException("Projection into new member names is not supported.");
 								}
 
-								builder.SelectParameter = string.Join(",", args);
+								builder.SelectParameter = String.Join(",", args);
 							}
 						}
 					}
@@ -97,19 +112,61 @@ namespace Linq2Rest.Provider
 					builder.SkipParameter = methodCall.Arguments[1].ProcessExpression();
 					break;
 				default:
-					Contract.Assume(methodCall.Arguments.Count >= 1);
+					return GetResult(methodCall, builder, resultLoader);
+			}
 
-					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					var results = resultLoader(builder);
+			return null;
+		}
 
-					Contract.Assume(results != null);
+		private static object GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader)
+		{
+			Contract.Assume(methodCall.Arguments.Count >= 2);
 
-					var parameters = new object[] { results.AsQueryable() }
-						.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(x => x.GetExpressionValue()))
-						.ToArray();
+			ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
 
-					var final = methodCall.Method.Invoke(null, parameters);
-					return final;
+			var processResult = methodCall.Arguments[1].ProcessExpression();
+			var currentParameter = String.IsNullOrWhiteSpace(builder.FilterParameter)
+									? processResult
+									: String.Format("({0}) and ({1})", builder.FilterParameter, processResult);
+			builder.FilterParameter = currentParameter;
+
+			var genericArguments = methodCall.Method.GetGenericArguments();
+			var countMethod = typeof(Queryable)
+				.GetMethods()
+				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
+				.MakeGenericMethod(genericArguments);
+
+			var parameters = new object[] { resultLoader(builder).AsQueryable() };
+			return countMethod.Invoke(null, parameters);
+		}
+
+		private static object GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader)
+		{
+			Contract.Assume(methodCall.Arguments.Count >= 1);
+
+			ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
+			var results = resultLoader(builder);
+
+			Contract.Assume(results != null);
+
+			var parameters = new object[] { results.AsQueryable() }
+				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(x => x.GetExpressionValue()))
+				.ToArray();
+
+			var final = methodCall.Method.Invoke(null, parameters);
+			return final;
+		}
+
+		private static object GetExpressionValue(this Expression expression)
+		{
+			if (expression is UnaryExpression)
+			{
+				return (expression as UnaryExpression).Operand;
+			}
+
+			if (expression is ConstantExpression)
+			{
+				return (expression as ConstantExpression).Value;
 			}
 
 			return null;
