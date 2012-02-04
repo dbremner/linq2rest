@@ -18,7 +18,7 @@ namespace Linq2Rest.Tests.Provider
 		{
 			var uri = new Uri("http://localhost");
 
-			var client = new RestClient(uri);
+			var client = new JsonRestClient(uri);
 
 			Assert.AreEqual(uri, client.ServiceBase);
 		}
