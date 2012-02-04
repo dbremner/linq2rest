@@ -131,7 +131,7 @@
     <Compile Include="Provider\ISerializerFactory.cs" />
     <Compile Include="Provider\MethodCallProcessor.cs" />
     <Compile Include="Provider\ParameterBuilder.cs" />
-    <Compile Include="Provider\RestClient.cs" />
+    <Compile Include="Provider\JsonRestClient.cs" />
     <Compile Include="Provider\RestContext.cs" />
     <Compile Include="Provider\RestQueryable.cs" />
     <Compile Include="Provider\RestQueryProvider.cs" />

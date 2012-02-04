@@ -21,7 +21,7 @@ namespace Linq2Rest.Tests
 		{
 			// Tests against the sample OData service.
 			_customerContext = new RestContext<NorthwindCustomer>(
-				new RestClient(new Uri("http://services.odata.org/Northwind/Northwind.svc/Customers")),
+				new JsonRestClient(new Uri("http://services.odata.org/Northwind/Northwind.svc/Customers")),
 				new TestODataSerializerFactory());
 		}
 

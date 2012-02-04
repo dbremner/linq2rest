@@ -11,15 +11,15 @@ namespace Linq2Rest.Provider
 	/// <summary>
 	/// Defines a REST client implementation.
 	/// </summary>
-	public class RestClient : IRestClient
+	public class JsonRestClient : IRestClient
 	{
 		private readonly WebClient _client;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RestClient"/> class.
+		/// Initializes a new instance of the <see cref="JsonRestClient"/> class.
 		/// </summary>
 		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
-		public RestClient(Uri uri)
+		public JsonRestClient(Uri uri)
 		{
 			_client = new WebClient();
 			

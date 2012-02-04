@@ -22,7 +22,6 @@ namespace Linq2Rest.Mvc.Provider
 	/// <typeparam name="T">The <see cref="Type"/> to serialize.</typeparam>
 	public class SimpleAnonymousTypeSerializer<T> : ISerializer<T>
 	{
-		private static readonly MethodInfo InnerChangeTypeMethod = typeof(Convert).GetMethod("ChangeType", new[] { typeof(object), typeof(Type) });
 		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 		private readonly Type _elementType = typeof(T);
 
@@ -82,22 +81,23 @@ namespace Linq2Rest.Mvc.Provider
 
 			var bindings = fields
 				.Select(
-				p =>
-				{
-					var arguments = new[] { Expression.Constant(p.Name) };
+				        p =>
+				        	{
+				        		var arguments = new[] { Expression.Constant(p.Name) };
 
-					var indexExpression = Expression.MakeIndex(
-						Expression.Convert(objectParameter, deserializedType),
-						deserializedType.GetProperty("Item"),
-						arguments);
+				        		var indexExpression = Expression
+				        			.MakeIndex(
+				        			           Expression.Convert(objectParameter, deserializedType),
+				        			           deserializedType.GetProperty("Item"),
+				        			           arguments);
 
-					return
-						Expression.Convert(
-							Expression.Call(
-				        			                                   InnerChangeTypeMethod,
-							indexExpression,
-							Expression.Constant(p.PropertyType)),
-							p.PropertyType);
+				        		return Expression
+				        			.Convert(
+				        			         Expression.Call(
+				        			                         AnonymousTypeSerializerHelper.InnerChangeTypeMethod,
+				        			                         indexExpression,
+				        			                         Expression.Constant(p.PropertyType)),
+				        			         p.PropertyType);
 				        	})
 				.ToArray();
 
@@ -123,5 +123,10 @@ namespace Linq2Rest.Mvc.Provider
 			Contract.Invariant(_innerSerializer != null);
 			Contract.Invariant(_elementType != null);
 		}
+	}
+
+	internal static class AnonymousTypeSerializerHelper
+	{
+		public static readonly MethodInfo InnerChangeTypeMethod = typeof(Convert).GetMethod("ChangeType", new[] { typeof(object), typeof(Type) });
 	}
 }
