@@ -7,11 +7,10 @@ namespace Linq2Rest.Tests
 {
 	using System;
 	using System.Linq;
-
 	using Linq2Rest.Provider;
-
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class ODataCustomerServiceTests
 	{
 		private RestContext<NorthwindCustomer> _customerContext;
@@ -47,6 +46,14 @@ namespace Linq2Rest.Tests
 			var results = _customerContext.Query.Where(x => x.CompanyName.StartsWith("Alfr")).ToArray();
 
 			Assert.Less(0, results.Length);
+		}
+
+		[Test]
+		public void WhenRequestingCustomerCountByNameStartsWithThenReturnsCount()
+		{
+			var result = _customerContext.Query.Count(x => x.CompanyName.StartsWith("Alfr"));
+
+			Assert.Less(0, result);
 		}
 
 		[Test]

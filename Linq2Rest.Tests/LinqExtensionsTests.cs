@@ -7,9 +7,9 @@ namespace Linq2Rest.Tests
 {
 	using System;
 	using System.Reflection;
-
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class LinqExtensionsTests
 	{
 		[Test]
