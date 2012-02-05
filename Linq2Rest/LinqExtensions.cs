@@ -14,6 +14,7 @@ namespace Linq2Rest
 	using System.Reflection;
 	using System.Reflection.Emit;
 	using System.Runtime.CompilerServices;
+	using System.Runtime.Serialization;
 	using System.Threading;
 
 	internal static class LinqExtensions
@@ -22,12 +23,13 @@ namespace Linq2Rest
 		private static readonly ModuleBuilder ModuleBuilder;
 		private static readonly Dictionary<string, Type> BuiltTypes = new Dictionary<string, Type>();
 		private static readonly ConcurrentDictionary<Type, CustomAttributeBuilder[]> TypeAttributeBuilders = new ConcurrentDictionary<Type, CustomAttributeBuilder[]>();
-		private static readonly ConcurrentDictionary<PropertyInfo, CustomAttributeBuilder[]> PropertyAttributeBuilders = new ConcurrentDictionary<PropertyInfo, CustomAttributeBuilder[]>();
+		private static readonly ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]> PropertyAttributeBuilders = new ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]>();
 		private const MethodAttributes GetSetAttr = MethodAttributes.Final | MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig;
 
 		static LinqExtensions()
 		{
-			ModuleBuilder = Thread.GetDomain()
+			ModuleBuilder = Thread
+				.GetDomain()
 				.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess.Run)
 				.DefineDynamicModule(AssemblyName.Name);
 		}
@@ -42,8 +44,9 @@ namespace Linq2Rest
 				&& (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
 		}
 
-		public static Type CreateRuntimeType(this Type sourceType, IEnumerable<PropertyInfo> properties)
+		public static Type CreateRuntimeType(this Type sourceType, IEnumerable<MemberInfo> properties)
 		{
+			Contract.Requires<ArgumentNullException>(sourceType != null);
 			Contract.Requires<ArgumentNullException>(properties != null);
 
 			properties = properties.ToArray();
@@ -52,12 +55,11 @@ namespace Linq2Rest
 				throw new ArgumentOutOfRangeException("properties", "properties must have at least 1 property definition");
 			}
 
-			var dictionary = properties.ToDictionary(f => f.Name, f => f);
+			var dictionary = properties.ToDictionary(GetMemberAlias, f => f);
 
 			Monitor.Enter(BuiltTypes);
 
-			var className = GetTypeKey(dictionary);
-
+			var className = GetTypeKey(sourceType, dictionary);
 			if (BuiltTypes.ContainsKey(className))
 			{
 				return BuiltTypes[className];
@@ -78,19 +80,23 @@ namespace Linq2Rest
 			return BuiltTypes[className];
 		}
 
-		private static void CreateProperty(TypeBuilder typeBuilder, KeyValuePair<string, PropertyInfo> field)
+		private static void CreateProperty(TypeBuilder typeBuilder, KeyValuePair<string, MemberInfo> field)
 		{
-			var propertyType = field.Value.PropertyType;
+			Contract.Requires(typeBuilder != null);
+
+			var propertyType = field.Value.MemberType == MemberTypes.Property
+								? ((PropertyInfo)field.Value).PropertyType
+								: ((FieldInfo)field.Value).FieldType;
 			var fieldBuilder = typeBuilder.DefineField(field.Key, propertyType, FieldAttributes.Private);
 
 			var propertyBuilder = typeBuilder.DefineProperty(field.Key, PropertyAttributes.None, propertyType, null);
 			SetAttributes(propertyBuilder, field.Value);
 
 			var getAccessor = typeBuilder.DefineMethod(
-			                                           "get_" + field.Key,
-			                                           GetSetAttr,
-			                                           propertyType,
-			                                           Type.EmptyTypes);
+													   "get_" + field.Key,
+													   GetSetAttr,
+													   propertyType,
+													   Type.EmptyTypes);
 
 			var getIl = getAccessor.GetILGenerator();
 			getIl.Emit(OpCodes.Ldarg_0);
@@ -98,10 +104,10 @@ namespace Linq2Rest
 			getIl.Emit(OpCodes.Ret);
 
 			var setAccessor = typeBuilder.DefineMethod(
-			                                           "set_" + field.Key,
-			                                           GetSetAttr,
-			                                           null,
-			                                           new[] { propertyType });
+													   "set_" + field.Key,
+													   GetSetAttr,
+													   null,
+													   new[] { propertyType });
 
 			var setIl = setAccessor.GetILGenerator();
 			setIl.Emit(OpCodes.Ldarg_0);
@@ -124,22 +130,30 @@ namespace Linq2Rest
 							  return CreateCustomAttributeBuilders(customAttributes).ToArray();
 						  });
 
+			Contract.Assume(attributeBuilders != null);
+
 			foreach (var attributeBuilder in attributeBuilders)
 			{
 				typeBuilder.SetCustomAttribute(attributeBuilder);
 			}
 		}
 
-		private static void SetAttributes(PropertyBuilder propertyBuilder, PropertyInfo propertyInfo)
+		private static void SetAttributes(PropertyBuilder propertyBuilder, MemberInfo memberInfo)
 		{
+			Contract.Requires(propertyBuilder != null);
+			Contract.Requires(memberInfo != null);
+
 			var customAttributeBuilders = PropertyAttributeBuilders
 				.GetOrAdd(
-						  propertyInfo,
+						  memberInfo,
 						  p =>
 						  {
 							  var customAttributes = p.GetCustomAttributesData();
 							  return CreateCustomAttributeBuilders(customAttributes).ToArray();
 						  });
+
+			Contract.Assume(customAttributeBuilders != null);
+
 			foreach (var attribute in customAttributeBuilders)
 			{
 				propertyBuilder.SetCustomAttribute(attribute);
@@ -148,23 +162,41 @@ namespace Linq2Rest
 
 		private static IEnumerable<CustomAttributeBuilder> CreateCustomAttributeBuilders(IEnumerable<CustomAttributeData> customAttributes)
 		{
+			Contract.Requires(customAttributes != null);
+
 			var attributeBuilders = customAttributes
 				.Select(
-				        x =>
-				        	{
-				        		var namedArguments = x.NamedArguments;
-				        		var properties = namedArguments.Select(a => a.MemberInfo).OfType<PropertyInfo>().ToArray();
-				        		var values = namedArguments.Select(a => a.TypedValue.Value).ToArray();
-				        		var constructorArgs = x.ConstructorArguments.Select(a => a.Value).ToArray();
-				        		var constructor = x.Constructor;
-				        		return new CustomAttributeBuilder(constructor, constructorArgs, properties, values);
-				        	});
+						x =>
+						{
+							var namedArguments = x.NamedArguments;
+							var properties = namedArguments.Select(a => a.MemberInfo).OfType<PropertyInfo>().ToArray();
+							var values = namedArguments.Select(a => a.TypedValue.Value).ToArray();
+							var constructorArgs = x.ConstructorArguments.Select(a => a.Value).ToArray();
+							var constructor = x.Constructor;
+							return new CustomAttributeBuilder(constructor, constructorArgs, properties, values);
+						});
 			return attributeBuilders;
 		}
 
-		private static string GetTypeKey(Dictionary<string, PropertyInfo> fields)
+		private static string GetMemberAlias(MemberInfo member)
 		{
-			return fields.Aggregate("Linq2Rest<>", (current, field) => current + (field.Key + field.Value.PropertyType.Name));
+			Contract.Requires(member != null);
+
+			var dataMember = member.GetCustomAttributes(typeof(DataMemberAttribute), true)
+				.OfType<DataMemberAttribute>()
+				.FirstOrDefault();
+
+			return dataMember == null
+					? member.Name
+					: dataMember.Name;
+		}
+
+		private static string GetTypeKey(Type sourceType, Dictionary<string, MemberInfo> fields)
+		{
+			Contract.Requires(sourceType != null);
+			Contract.Requires(fields != null);
+
+			return fields.Aggregate("Linq2Rest<>" + sourceType.Name, (current, field) => current + (field.Key + field.Value.MemberType));
 		}
 	}
 }

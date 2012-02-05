@@ -55,12 +55,12 @@ namespace Linq2Rest.Tests
 		[Test]
 		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenCreatesTypeWithOneProperty()
 		{
-			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
+			var properties = new[] { typeof(FakeItem).GetProperty("ChoiceValue") };
 
 			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
 
 			var dataMemberAttribute = dynamicType
-				.GetProperty("DateValue")
+				.GetProperty("Choice")
 				.GetCustomAttributes(false);
 
 			Assert.IsNotEmpty(dataMemberAttribute);

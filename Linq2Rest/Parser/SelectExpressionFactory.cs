@@ -10,6 +10,8 @@ namespace Linq2Rest.Parser
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Reflection;
+	using System.Runtime.Serialization;
 	using System.Threading;
 
 	/// <summary>
@@ -18,6 +20,7 @@ namespace Linq2Rest.Parser
 	/// <typeparam name="T">The <see cref="Type"/> of object to project.</typeparam>
 	public class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{
+		private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 		private readonly IDictionary<string, Expression<Func<T, object>>> _knownSelections;
 
 		/// <summary>
@@ -53,18 +56,29 @@ namespace Linq2Rest.Parser
 			}
 
 			var elementType = typeof(T);
-			var sourceProperties = fieldNames.ToDictionary(name => name, elementType.GetProperty);
-			var dynamicType = elementType.CreateRuntimeType(sourceProperties.Values);
+			var elementMembers = elementType.GetProperties(Flags)
+				.Cast<MemberInfo>()
+				.Concat(elementType.GetFields(Flags))
+				.ToArray();
+			var sourceMembers = fieldNames.ToDictionary(name => name, s => elementMembers.First(m => FindMember(s, m)));
+			var dynamicType = elementType.CreateRuntimeType(sourceMembers.Values);
 
 			var sourceItem = Expression.Parameter(elementType, "t");
 			var bindings = dynamicType
-				.GetFields()
-				.Select(p => Expression.Bind(p, Expression.Property(sourceItem, sourceProperties[p.Name])));
+				.GetProperties()
+				.Select(p =>
+							{
+								var member = sourceMembers[p.Name];
+								var expression = member.MemberType == MemberTypes.Property
+								                 	? Expression.Property(sourceItem, (PropertyInfo)member)
+								                 	: Expression.Field(sourceItem, (FieldInfo)member);
+								return Expression.Bind(p, expression);
+							});
 
 			var constructorInfo = dynamicType.GetConstructor(Type.EmptyTypes);
-			
+
 			Contract.Assume(constructorInfo != null, "Created type has default constructor.");
-			
+
 			var selector = Expression.Lambda<Func<T, object>>(
 															  Expression.MemberInit(Expression.New(constructorInfo), bindings),
 															  sourceItem);
@@ -77,6 +91,24 @@ namespace Linq2Rest.Parser
 			}
 
 			return selector;
+		}
+
+		private static bool FindMember(string name, MemberInfo m)
+		{
+			if (string.Equals(name, m.Name))
+			{
+				return true;
+			}
+			var dataMember = m.GetCustomAttributes(typeof(DataMemberAttribute), true)
+				.OfType<DataMemberAttribute>()
+				.FirstOrDefault();
+
+			if (dataMember != null && string.Equals(name, dataMember.Name))
+			{
+				return true;
+			}
+
+			return false;
 		}
 	}
 }
