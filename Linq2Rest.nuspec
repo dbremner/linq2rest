@@ -19,6 +19,8 @@
 							   targetFramework="net40" />
 			<frameworkAssembly assemblyName="System.Web"
 							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Runtime.Serialization"
+							   targetFramework="net40" />
 		</frameworkAssemblies>
 	</metadata>
 	<files>
