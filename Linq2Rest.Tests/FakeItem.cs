@@ -11,17 +11,30 @@ namespace Linq2Rest.Tests
 	[DataContract]
 	public class FakeItem
 	{
+		[DataMember(Name = "Text")]
+		private string _stringValue;
+
 		public int IntValue { get; set; }
 
 		public double DoubleValue { get; set; }
 
 		public decimal DecimalValue { get; set; }
 
-		public string StringValue { get; set; }
+		public string StringValue
+		{
+			get
+			{
+				return _stringValue;
+			}
+			set
+			{
+				_stringValue = value;
+			}
+		}
 
-		[DataMember(Name = "Date")]
 		public DateTime DateValue { get; set; }
 
+		[DataMember(Name = "Choice")]
 		public Choice ChoiceValue { get; set; }
 	}
 }
