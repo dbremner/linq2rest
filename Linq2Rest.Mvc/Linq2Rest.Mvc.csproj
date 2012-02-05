@@ -111,7 +111,7 @@
   <ItemGroup>
     <Compile Include="ModelFilterBinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Provider\SimpleAnonymousTypeSerializer.cs" />
+    <Compile Include="Provider\RuntimeAnonymousTypeSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Linq2Rest\Linq2Rest.csproj">

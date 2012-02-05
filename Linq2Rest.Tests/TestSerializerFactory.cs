@@ -14,7 +14,7 @@ namespace Linq2Rest.Tests
 		{
 			if (typeof(T).IsAnonymousType())
 			{
-				return new SimpleAnonymousTypeSerializer<T>();
+				return new RuntimeAnonymousTypeSerializer<T>();
 			}
 
 			return new TestSerializer() as ISerializer<T>;
