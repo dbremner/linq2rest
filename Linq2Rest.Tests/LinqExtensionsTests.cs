@@ -20,31 +20,45 @@ namespace Linq2Rest.Tests
 		}
 
 		[Test]
-		public void WhenCreatingDynamicTypeWithNoFieldsThenThrows()
+		public void WhenCreatingDynamicTypeWithNoPropertiesThenThrows()
 		{
 			Assert.Throws<ArgumentOutOfRangeException>(() => new PropertyInfo[0].GetDynamicType());
 		}
 
 		[Test]
-		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenCreatesTypeWithOneField()
+		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenGettingValueReturnsSetValue()
 		{
+			var expected = DateTime.UtcNow;
 			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
 
 			var dynamicType = properties.GetDynamicType();
 
-			Assert.AreEqual(1, dynamicType.GetFields().Length);
-			Assert.NotNull(dynamicType.GetField("DateValue"));
+			dynamic instance = Activator.CreateInstance(dynamicType);
+			instance.DateValue = expected;
+
+			Assert.AreEqual(expected, instance.DateValue);
 		}
 
 		[Test]
-		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenCreatesTypeWithOneFieldWhereTypeMatchesProperty()
+		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenCreatesTypeWithOneProperty()
 		{
 			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
 
 			var dynamicType = properties.GetDynamicType();
-			var field = dynamicType.GetField("DateValue");
 
-			Assert.AreEqual(typeof(DateTime), field.FieldType);
+			Assert.AreEqual(1, dynamicType.GetProperties().Length);
+			Assert.NotNull(dynamicType.GetProperty("DateValue"));
+		}
+
+		[Test]
+		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenCreatesTypeWithOnePropertyWhereTypeMatchesProperty()
+		{
+			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
+
+			var dynamicType = properties.GetDynamicType();
+			var property = dynamicType.GetProperty("DateValue");
+
+			Assert.AreEqual(typeof(DateTime), property.PropertyType);
 		}
 	}
 }
