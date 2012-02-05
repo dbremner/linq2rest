@@ -24,7 +24,7 @@ namespace Linq2Rest
 		private static readonly Dictionary<string, Type> BuiltTypes = new Dictionary<string, Type>();
 		private static readonly ConcurrentDictionary<Type, CustomAttributeBuilder[]> TypeAttributeBuilders = new ConcurrentDictionary<Type, CustomAttributeBuilder[]>();
 		private static readonly ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]> PropertyAttributeBuilders = new ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]>();
-		private const MethodAttributes GetSetAttr = MethodAttributes.Final | MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig;
+		private const MethodAttributes GetSetAttr = MethodAttributes.Final | MethodAttributes.Public;
 
 		static LinqExtensions()
 		{
@@ -32,6 +32,7 @@ namespace Linq2Rest
 				.GetDomain()
 				.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess.Run)
 				.DefineDynamicModule(AssemblyName.Name);
+
 		}
 
 		public static bool IsAnonymousType(this Type type)
@@ -87,16 +88,19 @@ namespace Linq2Rest
 			var propertyType = field.Value.MemberType == MemberTypes.Property
 								? ((PropertyInfo)field.Value).PropertyType
 								: ((FieldInfo)field.Value).FieldType;
-			var fieldBuilder = typeBuilder.DefineField(field.Key, propertyType, FieldAttributes.Private);
+			var fieldBuilder = typeBuilder.DefineField("_" + field.Key, propertyType, FieldAttributes.Private);
 
 			var propertyBuilder = typeBuilder.DefineProperty(field.Key, PropertyAttributes.None, propertyType, null);
+
+			Contract.Assume(propertyBuilder != null, "Created above.");
+
 			SetAttributes(propertyBuilder, field.Value);
 
 			var getAccessor = typeBuilder.DefineMethod(
-													   "get_" + field.Key,
-													   GetSetAttr,
-													   propertyType,
-													   Type.EmptyTypes);
+														"get_" + field.Key,
+														GetSetAttr,
+														propertyType,
+														Type.EmptyTypes);
 
 			var getIl = getAccessor.GetILGenerator();
 			getIl.Emit(OpCodes.Ldarg_0);
@@ -104,10 +108,10 @@ namespace Linq2Rest
 			getIl.Emit(OpCodes.Ret);
 
 			var setAccessor = typeBuilder.DefineMethod(
-													   "set_" + field.Key,
-													   GetSetAttr,
-													   null,
-													   new[] { propertyType });
+														"set_" + field.Key,
+														GetSetAttr,
+														null,
+														new[] { propertyType });
 
 			var setIl = setAccessor.GetILGenerator();
 			setIl.Emit(OpCodes.Ldarg_0);
