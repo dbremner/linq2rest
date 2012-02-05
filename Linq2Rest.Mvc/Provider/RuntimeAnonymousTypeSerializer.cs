@@ -20,7 +20,7 @@ namespace Linq2Rest.Mvc.Provider
 	/// Serializes simples annymous type structures.
 	/// </summary>
 	/// <typeparam name="T">The <see cref="Type"/> to serialize.</typeparam>
-	public class SimpleAnonymousTypeSerializer<T> : ISerializer<T>
+	public class RuntimeAnonymousTypeSerializer<T> : ISerializer<T>
 	{
 		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 		private readonly Type _elementType = typeof(T);

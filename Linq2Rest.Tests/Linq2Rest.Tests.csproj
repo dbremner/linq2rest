@@ -98,7 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Choice.cs" />
-    <Compile Include="Mvc\SimpleAnonymousTypeSerializerTests.cs" />
+    <Compile Include="Mvc\RuntimeAnonymousTypeSerializerTests.cs" />
     <Compile Include="NorthwindCustomer.cs" />
     <Compile Include="ODataCustomerServiceTests.cs" />
     <Compile Include="ODataResponse.cs" />

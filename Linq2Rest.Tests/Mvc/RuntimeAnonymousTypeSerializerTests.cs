@@ -11,7 +11,7 @@ namespace Linq2Rest.Tests.Mvc
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class SimpleAnonymousTypeSerializerTests
+	public class RuntimeAnonymousTypeSerializerTests
 	{
 		[Test]
 		public void CanDeserializeAnonymousTypeWithTwoProperties()
@@ -20,7 +20,7 @@ namespace Linq2Rest.Tests.Mvc
 			var source = new[] { new Tuple<string, int>("test", 1), };
 			var anonymousType = source.Select(x => new { Title = x.Item1, Value = x.Item2 }).First();
 
-			var serializerType = typeof(SimpleAnonymousTypeSerializer<>).MakeGenericType(anonymousType.GetType());
+			var serializerType = typeof(RuntimeAnonymousTypeSerializer<>).MakeGenericType(anonymousType.GetType());
 			var serializer = Activator.CreateInstance(serializerType);
 
 			var deserializeMethod = serializerType
