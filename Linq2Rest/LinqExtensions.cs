@@ -18,7 +18,7 @@ namespace Linq2Rest
 
 	internal static class LinqExtensions
 	{
-		private static readonly AssemblyName AssemblyName = new AssemblyName { Name = "DynamicLinqTypes" };
+		private static readonly AssemblyName AssemblyName = new AssemblyName { Name = "Linq2RestTypes" };
 		private static readonly ModuleBuilder ModuleBuilder;
 		private static readonly Dictionary<string, Type> BuiltTypes = new Dictionary<string, Type>();
 		private static readonly ConcurrentDictionary<Type, CustomAttributeBuilder[]> TypeAttributeBuilders = new ConcurrentDictionary<Type, CustomAttributeBuilder[]>();
@@ -46,6 +46,7 @@ namespace Linq2Rest
 		{
 			Contract.Requires<ArgumentNullException>(properties != null);
 
+			properties = properties.ToArray();
 			if (!properties.Any())
 			{
 				throw new ArgumentOutOfRangeException("properties", "properties must have at least 1 property definition");
@@ -67,37 +68,7 @@ namespace Linq2Rest
 
 			foreach (var field in dictionary)
 			{
-				var propertyType = field.Value.PropertyType;
-				var fieldBuilder = typeBuilder.DefineField(field.Key, propertyType, FieldAttributes.Private);
-
-				var propertyBuilder = typeBuilder.DefineProperty(field.Key, PropertyAttributes.None, propertyType, null);
-				SetAttributes(propertyBuilder, field.Value);
-
-				var getAccessor = typeBuilder.DefineMethod(
-					"get_" + field.Key,
-					GetSetAttr,
-					propertyType,
-					Type.EmptyTypes);
-
-				var getIl = getAccessor.GetILGenerator();
-				getIl.Emit(OpCodes.Ldarg_0);
-				getIl.Emit(OpCodes.Ldfld, fieldBuilder);
-				getIl.Emit(OpCodes.Ret);
-
-				var setAccessor = typeBuilder.DefineMethod(
-					"set_" + field.Key,
-					GetSetAttr,
-					null,
-					new[] { propertyType });
-
-				var setIl = setAccessor.GetILGenerator();
-				setIl.Emit(OpCodes.Ldarg_0);
-				setIl.Emit(OpCodes.Ldarg_1);
-				setIl.Emit(OpCodes.Stfld, fieldBuilder);
-				setIl.Emit(OpCodes.Ret);
-
-				propertyBuilder.SetGetMethod(getAccessor);
-				propertyBuilder.SetSetMethod(setAccessor);
+				CreateProperty(typeBuilder, field);
 			}
 
 			BuiltTypes[className] = typeBuilder.CreateType();
@@ -105,6 +76,41 @@ namespace Linq2Rest
 			Monitor.Exit(BuiltTypes);
 
 			return BuiltTypes[className];
+		}
+
+		private static void CreateProperty(TypeBuilder typeBuilder, KeyValuePair<string, PropertyInfo> field)
+		{
+			var propertyType = field.Value.PropertyType;
+			var fieldBuilder = typeBuilder.DefineField(field.Key, propertyType, FieldAttributes.Private);
+
+			var propertyBuilder = typeBuilder.DefineProperty(field.Key, PropertyAttributes.None, propertyType, null);
+			SetAttributes(propertyBuilder, field.Value);
+
+			var getAccessor = typeBuilder.DefineMethod(
+			                                           "get_" + field.Key,
+			                                           GetSetAttr,
+			                                           propertyType,
+			                                           Type.EmptyTypes);
+
+			var getIl = getAccessor.GetILGenerator();
+			getIl.Emit(OpCodes.Ldarg_0);
+			getIl.Emit(OpCodes.Ldfld, fieldBuilder);
+			getIl.Emit(OpCodes.Ret);
+
+			var setAccessor = typeBuilder.DefineMethod(
+			                                           "set_" + field.Key,
+			                                           GetSetAttr,
+			                                           null,
+			                                           new[] { propertyType });
+
+			var setIl = setAccessor.GetILGenerator();
+			setIl.Emit(OpCodes.Ldarg_0);
+			setIl.Emit(OpCodes.Ldarg_1);
+			setIl.Emit(OpCodes.Stfld, fieldBuilder);
+			setIl.Emit(OpCodes.Ret);
+
+			propertyBuilder.SetGetMethod(getAccessor);
+			propertyBuilder.SetSetMethod(setAccessor);
 		}
 
 		private static void SetAttributes(TypeBuilder typeBuilder, Type type)
