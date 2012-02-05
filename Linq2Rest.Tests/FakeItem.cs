@@ -6,7 +6,9 @@
 namespace Linq2Rest.Tests
 {
 	using System;
+	using System.Runtime.Serialization;
 
+	[DataContract]
 	public class FakeItem
 	{
 		public int IntValue { get; set; }
@@ -17,6 +19,7 @@ namespace Linq2Rest.Tests
 
 		public string StringValue { get; set; }
 
+		[DataMember(Name = "Date")]
 		public DateTime DateValue { get; set; }
 
 		public Choice ChoiceValue { get; set; }

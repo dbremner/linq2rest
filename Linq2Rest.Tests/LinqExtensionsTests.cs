@@ -16,13 +16,13 @@ namespace Linq2Rest.Tests
 		public void WhenCreatingDynamicTypeWithNullFiledsThenThrows()
 		{
 			PropertyInfo[] propertyInfos = null;
-			Assert.Throws<ArgumentNullException>(() => propertyInfos.GetDynamicType());
+			Assert.Throws<ArgumentNullException>(() => typeof(FakeItem).CreateRuntimeType(propertyInfos));
 		}
 
 		[Test]
 		public void WhenCreatingDynamicTypeWithNoPropertiesThenThrows()
 		{
-			Assert.Throws<ArgumentOutOfRangeException>(() => new PropertyInfo[0].GetDynamicType());
+			Assert.Throws<ArgumentOutOfRangeException>(() => typeof(FakeItem).CreateRuntimeType(new PropertyInfo[0]));
 		}
 
 		[Test]
@@ -31,7 +31,7 @@ namespace Linq2Rest.Tests
 			var expected = DateTime.UtcNow;
 			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
 
-			var dynamicType = properties.GetDynamicType();
+			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
 
 			dynamic instance = Activator.CreateInstance(dynamicType);
 			instance.DateValue = expected;
@@ -40,11 +40,38 @@ namespace Linq2Rest.Tests
 		}
 
 		[Test]
+		public void WhenCreatingRuntimeTypeWithAttributeThenSetCustomAttribute()
+		{
+			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
+
+			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
+
+			var dataMemberAttribute = dynamicType
+				.GetCustomAttributes(false);
+			var data = dynamicType.GetCustomAttributesData();
+			Assert.IsNotEmpty(dataMemberAttribute);
+		}
+
+		[Test]
 		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenCreatesTypeWithOneProperty()
 		{
 			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
 
-			var dynamicType = properties.GetDynamicType();
+			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
+
+			var dataMemberAttribute = dynamicType
+				.GetProperty("DateValue")
+				.GetCustomAttributes(false);
+
+			Assert.IsNotEmpty(dataMemberAttribute);
+		}
+
+		[Test]
+		public void WhenCreatingDynamicTypeThenTransfersCustomAttributesWithDefaultConstructor()
+		{
+			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
+
+			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
 
 			Assert.AreEqual(1, dynamicType.GetProperties().Length);
 			Assert.NotNull(dynamicType.GetProperty("DateValue"));
@@ -55,7 +82,7 @@ namespace Linq2Rest.Tests
 		{
 			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
 
-			var dynamicType = properties.GetDynamicType();
+			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
 			var property = dynamicType.GetProperty("DateValue");
 
 			Assert.AreEqual(typeof(DateTime), property.PropertyType);

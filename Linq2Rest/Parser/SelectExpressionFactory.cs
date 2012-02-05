@@ -54,7 +54,7 @@ namespace Linq2Rest.Parser
 
 			var elementType = typeof(T);
 			var sourceProperties = fieldNames.ToDictionary(name => name, elementType.GetProperty);
-			var dynamicType = sourceProperties.Values.GetDynamicType();
+			var dynamicType = elementType.CreateRuntimeType(sourceProperties.Values);
 
 			var sourceItem = Expression.Parameter(elementType, "t");
 			var bindings = dynamicType
