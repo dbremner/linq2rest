@@ -31,5 +31,27 @@ namespace Linq2Rest.Tests.Mvc
 
 			Assert.AreEqual("blah", result.Title);
 		}
+		
+		[Test]
+		public void WhenDeserializingEmptyArrayResponseThenReturnsEmptyList()
+		{
+			const string Json = "[]";
+
+			var serializer = new RuntimeAnonymousTypeSerializer<FakeItem>();
+			var result = serializer.DeserializeList(Json).ToList();
+			
+			Assert.IsEmpty(result);
+		}
+		
+		[Test]
+		public void WhenDeserializingNullResponseThenReturnsEmptyList()
+		{
+			const string Json = "null";
+
+			var serializer = new RuntimeAnonymousTypeSerializer<FakeItem>();
+			var result = serializer.DeserializeList(Json).ToList();
+			
+			Assert.IsEmpty(result);
+		}
 	}
 }
