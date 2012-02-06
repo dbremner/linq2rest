@@ -20,10 +20,11 @@ namespace Linq2Rest.Tests.Parser
 		[TestFixtureSetUp]
 		public void TestFixtureSetup()
 		{
+			var nameResolver = new MemberNameResolver();
 			_parser = new ParameterParser<FakeItem>(
 				new FilterExpressionFactory(),
 				new SortExpressionFactory(),
-				new SelectExpressionFactory<FakeItem>());
+				new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeFactory(nameResolver)));
 
 			_items = new[]
 				{
@@ -133,8 +134,8 @@ namespace Linq2Rest.Tests.Parser
 		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection)
 		{
 			var filteredItems = useModelFilter
-			                    	? GetModelFilter(collection).Filter(_items)
-			                    	: _items.Filter(collection);
+									? GetModelFilter(collection).Filter(_items)
+									: _items.Filter(collection);
 			return filteredItems.ToArray();
 		}
 

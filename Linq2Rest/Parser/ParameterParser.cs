@@ -26,7 +26,8 @@ namespace Linq2Rest.Parser
 		{
 			_filterExpressionFactory = new FilterExpressionFactory();
 			_sortExpressionFactory = new SortExpressionFactory();
-			_selectExpressionFactory = new SelectExpressionFactory<T>();
+			var nameResolver = new MemberNameResolver();
+			_selectExpressionFactory = new SelectExpressionFactory<T>(nameResolver, new RuntimeTypeFactory(nameResolver));
 		}
 
 		/// <summary>

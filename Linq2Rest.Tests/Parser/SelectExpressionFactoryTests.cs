@@ -10,7 +10,8 @@
 		[Test]
 		public void WhenCreatingSelectExpressionFromDataMemberOnFieldThenGetsFieldValue()
 		{
-			var factory = new SelectExpressionFactory<FakeItem>();
+			var nameResolver = new MemberNameResolver();
+			var factory = new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeFactory(nameResolver));
 			var items = new[] { new FakeItem { StringValue = "test" } };
 
 			var expression = factory.Create("Text");
@@ -18,6 +19,20 @@
 			dynamic result = items.AsQueryable().Select(expression).First();
 
 			Assert.AreEqual("test", result.Text);
+		}
+
+		[Test]
+		public void WhenCreatingSelectExpressionFromXmlMemberOnPropertyThenGetsPropertyValue()
+		{
+			var nameResolver = new MemberNameResolver();
+			var factory = new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeFactory(nameResolver));
+			var items = new[] { new FakeItem { IntValue = 2 } };
+
+			var expression = factory.Create("Number");
+
+			dynamic result = items.AsQueryable().Select(expression).First();
+
+			Assert.AreEqual(2, result.Number);
 		}
 	}
 }

@@ -7,6 +7,7 @@ namespace Linq2Rest.Tests
 {
 	using System;
 	using System.Runtime.Serialization;
+	using System.Xml.Serialization;
 
 	[DataContract]
 	public class FakeItem
@@ -14,6 +15,7 @@ namespace Linq2Rest.Tests
 		[DataMember(Name = "Text")]
 		private string _stringValue;
 
+		[XmlElement(ElementName = "Number")]
 		public int IntValue { get; set; }
 
 		public double DoubleValue { get; set; }
