@@ -6,7 +6,7 @@
 namespace Linq2Rest.Tests.Provider
 {
 	using System;
-
+	using Linq2Rest.Implementations;
 	using Linq2Rest.Provider;
 
 	using NUnit.Framework;

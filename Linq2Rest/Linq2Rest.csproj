@@ -105,20 +105,29 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IModelFilter.cs" />
+    <Compile Include="Implementations\JsonDataContractSerializerFactory.cs" />
+    <Compile Include="Implementations\RestClientBase.cs" />
+    <Compile Include="Implementations\XmlDataContractSerializerFactory.cs" />
+    <Compile Include="Implementations\XmlRestClient.cs" />
+    <Compile Include="Implementations\XmlSerializerFactory.cs" />
+    <Compile Include="IRuntimeTypeFactory.cs" />
     <Compile Include="MethodProvider.cs" />
     <Compile Include="ModelFilterExtensions.cs" />
     <Compile Include="Parser\ExpressionTokenizer.cs" />
     <Compile Include="Parser\FilterExpressionFactory.cs" />
     <Compile Include="Parser\FunctionTokenSet.cs" />
     <Compile Include="Parser\IFilterExpressionFactory.cs" />
+    <Compile Include="Parser\IMemberNameResolver.cs" />
     <Compile Include="Parser\IParameterParser.cs" />
     <Compile Include="LinqExtensions.cs" />
     <Compile Include="Parser\ISelectExpressionFactory.cs" />
     <Compile Include="ModelFilter.cs" />
     <Compile Include="Parser\ISortExpressionFactory.cs" />
+    <Compile Include="Parser\MemberNameResolver.cs" />
     <Compile Include="Parser\ParameterParser.cs" />
     <Compile Include="Parser\SelectExpressionFactory.cs" />
     <Compile Include="Parser\TokenOperatorExtensions.cs" />
@@ -132,10 +141,11 @@
     <Compile Include="Provider\ISerializerFactory.cs" />
     <Compile Include="Provider\MethodCallProcessor.cs" />
     <Compile Include="Provider\ParameterBuilder.cs" />
-    <Compile Include="Provider\JsonRestClient.cs" />
+    <Compile Include="Implementations\JsonRestClient.cs" />
     <Compile Include="Provider\RestContext.cs" />
     <Compile Include="Provider\RestQueryable.cs" />
     <Compile Include="Provider\RestQueryProvider.cs" />
+    <Compile Include="RuntimeTypeFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Settings.StyleCop" />

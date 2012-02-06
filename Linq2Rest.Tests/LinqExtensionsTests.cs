@@ -7,22 +7,31 @@ namespace Linq2Rest.Tests
 {
 	using System;
 	using System.Reflection;
+	using Linq2Rest.Parser;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class LinqExtensionsTests
 	{
+		private RuntimeTypeFactory _typeFactory;
+
+		[SetUp]
+		public void Setup()
+		{
+			_typeFactory = new RuntimeTypeFactory(new MemberNameResolver());
+		}
+
 		[Test]
 		public void WhenCreatingDynamicTypeWithNullFiledsThenThrows()
 		{
 			PropertyInfo[] propertyInfos = null;
-			Assert.Throws<ArgumentNullException>(() => typeof(FakeItem).CreateRuntimeType(propertyInfos));
+			Assert.Throws<ArgumentNullException>(() => _typeFactory.Create(typeof(FakeItem), propertyInfos));
 		}
 
 		[Test]
 		public void WhenCreatingDynamicTypeWithNoPropertiesThenThrows()
 		{
-			Assert.Throws<ArgumentOutOfRangeException>(() => typeof(FakeItem).CreateRuntimeType(new PropertyInfo[0]));
+			Assert.Throws<ArgumentOutOfRangeException>(() => _typeFactory.Create(typeof(FakeItem), new PropertyInfo[0]));
 		}
 
 		[Test]
@@ -31,7 +40,7 @@ namespace Linq2Rest.Tests
 			var expected = DateTime.UtcNow;
 			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
 
-			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
+			var dynamicType = _typeFactory.Create(typeof(FakeItem), properties);
 
 			dynamic instance = Activator.CreateInstance(dynamicType);
 			instance.DateValue = expected;
@@ -44,7 +53,7 @@ namespace Linq2Rest.Tests
 		{
 			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
 
-			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
+			var dynamicType = _typeFactory.Create(typeof(FakeItem), properties);
 
 			var dataMemberAttribute = dynamicType
 				.GetCustomAttributes(false);
@@ -57,7 +66,7 @@ namespace Linq2Rest.Tests
 		{
 			var properties = new[] { typeof(FakeItem).GetProperty("ChoiceValue") };
 
-			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
+			var dynamicType = _typeFactory.Create(typeof(FakeItem), properties);
 
 			var dataMemberAttribute = dynamicType
 				.GetProperty("Choice")
@@ -71,7 +80,7 @@ namespace Linq2Rest.Tests
 		{
 			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
 
-			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
+			var dynamicType = _typeFactory.Create(typeof(FakeItem), properties);
 
 			Assert.AreEqual(1, dynamicType.GetProperties().Length);
 			Assert.NotNull(dynamicType.GetProperty("DateValue"));
@@ -82,7 +91,7 @@ namespace Linq2Rest.Tests
 		{
 			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
 
-			var dynamicType = typeof(FakeItem).CreateRuntimeType(properties);
+			var dynamicType = _typeFactory.Create(typeof(FakeItem), properties);
 			var property = dynamicType.GetProperty("DateValue");
 
 			Assert.AreEqual(typeof(DateTime), property.PropertyType);

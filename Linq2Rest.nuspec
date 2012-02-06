@@ -17,7 +17,13 @@
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System"
 							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Core"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="Microsoft.CSharp"
+							   targetFramework="net40" />
 			<frameworkAssembly assemblyName="System.Web"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Xml"
 							   targetFramework="net40" />
 			<frameworkAssembly assemblyName="System.Runtime.Serialization"
 							   targetFramework="net40" />

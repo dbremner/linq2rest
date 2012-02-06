@@ -11,7 +11,6 @@ namespace Linq2Rest.Parser
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using System.Runtime.Serialization;
 	using System.Threading;
 
 	/// <summary>
@@ -20,14 +19,21 @@ namespace Linq2Rest.Parser
 	/// <typeparam name="T">The <see cref="Type"/> of object to project.</typeparam>
 	public class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{
+		private readonly IMemberNameResolver _nameResolver;
+		private readonly IRuntimeTypeFactory _runtimeTypeFactory;
 		private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 		private readonly IDictionary<string, Expression<Func<T, object>>> _knownSelections;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SelectExpressionFactory{T}"/> class.
 		/// </summary>
-		public SelectExpressionFactory()
+		public SelectExpressionFactory(IMemberNameResolver nameResolver, IRuntimeTypeFactory runtimeTypeFactory)
 		{
+			Contract.Requires<ArgumentNullException>(nameResolver != null);
+			Contract.Requires<ArgumentNullException>(runtimeTypeFactory != null);
+
+			_nameResolver = nameResolver;
+			_runtimeTypeFactory = runtimeTypeFactory;
 			_knownSelections = new Dictionary<string, Expression<Func<T, object>>>
 			                   	{
 			                   		{ string.Empty, null }
@@ -60,8 +66,8 @@ namespace Linq2Rest.Parser
 				.Cast<MemberInfo>()
 				.Concat(elementType.GetFields(Flags))
 				.ToArray();
-			var sourceMembers = fieldNames.ToDictionary(name => name, s => elementMembers.First(m => FindMember(s, m)));
-			var dynamicType = elementType.CreateRuntimeType(sourceMembers.Values);
+			var sourceMembers = fieldNames.ToDictionary(name => name, s => elementMembers.First(m => _nameResolver.ResolveName(m) == s));
+			var dynamicType = _runtimeTypeFactory.Create(elementType, sourceMembers.Values);
 
 			var sourceItem = Expression.Parameter(elementType, "t");
 			var bindings = dynamicType
@@ -70,8 +76,8 @@ namespace Linq2Rest.Parser
 							{
 								var member = sourceMembers[p.Name];
 								var expression = member.MemberType == MemberTypes.Property
-								                 	? Expression.Property(sourceItem, (PropertyInfo)member)
-								                 	: Expression.Field(sourceItem, (FieldInfo)member);
+													? Expression.Property(sourceItem, (PropertyInfo)member)
+													: Expression.Field(sourceItem, (FieldInfo)member);
 								return Expression.Bind(p, expression);
 							});
 
@@ -91,24 +97,6 @@ namespace Linq2Rest.Parser
 			}
 
 			return selector;
-		}
-
-		private static bool FindMember(string name, MemberInfo m)
-		{
-			if (string.Equals(name, m.Name))
-			{
-				return true;
-			}
-			var dataMember = m.GetCustomAttributes(typeof(DataMemberAttribute), true)
-				.OfType<DataMemberAttribute>()
-				.FirstOrDefault();
-
-			if (dataMember != null && string.Equals(name, dataMember.Name))
-			{
-				return true;
-			}
-
-			return false;
 		}
 	}
 }

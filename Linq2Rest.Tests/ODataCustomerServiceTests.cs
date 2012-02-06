@@ -7,6 +7,7 @@ namespace Linq2Rest.Tests
 {
 	using System;
 	using System.Linq;
+	using Linq2Rest.Implementations;
 	using Linq2Rest.Provider;
 	using NUnit.Framework;
 
