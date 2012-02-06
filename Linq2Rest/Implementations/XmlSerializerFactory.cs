@@ -14,10 +14,17 @@ namespace Linq2Rest.Implementations
 	using System.Xml.Serialization;
 	using Linq2Rest.Provider;
 
+	/// <summary>
+	/// Defines the XmlSerializer factory.
+	/// </summary>
 	public class XmlSerializerFactory : ISerializerFactory
 	{
 		private readonly IEnumerable<Type> _knownTypes;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="XmlSerializerFactory"/> class.
+		/// </summary>
+		/// <param name="knownTypes">A number of known types for serialization resolution.</param>
 		public XmlSerializerFactory(IEnumerable<Type> knownTypes)
 		{
 			Contract.Requires<ArgumentNullException>(knownTypes != null);
@@ -25,6 +32,11 @@ namespace Linq2Rest.Implementations
 			_knownTypes = knownTypes;
 		}
 
+		/// <summary>
+		/// Creates an instance of an <see cref="ISerializer{T}"/>.
+		/// </summary>
+		/// <typeparam name="T">The item type for the serializer.</typeparam>
+		/// <returns>An instance of an <see cref="ISerializer{T}"/>.</returns>
 		public ISerializer<T> Create<T>()
 		{
 			return new XmlSerializer<T>(_knownTypes);

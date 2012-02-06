@@ -15,7 +15,10 @@ namespace Linq2Rest
 	using System.Threading;
 	using Linq2Rest.Parser;
 
-	public class RuntimeTypeFactory : IRuntimeTypeFactory
+	/// <summary>
+	/// Defines the RuntimeTypeProvider.
+	/// </summary>
+	public class RuntimeTypeProvider : IRuntimeTypeProvider
 	{
 		private static readonly AssemblyName AssemblyName = new AssemblyName { Name = "Linq2RestTypes" };
 		private static readonly ModuleBuilder ModuleBuilder;
@@ -25,14 +28,18 @@ namespace Linq2Rest
 		private const MethodAttributes GetSetAttr = MethodAttributes.Final | MethodAttributes.Public;
 		private readonly IMemberNameResolver _nameResolver;
 
-		public RuntimeTypeFactory(IMemberNameResolver nameResolver)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RuntimeTypeProvider"/> class.
+		/// </summary>
+		/// <param name="nameResolver"></param>
+		public RuntimeTypeProvider(IMemberNameResolver nameResolver)
 		{
 			Contract.Requires(nameResolver != null);
 
 			_nameResolver = nameResolver;
 		}
 
-		static RuntimeTypeFactory()
+		static RuntimeTypeProvider()
 		{
 			ModuleBuilder = Thread
 				.GetDomain()
@@ -40,11 +47,14 @@ namespace Linq2Rest
 				.DefineDynamicModule(AssemblyName.Name);
 		}
 
-		public Type Create(Type sourceType, IEnumerable<MemberInfo> properties)
+		/// <summary>
+		/// Gets the <see cref="Type"/> matching the provided members.
+		/// </summary>
+		/// <param name="sourceType">The <see cref="Type"/> to generate the runtime type from.</param>
+		/// <param name="properties">The <see cref="MemberInfo"/> to use to generate properties.</param>
+		/// <returns>A <see cref="Type"/> mathing the provided properties.</returns>
+		public Type Get(Type sourceType, IEnumerable<MemberInfo> properties)
 		{
-			Contract.Requires<ArgumentNullException>(sourceType != null);
-			Contract.Requires<ArgumentNullException>(properties != null);
-
 			properties = properties.ToArray();
 			if (!properties.Any())
 			{

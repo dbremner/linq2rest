@@ -24,7 +24,7 @@ namespace Linq2Rest.Tests.Parser
 			_parser = new ParameterParser<FakeItem>(
 				new FilterExpressionFactory(),
 				new SortExpressionFactory(),
-				new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeFactory(nameResolver)));
+				new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeProvider(nameResolver)));
 
 			_items = new[]
 				{
