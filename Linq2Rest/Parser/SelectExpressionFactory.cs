@@ -20,20 +20,20 @@ namespace Linq2Rest.Parser
 	public class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{
 		private readonly IMemberNameResolver _nameResolver;
-		private readonly IRuntimeTypeFactory _runtimeTypeFactory;
+		private readonly IRuntimeTypeProvider _runtimeTypeProvider;
 		private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 		private readonly IDictionary<string, Expression<Func<T, object>>> _knownSelections;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SelectExpressionFactory{T}"/> class.
 		/// </summary>
-		public SelectExpressionFactory(IMemberNameResolver nameResolver, IRuntimeTypeFactory runtimeTypeFactory)
+		public SelectExpressionFactory(IMemberNameResolver nameResolver, IRuntimeTypeProvider runtimeTypeProvider)
 		{
 			Contract.Requires<ArgumentNullException>(nameResolver != null);
-			Contract.Requires<ArgumentNullException>(runtimeTypeFactory != null);
+			Contract.Requires<ArgumentNullException>(runtimeTypeProvider != null);
 
 			_nameResolver = nameResolver;
-			_runtimeTypeFactory = runtimeTypeFactory;
+			_runtimeTypeProvider = runtimeTypeProvider;
 			_knownSelections = new Dictionary<string, Expression<Func<T, object>>>
 			                   	{
 			                   		{ string.Empty, null }
@@ -67,7 +67,7 @@ namespace Linq2Rest.Parser
 				.Concat(elementType.GetFields(Flags))
 				.ToArray();
 			var sourceMembers = fieldNames.ToDictionary(name => name, s => elementMembers.First(m => _nameResolver.ResolveName(m) == s));
-			var dynamicType = _runtimeTypeFactory.Create(elementType, sourceMembers.Values);
+			var dynamicType = _runtimeTypeProvider.Get(elementType, sourceMembers.Values);
 
 			var sourceItem = Expression.Parameter(elementType, "t");
 			var bindings = dynamicType

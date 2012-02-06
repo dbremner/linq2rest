@@ -11,7 +11,7 @@
 		public void WhenCreatingSelectExpressionFromDataMemberOnFieldThenGetsFieldValue()
 		{
 			var nameResolver = new MemberNameResolver();
-			var factory = new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeFactory(nameResolver));
+			var factory = new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeProvider(nameResolver));
 			var items = new[] { new FakeItem { StringValue = "test" } };
 
 			var expression = factory.Create("Text");
@@ -25,7 +25,7 @@
 		public void WhenCreatingSelectExpressionFromXmlMemberOnPropertyThenGetsPropertyValue()
 		{
 			var nameResolver = new MemberNameResolver();
-			var factory = new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeFactory(nameResolver));
+			var factory = new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeProvider(nameResolver));
 			var items = new[] { new FakeItem { IntValue = 2 } };
 
 			var expression = factory.Create("Number");

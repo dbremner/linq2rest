@@ -114,7 +114,7 @@
     <Compile Include="Implementations\XmlDataContractSerializerFactory.cs" />
     <Compile Include="Implementations\XmlRestClient.cs" />
     <Compile Include="Implementations\XmlSerializerFactory.cs" />
-    <Compile Include="IRuntimeTypeFactory.cs" />
+    <Compile Include="IRuntimeTypeProvider.cs" />
     <Compile Include="MethodProvider.cs" />
     <Compile Include="ModelFilterExtensions.cs" />
     <Compile Include="Parser\ExpressionTokenizer.cs" />
@@ -145,7 +145,7 @@
     <Compile Include="Provider\RestContext.cs" />
     <Compile Include="Provider\RestQueryable.cs" />
     <Compile Include="Provider\RestQueryProvider.cs" />
-    <Compile Include="RuntimeTypeFactory.cs" />
+    <Compile Include="RuntimeTypeProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Settings.StyleCop" />
