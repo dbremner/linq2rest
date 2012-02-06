@@ -29,7 +29,7 @@ namespace Linq2Rest.Parser
 				.OfType<DataMemberAttribute>()
 				.FirstOrDefault();
 
-			if (dataMember != null)
+			if (dataMember != null && dataMember.Name != null)
 			{
 				return dataMember.Name;
 			}
@@ -38,7 +38,7 @@ namespace Linq2Rest.Parser
 				.OfType<XmlElementAttribute>()
 				.FirstOrDefault();
 
-			if (xmlElement != null)
+			if (xmlElement != null && xmlElement.ElementName != null)
 			{
 				return xmlElement.ElementName;
 			}
@@ -47,11 +47,12 @@ namespace Linq2Rest.Parser
 				.OfType<XmlAttributeAttribute>()
 				.FirstOrDefault();
 
-			if (xmlAttribute != null)
+			if (xmlAttribute != null && xmlAttribute.AttributeName != null)
 			{
 				return xmlAttribute.AttributeName;
 			}
 
+			Contract.Assume(member.Name != null, "Member must have name");
 			return member.Name;
 		}
 	}

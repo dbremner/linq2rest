@@ -136,7 +136,11 @@ namespace Linq2Rest.Provider
 				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
 				.MakeGenericMethod(genericArguments);
 
-			var parameters = new object[] { resultLoader(builder).AsQueryable() };
+			var list = resultLoader(builder);
+
+			Contract.Assume(list != null);
+
+			var parameters = new object[] { list.AsQueryable() };
 			return countMethod.Invoke(null, parameters);
 		}
 
