@@ -12,7 +12,7 @@ namespace Linq2Rest.Provider
 	/// Defines the public interface for a REST client.
 	/// </summary>
 	[ContractClass(typeof(RestClientContracts))]
-	public interface IRestClient
+	public interface IRestClient : IDisposable
 	{
 		/// <summary>
 		/// Gets the base <see cref="Uri"/> for the REST service.
@@ -45,5 +45,7 @@ namespace Linq2Rest.Provider
 
 			throw new NotImplementedException();
 		}
+
+		public abstract void Dispose();
 	}
 }
