@@ -149,6 +149,7 @@
     <Compile Include="Provider\RestQueryable.cs" />
     <Compile Include="Provider\RestQueryProvider.cs" />
     <Compile Include="RuntimeTypeProvider.cs" />
+    <Compile Include="StringConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Settings.StyleCop" />

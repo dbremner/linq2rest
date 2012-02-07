@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Linq2Rest.Mvc")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Provides model binding for Linq2Rest parsers.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Reimers.dk")]
 [assembly: AssemblyProduct("Linq2Rest.Mvc")]

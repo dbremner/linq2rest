@@ -57,11 +57,11 @@ namespace Linq2Rest.Parser
 		/// <returns></returns>
 		public IModelFilter<T> Parse(NameValueCollection queryParameters)
 		{
-			var orderbyField = queryParameters["$orderby"];
-			var selects = queryParameters["$select"];
-			var filter = queryParameters["$filter"];
-			var skip = queryParameters["$skip"];
-			var top = queryParameters["$top"];
+			var orderbyField = queryParameters[StringConstants.OrderByParameter];
+			var selects = queryParameters[StringConstants.SelectParameter];
+			var filter = queryParameters[StringConstants.FilterParameter];
+			var skip = queryParameters[StringConstants.SkipParameter];
+			var top = queryParameters[StringConstants.TopParameter];
 
 			var filterExpression = _filterExpressionFactory.Create<T>(filter);
 			var sortDescriptions = _sortExpressionFactory.Create<T>(orderbyField);
