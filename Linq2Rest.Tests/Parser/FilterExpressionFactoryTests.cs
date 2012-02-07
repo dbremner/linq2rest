@@ -12,6 +12,7 @@ namespace Linq2Rest.Tests.Parser
 
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class FilterExpressionFactoryTests
 	{
 		private FilterExpressionFactory _factory;
