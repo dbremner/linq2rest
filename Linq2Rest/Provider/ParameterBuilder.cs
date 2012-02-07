@@ -38,33 +38,38 @@ namespace Linq2Rest.Provider
 			var parameters = new List<string>();
 			if (!string.IsNullOrWhiteSpace(FilterParameter))
 			{
-				parameters.Add("$filter=" + HttpUtility.UrlEncode(FilterParameter));
+				parameters.Add(BuildParameter(StringConstants.FilterParameter, HttpUtility.UrlEncode(FilterParameter)));
 			}
 
 			if (!string.IsNullOrWhiteSpace(SelectParameter))
 			{
-				parameters.Add("$select=" + SelectParameter);
+				parameters.Add(BuildParameter(StringConstants.SelectParameter, SelectParameter));
 			}
 
 			if (!string.IsNullOrWhiteSpace(SkipParameter))
 			{
-				parameters.Add("$skip=" + SkipParameter);
+				parameters.Add(BuildParameter(StringConstants.SkipParameter, SkipParameter));
 			}
 
 			if (!string.IsNullOrWhiteSpace(TakeParameter))
 			{
-				parameters.Add("$top=" + TakeParameter);
+				parameters.Add(BuildParameter(StringConstants.TopParameter, TakeParameter));
 			}
 
 			if (OrderByParameter.Any())
 			{
-				parameters.Add("$orderby=" + string.Join(",", OrderByParameter));
+				parameters.Add(BuildParameter(StringConstants.OrderByParameter, string.Join(",", OrderByParameter)));
 			}
 
 			var builder = new UriBuilder(_serviceBase);
 			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
 
 			return builder.Uri;
+		}
+
+		private string BuildParameter(string name, string value)
+		{
+			return string.Format(name + "=" + value);
 		}
 
 		[ContractInvariantMethod]
