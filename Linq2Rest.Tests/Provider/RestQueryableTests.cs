@@ -7,13 +7,11 @@ namespace Linq2Rest.Tests.Provider
 {
 	using System;
 	using System.Collections;
-
 	using Linq2Rest.Provider;
-
 	using Moq;
-
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class RestQueryableTests
 	{
 		private RestQueryable<FakeItem> _queryable;

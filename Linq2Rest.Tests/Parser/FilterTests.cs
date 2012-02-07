@@ -7,12 +7,12 @@ namespace Linq2Rest.Tests.Parser
 {
 	using System;
 	using System.Linq;
-	using System.Linq.Expressions;
 
 	using Linq2Rest.Parser;
 
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class FilterTests
 	{
 		private FakeItem[] _collection;

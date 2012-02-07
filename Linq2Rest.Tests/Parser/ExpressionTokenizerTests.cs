@@ -9,6 +9,7 @@ namespace Linq2Rest.Tests.Parser
 	using Linq2Rest.Parser;
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class ExpressionTokenizerTests
 	{
 		[Test]

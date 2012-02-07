@@ -8,11 +8,8 @@ namespace Linq2Rest.Tests.Provider
 	using System;
 	using System.Linq;
 	using System.Linq.Expressions;
-
 	using Linq2Rest.Provider;
-
 	using Moq;
-
 	using NUnit.Framework;
 
 	[TestFixture]

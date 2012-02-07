@@ -9,14 +9,12 @@ namespace Linq2Rest.Tests.Mvc
 	using System.Web;
 	using System.Web.Mvc;
 	using System.Web.Routing;
-
 	using Linq2Rest.Mvc;
 	using Linq2Rest.Parser;
-
 	using Moq;
-
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class ModelFilterBinderTests
 	{
 		[Test]

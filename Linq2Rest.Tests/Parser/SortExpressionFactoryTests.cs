@@ -6,11 +6,10 @@
 namespace Linq2Rest.Tests.Parser
 {
 	using System.Linq;
-
 	using Linq2Rest.Parser;
-
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class SortExpressionFactoryTests
 	{
 		private FakeItem[] _items;
@@ -39,7 +38,7 @@ namespace Linq2Rest.Tests.Parser
 			var descriptions = _factory.Create<FakeItem>(string.Empty);
 			var filter = new ModelFilter<FakeItem>(x => true, null, descriptions, 0, -1);
 
-			var sortedItems = filter.Filter(_items);
+			var sortedItems = filter.Filter(_items).ToArray();
 
 			Assert.AreEqual(2, sortedItems.OfType<FakeItem>().ElementAt(0).IntValue);
 			Assert.AreEqual(1, sortedItems.OfType<FakeItem>().ElementAt(1).IntValue);
@@ -54,7 +53,7 @@ namespace Linq2Rest.Tests.Parser
 			var descriptions = _factory.Create<FakeItem>(Orderstring);
 			var filter = new ModelFilter<FakeItem>(x => true, null, descriptions, 0, -1);
 
-			var sortedItems = filter.Filter(_items);
+			var sortedItems = filter.Filter(_items).ToArray();
 
 			Assert.AreEqual(1, sortedItems.OfType<FakeItem>().ElementAt(0).IntValue);
 			Assert.AreEqual(2, sortedItems.OfType<FakeItem>().ElementAt(1).IntValue);
@@ -69,7 +68,7 @@ namespace Linq2Rest.Tests.Parser
 			var descriptions = _factory.Create<FakeItem>(Orderstring);
 			var filter = new ModelFilter<FakeItem>(x => true, null, descriptions, 0, -1);
 
-			var sortedItems = filter.Filter(_items);
+			var sortedItems = filter.Filter(_items).ToArray();
 
 			Assert.AreEqual(3, sortedItems.OfType<FakeItem>().ElementAt(0).IntValue);
 			Assert.AreEqual(2, sortedItems.OfType<FakeItem>().ElementAt(1).IntValue);
@@ -84,7 +83,7 @@ namespace Linq2Rest.Tests.Parser
 			var descriptions = _factory.Create<FakeItem>(Orderstring);
 			var filter = new ModelFilter<FakeItem>(x => true, null, descriptions, 0, -1);
 
-			var sortedItems = filter.Filter(_items);
+			var sortedItems = filter.Filter(_items).ToArray();
 
 			Assert.AreEqual(3, sortedItems.OfType<FakeItem>().ElementAt(0).IntValue);
 			Assert.AreEqual(1, sortedItems.OfType<FakeItem>().ElementAt(1).IntValue);

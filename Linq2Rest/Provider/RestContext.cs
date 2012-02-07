@@ -53,11 +53,7 @@ namespace Linq2Rest.Provider
 			GC.SuppressFinalize(this);
 		}
 		
-		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
-		/// <param name="disposing">True if disposing managed types.</param>
-		protected virtual void Dispose(bool disposing)
+		private void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
