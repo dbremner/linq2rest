@@ -41,9 +41,31 @@ namespace Linq2Rest.Implementations
 		/// <returns>A string representation of the resource.</returns>
 		public string Get(Uri uri)
 		{
-			_client.Headers["Accept"] = _acceptHeader;
+			_client.Headers[HttpRequestHeader.Accept] = _acceptHeader;
 
 			return _client.DownloadString(uri);
+		}
+
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		/// <filterpriority>2</filterpriority>
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		/// <param name="disposing">True if disposing managed types.</param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				_client.Dispose();
+			}
 		}
 	}
 }

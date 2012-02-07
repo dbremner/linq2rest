@@ -85,14 +85,12 @@ namespace Linq2Rest.Mvc.Provider
 				        	{
 				        		var arguments = new[] { Expression.Constant(p.Name) };
 
-				        		var indexExpression = Expression
-				        			.MakeIndex(
+				        		var indexExpression = Expression.MakeIndex(
 				        			           Expression.Convert(objectParameter, deserializedType),
 				        			           deserializedType.GetProperty("Item"),
 				        			           arguments);
 
-				        		return Expression
-				        			.Convert(
+				        		return Expression.Convert(
 				        			         Expression.Call(
 				        			                         AnonymousTypeSerializerHelper.InnerChangeTypeMethod,
 				        			                         indexExpression,

@@ -13,7 +13,7 @@ namespace Linq2Rest.Provider
 	/// Defines the RestContext.
 	/// </summary>
 	/// <typeparam name="T">The <see cref="Type"/> of object to query.</typeparam>
-	public class RestContext<T>
+	public class RestContext<T> : IDisposable
 	{
 		private readonly RestQueryable<T> _queryable;
 
@@ -40,6 +40,28 @@ namespace Linq2Rest.Provider
 				Contract.Ensures(Contract.Result<IQueryable<T>>() != null);
 
 				return _queryable;
+			}
+		}
+
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		/// <filterpriority>2</filterpriority>
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		/// <param name="disposing">True if disposing managed types.</param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				_queryable.Dispose();
 			}
 		}
 

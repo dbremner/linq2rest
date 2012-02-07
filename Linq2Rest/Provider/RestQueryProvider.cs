@@ -7,11 +7,12 @@ namespace Linq2Rest.Provider
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.CodeAnalysis;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
 
-	internal class RestQueryProvider<T> : IQueryProvider
+	internal class RestQueryProvider<T> : IQueryProvider, IDisposable
 	{
 		private readonly IRestClient _client;
 		private readonly ISerializerFactory _serializerFactory;
@@ -27,6 +28,7 @@ namespace Linq2Rest.Provider
 			_parameterBuilder = new ParameterBuilder(client.ServiceBase);
 		}
 
+		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
 		public IQueryable CreateQuery(Expression expression)
 		{
 			if (expression == null)
@@ -37,6 +39,7 @@ namespace Linq2Rest.Provider
 			return new RestQueryable<T>(_client, _serializerFactory, expression);
 		}
 
+		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
 		public IQueryable<TResult> CreateQuery<TResult>(Expression expression)
 		{
 			if (expression == null)
@@ -65,15 +68,27 @@ namespace Linq2Rest.Provider
 			return (TResult)Execute(expression);
 		}
 
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				_client.Dispose();
+			}
+		}
+
 		private IList<T> GetResults(ParameterBuilder builder)
 		{
 			Contract.Requires(builder != null);
 			Contract.Ensures(Contract.Result<IList<T>>() != null);
 
 			var response = _client.Get(builder.GetFullUri());
-
 			var serializer = _serializerFactory.Create<T>();
-
 			var resultSet = serializer.DeserializeList(response);
 
 			Contract.Assume(resultSet != null);

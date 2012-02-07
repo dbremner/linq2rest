@@ -12,9 +12,10 @@ namespace Linq2Rest.Provider
 	using System.Linq;
 	using System.Linq.Expressions;
 
-	internal class RestQueryable<T> : IOrderedQueryable<T>
+	internal class RestQueryable<T> : IOrderedQueryable<T>, IDisposable
 	{
 		private readonly IRestClient _client;
+		private readonly RestQueryProvider<T> _restQueryProvider;
 
 		public RestQueryable(IRestClient client, ISerializerFactory serializerFactory)
 		{
@@ -22,7 +23,8 @@ namespace Linq2Rest.Provider
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 
 			_client = client;
-			Provider = new RestQueryProvider<T>(_client, serializerFactory);
+			_restQueryProvider = new RestQueryProvider<T>(_client, serializerFactory);
+			Provider = _restQueryProvider;
 			Expression = Expression.Constant(this);
 		}
 
@@ -62,6 +64,21 @@ namespace Linq2Rest.Provider
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return Provider.Execute<IEnumerable>(Expression).GetEnumerator();
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				_client.Dispose();
+				_restQueryProvider.Dispose();
+			}
 		}
 
 		[ContractInvariantMethod]
