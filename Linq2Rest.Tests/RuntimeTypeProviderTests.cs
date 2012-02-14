@@ -11,7 +11,7 @@ namespace Linq2Rest.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class LinqExtensionsTests
+	public class RuntimeTypeProviderTests
 	{
 		private RuntimeTypeProvider _typeProvider;
 
