@@ -34,6 +34,12 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenDisposingThenDoesNotThrow()
+		{
+			Assert.DoesNotThrow(() => _provider.Dispose());
+		}
+
+		[Test]
 		public void WhenMainExpressionIsContainedInIsTrueExpressionThenUsesOperandExpression()
 		{
 			var parameter = Expression.Parameter(typeof(SimpleDto), "x");

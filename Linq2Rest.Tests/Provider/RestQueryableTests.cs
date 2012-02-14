@@ -15,13 +15,14 @@ namespace Linq2Rest.Tests.Provider
 	public class RestQueryableTests
 	{
 		private RestQueryable<FakeItem> _queryable;
+		private Mock<IRestClient> _mockClient;
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
-			var mockClient = new Mock<IRestClient>();
-			mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
-			_queryable = new RestQueryable<FakeItem>(mockClient.Object, new TestSerializerFactory());
+			_mockClient = new Mock<IRestClient>();
+			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
+			_queryable = new RestQueryable<FakeItem>(_mockClient.Object, new TestSerializerFactory());
 		}
 
 		[Test]
@@ -34,6 +35,14 @@ namespace Linq2Rest.Tests.Provider
 		public void WhenGettingNonGenericEnumeratorThenDoesNotReturnNull()
 		{
 			Assert.NotNull((_queryable as IEnumerable).GetEnumerator());
+		}
+
+		[Test]
+		public void WhenDisposingThenDisposesClient()
+		{
+			_queryable.Dispose();
+
+			_mockClient.Verify(x => x.Dispose());
 		}
 	}
 }

@@ -15,13 +15,14 @@ namespace Linq2Rest.Tests.Provider
 	public class RestQueryProviderTests
 	{
 		private RestQueryProvider<FakeItem> _provider;
+		private Mock<IRestClient> _mockClient;
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
-			var mockClient = new Mock<IRestClient>();
-			mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
-			_provider = new RestQueryProvider<FakeItem>(mockClient.Object, new TestSerializerFactory());
+			_mockClient = new Mock<IRestClient>();
+			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
+			_provider = new RestQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory());
 		}
 
 		[Test]
@@ -54,6 +55,14 @@ namespace Linq2Rest.Tests.Provider
 		public void WhenCreatingNonGenericQueryWithNullExpressionThenThrows()
 		{
 			Assert.Throws<ArgumentNullException>(() => _provider.CreateQuery(null));
+		}
+
+		[Test]
+		public void WhenDisposingThenDisposesClient()
+		{
+			_provider.Dispose();
+
+			_mockClient.Verify(x => x.Dispose());
 		}
 	}
 }
