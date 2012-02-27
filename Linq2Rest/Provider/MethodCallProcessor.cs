@@ -29,6 +29,9 @@ namespace Linq2Rest.Provider
 			{
 				case "Single":
 				case "SingleOrDefault":
+					return methodCall.Arguments.Count >= 2
+									? GetMethodResult(methodCall, builder, resultLoader)
+									: GetResult(methodCall, builder, resultLoader);
 				case "First":
 				case "FirstOrDefault":
 					builder.TakeParameter = "1";
