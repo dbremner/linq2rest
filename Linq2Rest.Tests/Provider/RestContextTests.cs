@@ -16,7 +16,9 @@ namespace Linq2Rest.Tests.Provider
 	public class RestContextTests
 	{
 		private RestContext<SimpleDto> _provider;
+		private RestContext<ComplexDto> _complexProvider;
 		private Mock<IRestClient> _mockClient;
+		private Mock<IRestClient> _mockComplexClient;
 
 		[SetUp]
 		public void TestSetup()
@@ -31,6 +33,15 @@ namespace Linq2Rest.Tests.Provider
 				.Returns("[{Value : 2, Content : \"blah\" }]");
 
 			_provider = new RestContext<SimpleDto>(_mockClient.Object, serializerFactory);
+
+			_mockComplexClient = new Mock<IRestClient>();
+			_mockComplexClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
+			_mockComplexClient.Setup(x => x.Get(It.IsAny<Uri>()))
+				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
+				.Returns("[{Value : 2, Content : \"blah\", Child : {ID : 2, Name : \"Foo\"}}]");
+
+
+			_complexProvider = new RestContext<ComplexDto>(_mockComplexClient.Object, serializerFactory);
 		}
 
 		[Test]
@@ -87,6 +98,18 @@ namespace Linq2Rest.Tests.Provider
 
 			var uri = new Uri("http://localhost/?$filter=Value+le+3&$top=1");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithSingleOrDefaultFilterOnNavigationPropertyThenCallsRestServiceWithFilterParameter()
+		{
+			var result = _complexProvider
+				.Query
+				.FirstOrDefault(x => x.Child.Name == "Foo");
+
+			var uri = new Uri("http://localhost/?$filter=Child%2fName+eq+'Foo'&$top=1");
+
+			_mockComplexClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
