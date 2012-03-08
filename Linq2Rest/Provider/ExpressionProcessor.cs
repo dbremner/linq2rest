@@ -6,6 +6,7 @@
 namespace Linq2Rest.Provider
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
@@ -31,8 +32,20 @@ namespace Linq2Rest.Provider
 			}
 
 			var memberExpression = expression as MemberExpression;
+
 			if (memberExpression != null)
 			{
+
+				var pathPrefixes = new List<string>();
+				var currentMemberExpression = memberExpression;
+				while (currentMemberExpression != null)
+				{
+					pathPrefixes.Add(currentMemberExpression.Member.Name);
+					currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
+				}
+				pathPrefixes.Reverse();
+				var prefix = string.Join("/", pathPrefixes);
+
 				if (!IsMemberOfParameter(memberExpression))
 				{
 					var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
@@ -53,7 +66,7 @@ namespace Linq2Rest.Provider
 				Contract.Assume(innerExpression != null);
 
 				return string.IsNullOrWhiteSpace(memberCall)
-						? memberExpression.Member.Name
+						? prefix
 						: string.Format("{0}({1})", memberCall, ProcessExpression(innerExpression));
 			}
 

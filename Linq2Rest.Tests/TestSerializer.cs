@@ -25,4 +25,16 @@ namespace Linq2Rest.Tests
 			return _innerSerializer.Deserialize<List<SimpleDto>>(input);
 		}
 	}
+
+    public class TestComplexSerializer : ISerializer<ComplexDto> {
+        private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
+
+        public ComplexDto Deserialize(string input) {
+            return _innerSerializer.Deserialize<ComplexDto>(input);
+        }
+
+        public IList<ComplexDto> DeserializeList(string input) {
+            return _innerSerializer.Deserialize<List<ComplexDto>>(input);
+        }
+    }
 }
