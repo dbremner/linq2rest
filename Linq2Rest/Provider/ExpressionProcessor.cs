@@ -191,9 +191,10 @@ namespace Linq2Rest.Provider
 				return Expression.Constant(value);
 			}
 
-			if (input.Expression is ConstantExpression)
+			var constantExpression = input.Expression as ConstantExpression;
+			if (constantExpression != null)
 			{
-				object obj = ((ConstantExpression)input.Expression).Value;
+				var obj = constantExpression.Value;
 				if (obj == null)
 				{
 					return input;
