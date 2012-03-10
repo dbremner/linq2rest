@@ -18,7 +18,7 @@ namespace Linq2Rest.Implementations
 		private readonly string _acceptHeader;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="JsonRestClient"/> class.
+		/// Initializes a new instance of the <see cref="RestClientBase"/> class.
 		/// </summary>
 		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
 		/// <param name="acceptHeader">The accept header to use in web requests.</param>

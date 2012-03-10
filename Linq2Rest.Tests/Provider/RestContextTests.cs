@@ -40,7 +40,6 @@ namespace Linq2Rest.Tests.Provider
 				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
 				.Returns("[{Value : 2, Content : \"blah\", Child : {ID : 2, Name : \"Foo\"}}]");
 
-
 			_complexProvider = new RestContext<ComplexDto>(_mockComplexClient.Object, serializerFactory);
 		}
 

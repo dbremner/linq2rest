@@ -26,7 +26,7 @@ namespace Linq2Rest
 	}
 
 	[ContractClassFor(typeof(IRuntimeTypeProvider))]
-	internal abstract class RuntimeTypeProviderContracts:IRuntimeTypeProvider
+	internal abstract class RuntimeTypeProviderContracts : IRuntimeTypeProvider
 	{
 		public Type Get(Type sourceType, IEnumerable<MemberInfo> properties)
 		{

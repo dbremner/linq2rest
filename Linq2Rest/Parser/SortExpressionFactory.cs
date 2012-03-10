@@ -14,7 +14,7 @@ namespace Linq2Rest.Parser
 	using System.Web.UI.WebControls;
 
 	/// <summary>
-	/// Defines the SortExpressionFactory
+	/// Defines the SortExpressionFactory´.
 	/// </summary>
 	public class SortExpressionFactory : ISortExpressionFactory
 	{
