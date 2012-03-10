@@ -112,6 +112,7 @@
     <Compile Include="Parser\ExpressionTokenizerTests.cs" />
     <Compile Include="FakeItem.cs" />
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
+    <Compile Include="Provider\ExpressionProcessorTests.cs" />
     <Compile Include="RuntimeTypeProviderTests.cs" />
     <Compile Include="Mvc\ModelFilterBinderTests.cs" />
     <Compile Include="Parser\FilterTests.cs" />

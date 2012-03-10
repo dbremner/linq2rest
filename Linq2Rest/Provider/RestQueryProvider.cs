@@ -12,28 +12,32 @@ namespace Linq2Rest.Provider
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Reflection;
 
-	internal class RestQueryProvider<T> : IQueryProvider, IDisposable
+	internal class RestQueryProvider<T> : RestQueryProviderBase
 	{
 		private readonly IRestClient _client;
 		private readonly ISerializerFactory _serializerFactory;
+		private readonly ExpressionProcessor _expressionProcessor;
 		private readonly ParameterBuilder _parameterBuilder;
-		private MethodInfo _createMethod;
 
 		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory)
+			: this(client, serializerFactory, new ExpressionProcessor(new ExpressionVisitor()))
+		{
+		}
+
+		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory, ExpressionProcessor expressionProcessor)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 
 			_client = client;
 			_serializerFactory = serializerFactory;
+			_expressionProcessor = expressionProcessor;
 			_parameterBuilder = new ParameterBuilder(client.ServiceBase);
-			_createMethod = serializerFactory.GetType().GetMethod("Create");
 		}
 
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-		public IQueryable CreateQuery(Expression expression)
+		public override IQueryable CreateQuery(Expression expression)
 		{
 			if (expression == null)
 			{
@@ -44,7 +48,7 @@ namespace Linq2Rest.Provider
 		}
 
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-		public IQueryable<TResult> CreateQuery<TResult>(Expression expression)
+		public override IQueryable<TResult> CreateQuery<TResult>(Expression expression)
 		{
 			if (expression == null)
 			{
@@ -54,31 +58,25 @@ namespace Linq2Rest.Provider
 			return new RestQueryable<TResult>(_client, _serializerFactory, expression);
 		}
 
-		public object Execute(Expression expression)
+		public override object Execute(Expression expression)
 		{
 			Contract.Assume(expression != null);
 
 			var methodCallExpression = expression as MethodCallExpression;
 
 			return (methodCallExpression != null
-					? methodCallExpression.ProcessMethodCall<T>(_parameterBuilder, GetResults, GetIntermediateResults)
-					: expression.ProcessExpression())
+					? _expressionProcessor.ProcessMethodCall(methodCallExpression, _parameterBuilder, GetResults, GetIntermediateResults)
+					: _expressionProcessor.Process(expression))
 					?? GetResults(_parameterBuilder);
 		}
 
-		public TResult Execute<TResult>(Expression expression)
+		public override TResult Execute<TResult>(Expression expression)
 		{
 			Contract.Assume(expression != null);
 			return (TResult)Execute(expression);
 		}
 
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		private void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
@@ -103,7 +101,7 @@ namespace Linq2Rest.Provider
 		private IEnumerable GetIntermediateResults(Type type, ParameterBuilder builder)
 		{
 			var response = _client.Get(builder.GetFullUri());
-			var genericMethod = _createMethod.MakeGenericMethod(type);
+			var genericMethod = CreateMethod.MakeGenericMethod(type);
 			dynamic serializer = genericMethod.Invoke(_serializerFactory, null);
 			var resultSet = serializer.DeserializeList(response);
 
