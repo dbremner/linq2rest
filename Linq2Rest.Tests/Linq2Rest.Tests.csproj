@@ -114,7 +114,6 @@
     <Compile Include="Parser\ExpressionTokenizerTests.cs" />
     <Compile Include="FakeItem.cs" />
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
-    <Compile Include="Provider\ExpressionProcessorTests.cs" />
     <Compile Include="RuntimeTypeProviderTests.cs" />
     <Compile Include="Mvc\ModelFilterBinderTests.cs" />
     <Compile Include="Parser\FilterTests.cs" />
@@ -128,7 +127,6 @@
     <Compile Include="Provider\SimpleDto.cs" />
     <Compile Include="Parser\SortExpressionFactoryTests.cs" />
     <Compile Include="Parser\TokenSetTests.cs" />
-    <Compile Include="TestComplexSerializer.cs" />
     <Compile Include="TestODataSerializer.cs" />
     <Compile Include="TestODataSerializerFactory.cs" />
     <Compile Include="TestSerializer.cs" />
