@@ -23,7 +23,13 @@ namespace Linq2Rest.Tests
 			{
 				return new TestSerializer() as ISerializer<T>;
 			}
-			return new TestComplexSerializer() as ISerializer<T>;
+
+            if (typeof(T) == typeof(ComplexDto)) 
+            {
+                return new TestComplexSerializer() as ISerializer<T>;
+            }
+
+		    return new TestGenericSerializer<T>();
 		}
 	}
 }
