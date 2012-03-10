@@ -78,6 +78,14 @@ namespace Linq2Rest.Tests.Provider
 			_mockClient.Verify(x => x.Get(It.IsAny<Uri>()), Times.Once());
 		}
 
+        [Test]
+        public void WhenApplyingQueryWithNoFilterThenCallsRestServiceOnce() {
+            var result = _provider.Query
+                .ToList();
+
+            _mockClient.Verify(x => x.Get(It.IsAny<Uri>()), Times.Once());
+        }
+
 		[Test]
 		public void WhenApplyingQueryWithCountFilterThenCallsRestServiceWithFilterParameter()
 		{
