@@ -6,6 +6,7 @@
 namespace Linq2Rest.Provider
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
@@ -47,75 +48,118 @@ namespace Linq2Rest.Provider
 							: GetResult(methodCall, builder, resultLoader);
 				case "Where":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
+					{
+						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
+						if (result != null)
+						{
+							return InvokeEager(methodCall, result);
+						}
+						var newFilter = methodCall.Arguments[1].ProcessExpression();
 
-					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.FilterParameter = methodCall.Arguments[1].ProcessExpression();
+						builder.FilterParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
+													? newFilter
+													: string.Format("({0}) and ({1})", builder.FilterParameter, newFilter);
+					}
 					break;
 				case "Select":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-
-					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					var unaryExpression = methodCall.Arguments[1] as UnaryExpression;
-					if (unaryExpression != null)
 					{
-						var lambdaExpression = unaryExpression.Operand as LambdaExpression;
-						if (lambdaExpression != null)
+						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
+						if (result != null)
 						{
-							var selectFunction = lambdaExpression.Body as NewExpression;
-
-							if (selectFunction != null)
+							return InvokeEager(methodCall, result);
+						}
+						var unaryExpression = methodCall.Arguments[1] as UnaryExpression;
+						if (unaryExpression != null)
+						{
+							var lambdaExpression = unaryExpression.Operand as LambdaExpression;
+							if (lambdaExpression != null)
 							{
-								var members = selectFunction.Members.Select(x => x.Name).ToArray();
-								var args = selectFunction.Arguments.OfType<MemberExpression>().Select(x => x.Member.Name).ToArray();
-								if (members.Intersect(args).Count() != members.Length)
-								{
-									throw new InvalidOperationException("Projection into new member names is not supported.");
-								}
+								var selectFunction = lambdaExpression.Body as NewExpression;
 
-								builder.SelectParameter = String.Join(",", args);
+								if (selectFunction != null)
+								{
+									var members = selectFunction.Members.Select(x => x.Name).ToArray();
+									var args = selectFunction.Arguments.OfType<MemberExpression>().Select(x => x.Member.Name).ToArray();
+									if (members.Intersect(args).Count() != members.Length)
+									{
+										throw new InvalidOperationException("Projection into new member names is not supported.");
+									}
+
+									builder.SelectParameter = String.Join(",", args);
+								}
 							}
 						}
 					}
-
 					break;
 				case "OrderBy":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-
-					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression());
+					{
+						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
+						if (result != null)
+						{
+							return InvokeEager(methodCall, result);
+						}
+						builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression());
+					}
 					break;
 				case "OrderByDescending":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-
-					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression() + " desc");
+					{
+						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
+						if (result != null)
+						{
+							return InvokeEager(methodCall, result);
+						}
+						builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression() + " desc");
+					}
 					break;
 				case "ThenBy":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-
-					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression());
+					{
+						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
+						if (result != null)
+						{
+							return InvokeEager(methodCall, result);
+						}
+						builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression());
+					}
 					break;
 				case "ThenByDescending":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-
-					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression() + " desc");
+					{
+						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
+						if (result != null)
+						{
+							return InvokeEager(methodCall, result);
+						}
+						builder.OrderByParameter.Add(methodCall.Arguments[1].ProcessExpression() + " desc");
+					}
 					break;
 				case "Take":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-
-					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.TakeParameter = methodCall.Arguments[1].ProcessExpression();
+					{
+						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
+						if (result != null)
+						{
+							return InvokeEager(methodCall, result);
+						}
+						builder.TakeParameter = methodCall.Arguments[1].ProcessExpression();
+					}
 					break;
 				case "Skip":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-
-					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-					builder.SkipParameter = methodCall.Arguments[1].ProcessExpression();
+					{
+						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
+						if (result != null)
+						{
+							return InvokeEager(methodCall, result);
+						}
+						builder.SkipParameter = methodCall.Arguments[1].ProcessExpression();
+					}
 					break;
 				default:
-					return GetResult(methodCall, builder, resultLoader);
+					return ExecuteMethod(methodCall, builder, resultLoader);
 			}
 
 			return null;
@@ -134,7 +178,7 @@ namespace Linq2Rest.Provider
 			builder.FilterParameter = currentParameter;
 
 			var genericArguments = methodCall.Method.GetGenericArguments();
-			var countMethod = typeof(Queryable)
+			var method = typeof(Queryable)
 				.GetMethods()
 				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
 				.MakeGenericMethod(genericArguments);
@@ -144,7 +188,7 @@ namespace Linq2Rest.Provider
 			Contract.Assume(list != null);
 
 			var parameters = new object[] { list.AsQueryable() };
-			return countMethod.Invoke(null, parameters);
+			return method.Invoke(null, parameters);
 		}
 
 		private static object GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader)
@@ -156,15 +200,61 @@ namespace Linq2Rest.Provider
 
 			Contract.Assume(results != null);
 
-			var parameters = new object[] { results.AsQueryable() }
-				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(x => x.GetExpressionValue()))
-				.ToArray();
+			var parameters = ResolveInvocationParameters(results, methodCall);
 
 			var final = methodCall.Method.Invoke(null, parameters);
 			return final;
 		}
 
-		private static object GetExpressionValue(this Expression expression)
+		private static object ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader)
+		{
+			Contract.Assume(methodCall.Arguments.Count >= 2);
+
+			var innerMethod = methodCall.Arguments[0] as MethodCallExpression;
+
+			if (innerMethod == null)
+			{
+				return null;
+			}
+
+			var result = ProcessMethodCall(innerMethod, builder, resultLoader);
+			if (result != null)
+			{
+				return InvokeEager(innerMethod, result);
+			}
+
+			var genericArgument = innerMethod.Method.ReturnType.GetGenericArguments()[0];
+			var t = typeof(T);
+			if (t == genericArgument)
+			{
+
+			}
+
+			var list = resultLoader(builder);
+
+			Contract.Assume(list != null);
+
+			var arguments = ResolveInvocationParameters(list, methodCall);
+
+			return methodCall.Method.Invoke(null, arguments);
+		}
+
+		private static object InvokeEager(MethodCallExpression methodCall, object source)
+		{
+			var parameters = ResolveInvocationParameters(source as IEnumerable, methodCall);
+			return methodCall.Method.Invoke(null, parameters);
+		}
+
+		private static object[] ResolveInvocationParameters(IEnumerable results, MethodCallExpression methodCall)
+		{
+			var parameters = new object[] { results.AsQueryable() }
+				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue))
+				.Where(x => x != null)
+				.ToArray();
+			return parameters;
+		}
+
+		private static object GetExpressionValue(Expression expression)
 		{
 			if (expression is UnaryExpression)
 			{

@@ -79,6 +79,32 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenApplyingQueryWithMultipleFiltersThenCallsRestServiceWithSingleFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.Where(x => x.Value <= 3)
+				.Where(x => x.Content == "blah")
+				.ToArray();
+
+			var uri = new Uri("http://localhost/?$filter=(Value+le+3)+and+(Content+eq+'blah')");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.Where(x => x.Value <= 3)
+				.GroupBy(x => x.Content)
+				.ToArray();
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
 		public void WhenApplyingQueryWithCountFilterThenCallsRestServiceWithFilterParameter()
 		{
 			var result = _provider
