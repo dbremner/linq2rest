@@ -28,6 +28,14 @@ namespace Linq2Rest
 		private const MethodAttributes GetSetAttr = MethodAttributes.Final | MethodAttributes.Public;
 		private readonly IMemberNameResolver _nameResolver;
 
+		static RuntimeTypeProvider()
+		{
+			ModuleBuilder = Thread
+				.GetDomain()
+				.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess.Run)
+				.DefineDynamicModule(AssemblyName.Name);
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RuntimeTypeProvider"/> class.
 		/// </summary>
@@ -37,14 +45,6 @@ namespace Linq2Rest
 			Contract.Requires(nameResolver != null);
 
 			_nameResolver = nameResolver;
-		}
-
-		static RuntimeTypeProvider()
-		{
-			ModuleBuilder = Thread
-				.GetDomain()
-				.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess.Run)
-				.DefineDynamicModule(AssemblyName.Name);
 		}
 
 		/// <summary>

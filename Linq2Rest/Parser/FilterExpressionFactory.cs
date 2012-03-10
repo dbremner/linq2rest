@@ -15,7 +15,7 @@ namespace Linq2Rest.Parser
 	using System.Text.RegularExpressions;
 
 	/// <summary>
-	/// Defines the FilterExpressionFactory
+	/// Defines the FilterExpressionFactory.
 	/// </summary>
 	public class FilterExpressionFactory : IFilterExpressionFactory
 	{

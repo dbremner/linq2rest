@@ -22,112 +22,6 @@ namespace Linq2Rest.Provider
 			return expression == null ? null : Visit(expression, expression.Type);
 		}
 
-		private string Visit(Expression expression, Type type)
-		{
-			Contract.Requires(expression != null);
-
-			if (expression is LambdaExpression)
-			{
-				return Visit((expression as LambdaExpression).Body);
-			}
-
-			var memberExpression = expression as MemberExpression;
-
-			if (memberExpression != null)
-			{
-				var pathPrefixes = new List<string>();
-				var currentMemberExpression = memberExpression;
-				while (currentMemberExpression != null)
-				{
-					pathPrefixes.Add(currentMemberExpression.Member.Name);
-					currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
-				}
-				pathPrefixes.Reverse();
-				var prefix = string.Join("/", pathPrefixes);
-
-				if (!IsMemberOfParameter(memberExpression))
-				{
-					var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
-					if (!(collapsedExpression is MemberExpression))
-					{
-						Contract.Assume(collapsedExpression != null);
-
-						return Visit(collapsedExpression);
-					}
-
-					memberExpression = (MemberExpression)collapsedExpression;
-				}
-
-				var memberCall = GetMemberCall(memberExpression);
-
-				var innerExpression = memberExpression.Expression;
-
-				Contract.Assume(innerExpression != null);
-
-				return string.IsNullOrWhiteSpace(memberCall)
-						? prefix
-						: string.Format("{0}({1})", memberCall, Visit(innerExpression));
-			}
-
-			if (expression is ConstantExpression)
-			{
-				var value = (expression as ConstantExpression).Value;
-
-				Contract.Assume(type != null);
-
-				return string.Format(
-					Thread.CurrentThread.CurrentCulture,
-					"{0}{1}{0}",
-					value is string ? "'" : string.Empty,
-					value == null ? "null" : GetValue(Expression.Convert(expression, type)));
-			}
-
-			if (expression is UnaryExpression)
-			{
-				var unaryExpression = expression as UnaryExpression;
-				var operand = unaryExpression.Operand;
-				switch (unaryExpression.NodeType)
-				{
-					case ExpressionType.Not:
-					case ExpressionType.IsFalse:
-						return string.Format("not({0})", Visit(operand));
-					default:
-						return Visit(operand);
-				}
-			}
-
-			if (expression is BinaryExpression)
-			{
-				var binaryExpression = expression as BinaryExpression;
-				var operation = GetOperation(binaryExpression);
-
-				var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
-				var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
-
-				var leftType = GetUnconvertedType(binaryExpression.Left);
-				var leftString = Visit(binaryExpression.Left);
-				var rightString = Visit(binaryExpression.Right, leftType);
-
-				return string.Format(
-					"{0} {1} {2}",
-					string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
-					operation,
-					string.Format(isRightComposite ? "({0})" : "{0}", rightString));
-			}
-
-			if (expression is MethodCallExpression)
-			{
-				return GetMethodCall(expression as MethodCallExpression);
-			}
-
-			if (expression is NewExpression)
-			{
-				return GetValue(expression).ToString();
-			}
-
-			throw new InvalidOperationException("Expression is not recognized or supported");
-		}
-
 		private static Type GetUnconvertedType(Expression expression)
 		{
 			Contract.Requires(expression != null);
@@ -247,6 +141,49 @@ namespace Linq2Rest.Provider
 			}
 
 			return nodeType == ExpressionType.Parameter;
+		}
+
+		private static string GetOperation(Expression expression)
+		{
+			Contract.Requires(expression != null);
+
+			switch (expression.NodeType)
+			{
+				case ExpressionType.Add:
+					return "add";
+				case ExpressionType.AddChecked:
+					break;
+				case ExpressionType.And:
+				case ExpressionType.AndAlso:
+					return "and";
+				case ExpressionType.Divide:
+					return "div";
+				case ExpressionType.Equal:
+					return "eq";
+				case ExpressionType.GreaterThan:
+					return "gt";
+				case ExpressionType.GreaterThanOrEqual:
+					return "ge";
+				case ExpressionType.LessThan:
+					return "lt";
+				case ExpressionType.LessThanOrEqual:
+					return "le";
+				case ExpressionType.Modulo:
+					return "mod";
+				case ExpressionType.Multiply:
+					return "mul";
+				case ExpressionType.Not:
+					return "not";
+				case ExpressionType.NotEqual:
+					return "ne";
+				case ExpressionType.Or:
+				case ExpressionType.OrElse:
+					return "or";
+				case ExpressionType.Subtract:
+					return "sub";
+			}
+
+			return string.Empty;
 		}
 
 		private string GetMethodCall(MethodCallExpression expression)
@@ -376,47 +313,111 @@ namespace Linq2Rest.Provider
 			return string.Empty;
 		}
 
-		private static string GetOperation(Expression expression)
+		private string Visit(Expression expression, Type type)
 		{
 			Contract.Requires(expression != null);
 
-			switch (expression.NodeType)
+			if (expression is LambdaExpression)
 			{
-				case ExpressionType.Add:
-					return "add";
-				case ExpressionType.AddChecked:
-					break;
-				case ExpressionType.And:
-				case ExpressionType.AndAlso:
-					return "and";
-				case ExpressionType.Divide:
-					return "div";
-				case ExpressionType.Equal:
-					return "eq";
-				case ExpressionType.GreaterThan:
-					return "gt";
-				case ExpressionType.GreaterThanOrEqual:
-					return "ge";
-				case ExpressionType.LessThan:
-					return "lt";
-				case ExpressionType.LessThanOrEqual:
-					return "le";
-				case ExpressionType.Modulo:
-					return "mod";
-				case ExpressionType.Multiply:
-					return "mul";
-				case ExpressionType.Not:
-					return "not";
-				case ExpressionType.NotEqual:
-					return "ne";
-				case ExpressionType.Or:
-				case ExpressionType.OrElse:
-					return "or";
-				case ExpressionType.Subtract:
-					return "sub";
+				return Visit((expression as LambdaExpression).Body);
 			}
 
-			return string.Empty;
+			var memberExpression = expression as MemberExpression;
+
+			if (memberExpression != null)
+			{
+				var pathPrefixes = new List<string>();
+				var currentMemberExpression = memberExpression;
+				while (currentMemberExpression != null)
+				{
+					pathPrefixes.Add(currentMemberExpression.Member.Name);
+					currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
+				}
+
+				pathPrefixes.Reverse();
+				var prefix = string.Join("/", pathPrefixes);
+
+				if (!IsMemberOfParameter(memberExpression))
+				{
+					var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
+					if (!(collapsedExpression is MemberExpression))
+					{
+						Contract.Assume(collapsedExpression != null);
+
+						return Visit(collapsedExpression);
+					}
+
+					memberExpression = (MemberExpression)collapsedExpression;
+				}
+
+				var memberCall = GetMemberCall(memberExpression);
+
+				var innerExpression = memberExpression.Expression;
+
+				Contract.Assume(innerExpression != null);
+
+				return string.IsNullOrWhiteSpace(memberCall)
+						? prefix
+						: string.Format("{0}({1})", memberCall, Visit(innerExpression));
+			}
+
+			if (expression is ConstantExpression)
+			{
+				var value = (expression as ConstantExpression).Value;
+
+				Contract.Assume(type != null);
+
+				return string.Format(
+					Thread.CurrentThread.CurrentCulture,
+					"{0}{1}{0}",
+					value is string ? "'" : string.Empty,
+					value == null ? "null" : GetValue(Expression.Convert(expression, type)));
+			}
+
+			if (expression is UnaryExpression)
+			{
+				var unaryExpression = expression as UnaryExpression;
+				var operand = unaryExpression.Operand;
+				switch (unaryExpression.NodeType)
+				{
+					case ExpressionType.Not:
+					case ExpressionType.IsFalse:
+						return string.Format("not({0})", Visit(operand));
+					default:
+						return Visit(operand);
+				}
+			}
+
+			if (expression is BinaryExpression)
+			{
+				var binaryExpression = expression as BinaryExpression;
+				var operation = GetOperation(binaryExpression);
+
+				var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
+				var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
+
+				var leftType = GetUnconvertedType(binaryExpression.Left);
+				var leftString = Visit(binaryExpression.Left);
+				var rightString = Visit(binaryExpression.Right, leftType);
+
+				return string.Format(
+					"{0} {1} {2}",
+					string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
+					operation,
+					string.Format(isRightComposite ? "({0})" : "{0}", rightString));
+			}
+
+			if (expression is MethodCallExpression)
+			{
+				return GetMethodCall(expression as MethodCallExpression);
+			}
+
+			if (expression is NewExpression)
+			{
+				return GetValue(expression).ToString();
+			}
+
+			throw new InvalidOperationException("Expression is not recognized or supported");
 		}
 	}
 }

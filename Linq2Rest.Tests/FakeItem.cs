@@ -28,6 +28,7 @@ namespace Linq2Rest.Tests
 			{
 				return _stringValue;
 			}
+
 			set
 			{
 				_stringValue = value;

@@ -14,7 +14,7 @@ namespace Linq2Rest.Parser
 	using System.Threading;
 
 	/// <summary>
-	/// Defines the SelectExpressionFactory
+	/// Defines the SelectExpressionFactory.
 	/// </summary>
 	/// <typeparam name="T">The <see cref="Type"/> of object to project.</typeparam>
 	public class SelectExpressionFactory<T> : ISelectExpressionFactory<T>

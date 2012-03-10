@@ -11,7 +11,6 @@ namespace Linq2Rest.Mvc.Provider
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Reflection;
 	using System.Web.Script.Serialization;
 
 	using Linq2Rest.Provider;
@@ -121,10 +120,5 @@ namespace Linq2Rest.Mvc.Provider
 			Contract.Invariant(_innerSerializer != null);
 			Contract.Invariant(_elementType != null);
 		}
-	}
-
-	internal static class AnonymousTypeSerializerHelper
-	{
-		public static readonly MethodInfo InnerChangeTypeMethod = typeof(Convert).GetMethod("ChangeType", new[] { typeof(object), typeof(Type) });
 	}
 }

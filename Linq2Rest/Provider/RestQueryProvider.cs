@@ -36,7 +36,7 @@ namespace Linq2Rest.Provider
 			_parameterBuilder = new ParameterBuilder(client.ServiceBase);
 		}
 
-		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Cannot dispose here.")]
 		public override IQueryable CreateQuery(Expression expression)
 		{
 			if (expression == null)
@@ -47,7 +47,7 @@ namespace Linq2Rest.Provider
 			return new RestQueryable<T>(_client, _serializerFactory, expression);
 		}
 
-		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
+		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Cannot dispose here.")]
 		public override IQueryable<TResult> CreateQuery<TResult>(Expression expression)
 		{
 			if (expression == null)

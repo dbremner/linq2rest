@@ -64,12 +64,14 @@ namespace Linq2Rest.Provider
 						{
 							return InvokeEager(methodCall, result);
 						}
+
 						var newFilter = _visitor.Visit(methodCall.Arguments[1]);
 
 						builder.FilterParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 													? newFilter
 													: string.Format("({0}) and ({1})", builder.FilterParameter, newFilter);
 					}
+
 					break;
 				case "Select":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
@@ -79,6 +81,7 @@ namespace Linq2Rest.Provider
 						{
 							return InvokeEager(methodCall, result);
 						}
+
 						var unaryExpression = methodCall.Arguments[1] as UnaryExpression;
 						if (unaryExpression != null)
 						{
@@ -96,11 +99,12 @@ namespace Linq2Rest.Provider
 										throw new InvalidOperationException("Projection into new member names is not supported.");
 									}
 
-									builder.SelectParameter = String.Join(",", args);
+									builder.SelectParameter = string.Join(",", args);
 								}
 							}
 						}
 					}
+
 					break;
 				case "OrderBy":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
@@ -110,9 +114,11 @@ namespace Linq2Rest.Provider
 						{
 							return InvokeEager(methodCall, result);
 						}
+
 						var item = _visitor.Visit(methodCall.Arguments[1]);
 						builder.OrderByParameter.Add(item);
 					}
+
 					break;
 				case "OrderByDescending":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
@@ -122,9 +128,11 @@ namespace Linq2Rest.Provider
 						{
 							return InvokeEager(methodCall, result);
 						}
+
 						var visit = _visitor.Visit(methodCall.Arguments[1]);
 						builder.OrderByParameter.Add(visit + " desc");
 					}
+
 					break;
 				case "ThenBy":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
@@ -134,9 +142,11 @@ namespace Linq2Rest.Provider
 						{
 							return InvokeEager(methodCall, result);
 						}
+
 						var visit = _visitor.Visit(methodCall.Arguments[1]);
 						builder.OrderByParameter.Add(visit);
 					}
+
 					break;
 				case "ThenByDescending":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
@@ -146,9 +156,11 @@ namespace Linq2Rest.Provider
 						{
 							return InvokeEager(methodCall, result);
 						}
+
 						var visit = _visitor.Visit(methodCall.Arguments[1]);
 						builder.OrderByParameter.Add(visit + " desc");
 					}
+
 					break;
 				case "Take":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
@@ -158,8 +170,10 @@ namespace Linq2Rest.Provider
 						{
 							return InvokeEager(methodCall, result);
 						}
+
 						builder.TakeParameter = _visitor.Visit(methodCall.Arguments[1]);
 					}
+
 					break;
 				case "Skip":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
@@ -169,11 +183,43 @@ namespace Linq2Rest.Provider
 						{
 							return InvokeEager(methodCall, result);
 						}
+
 						builder.SkipParameter = _visitor.Visit(methodCall.Arguments[1]);
 					}
+
 					break;
 				default:
 					return ExecuteMethod(methodCall, builder, resultLoader, intermediateResultLoader);
+			}
+
+			return null;
+		}
+
+		private static object InvokeEager(MethodCallExpression methodCall, object source)
+		{
+			var parameters = ResolveInvocationParameters(source as IEnumerable, methodCall);
+			return methodCall.Method.Invoke(null, parameters);
+		}
+
+		private static object[] ResolveInvocationParameters(IEnumerable results, MethodCallExpression methodCall)
+		{
+			var parameters = new object[] { results.AsQueryable() }
+				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue))
+				.Where(x => x != null)
+				.ToArray();
+			return parameters;
+		}
+
+		private static object GetExpressionValue(Expression expression)
+		{
+			if (expression is UnaryExpression)
+			{
+				return (expression as UnaryExpression).Operand;
+			}
+
+			if (expression is ConstantExpression)
+			{
+				return (expression as ConstantExpression).Value;
 			}
 
 			return null;
@@ -186,9 +232,9 @@ namespace Linq2Rest.Provider
 			ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
 			var processResult = _visitor.Visit(methodCall.Arguments[1]);
-			var currentParameter = String.IsNullOrWhiteSpace(builder.FilterParameter)
+			var currentParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 									? processResult
-									: String.Format("({0}) and ({1})", builder.FilterParameter, processResult);
+									: string.Format("({0}) and ({1})", builder.FilterParameter, processResult);
 			builder.FilterParameter = currentParameter;
 
 			var genericArguments = methodCall.Method.GetGenericArguments();
@@ -247,36 +293,6 @@ namespace Linq2Rest.Provider
 			var arguments = ResolveInvocationParameters(list, methodCall);
 
 			return methodCall.Method.Invoke(null, arguments);
-		}
-
-		private static object InvokeEager(MethodCallExpression methodCall, object source)
-		{
-			var parameters = ResolveInvocationParameters(source as IEnumerable, methodCall);
-			return methodCall.Method.Invoke(null, parameters);
-		}
-
-		private static object[] ResolveInvocationParameters(IEnumerable results, MethodCallExpression methodCall)
-		{
-			var parameters = new object[] { results.AsQueryable() }
-				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue))
-				.Where(x => x != null)
-				.ToArray();
-			return parameters;
-		}
-
-		private static object GetExpressionValue(Expression expression)
-		{
-			if (expression is UnaryExpression)
-			{
-				return (expression as UnaryExpression).Operand;
-			}
-
-			if (expression is ConstantExpression)
-			{
-				return (expression as ConstantExpression).Value;
-			}
-
-			return null;
 		}
 	}
 }

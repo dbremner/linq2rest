@@ -145,6 +145,7 @@ namespace Linq2Rest.Parser
 					operationIndex = i;
 				}
 			}
+
 			return operationIndex;
 		}
 
