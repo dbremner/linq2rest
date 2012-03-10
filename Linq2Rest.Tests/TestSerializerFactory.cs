@@ -21,6 +21,9 @@ namespace Linq2Rest.Tests
 
 			if (typeof(T) == typeof(ComplexDto))
 			{
+
+            if (typeof(T) == typeof(ComplexDto)) 
+            {
 				return new TestComplexSerializer() as ISerializer<T>;
 			}
 
