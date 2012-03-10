@@ -11,6 +11,7 @@ namespace Linq2Rest.Tests.Provider
 	using Moq;
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class ExpressionProcessorTests
 	{
 		[Test]
