@@ -63,7 +63,7 @@ namespace Linq2Rest.Provider
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return Provider.Execute<IEnumerable>(Expression).GetEnumerator();
+			return GetEnumerator();
 		}
 
 		public void Dispose()

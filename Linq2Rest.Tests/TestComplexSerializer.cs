@@ -8,19 +8,20 @@ namespace Linq2Rest.Tests
 	using System.Collections.Generic;
 	using System.Web.Script.Serialization;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Tests.Provider;
 
-	public class TestSerializer<T> : ISerializer<T>
+	public class TestComplexSerializer : ISerializer<ComplexDto>
 	{
 		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 
-		public T Deserialize(string input)
+		public ComplexDto Deserialize(string input)
 		{
-			return _innerSerializer.Deserialize<T>(input);
+			return _innerSerializer.Deserialize<ComplexDto>(input);
 		}
 
-		public IList<T> DeserializeList(string input)
+		public IList<ComplexDto> DeserializeList(string input)
 		{
-			return _innerSerializer.Deserialize<List<T>>(input ?? "[]");
+			return _innerSerializer.Deserialize<List<ComplexDto>>(input);
 		}
 	}
 }

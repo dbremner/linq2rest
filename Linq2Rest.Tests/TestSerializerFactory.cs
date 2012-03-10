@@ -19,11 +19,12 @@ namespace Linq2Rest.Tests
 				return new RuntimeAnonymousTypeSerializer<T>();
 			}
 
-			if (typeof(T) == typeof(SimpleDto))
+			if (typeof(T) == typeof(ComplexDto))
 			{
-				return new TestSerializer() as ISerializer<T>;
+				return new TestComplexSerializer() as ISerializer<T>;
 			}
-			return new TestComplexSerializer() as ISerializer<T>;
+
+			return new TestSerializer<T>();
 		}
 	}
 }
