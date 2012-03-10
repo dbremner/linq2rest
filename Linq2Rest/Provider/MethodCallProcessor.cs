@@ -49,12 +49,7 @@ namespace Linq2Rest.Provider
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 
 					ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader);
-                    
-                    string filter = methodCall.Arguments[1].ProcessExpression();
-                    builder.FilterParameter = String.IsNullOrWhiteSpace(builder.FilterParameter)
-                                              ? filter
-                                              : String.Format("({0}) and ({1})", builder.FilterParameter, filter);
-			          
+					builder.FilterParameter = methodCall.Arguments[1].ProcessExpression();
 					break;
 				case "Select":
 					Contract.Assume(methodCall.Arguments.Count >= 2);

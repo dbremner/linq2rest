@@ -86,19 +86,6 @@ namespace Linq2Rest.Tests.Provider
             _mockClient.Verify(x => x.Get(It.IsAny<Uri>()), Times.Once());
         }
 
-        [Test]
-        public void WhenApplyingQueryWithMultipleFiltersThenCallsRestServiceWithSingleCombinedFilterParameter() {
-            var result = _provider
-                .Query
-                .Where(x => x.Value >=0)
-                .Where(x => x.Value <=3)
-                .ToList();
-
-            var uri = new Uri("http://localhost/?$filter=(Value+ge+0)+and+(Value+le+3)");
-            
-            _mockClient.Verify(x => x.Get(uri), Times.Once());
-        }
-
 		[Test]
 		public void WhenApplyingQueryWithCountFilterThenCallsRestServiceWithFilterParameter()
 		{
