@@ -92,13 +92,49 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		public void WhenGroupByExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
 		{
 			var result = _provider
 				.Query
 				.Where(x => x.Value <= 3)
 				.GroupBy(x => x.Content)
 				.ToArray();
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenMaxExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.Where(x => x.Value <= 3)
+				.Max(x => x.Value);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenMinExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.Where(x => x.Value <= 3)
+				.Min(x => x.Value);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenAnyExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.Where(x => x.Value <= 3)
+				.Any(x => x.Value.Equals(3d));
 
 			var uri = new Uri("http://localhost/?$filter=Value+le+3");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());

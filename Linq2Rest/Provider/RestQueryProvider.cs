@@ -6,17 +6,20 @@
 namespace Linq2Rest.Provider
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics.CodeAnalysis;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Reflection;
 
 	internal class RestQueryProvider<T> : IQueryProvider, IDisposable
 	{
 		private readonly IRestClient _client;
 		private readonly ISerializerFactory _serializerFactory;
 		private readonly ParameterBuilder _parameterBuilder;
+		private MethodInfo _createMethod;
 
 		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory)
 		{
@@ -26,6 +29,7 @@ namespace Linq2Rest.Provider
 			_client = client;
 			_serializerFactory = serializerFactory;
 			_parameterBuilder = new ParameterBuilder(client.ServiceBase);
+			_createMethod = serializerFactory.GetType().GetMethod("Create");
 		}
 
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
@@ -57,7 +61,7 @@ namespace Linq2Rest.Provider
 			var methodCallExpression = expression as MethodCallExpression;
 
 			return (methodCallExpression != null
-					? methodCallExpression.ProcessMethodCall<T>(_parameterBuilder, GetResults)
+					? methodCallExpression.ProcessMethodCall<T>(_parameterBuilder, GetResults, GetIntermediateResults)
 					: expression.ProcessExpression())
 					?? GetResults(_parameterBuilder);
 		}
@@ -92,6 +96,16 @@ namespace Linq2Rest.Provider
 			var resultSet = serializer.DeserializeList(response);
 
 			Contract.Assume(resultSet != null);
+
+			return resultSet;
+		}
+
+		private IEnumerable GetIntermediateResults(Type type, ParameterBuilder builder)
+		{
+			var response = _client.Get(builder.GetFullUri());
+			var genericMethod = _createMethod.MakeGenericMethod(type);
+			dynamic serializer = genericMethod.Invoke(_serializerFactory, null);
+			var resultSet = serializer.DeserializeList(response);
 
 			return resultSet;
 		}
