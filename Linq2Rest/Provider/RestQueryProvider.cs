@@ -66,7 +66,7 @@ namespace Linq2Rest.Provider
 
 			return (methodCallExpression != null
 					? _expressionProcessor.ProcessMethodCall(methodCallExpression, _parameterBuilder, GetResults, GetIntermediateResults)
-					: _expressionProcessor.Process(expression))
+					: GetResults(_parameterBuilder))
 					?? GetResults(_parameterBuilder);
 		}
 

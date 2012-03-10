@@ -69,6 +69,15 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenApplyingQueryWithNoFilterThenCallsRestServiceOnce()
+		{
+			var result = _provider.Query.ToList();
+
+			var uri = new Uri("http://localhost/");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
 		public void WhenApplyingQueryThenCallsRestServiceOnce()
 		{
 			var result = _provider.Query
