@@ -38,7 +38,9 @@ namespace Linq2Rest.Provider
 			var parameters = new List<string>();
 			if (!string.IsNullOrWhiteSpace(FilterParameter))
 			{
-				parameters.Add(BuildParameter(StringConstants.FilterParameter, HttpUtility.UrlEncode(FilterParameter)));
+                string escapedFilter = FilterParameter;//.Replace(" ", "+");
+                escapedFilter = Uri.EscapeDataString(escapedFilter).Replace("%20", "+");
+                parameters.Add(BuildParameter(StringConstants.FilterParameter, escapedFilter));
 			}
 
 			if (!string.IsNullOrWhiteSpace(SelectParameter))
