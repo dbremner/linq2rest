@@ -12,8 +12,6 @@ namespace Linq2Rest.Provider
 
 	internal interface IExpressionProcessor
 	{
-		object Process(Expression expression);
-
 		object ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader);
 	}
 }
