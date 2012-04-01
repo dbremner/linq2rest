@@ -319,7 +319,8 @@ namespace Linq2Rest.Provider
 
 			if (expression is LambdaExpression)
 			{
-				return Visit((expression as LambdaExpression).Body);
+				var body = (expression as LambdaExpression).Body;
+				return Visit(body);
 			}
 
 			var memberExpression = expression as MemberExpression;

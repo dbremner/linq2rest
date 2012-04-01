@@ -21,11 +21,6 @@ namespace Linq2Rest.Provider
 			_visitor = visitor;
 		}
 
-		public object Process(Expression expression)
-		{
-			return _visitor.Visit(expression);
-		}
-
 		public object ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
 		{
 			Contract.Requires(builder != null);
@@ -101,12 +96,21 @@ namespace Linq2Rest.Provider
 
 									builder.SelectParameter = string.Join(",", args);
 								}
+
+								var propertyExpression = lambdaExpression.Body as MemberExpression;
+								if (propertyExpression != null)
+								{
+									builder.SelectParameter = string.IsNullOrWhiteSpace(builder.SelectParameter)
+										? propertyExpression.Member.Name
+										: builder.SelectParameter + "," + propertyExpression.Member.Name;
+								}
 							}
 						}
 					}
 
 					break;
 				case "OrderBy":
+				case "ThenBy":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 					{
 						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
@@ -121,33 +125,6 @@ namespace Linq2Rest.Provider
 
 					break;
 				case "OrderByDescending":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-					{
-						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
-						if (result != null)
-						{
-							return InvokeEager(methodCall, result);
-						}
-
-						var visit = _visitor.Visit(methodCall.Arguments[1]);
-						builder.OrderByParameter.Add(visit + " desc");
-					}
-
-					break;
-				case "ThenBy":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-					{
-						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
-						if (result != null)
-						{
-							return InvokeEager(methodCall, result);
-						}
-
-						var visit = _visitor.Visit(methodCall.Arguments[1]);
-						builder.OrderByParameter.Add(visit);
-					}
-
-					break;
 				case "ThenByDescending":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 					{
