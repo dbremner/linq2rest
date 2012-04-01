@@ -17,13 +17,15 @@ function BuildSolution
 
 function RunTests
 {
-	.\packages\NUnit.2.5.10.11092\tools\nunit-console.exe .\Linq2Rest.Tests\bin\$configuration\Linq2Rest.Tests.dll
+	.\packages\NUnit.Runners\tools\nunit-console.exe .\Linq2Rest.Tests\bin\$configuration\Linq2Rest.Tests.dll
+	.\packages\NUnit.Runners\tools\nunit-console.exe .\Linq2Rest.Rx.Tests\bin\$configuration\Linq2Rest.Rx.Tests.dll
 }
 
 function PublishPackage
 {
 	.\nuget.exe pack Linq2Rest.nuspec
 	.\nuget.exe pack Linq2Rest.Mvc.nuspec
+	.\nuget.exe pack Linq2Rest.Rx.nuspec
 }
 
 UpdatePackages
