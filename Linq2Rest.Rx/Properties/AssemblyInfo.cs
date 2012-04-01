@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Linq2Rest.Rx")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Generates OData style URL queries from LINQ queries.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Reimers.dk")]
 [assembly: AssemblyProduct("Linq2Rest.Rx")]
