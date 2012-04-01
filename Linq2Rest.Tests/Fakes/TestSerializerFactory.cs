@@ -3,10 +3,9 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-using Linq2Rest.Tests.Provider;
-
-namespace Linq2Rest.Tests
+namespace Linq2Rest.Tests.Fakes
 {
+	using Linq2Rest.Tests.Provider;
 	using Linq2Rest.Mvc.Provider;
 	using Linq2Rest.Provider;
 

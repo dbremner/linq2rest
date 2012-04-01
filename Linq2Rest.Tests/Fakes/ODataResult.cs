@@ -3,13 +3,14 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Tests
+namespace Linq2Rest.Tests.Fakes
 {
+	using System.Collections.Generic;
 	using System.Diagnostics.CodeAnalysis;
 
-	public class ODataResponse<T>
+	public class ODataResult<T>
 	{
 		[SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Needed for test.")]
-		public ODataResult<T> d { get; set; }
+		public List<T> results { get; set; }
 	}
 }

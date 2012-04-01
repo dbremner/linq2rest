@@ -3,25 +3,24 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Tests
+namespace Linq2Rest.Tests.Fakes
 {
 	using System.Collections.Generic;
 	using System.Web.Script.Serialization;
 	using Linq2Rest.Provider;
-	using Linq2Rest.Tests.Provider;
 
-	public class TestComplexSerializer : ISerializer<ComplexDto>
+	public class TestSerializer<T> : ISerializer<T>
 	{
 		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 
-		public ComplexDto Deserialize(string input)
+		public T Deserialize(string input)
 		{
-			return _innerSerializer.Deserialize<ComplexDto>(input);
+			return _innerSerializer.Deserialize<T>(input);
 		}
 
-		public IList<ComplexDto> DeserializeList(string input)
+		public IList<T> DeserializeList(string input)
 		{
-			return _innerSerializer.Deserialize<List<ComplexDto>>(input);
+			return _innerSerializer.Deserialize<List<T>>(input ?? "[]");
 		}
 	}
 }

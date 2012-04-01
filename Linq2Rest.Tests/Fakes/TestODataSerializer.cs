@@ -3,12 +3,11 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Tests
+namespace Linq2Rest.Tests.Fakes
 {
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Web.Script.Serialization;
-
 	using Linq2Rest.Provider;
 
 	public class TestODataSerializer<T> : ISerializer<T>

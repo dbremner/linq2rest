@@ -105,10 +105,10 @@
     <Compile Include="Implementations\XmlDataContractSerializerFactoryTests.cs" />
     <Compile Include="Implementations\XmlSerializerFactoryTests.cs" />
     <Compile Include="Mvc\RuntimeAnonymousTypeSerializerTests.cs" />
-    <Compile Include="NorthwindCustomer.cs" />
-    <Compile Include="ODataCustomerServiceTests.cs" />
-    <Compile Include="ODataResponse.cs" />
-    <Compile Include="ODataResult.cs" />
+    <Compile Include="Fakes\NorthwindCustomer.cs" />
+    <Compile Include="Fakes\ODataCustomerServiceTests.cs" />
+    <Compile Include="Fakes\ODataResponse.cs" />
+    <Compile Include="Fakes\ODataResult.cs" />
     <Compile Include="Parser\ExpressionTokenizerTests.cs" />
     <Compile Include="FakeItem.cs" />
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
@@ -127,11 +127,11 @@
     <Compile Include="Provider\SimpleDto.cs" />
     <Compile Include="Parser\SortExpressionFactoryTests.cs" />
     <Compile Include="Parser\TokenSetTests.cs" />
-    <Compile Include="TestComplexSerializer.cs" />
-    <Compile Include="TestODataSerializer.cs" />
-    <Compile Include="TestODataSerializerFactory.cs" />
-    <Compile Include="TestSerializer.cs" />
-    <Compile Include="TestSerializerFactory.cs" />
+    <Compile Include="Fakes\TestComplexSerializer.cs" />
+    <Compile Include="Fakes\TestODataSerializer.cs" />
+    <Compile Include="Fakes\TestODataSerializerFactory.cs" />
+    <Compile Include="Fakes\TestSerializer.cs" />
+    <Compile Include="Fakes\TestSerializerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -146,6 +146,7 @@
       <Name>Linq2Rest</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
