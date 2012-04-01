@@ -53,8 +53,14 @@
   <ItemGroup>
     <Compile Include="Fakes\FakeAsyncRestClientFactory.cs" />
     <Compile Include="Fakes\FakeItem.cs" />
+    <Compile Include="Fakes\NorthwindCustomer.cs" />
+    <Compile Include="Fakes\ODataResponse.cs" />
+    <Compile Include="Fakes\ODataResult.cs" />
     <Compile Include="Fakes\TestComplexSerializer.cs" />
     <Compile Include="Fakes\TestObserver.cs" />
+    <Compile Include="Fakes\TestODataSerializer.cs" />
+    <Compile Include="Fakes\TestODataSerializerFactory.cs" />
+    <Compile Include="ODataCustomerServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestTests.cs" />
     <Compile Include="RestObservableTests.cs" />
