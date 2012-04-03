@@ -3,7 +3,7 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Rx
+namespace Linq2Rest.Reactive
 {
 	using System;
 	using System.Collections;
@@ -12,7 +12,7 @@ namespace Linq2Rest.Rx
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
-	using System.Reactive.Linq;
+	using System.Reactive.Subjects;
 	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
@@ -25,7 +25,7 @@ namespace Linq2Rest.Rx
 			_visitor = visitor;
 		}
 
-		public Task<IList<T>> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		public Task<IList<T>> ProcessMethodCall<T>(MethodCallExpression methodCall, ReactiveParameterBuilder builder, Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 			var task = ProcessMethodCallInternal(methodCall, builder, resultLoader, intermediateResultLoader);
 			return task == null
@@ -33,7 +33,7 @@ namespace Linq2Rest.Rx
 					: Task.Factory.StartNew<IList<T>>(() => new List<T>());
 		}
 
-		private Task<object> ProcessMethodCallInternal<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private Task<object> ProcessMethodCallInternal<T>(MethodCallExpression methodCall, ReactiveParameterBuilder builder, Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 			Contract.Requires(builder != null);
 			Contract.Requires(resultLoader != null);
@@ -51,8 +51,8 @@ namespace Linq2Rest.Rx
 				case "FirstOrDefault":
 					builder.TakeParameter = "1";
 					return methodCall.Arguments.Count >= 2
-					       	? GetMethodResult(methodCall, builder, resultLoader, intermediateResultLoader)
-					       	: GetResult(methodCall, builder, resultLoader, intermediateResultLoader);
+							? GetMethodResult(methodCall, builder, resultLoader, intermediateResultLoader)
+							: GetResult(methodCall, builder, resultLoader, intermediateResultLoader);
 
 				case "Single":
 				case "SingleOrDefault":
@@ -61,8 +61,8 @@ namespace Linq2Rest.Rx
 				case "Count":
 				case "LongCount":
 					return methodCall.Arguments.Count >= 2
-					       	? GetMethodResult(methodCall, builder, resultLoader, intermediateResultLoader)
-					       	: GetResult(methodCall, builder, resultLoader, intermediateResultLoader);
+							? GetMethodResult(methodCall, builder, resultLoader, intermediateResultLoader)
+							: GetResult(methodCall, builder, resultLoader, intermediateResultLoader);
 				case "Where":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 					{
@@ -75,8 +75,8 @@ namespace Linq2Rest.Rx
 						var newFilter = _visitor.Visit(methodCall.Arguments[1]);
 
 						builder.FilterParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
-						                          	? newFilter
-						                          	: string.Format("({0}) and ({1})", builder.FilterParameter, newFilter);
+													? newFilter
+													: string.Format("({0}) and ({1})", builder.FilterParameter, newFilter);
 					}
 
 					break;
@@ -112,8 +112,8 @@ namespace Linq2Rest.Rx
 								if (propertyExpression != null)
 								{
 									builder.SelectParameter = string.IsNullOrWhiteSpace(builder.SelectParameter)
-									                          	? propertyExpression.Member.Name
-									                          	: builder.SelectParameter + "," + propertyExpression.Member.Name;
+																? propertyExpression.Member.Name
+																: builder.SelectParameter + "," + propertyExpression.Member.Name;
 								}
 							}
 						}
@@ -213,7 +213,7 @@ namespace Linq2Rest.Rx
 			return null;
 		}
 
-		private Task<object> GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private Task<object> GetMethodResult<T>(MethodCallExpression methodCall, ReactiveParameterBuilder builder, Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 			Contract.Assume(methodCall.Arguments.Count >= 2);
 
@@ -230,7 +230,7 @@ namespace Linq2Rest.Rx
 				.GetMethods()
 				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
 				.MakeGenericMethod(genericArguments);
-
+			
 			return resultLoader(builder)
 				.ContinueWith(
 							  t =>
@@ -245,7 +245,7 @@ namespace Linq2Rest.Rx
 							  });
 		}
 
-		private Task<object> GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private Task<object> GetResult<T>(MethodCallExpression methodCall, ReactiveParameterBuilder builder, Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 			Contract.Assume(methodCall.Arguments.Count >= 1);
 
@@ -264,7 +264,7 @@ namespace Linq2Rest.Rx
 							  });
 		}
 
-		private Task<object> ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private Task<object> ExecuteMethod<T>(MethodCallExpression methodCall, ReactiveParameterBuilder builder, Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 			Contract.Requires(resultLoader != null);
 			Contract.Requires(builder != null);

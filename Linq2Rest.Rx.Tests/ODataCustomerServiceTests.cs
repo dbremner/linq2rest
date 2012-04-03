@@ -11,8 +11,9 @@ namespace Linq2Rest.Tests
 	using System.Threading;
 	using Linq2Rest.Implementations;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Reactive;
+	using Linq2Rest.Reactive.Implementations;
 	using Linq2Rest.Rx;
-	using Linq2Rest.Rx.Implementations;
 	using Linq2Rest.Rx.Tests.Fakes;
 	using NUnit.Framework;
 

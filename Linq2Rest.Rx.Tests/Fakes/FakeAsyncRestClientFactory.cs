@@ -7,6 +7,7 @@ namespace Linq2Rest.Rx.Tests.Fakes
 {
 	using System;
 	using System.Threading;
+	using Linq2Rest.Reactive;
 
 	public class FakeAsyncRestClientFactory : IAsyncRestClientFactory
 	{

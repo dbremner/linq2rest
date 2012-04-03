@@ -9,6 +9,7 @@ namespace Linq2Rest.Rx.Tests
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using System.Threading;
+	using Linq2Rest.Reactive;
 	using Linq2Rest.Rx.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
@@ -19,14 +20,63 @@ namespace Linq2Rest.Rx.Tests
 		[Test]
 		public void CanCreateQbservable()
 		{
+			Assert.DoesNotThrow(
+			                    () => new RestObservable<FakeItem>(
+									new FakeAsyncRestClientFactory(),
+									new TestSerializerFactory()));
+		}
+
+		[Test]
+		public void CanCreateSubscription()
+		{
+			var waitHandle = new ManualResetEvent(false);
+			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
+
+			observable
+				.SubscribeOn(Scheduler.NewThread)
+				.Where(x => x.StringValue == "blah")
+				.ObserveOn(Scheduler.ThreadPool)
+				.Subscribe(
+						   x =>
+						   {
+							   Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+							   waitHandle.Set();
+						   },
+						   () =>
+						   {
+							   Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+							   waitHandle.Set();
+						   });
+
+			var result = waitHandle.WaitOne();
+
+			Assert.True(result);
+		}
+
+		[Test]
+		public void WhenObservingOnDifferentSchedulerThenInvocationHappensOnDifferentThread()
+		{
+			var testThreadId = Thread.CurrentThread.ManagedThreadId;
+
 			var waitHandle = new ManualResetEvent(false);
 			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
 			observable
-				.SubscribeOn(Scheduler.TaskPool)
 				.Where(x => x.StringValue == "blah")
-				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+				.ObserveOn(Scheduler.ThreadPool)
+				.Subscribe(
+						   x =>
+						   {
+						   },
+						   () =>
+						   {
+							   var observerThreadId = Thread.CurrentThread.ManagedThreadId;
+							   if (observerThreadId != testThreadId)
+							   {
+								   waitHandle.Set();
+							   }
+						   });
 
-			var result = waitHandle.WaitOne();
+			var result = waitHandle.WaitOne(2000);
 
 			Assert.True(result);
 		}

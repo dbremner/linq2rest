@@ -8,8 +8,8 @@
     <ProjectGuid>{B0AF1230-AF6C-4305-B4D1-7172A3BE9715}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Linq2Rest.Rx</RootNamespace>
-    <AssemblyName>Linq2Rest.Rx</AssemblyName>
+    <RootNamespace>Linq2Rest.Reactive</RootNamespace>
+    <AssemblyName>Linq2Rest.Reactive</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
@@ -55,7 +55,7 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
-    <DocumentationFile>bin\Debug\Linq2Rest.Rx.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Linq2Rest.Reactive.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -97,7 +97,7 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
-    <DocumentationFile>bin\Release\Linq2Rest.Rx.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Linq2Rest.Reactive.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -119,6 +119,7 @@
     <Compile Include="IAsyncRestClientFactory.cs" />
     <Compile Include="Implementations\AsyncJsonRestClientFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReactiveParameterBuilder.cs" />
     <Compile Include="RestObservable.cs" />
     <Compile Include="RestQueryableProvider.cs" />
   </ItemGroup>

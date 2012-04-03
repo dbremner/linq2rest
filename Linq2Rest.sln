@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5D2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Mvc", "Linq2Rest.Mvc\Linq2Rest.Mvc.csproj", "{B4462F0E-AF9E-4955-81D7-5E487D9178A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Rx", "Linq2Rest.Rx\Linq2Rest.Rx.csproj", "{B0AF1230-AF6C-4305-B4D1-7172A3BE9715}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive", "Linq2Rest.Rx\Linq2Rest.Reactive.csproj", "{B0AF1230-AF6C-4305-B4D1-7172A3BE9715}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Rx.Tests", "Linq2Rest.Rx.Tests\Linq2Rest.Rx.Tests.csproj", "{8D19958C-1F14-436E-AE2C-ECD8E58998EB}"
 EndProject
