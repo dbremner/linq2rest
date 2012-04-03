@@ -3,7 +3,7 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Rx
+namespace Linq2Rest.Reactive
 {
 	using System;
 	using System.Collections;
@@ -11,6 +11,7 @@ namespace Linq2Rest.Rx
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
+	using System.Threading;
 	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
@@ -22,7 +23,9 @@ namespace Linq2Rest.Rx
 	{
 		private readonly IAsyncRestClientFactory _restClient;
 		private readonly ISerializerFactory _serializerFactory;
-		private readonly List<IObserver<T>> _observers = new List<IObserver<T>>();
+		private readonly IScheduler _subscriberScheduler;
+		private readonly IScheduler _observerScheduler;
+		private readonly IList<IObserver<T>> _observers = new List<IObserver<T>>();
 		private readonly IAsyncExpressionProcessor _processor;
 
 		/// <summary>
@@ -31,18 +34,19 @@ namespace Linq2Rest.Rx
 		/// <param name="restClient">The <see cref="IAsyncRestClientFactory"/> to create a web client.</param>
 		/// <param name="serializerFactory">The <see cref="ISerializerFactory"/> to create the serializer.</param>
 		public RestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory)
+			: this(restClient, serializerFactory, null, Scheduler.Immediate, Scheduler.Immediate)
+		{
+		}
+
+		internal RestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory, Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
 		{
 			_processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor()); // new ExpressionProcessor(new Provider.ExpressionVisitor());
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
-			Expression = Expression.Constant(this);
-			Provider = new RestQueryableProvider(restClient, serializerFactory);
-		}
-
-		internal RestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory, Expression expression)
-			: this(restClient, serializerFactory)
-		{
-			Expression = expression;
+			_subscriberScheduler = subscriberScheduler;
+			_observerScheduler = observerScheduler;
+			Expression = expression ?? Expression.Constant(this);
+			Provider = new RestQueryableProvider(restClient, serializerFactory, _subscriberScheduler, _observerScheduler);
 		}
 
 		/// <summary>
@@ -75,14 +79,25 @@ namespace Linq2Rest.Rx
 		/// <param name="observer">The object that is to receive notifications.</param>
 		public IDisposable Subscribe(IObserver<T> observer)
 		{
-			_observers.Add(observer);
-			var filter = Expression as MethodCallExpression;
-			var parameterBuilder = new ParameterBuilder(_restClient.ServiceBase);
+			return _subscriberScheduler
+				.Schedule(
+						  observer,
+						  (s, o) =>
+						  {
+							  Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+							  _observers.Add(observer);
+							  var filter = Expression as MethodCallExpression;
+							  var parameterBuilder = new ReactiveParameterBuilder(_restClient.ServiceBase);
 
-			_processor.ProcessMethodCall(filter, parameterBuilder, GetResults, GetIntermediateResults)
-				.ContinueWith(OnGotResult, TaskContinuationOptions.PreferFairness);
+							  _processor.ProcessMethodCall(
+														   filter,
+														   parameterBuilder,
+														   GetResults,
+														   GetIntermediateResults)
+								  .ContinueWith(OnGotResult, TaskContinuationOptions.PreferFairness);
 
-			return new RestSubscription(observer, Unsubscribe);
+							  new RestSubscription(observer, Unsubscribe);
+						  });
 		}
 
 		private Task<IEnumerable> GetIntermediateResults(Type type, ParameterBuilder builder)
@@ -101,7 +116,8 @@ namespace Linq2Rest.Rx
 
 		private Task<IList<T>> GetResults(ParameterBuilder builder)
 		{
-			var client = _restClient.Create(builder.GetFullUri());
+			var fullUri = builder.GetFullUri();
+			var client = _restClient.Create(fullUri);
 
 			return Task.Factory
 				.FromAsync<string>(client.BeginGetResult, client.EndGetResult, null)
@@ -129,13 +145,16 @@ namespace Linq2Rest.Rx
 			{
 				foreach (var result in task.Result)
 				{
-					observer.OnNext(result);
+					var result1 = result;
+					var observer1 = observer;
+					_observerScheduler.Schedule(() => observer1.OnNext(result1));
 				}
 			}
 
 			foreach (var observer in _observers)
 			{
-				observer.OnCompleted();
+				var observer1 = observer;
+				_observerScheduler.Schedule(observer1.OnCompleted);
 			}
 		}
 

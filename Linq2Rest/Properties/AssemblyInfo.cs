@@ -40,5 +40,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("2.1.0.0")]
 [assembly: AssemblyFileVersion("2.1.0.0")]
 [assembly: InternalsVisibleTo("Linq2Rest.Tests")]
-[assembly: InternalsVisibleTo("Linq2Rest.Rx")]
+[assembly: InternalsVisibleTo("Linq2Rest.Reactive")]
 [assembly: InternalsVisibleTo("Linq2Rest.Rx.Tests")]

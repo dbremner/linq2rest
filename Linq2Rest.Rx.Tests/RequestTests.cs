@@ -9,6 +9,7 @@ namespace Linq2Rest.Rx.Tests
 	using System.Linq.Expressions;
 	using System.Reactive.Linq;
 	using System.Threading;
+	using Linq2Rest.Reactive;
 	using Linq2Rest.Rx.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
