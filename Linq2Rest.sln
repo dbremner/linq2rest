@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5D2
 		Build.ps1 = Build.ps1
 		Linq2Rest.Mvc.nuspec = Linq2Rest.Mvc.nuspec
 		Linq2Rest.nuspec = Linq2Rest.nuspec
-		Linq2Rest.Rx.nuspec = Linq2Rest.Rx.nuspec
+		Linq2Rest.Reactive.nuspec = Linq2Rest.Reactive.nuspec
 		RestorePackages.ps1 = RestorePackages.ps1
 	EndProjectSection
 EndProject
@@ -20,7 +20,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Mvc", "Linq2Rest.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive", "Linq2Rest.Rx\Linq2Rest.Reactive.csproj", "{B0AF1230-AF6C-4305-B4D1-7172A3BE9715}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Rx.Tests", "Linq2Rest.Rx.Tests\Linq2Rest.Rx.Tests.csproj", "{8D19958C-1F14-436E-AE2C-ECD8E58998EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive.Tests", "Linq2Rest.Rx.Tests\Linq2Rest.Reactive.Tests.csproj", "{8D19958C-1F14-436E-AE2C-ECD8E58998EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
