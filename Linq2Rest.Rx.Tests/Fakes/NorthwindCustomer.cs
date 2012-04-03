@@ -3,7 +3,7 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Rx.Tests.Fakes
+namespace Linq2Rest.Reactive.Tests.Fakes
 {
 	public class NorthwindCustomer
 	{

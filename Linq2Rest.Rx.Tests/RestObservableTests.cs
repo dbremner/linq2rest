@@ -3,14 +3,14 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Rx.Tests
+namespace Linq2Rest.Reactive.Tests
 {
 	using System;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using System.Threading;
 	using Linq2Rest.Reactive;
-	using Linq2Rest.Rx.Tests.Fakes;
+	using Linq2Rest.Reactive.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
 
