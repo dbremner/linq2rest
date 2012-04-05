@@ -147,6 +147,7 @@
     <Compile Include="Provider\ExpressionProcessor.cs" />
     <Compile Include="Provider\ParameterBuilder.cs" />
     <Compile Include="Implementations\JsonRestClient.cs" />
+    <Compile Include="Provider\QueryableExtensions.cs" />
     <Compile Include="Provider\RestContext.cs" />
     <Compile Include="Provider\RestQueryable.cs" />
     <Compile Include="Provider\RestQueryProvider.cs" />

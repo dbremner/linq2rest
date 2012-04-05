@@ -106,7 +106,7 @@
     <Compile Include="Implementations\XmlSerializerFactoryTests.cs" />
     <Compile Include="Mvc\RuntimeAnonymousTypeSerializerTests.cs" />
     <Compile Include="Fakes\NorthwindCustomer.cs" />
-    <Compile Include="Fakes\ODataCustomerServiceTests.cs" />
+    <Compile Include="ODataCustomerServiceTests.cs" />
     <Compile Include="Fakes\ODataResponse.cs" />
     <Compile Include="Fakes\ODataResult.cs" />
     <Compile Include="Parser\ExpressionTokenizerTests.cs" />
@@ -114,6 +114,7 @@
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
     <Compile Include="Provider\ChildDto.cs" />
     <Compile Include="Provider\ComplexDto.cs" />
+    <Compile Include="Provider\QueryableExtensionsTests.cs" />
     <Compile Include="RuntimeTypeProviderTests.cs" />
     <Compile Include="Mvc\ModelFilterBinderTests.cs" />
     <Compile Include="Parser\FilterTests.cs" />
