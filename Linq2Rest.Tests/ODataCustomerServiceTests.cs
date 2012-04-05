@@ -3,12 +3,13 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Tests.Fakes
+namespace Linq2Rest.Tests
 {
 	using System;
 	using System.Linq;
 	using Linq2Rest.Implementations;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Tests.Fakes;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -34,6 +35,17 @@ namespace Linq2Rest.Tests.Fakes
 		}
 
 		[Test]
+		public void WhenAsyncRequestingCustomerByNameThenLoadsCustomer()
+		{
+			var task = _customerContext.Query.Where(x => x.CompanyName.IndexOf("Alfreds") > -1).ExecuteAsync();
+
+			task.Wait();
+			var results = task.Result.ToArray();
+
+			Assert.Less(0, results.Length);
+		}
+
+		[Test]
 		public void WhenRequestingCustomerByNameEndsWithThenLoadsCustomer()
 		{
 			var results = _customerContext.Query.Where(x => x.CompanyName.EndsWith("Futterkiste")).ToArray();
@@ -42,9 +54,31 @@ namespace Linq2Rest.Tests.Fakes
 		}
 
 		[Test]
+		public void WhenAsyncRequestingCustomerByNameEndsWithThenLoadsCustomer()
+		{
+			var task = _customerContext.Query.Where(x => x.CompanyName.EndsWith("Futterkiste")).ExecuteAsync();
+
+			task.Wait();
+			var results = task.Result.ToArray();
+
+			Assert.Less(0, results.Length);
+		}
+
+		[Test]
 		public void WhenRequestingCustomerByNameStartsWithThenLoadsCustomer()
 		{
 			var results = _customerContext.Query.Where(x => x.CompanyName.StartsWith("Alfr")).ToArray();
+
+			Assert.Less(0, results.Length);
+		}
+
+		[Test]
+		public void WhenAsyncRequestingCustomerByNameStartsWithThenLoadsCustomer()
+		{
+			var task = _customerContext.Query.Where(x => x.CompanyName.StartsWith("Alfr")).ExecuteAsync();
+
+			task.Wait();
+			var results = task.Result.ToArray();
 
 			Assert.Less(0, results.Length);
 		}
@@ -61,6 +95,17 @@ namespace Linq2Rest.Tests.Fakes
 		public void WhenRequestingCustomerByNameLengthThenLoadsCustomer()
 		{
 			var results = _customerContext.Query.Where(x => x.CompanyName.Length > 10).ToArray();
+
+			Assert.Less(0, results.Length);
+		}
+
+		[Test]
+		public void WhenAsyncRequestingCustomerByNameLengthThenLoadsCustomer()
+		{
+			var task = _customerContext.Query.Where(x => x.CompanyName.Length > 10).ExecuteAsync();
+
+			task.Wait();
+			var results = task.Result.ToArray();
 
 			Assert.Less(0, results.Length);
 		}
