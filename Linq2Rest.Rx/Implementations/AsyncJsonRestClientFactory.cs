@@ -6,6 +6,7 @@
 namespace Linq2Rest.Reactive.Implementations
 {
 	using System;
+	using System.Diagnostics.Contracts;
 	using System.IO;
 	using System.Net;
 
@@ -20,6 +21,8 @@ namespace Linq2Rest.Reactive.Implementations
 		/// <param name="serviceBase">The base <see cref="Uri"/> for the REST service.</param>
 		public AsyncJsonRestClientFactory(Uri serviceBase)
 		{
+			Contract.Requires<ArgumentNullException>(serviceBase != null);
+
 			ServiceBase = serviceBase;
 		}
 
@@ -37,7 +40,7 @@ namespace Linq2Rest.Reactive.Implementations
 		{
 			return new AsyncJsonRestClient(source);
 		}
-		
+
 		private class AsyncJsonRestClient : IAsyncRestClient
 		{
 			private readonly HttpWebRequest _request;

@@ -8,10 +8,10 @@ namespace Linq2Rest.Reactive
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using System.Reflection;
 	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
@@ -21,8 +21,6 @@ namespace Linq2Rest.Reactive
 	/// <typeparam name="T">The <see cref="Type"/> of object returned by the REST service.</typeparam>
 	public class RestObservable<T> : IQbservable<T>
 	{
-		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
-
 		private readonly IAsyncRestClientFactory _restClient;
 		private readonly ISerializerFactory _serializerFactory;
 		private readonly IScheduler _subscriberScheduler;
@@ -39,10 +37,17 @@ namespace Linq2Rest.Reactive
 		public RestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory)
 			: this(restClient, serializerFactory, null, Scheduler.Immediate, Scheduler.Immediate)
 		{
+			Contract.Requires<ArgumentNullException>(restClient != null);
+			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 		}
 
 		internal RestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory, Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
 		{
+			Contract.Requires(restClient != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(subscriberScheduler != null);
+			Contract.Requires(observerScheduler != null);
+
 			_processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor()); // new ExpressionProcessor(new Provider.ExpressionVisitor());
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
@@ -112,7 +117,7 @@ namespace Linq2Rest.Reactive
 
 		private IEnumerable ReadIntermediateResponse(Type type, string response)
 		{
-			var genericMethod = InnerCreateMethod.MakeGenericMethod(type);
+			var genericMethod = ReflectionHelper.CreateMethod.MakeGenericMethod(type);
 			dynamic serializer = genericMethod.Invoke(_serializerFactory, null);
 			var resultSet = serializer.DeserializeList(response);
 

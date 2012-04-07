@@ -5,6 +5,7 @@
 
 namespace Linq2Rest.Reactive
 {
+	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
@@ -23,6 +24,11 @@ namespace Linq2Rest.Reactive
 			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
 		{
+			Contract.Requires(asyncRestClient != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(subscriberScheduler != null);
+			Contract.Requires(observerScheduler != null);
+
 			_asyncRestClient = asyncRestClient;
 			_serializerFactory = serializerFactory;
 			_subscriberScheduler = subscriberScheduler;
@@ -38,6 +44,9 @@ namespace Linq2Rest.Reactive
 				{
 					case "SubscribeOn":
 						var subscribeScheduler = (methodCallExpression.Arguments[1] as ConstantExpression).Value as IScheduler;
+
+						Contract.Assume(subscribeScheduler != null);
+
 						return new RestObservable<TResult>(
 							_asyncRestClient,
 							_serializerFactory,
@@ -46,6 +55,9 @@ namespace Linq2Rest.Reactive
 							_observerScheduler);
 					case "ObserveOn":
 						var observeScheduler = (methodCallExpression.Arguments[1] as ConstantExpression).Value as IScheduler;
+
+						Contract.Assume(observeScheduler != null);
+
 						return new RestObservable<TResult>(
 							_asyncRestClient,
 							_serializerFactory,
@@ -56,6 +68,15 @@ namespace Linq2Rest.Reactive
 			}
 
 			return new RestObservable<TResult>(_asyncRestClient, _serializerFactory, expression, _subscriberScheduler, _observerScheduler);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_asyncRestClient != null);
+			Contract.Invariant(_serializerFactory != null);
+			Contract.Invariant(_subscriberScheduler != null);
+			Contract.Invariant(_observerScheduler != null);
 		}
 	}
 }
