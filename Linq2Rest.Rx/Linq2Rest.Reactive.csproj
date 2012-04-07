@@ -119,7 +119,6 @@
     <Compile Include="IAsyncRestClientFactory.cs" />
     <Compile Include="Implementations\AsyncJsonRestClientFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReactiveParameterBuilder.cs" />
     <Compile Include="RestObservable.cs" />
     <Compile Include="RestQueryableProvider.cs" />
   </ItemGroup>

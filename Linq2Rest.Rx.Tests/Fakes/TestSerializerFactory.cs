@@ -11,11 +11,6 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 	{
 		public ISerializer<T> Create<T>()
 		{
-			if (typeof(T).IsAnonymousType())
-			{
-				return null; // new RuntimeAnonymousTypeSerializer<T>();
-			}
-
 			if (typeof(T) == typeof(FakeItem))
 			{
 				return new TestComplexSerializer() as ISerializer<T>;

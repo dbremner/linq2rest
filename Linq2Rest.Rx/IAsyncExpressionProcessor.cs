@@ -10,13 +10,14 @@ namespace Linq2Rest.Reactive
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 	using System.Threading.Tasks;
+	using Linq2Rest.Provider;
 
 	internal interface IAsyncExpressionProcessor
 	{
-		Task<IList<T>> ProcessMethodCall<T>(
+		Task<IObservable<T>> ProcessMethodCall<T>(
 			MethodCallExpression methodCall,
-			ReactiveParameterBuilder builder,
-			Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader,
-			Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader);
+			ParameterBuilder builder,
+			Func<ParameterBuilder, Task<IList<T>>> resultLoader,
+			Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader);
 	}
 }

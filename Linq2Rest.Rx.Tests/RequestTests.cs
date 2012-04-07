@@ -117,6 +117,51 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
+		public void WhenApplyingTakeFilterThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_observable
+				.Take(1)
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne();
+
+			var uri = new Uri("http://localhost/?$top=1");
+			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingSkipFilterThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_observable
+				.Skip(1)
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne();
+
+			var uri = new Uri("http://localhost/?$skip=1");
+			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingProjectionThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_observable
+				.Select(x => new { x.StringValue, x.IntValue })
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne();
+
+			var uri = new Uri("http://localhost/?$select=StringValue,IntValue");
+			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+		}
+
+		[Test]
 		public void WhenAnyExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
 		{
 			var waitHandle = new ManualResetEvent(false);

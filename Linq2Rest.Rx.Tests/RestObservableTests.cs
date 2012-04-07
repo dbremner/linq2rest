@@ -21,7 +21,7 @@ namespace Linq2Rest.Reactive.Tests
 		public void CanCreateQbservable()
 		{
 			Assert.DoesNotThrow(
-			                    () => new RestObservable<FakeItem>(
+								() => new RestObservable<FakeItem>(
 									new FakeAsyncRestClientFactory(),
 									new TestSerializerFactory()));
 		}
@@ -61,24 +61,67 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
 			observable
-				.Where(x => x.StringValue == "blah")
-				.ObserveOn(Scheduler.ThreadPool)
-				.Subscribe(
-						   x =>
-						   {
-						   },
-						   () =>
-						   {
-							   var observerThreadId = Thread.CurrentThread.ManagedThreadId;
-							   if (observerThreadId != testThreadId)
+					.Where(x => x.StringValue == "blah")
+					.ObserveOn(Scheduler.ThreadPool)
+					.Subscribe(
+							   x =>
 							   {
-								   waitHandle.Set();
-							   }
-						   });
+							   },
+							   () =>
+							   {
+								   var observerThreadId = Thread.CurrentThread.ManagedThreadId;
+								   if (observerThreadId != testThreadId)
+								   {
+									   waitHandle.Set();
+								   }
+							   });
 
 			var result = waitHandle.WaitOne(2000);
 
 			Assert.True(result);
+		}
+
+		[Test]
+		public void WhenDisposingSubscriptionThenDoesNotExecute()
+		{
+			var waitHandle = new ManualResetEvent(false);
+			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(2000), new TestSerializerFactory());
+			var subscription = observable
+				.SubscribeOn(Scheduler.TaskPool)
+				.Where(x => x.StringValue == "blah")
+				.ObserveOn(Scheduler.CurrentThread)
+				.Subscribe(x => { }, () => waitHandle.Set());
+
+			subscription.Dispose();
+			var result = waitHandle.WaitOne(2000);
+
+			Assert.False(result);
+		}
+
+		[Test]
+		public void WhenGroupingSourceThenReturnsResults()
+		{
+			var waitHandle = new ManualResetEvent(false);
+			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
+			observable
+						.Where(x => x.StringValue == "blah")
+						.GroupBy(x => x.StringValue)
+						.Subscribe(x => { }, () => waitHandle.Set());
+
+			var result = waitHandle.WaitOne();
+
+			Assert.True(result);
+		}
+
+		[Test]
+		public void WhenGettingSingleThenReturnsResults()
+		{
+			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
+			var result = observable
+				.Where(x => x.StringValue == "blah")
+				.SingleOrDefault();
+
+			Assert.Null(result);
 		}
 
 		[Test]
