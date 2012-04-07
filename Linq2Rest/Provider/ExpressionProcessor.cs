@@ -23,9 +23,6 @@ namespace Linq2Rest.Provider
 
 		public object ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
 		{
-			Contract.Requires(builder != null);
-			Contract.Requires(resultLoader != null);
-
 			if (methodCall == null)
 			{
 				return null;

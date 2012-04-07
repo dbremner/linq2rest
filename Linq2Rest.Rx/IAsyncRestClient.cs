@@ -6,10 +6,12 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+	using System.Diagnostics.Contracts;
 
 	/// <summary>
 	/// Defines the public interface for an async REST client.
 	/// </summary>
+	[ContractClass(typeof(AsyncRestClientContracts))]
 	public interface IAsyncRestClient
 	{
 		/// <summary>
@@ -26,5 +28,21 @@ namespace Linq2Rest.Reactive
 		/// <param name="result">The async operation result.</param>
 		/// <returns>The downloaded resource as a <see cref="string"/>.</returns>
 		string EndGetResult(IAsyncResult result);
+	}
+
+	[ContractClassFor(typeof(IAsyncRestClient))]
+	internal abstract class AsyncRestClientContracts : IAsyncRestClient
+	{
+		public IAsyncResult BeginGetResult(AsyncCallback callback, object state)
+		{
+			Contract.Requires<ArgumentNullException>(callback != null);
+			throw new NotImplementedException();
+		}
+
+		public string EndGetResult(IAsyncResult result)
+		{
+			Contract.Requires<ArgumentNullException>(result != null);
+			throw new NotImplementedException();
+		}
 	}
 }

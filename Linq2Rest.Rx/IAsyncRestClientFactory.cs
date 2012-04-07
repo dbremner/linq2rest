@@ -6,10 +6,12 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+	using System.Diagnostics.Contracts;
 
 	/// <summary>
 	/// Defines the public interface for the async REST client factory.
 	/// </summary>
+	[ContractClass(typeof(AsyncRestClientFactoryContracts))]
 	public interface IAsyncRestClientFactory
 	{
 		/// <summary>
@@ -23,5 +25,26 @@ namespace Linq2Rest.Reactive
 		/// <param name="source">The <see cref="Uri"/> to download from.</param>
 		/// <returns>An <see cref="IAsyncRestClient"/> instance.</returns>
 		IAsyncRestClient Create(Uri source);
+	}
+
+	[ContractClassFor(typeof(IAsyncRestClientFactory))]
+	internal abstract class AsyncRestClientFactoryContracts : IAsyncRestClientFactory
+	{
+		public Uri ServiceBase
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<Uri>() != null);
+
+				throw new NotImplementedException();
+			}
+		}
+
+		public IAsyncRestClient Create(Uri source)
+		{
+			Contract.Requires<ArgumentNullException>(source != null);
+
+			throw new NotImplementedException();
+		}
 	}
 }

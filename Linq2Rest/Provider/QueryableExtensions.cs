@@ -5,7 +5,9 @@
 
 namespace Linq2Rest.Provider
 {
+	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Threading.Tasks;
 
@@ -22,6 +24,8 @@ namespace Linq2Rest.Provider
 		/// <returns>A task returning the query result.</returns>
 		public static Task<IEnumerable<T>> ExecuteAsync<T>(this IQueryable<T> queryable)
 		{
+			Contract.Requires<ArgumentNullException>(queryable != null);
+
 			return Task.Factory.StartNew(() => queryable.ToArray().AsEnumerable());
 		}
 	}
