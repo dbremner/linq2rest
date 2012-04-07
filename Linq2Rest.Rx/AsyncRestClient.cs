@@ -47,23 +47,6 @@ namespace Linq2Rest.Reactive
 					.ContinueWith(GetResponse);
 			}
 
-			private void GetResponse(Task<WebResponse> t)
-			{
-				if (t.Status == TaskStatus.RanToCompletion && t.Result != null)
-				{
-					var responseStream = t.Result.GetResponseStream();
-					if (responseStream != null)
-					{
-						var reader = new StreamReader(responseStream);
-						Response = reader.ReadToEnd();
-					}
-				}
-
-				IsCompleted = true;
-				_waitHandle.Set();
-				_callback.Invoke(this);
-			}
-
 			public string Response { get; private set; }
 
 			public bool IsCompleted { get; private set; }
@@ -84,6 +67,23 @@ namespace Linq2Rest.Reactive
 				{
 					return false;
 				}
+			}
+
+			private void GetResponse(Task<WebResponse> t)
+			{
+				if (t.Status == TaskStatus.RanToCompletion && t.Result != null)
+				{
+					var responseStream = t.Result.GetResponseStream();
+					if (responseStream != null)
+					{
+						var reader = new StreamReader(responseStream);
+						Response = reader.ReadToEnd();
+					}
+				}
+
+				IsCompleted = true;
+				_waitHandle.Set();
+				_callback.Invoke(this);
 			}
 		}
 	}
