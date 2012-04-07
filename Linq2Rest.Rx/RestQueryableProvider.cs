@@ -34,23 +34,24 @@ namespace Linq2Rest.Reactive
 			var methodCallExpression = expression as MethodCallExpression;
 			if (methodCallExpression != null)
 			{
-				var scheduler = (methodCallExpression.Arguments[1] as ConstantExpression).Value as IScheduler;
 				switch (methodCallExpression.Method.Name)
 				{
 					case "SubscribeOn":
+						var subscribeScheduler = (methodCallExpression.Arguments[1] as ConstantExpression).Value as IScheduler;
 						return new RestObservable<TResult>(
 							_asyncRestClient,
 							_serializerFactory,
 							methodCallExpression.Arguments[0],
-							scheduler,
+							subscribeScheduler,
 							_observerScheduler);
 					case "ObserveOn":
+						var observeScheduler = (methodCallExpression.Arguments[1] as ConstantExpression).Value as IScheduler;
 						return new RestObservable<TResult>(
 							_asyncRestClient,
 							_serializerFactory,
 							methodCallExpression.Arguments[0],
 							_subscriberScheduler,
-							scheduler);
+							observeScheduler);
 				}
 			}
 			return new RestObservable<TResult>(_asyncRestClient, _serializerFactory, expression, _subscriberScheduler, _observerScheduler);
