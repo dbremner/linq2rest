@@ -29,6 +29,7 @@ namespace Linq2Rest.Reactive
 		private readonly IScheduler _observerScheduler;
 		private readonly IList<IObserver<T>> _observers = new List<IObserver<T>>();
 		private readonly IAsyncExpressionProcessor _processor;
+		private IDisposable _subscribeSubscription;
 
 		/// <summary>
 		/// Instantiates a new instance of the <see cref="RestObservable{T}"/> class.
@@ -81,12 +82,12 @@ namespace Linq2Rest.Reactive
 		/// <param name="observer">The object that is to receive notifications.</param>
 		public IDisposable Subscribe(IObserver<T> observer)
 		{
-			return _subscriberScheduler
+			_observers.Add(observer);
+			_subscribeSubscription = _subscriberScheduler
 				.Schedule(
 						  observer,
 						  (s, o) =>
 						  {
-							  _observers.Add(observer);
 							  var filter = Expression as MethodCallExpression;
 							  var parameterBuilder = new ParameterBuilder(_restClient.ServiceBase);
 
@@ -96,9 +97,8 @@ namespace Linq2Rest.Reactive
 														   GetResults,
 														   GetIntermediateResults)
 								  .ContinueWith(OnGotResult, TaskContinuationOptions.PreferFairness);
-
-							  return new RestSubscription(observer, Unsubscribe);
 						  });
+			return new RestSubscription(observer, Unsubscribe);
 		}
 
 		private Task<IEnumerable> GetIntermediateResults(Type type, ParameterBuilder builder)
@@ -141,6 +141,10 @@ namespace Linq2Rest.Reactive
 			if (_observers.Contains(observer))
 			{
 				_observers.Remove(observer);
+				if (_observers.Count == 0)
+				{
+					_subscribeSubscription.Dispose();
+				}
 			}
 		}
 
@@ -163,22 +167,22 @@ namespace Linq2Rest.Reactive
 
 			task.Result
 				.Subscribe(
-				           t =>
-				           	{
-				           		foreach (var observer in _observers)
-				           		{
-				           			var observer1 = observer;
-				           			_observerScheduler.Schedule(() => observer1.OnNext(t));
-				           		}
-				           	},
-				           t =>
-				           	{
-				           		foreach (var observer in _observers)
-				           		{
-				           			var observer1 = observer;
-				           			_observerScheduler.Schedule(()=>observer1.OnError(t));
-				           		}
-				           	},
+						   t =>
+						   {
+							   foreach (var observer in _observers)
+							   {
+								   var observer1 = observer;
+								   _observerScheduler.Schedule(() => observer1.OnNext(t));
+							   }
+						   },
+						   t =>
+						   {
+							   foreach (var observer in _observers)
+							   {
+								   var observer1 = observer;
+								   _observerScheduler.Schedule(() => observer1.OnError(t));
+							   }
+						   },
 							() =>
 							{
 								foreach (var observer in _observers)
