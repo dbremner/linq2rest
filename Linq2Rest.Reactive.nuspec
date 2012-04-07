@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest.Reactive</id>
-		<version>0.1.0.0</version>
+		<version>1.0.0.0-beta</version>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
 		<licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
@@ -32,11 +32,11 @@
 		</frameworkAssemblies>
 	</metadata>
 	<files>
-		<file src="Linq2Rest.Rx\bin\Release\Linq2Rest.Reactive.dll"
+		<file src="Linq2Rest.Reactive\bin\Release\Linq2Rest.Reactive.dll"
 			  target="lib\Net40" />
-		<file src="Linq2Rest.Rx\bin\Release\Linq2Rest.Reactive.xml"
+		<file src="Linq2Rest.Reactive\bin\Release\Linq2Rest.Reactive.xml"
 			  target="lib\Net40" />
-		<file src="Linq2Rest.Rx\bin\Release\CodeContracts\Linq2Rest.Reactive.Contracts.dll"
+		<file src="Linq2Rest.Reactive\bin\Release\CodeContracts\Linq2Rest.Reactive.Contracts.dll"
 			  target="lib\Net40\CodeContracts" />
 	</files>
 </package>
