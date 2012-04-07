@@ -32,7 +32,7 @@ namespace Linq2Rest.Reactive
 		private IDisposable _subscribeSubscription;
 
 		/// <summary>
-		/// Instantiates a new instance of the <see cref="RestObservable{T}"/> class.
+		/// Initializes a new instance of the <see cref="RestObservable{T}"/> class.
 		/// </summary>
 		/// <param name="restClient">The <see cref="IAsyncRestClientFactory"/> to create a web client.</param>
 		/// <param name="serializerFactory">The <see cref="ISerializerFactory"/> to create the serializer.</param>
@@ -162,6 +162,7 @@ namespace Linq2Rest.Reactive
 					var observer1 = observer;
 					_observerScheduler.Schedule(observer1.OnCompleted);
 				}
+
 				return;
 			}
 

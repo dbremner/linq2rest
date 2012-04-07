@@ -54,6 +54,7 @@ namespace Linq2Rest.Reactive
 							observeScheduler);
 				}
 			}
+
 			return new RestObservable<TResult>(_asyncRestClient, _serializerFactory, expression, _subscriberScheduler, _observerScheduler);
 		}
 	}
