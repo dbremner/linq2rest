@@ -1,8 +1,3 @@
-// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
-
 namespace Linq2Rest.Reactive.Implementations
 {
 	using System;
@@ -11,15 +6,15 @@ namespace Linq2Rest.Reactive.Implementations
 	using System.Net;
 
 	/// <summary>
-	/// Defines the factory to create a REST client using JSON requests.
+	/// Defines the factory to create a REST client using XML requests.
 	/// </summary>
-	public class AsyncJsonRestClientFactory : IAsyncRestClientFactory
+	public class AsyncXmlRestClientFactory : IAsyncRestClientFactory
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AsyncJsonRestClientFactory"/> class.
+		/// Initializes a new instance of the <see cref="AsyncXmlRestClientFactory"/> class.
 		/// </summary>
 		/// <param name="serviceBase">The base <see cref="Uri"/> for the REST service.</param>
-		public AsyncJsonRestClientFactory(Uri serviceBase)
+		public AsyncXmlRestClientFactory(Uri serviceBase)
 		{
 			Contract.Requires<ArgumentNullException>(serviceBase != null);
 
@@ -38,19 +33,19 @@ namespace Linq2Rest.Reactive.Implementations
 		/// <returns>An <see cref="IAsyncRestClient"/> instance.</returns>
 		public IAsyncRestClient Create(Uri source)
 		{
-			return new AsyncJsonRestClient(source);
+			return new AsyncXmlRestClient(source);
 		}
 
-		private class AsyncJsonRestClient : IAsyncRestClient
+		private class AsyncXmlRestClient : IAsyncRestClient
 		{
 			private readonly HttpWebRequest _request;
 
-			public AsyncJsonRestClient(Uri uri)
+			public AsyncXmlRestClient(Uri uri)
 			{
 				Contract.Requires(uri != null);
 
 				_request = (HttpWebRequest)WebRequest.Create(uri);
-				_request.Accept = "application/json";
+				_request.Accept = "application/Xml";
 			}
 
 			public IAsyncResult BeginGetResult(AsyncCallback callback, object state)
