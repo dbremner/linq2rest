@@ -11,8 +11,8 @@ namespace Linq2Rest.Reactive
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Reactive.Concurrency;
-	using System.Reactive.Subjects;
+	using System.Reactive.Linq;
+	using System.Reflection;
 	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
@@ -25,15 +25,31 @@ namespace Linq2Rest.Reactive
 			_visitor = visitor;
 		}
 
-		public Task<IList<T>> ProcessMethodCall<T>(MethodCallExpression methodCall, ReactiveParameterBuilder builder, Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		public Task<IObservable<T>> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 			var task = ProcessMethodCallInternal(methodCall, builder, resultLoader, intermediateResultLoader);
 			return task == null
-					? resultLoader(builder)
-					: Task.Factory.StartNew<IList<T>>(() => new List<T>());
+					? resultLoader(builder).ContinueWith(x=>x.Result.ToObservable())
+					: task.ContinueWith(o => LoadIntermediateResult<T>(o));
 		}
 
-		private Task<object> ProcessMethodCallInternal<T>(MethodCallExpression methodCall, ReactiveParameterBuilder builder, Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private static IObservable<T> LoadIntermediateResult<T>(Task<object> o)
+		{
+			if (o.IsCompleted)
+			{
+				// var intermediateResult = (IEnumerable)o.Result;
+				var observableResult =  (IObservable<T>)o.Result; // intermediateResult.OfType<T>().ToList();
+				return observableResult;
+			}
+			if (o.IsFaulted && o.Exception != null)
+			{
+				throw o.Exception;
+			}
+
+			return null;
+		}
+
+		private Task<object> ProcessMethodCallInternal<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 			Contract.Requires(builder != null);
 			Contract.Requires(resultLoader != null);
@@ -53,23 +69,13 @@ namespace Linq2Rest.Reactive
 					return methodCall.Arguments.Count >= 2
 							? GetMethodResult(methodCall, builder, resultLoader, intermediateResultLoader)
 							: GetResult(methodCall, builder, resultLoader, intermediateResultLoader);
-
-				case "Single":
-				case "SingleOrDefault":
-				case "Last":
-				case "LastOrDefault":
-				case "Count":
-				case "LongCount":
-					return methodCall.Arguments.Count >= 2
-							? GetMethodResult(methodCall, builder, resultLoader, intermediateResultLoader)
-							: GetResult(methodCall, builder, resultLoader, intermediateResultLoader);
 				case "Where":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 					{
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
 						{
-							return InvokeEager(methodCall, result);
+							return InvokeEager<T>(methodCall, result);
 						}
 
 						var newFilter = _visitor.Visit(methodCall.Arguments[1]);
@@ -86,7 +92,7 @@ namespace Linq2Rest.Reactive
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
 						{
-							return InvokeEager(methodCall, result);
+							return InvokeEager<T>(methodCall, result);
 						}
 
 						var unaryExpression = methodCall.Arguments[1] as UnaryExpression;
@@ -120,43 +126,13 @@ namespace Linq2Rest.Reactive
 					}
 
 					break;
-				case "OrderBy":
-				case "ThenBy":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-					{
-						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
-						if (result != null)
-						{
-							return InvokeEager(methodCall, result);
-						}
-
-						var item = _visitor.Visit(methodCall.Arguments[1]);
-						builder.OrderByParameter.Add(item);
-					}
-
-					break;
-				case "OrderByDescending":
-				case "ThenByDescending":
-					Contract.Assume(methodCall.Arguments.Count >= 2);
-					{
-						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
-						if (result != null)
-						{
-							return InvokeEager(methodCall, result);
-						}
-
-						var visit = _visitor.Visit(methodCall.Arguments[1]);
-						builder.OrderByParameter.Add(visit + " desc");
-					}
-
-					break;
 				case "Take":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 					{
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
 						{
-							return InvokeEager(methodCall, result);
+							return InvokeEager<T>(methodCall, result);
 						}
 
 						builder.TakeParameter = _visitor.Visit(methodCall.Arguments[1]);
@@ -169,7 +145,7 @@ namespace Linq2Rest.Reactive
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
 						{
-							return InvokeEager(methodCall, result);
+							return InvokeEager<T>(methodCall, result);
 						}
 
 						builder.SkipParameter = _visitor.Visit(methodCall.Arguments[1]);
@@ -183,15 +159,15 @@ namespace Linq2Rest.Reactive
 			return null;
 		}
 
-		private static Task<object> InvokeEager(MethodCallExpression methodCall, object source)
+		private static Task<object> InvokeEager<T>(MethodCallExpression methodCall, object source)
 		{
-			var parameters = ResolveInvocationParameters(source as IEnumerable, methodCall);
+			var parameters = ResolveInvocationParameters(source as IEnumerable, typeof(T), methodCall);
 			return Task.Factory.StartNew(() => methodCall.Method.Invoke(null, parameters));
 		}
 
-		private static object[] ResolveInvocationParameters(IEnumerable results, MethodCallExpression methodCall)
+		private static object[] ResolveInvocationParameters(IEnumerable results, Type type, MethodCallExpression methodCall)
 		{
-			var parameters = new object[] { results.AsQueryable() }
+			var parameters = new[] { results.ToQbservable(type) }
 				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue))
 				.Where(x => x != null)
 				.ToArray();
@@ -213,7 +189,7 @@ namespace Linq2Rest.Reactive
 			return null;
 		}
 
-		private Task<object> GetMethodResult<T>(MethodCallExpression methodCall, ReactiveParameterBuilder builder, Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private Task<object> GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 			Contract.Assume(methodCall.Arguments.Count >= 2);
 
@@ -230,7 +206,7 @@ namespace Linq2Rest.Reactive
 				.GetMethods()
 				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
 				.MakeGenericMethod(genericArguments);
-			
+
 			return resultLoader(builder)
 				.ContinueWith(
 							  t =>
@@ -239,13 +215,13 @@ namespace Linq2Rest.Reactive
 
 								  Contract.Assume(list != null);
 
-								  var parameters = new object[] { list.AsQueryable() };
+								  var parameters = new object[] { list.ToObservable().AsQbservable() };
 
 								  return method.Invoke(null, parameters);
 							  });
 		}
 
-		private Task<object> GetResult<T>(MethodCallExpression methodCall, ReactiveParameterBuilder builder, Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private Task<object> GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 			Contract.Assume(methodCall.Arguments.Count >= 1);
 
@@ -259,12 +235,12 @@ namespace Linq2Rest.Reactive
 
 								  Contract.Assume(results != null);
 
-								  var parameters = ResolveInvocationParameters(results, methodCall);
+								  var parameters = ResolveInvocationParameters(results, typeof(T), methodCall);
 								  return methodCall.Method.Invoke(null, parameters);
 							  });
 		}
 
-		private Task<object> ExecuteMethod<T>(MethodCallExpression methodCall, ReactiveParameterBuilder builder, Func<ReactiveParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ReactiveParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private Task<object> ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 			Contract.Requires(resultLoader != null);
 			Contract.Requires(builder != null);
@@ -280,31 +256,59 @@ namespace Linq2Rest.Reactive
 			var result = ProcessMethodCallInternal(innerMethod, builder, resultLoader, intermediateResultLoader);
 			if (result != null)
 			{
-				return InvokeEager(innerMethod, result);
+				return InvokeEager<T>(innerMethod, result);
 			}
 
 			var genericArgument = innerMethod.Method.ReturnType.GetGenericArguments()[0];
 			var type = typeof(T);
 
+			var methodInfo = methodCall.Method;
+
 			var list = type != genericArgument
-						? intermediateResultLoader(genericArgument, builder)
-							.ContinueWith(
-										  t =>
-										  {
-											  var resultList = t.Result;
-											  var arguments = ResolveInvocationParameters(resultList, methodCall);
-											  return methodCall.Method.Invoke(null, arguments);
-										  })
-						: resultLoader(builder)
-							.ContinueWith(
-										  t =>
-										  {
-											  var resultList = t.Result;
-											  var arguments = ResolveInvocationParameters(resultList, methodCall);
-											  return methodCall.Method.Invoke(null, arguments);
-										  });
+			           	? intermediateResultLoader(genericArgument, builder)
+			           	  	.ContinueWith(
+			           	  	              t =>
+			           	  	              	{
+			           	  	              		var resultList = t.Result;
+			           	  	              		var arguments = ResolveInvocationParameters(resultList, genericArgument, methodCall);
+			           	  	              		var methodResult = methodInfo.Invoke(null, arguments);
+
+			           	  	              		return methodResult;
+			           	  	              	})
+			           	: resultLoader(builder)
+			           	  	.ContinueWith(
+			           	  	              t =>
+			           	  	              	{
+			           	  	              		var resultList = t.Result;
+			           	  	              		var arguments = ResolveInvocationParameters(resultList, genericArgument, methodCall);
+			           	  	              		return methodInfo.Invoke(null, arguments);
+			           	  	              	});
 
 			return list;
+		}
+	}
+
+	internal static class ObservableExtensions
+	{
+		private static readonly MethodInfo InnerToObservableMethod =
+			typeof(Observable)
+			.GetMethods(BindingFlags.Static | BindingFlags.Public)
+			.First(x => x.Name == "ToObservable" && x.GetParameters().Length == 1);
+
+		private static readonly MethodInfo InnerToQbservableMethod =
+			typeof(Qbservable)
+			.GetMethods(BindingFlags.Static | BindingFlags.Public)
+			.First(x => x.Name == "AsQbservable" && x.GetParameters().Length == 1);
+
+		public static object ToQbservable(this IEnumerable enumerable, Type type)
+		{
+			var genericObservableMethod = InnerToObservableMethod.MakeGenericMethod(type);
+			var genericQbservableMethod = InnerToQbservableMethod.MakeGenericMethod(type);
+
+			var observable = genericObservableMethod.Invoke(null, new object[] { enumerable });
+			var qbservable = genericQbservableMethod.Invoke(null, new object[] { observable });
+
+			return qbservable;
 		}
 	}
 }

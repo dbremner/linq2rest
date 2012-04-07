@@ -11,7 +11,7 @@ namespace Linq2Rest.Reactive
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using System.Threading;
+	using System.Reflection;
 	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
@@ -21,6 +21,8 @@ namespace Linq2Rest.Reactive
 	/// <typeparam name="T">The <see cref="Type"/> of object returned by the REST service.</typeparam>
 	public class RestObservable<T> : IQbservable<T>
 	{
+		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
+
 		private readonly IAsyncRestClientFactory _restClient;
 		private readonly ISerializerFactory _serializerFactory;
 		private readonly IScheduler _subscriberScheduler;
@@ -84,10 +86,9 @@ namespace Linq2Rest.Reactive
 						  observer,
 						  (s, o) =>
 						  {
-							  Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
 							  _observers.Add(observer);
 							  var filter = Expression as MethodCallExpression;
-							  var parameterBuilder = new ReactiveParameterBuilder(_restClient.ServiceBase);
+							  var parameterBuilder = new ParameterBuilder(_restClient.ServiceBase);
 
 							  _processor.ProcessMethodCall(
 														   filter,
@@ -96,7 +97,7 @@ namespace Linq2Rest.Reactive
 														   GetIntermediateResults)
 								  .ContinueWith(OnGotResult, TaskContinuationOptions.PreferFairness);
 
-							  new RestSubscription(observer, Unsubscribe);
+							  return new RestSubscription(observer, Unsubscribe);
 						  });
 		}
 
@@ -106,12 +107,16 @@ namespace Linq2Rest.Reactive
 
 			return Task.Factory
 				.FromAsync<string>(client.BeginGetResult, client.EndGetResult, null)
-				.ContinueWith<IEnumerable>(ReadIntermediateResponse);
+				.ContinueWith<IEnumerable>(x => ReadIntermediateResponse(type, x.Result));
 		}
 
-		private IEnumerable ReadIntermediateResponse(Task<string> downloadTask)
+		private IEnumerable ReadIntermediateResponse(Type type, string response)
 		{
-			return new List<T>();
+			var genericMethod = InnerCreateMethod.MakeGenericMethod(type);
+			dynamic serializer = genericMethod.Invoke(_serializerFactory, null);
+			var resultSet = serializer.DeserializeList(response);
+
+			return resultSet;
 		}
 
 		private Task<IList<T>> GetResults(ParameterBuilder builder)
@@ -139,23 +144,49 @@ namespace Linq2Rest.Reactive
 			}
 		}
 
-		private void OnGotResult(Task<IList<T>> task)
+		private void OnGotResult(Task<IObservable<T>> task)
 		{
-			foreach (var observer in _observers)
+			if (task.IsFaulted)
 			{
-				foreach (var result in task.Result)
-				{
-					var result1 = result;
-					var observer1 = observer;
-					_observerScheduler.Schedule(() => observer1.OnNext(result1));
-				}
+				throw task.Exception;
 			}
 
-			foreach (var observer in _observers)
+			if (task.IsCanceled)
 			{
-				var observer1 = observer;
-				_observerScheduler.Schedule(observer1.OnCompleted);
+				foreach (var observer in _observers)
+				{
+					var observer1 = observer;
+					_observerScheduler.Schedule(observer1.OnCompleted);
+				}
+				return;
 			}
+
+			task.Result
+				.Subscribe(
+				           t =>
+				           	{
+				           		foreach (var observer in _observers)
+				           		{
+				           			var observer1 = observer;
+				           			_observerScheduler.Schedule(() => observer1.OnNext(t));
+				           		}
+				           	},
+				           t =>
+				           	{
+				           		foreach (var observer in _observers)
+				           		{
+				           			var observer1 = observer;
+				           			_observerScheduler.Schedule(()=>observer1.OnError(t));
+				           		}
+				           	},
+							() =>
+							{
+								foreach (var observer in _observers)
+								{
+									var observer1 = observer;
+									_observerScheduler.Schedule(observer1.OnCompleted);
+								}
+							});
 		}
 
 		private class RestSubscription : IDisposable

@@ -11,6 +11,19 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 
 	public class FakeAsyncRestClientFactory : IAsyncRestClientFactory
 	{
+		private readonly int _responseDelay;
+
+		public FakeAsyncRestClientFactory()
+			: this(-1)
+		{
+
+		}
+
+		public FakeAsyncRestClientFactory(int responseDelay)
+		{
+			_responseDelay = responseDelay;
+		}
+
 		public Uri ServiceBase
 		{
 			get
@@ -21,11 +34,18 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 
 		public IAsyncRestClient Create(Uri source)
 		{
-			return new FakeAsyncResultClient();
+			return new FakeAsyncResultClient(_responseDelay);
 		}
 
 		private class FakeAsyncResultClient : IAsyncRestClient
 		{
+			private readonly int _responseDelay;
+
+			public FakeAsyncResultClient(int responseDelay)
+			{
+				_responseDelay = responseDelay;
+			}
+
 			public IAsyncResult BeginGetResult(AsyncCallback callback, object state)
 			{
 				return new FakeAsyncResult();
@@ -33,6 +53,11 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 
 			public string EndGetResult(IAsyncResult result)
 			{
+				if (_responseDelay > 0)
+				{
+					Thread.Sleep(_responseDelay);
+				}
+
 				return "[]";
 			}
 
