@@ -138,7 +138,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Linq2Rest.Rx\Linq2Rest.Reactive.csproj">
+    <ProjectReference Include="..\Linq2Rest.Reactive\Linq2Rest.Reactive.csproj">
       <Project>{B0AF1230-AF6C-4305-B4D1-7172A3BE9715}</Project>
       <Name>Linq2Rest.Reactive</Name>
     </ProjectReference>
