@@ -123,12 +123,66 @@ namespace Linq2Rest.Reactive.Tests
 
 			_observable
 				.Take(1)
+
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
 			waitHandle.WaitOne();
 
 			var uri = new Uri("http://localhost/?$top=1");
 			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenQueryIncludesSideEffectsThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+			var action = new Action<FakeItem>(x => { });
+
+			_observable
+				.Take(1)
+				.Do(action)
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne();
+
+			var uri = new Uri("http://localhost/?$top=1");
+			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenQueryIncludesSideEffectsThenInvokesSideEffect()
+		{
+			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[{\"DoubleValue\":1.2}]");
+			var waitHandle = new ManualResetEvent(false);
+			var action = new Action<FakeItem>(x => waitHandle.Set());
+			var mockObserver = new Mock<IObserver<FakeItem>>();
+
+			_observable
+				.Take(1)
+				.Do(action)
+				.Subscribe(mockObserver.Object);
+
+			var result = waitHandle.WaitOne(2000);
+
+			Assert.True(result);
+		}
+
+		[Test]
+		public void WhenQueryIncludesFinalEffectsThenInvokesSideEffect()
+		{
+			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[{\"DoubleValue\":1.2}]");
+			var waitHandle = new ManualResetEvent(false);
+			var action = new Action(() => waitHandle.Set());
+			var mockObserver = new Mock<IObserver<FakeItem>>();
+
+			_observable
+				.Take(1)
+				.Finally(action)
+				.Subscribe(mockObserver.Object);
+
+			var result = waitHandle.WaitOne(2000);
+
+			Assert.True(result);
 		}
 
 		[Test]
