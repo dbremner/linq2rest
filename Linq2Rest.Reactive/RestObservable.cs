@@ -8,10 +8,13 @@ namespace Linq2Rest.Reactive
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+#if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
+#endif
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
+	using System.Reflection;
 	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
@@ -37,16 +40,20 @@ namespace Linq2Rest.Reactive
 		public RestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory)
 			: this(restClient, serializerFactory, null, Scheduler.Immediate, Scheduler.Immediate)
 		{
+#if !SILVERLIGHT
 			Contract.Requires<ArgumentNullException>(restClient != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+#endif
 		}
 
 		internal RestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory, Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(restClient != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
+#endif
 
 			_processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor()); // new ExpressionProcessor(new Provider.ExpressionVisitor());
 			_restClient = restClient;
@@ -118,10 +125,15 @@ namespace Linq2Rest.Reactive
 		private IEnumerable ReadIntermediateResponse(Type type, string response)
 		{
 			var genericMethod = ReflectionHelper.CreateMethod.MakeGenericMethod(type);
+#if !SILVERLIGHT
 			dynamic serializer = genericMethod.Invoke(_serializerFactory, null);
 			var resultSet = serializer.DeserializeList(response);
-
-			return resultSet;
+#else
+			var serializer = genericMethod.Invoke(_serializerFactory, null);
+			var deserializeListMethod = serializer.GetType().GetMethod("DeserializeList", BindingFlags.Public);
+			var resultSet = deserializeListMethod.Invoke(serializer, new object[] { response });
+#endif
+			return resultSet as IEnumerable;
 		}
 
 		private Task<IList<T>> GetResults(ParameterBuilder builder)

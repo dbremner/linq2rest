@@ -7,9 +7,13 @@ namespace Linq2Rest.Provider
 {
 	using System;
 	using System.Collections.Generic;
+#if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
+#endif
 	using System.Linq;
+#if !SILVERLIGHT
 	using System.Web;
+#endif
 
 	internal class ParameterBuilder
 	{
@@ -17,8 +21,9 @@ namespace Linq2Rest.Provider
 
 		public ParameterBuilder(Uri serviceBase)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(serviceBase != null);
-
+#endif
 			_serviceBase = serviceBase;
 			OrderByParameter = new List<string>();
 		}
@@ -38,7 +43,11 @@ namespace Linq2Rest.Provider
 			var parameters = new List<string>();
 			if (!string.IsNullOrWhiteSpace(FilterParameter))
 			{
+#if !SILVERLIGHT
 				parameters.Add(BuildParameter(StringConstants.FilterParameter, HttpUtility.UrlEncode(FilterParameter)));
+#else
+				parameters.Add(BuildParameter(StringConstants.FilterParameter, FilterParameter));
+#endif
 			}
 
 			if (!string.IsNullOrWhiteSpace(SelectParameter))
@@ -72,11 +81,13 @@ namespace Linq2Rest.Provider
 			return string.Format(name + "=" + value);
 		}
 
+#if !SILVERLIGHT
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
 			Contract.Invariant(_serviceBase != null);
 			Contract.Invariant(OrderByParameter != null);
 		}
+#endif
 	}
 }

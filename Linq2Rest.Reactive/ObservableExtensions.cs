@@ -7,7 +7,9 @@ namespace Linq2Rest.Reactive
 {
 	using System;
 	using System.Collections;
+#if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
+#endif
 	using System.Linq;
 	using System.Reactive.Linq;
 	using System.Reflection;
@@ -22,8 +24,10 @@ namespace Linq2Rest.Reactive
 			var qbservableMethods = typeof(Qbservable).GetMethods(BindingFlags.Static | BindingFlags.Public);
 			var observableMethods = typeof(Observable).GetMethods(BindingFlags.Static | BindingFlags.Public);
 
+#if !SILVERLIGHT
 			Contract.Assume(qbservableMethods.Length > 0);
 			Contract.Assume(observableMethods.Length > 0);
+#endif
 
 			InnerToObservableMethod = observableMethods
 					.First(x => x.Name == "ToObservable" && x.GetParameters().Length == 1);
