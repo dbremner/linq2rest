@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>Linq2Rest</id>
+		<version>2.1.0.0</version>
+		<authors>Jacob Reimers</authors>
+		<owners>Jacob Reimers</owners>
+		<licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
+		<projectUrl>https://bitbucket.org/jjrdk/linq2rest</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Parses OData system query parameters to create a LINQ query that can be used to filter a model set. Also exposes a LINQ provider for web services supporting the OData query parameters. Use extension method Filter (in Linq2Rest namespace) on any IEnumerable source.</description>
+		<tags>OData LINQ REST</tags>
+		<references>
+			<reference file="Linq2Rest.dll" />
+			<reference file="Linq2Rest.xml" />
+		</references>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Core"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="Microsoft.CSharp"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Web"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Xml"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Runtime.Serialization"
+							   targetFramework="net40" />
+		</frameworkAssemblies>
+	</metadata>
+	<files>
+		<file src="Linq2Rest\bin\Release\Linq2Rest.dll"
+			  target="lib\Net40" />
+		<file src="Linq2Rest\bin\Release\Linq2Rest.xml"
+			  target="lib\Net40" />
+		<file src="Linq2Rest\bin\Release\CodeContracts\Linq2Rest.Contracts.dll"
+			  target="lib\Net40\CodeContracts" />
+	</files>
+</package>
