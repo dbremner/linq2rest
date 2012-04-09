@@ -4,6 +4,10 @@
 // All other rights reserved.
 // Based on code from http://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-with-anonymous-type-in-it
 
+using System.Linq;
+using System.Linq.Expressions;
+using Linq2Rest.Provider;
+
 namespace Linq2Rest
 {
 	using System;
@@ -22,5 +26,8 @@ namespace Linq2Rest
 				&& type.Name.Contains("AnonymousType") && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
 				&& (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
 		}
+
+
+
 	}
 }

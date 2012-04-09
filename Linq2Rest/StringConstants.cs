@@ -12,5 +12,6 @@ namespace Linq2Rest
 		internal const string FilterParameter = "$filter";
 		internal const string SkipParameter = "$skip";
 		internal const string TopParameter = "$top";
+        internal const string ExpandParameter = "$expand";
 	}
 }

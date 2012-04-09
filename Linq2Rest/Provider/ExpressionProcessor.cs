@@ -162,6 +162,21 @@ namespace Linq2Rest.Provider
 					}
 
 					break;
+                case "Expand":
+                    Contract.Assume(methodCall.Arguments.Count >= 2);
+                    {
+                        var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
+						if (result != null)
+						{
+							return InvokeEager(methodCall, result);
+						}
+                        var objectMember = Expression.Convert(methodCall.Arguments[1], typeof(object));
+                        var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
+                        
+                        builder.ExpandParameter = getterLambda().ToString();
+                    }
+
+			        break;
 				default:
 					return ExecuteMethod(methodCall, builder, resultLoader, intermediateResultLoader);
 			}

@@ -448,6 +448,27 @@ namespace Linq2Rest.Tests.Provider
 			VerifyCall(x => Math.Ceiling(x.Value) == 10d, "http://localhost/?$filter=ceiling(Value)+eq+10");
 		}
 
+        [Test]
+        public void WhenApplyingExpandThenCallsRestServiceWithExpandParameterSet() {
+            var result = _provider.Query
+                .Expand("Foo,Bar/Qux")
+                .ToList();
+
+            var uri = new Uri("http://localhost/?$expand=Foo,Bar/Qux");
+            _mockClient.Verify(x => x.Get(uri), Times.Once());
+        }
+
+        [Test]
+        public void WhenApplyingExpandWithOrderByThenCallsRestServiceWithExpandParameterSet() {
+            var result = _provider.Query
+                .Expand("Foo,Bar/Qux")
+                .OrderBy(x => x.Date)
+                .ToList();
+
+            var uri = new Uri("http://localhost/?$orderby=Date&$expand=Foo,Bar/Qux");
+            _mockClient.Verify(x => x.Get(uri), Times.Once());
+        }
+
 		private void VerifyCall(Expression<Func<SimpleDto, bool>> selection, string expectedUri)
 		{
 			var result = _provider.Query
