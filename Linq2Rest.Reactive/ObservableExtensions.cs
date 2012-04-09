@@ -21,8 +21,13 @@ namespace Linq2Rest.Reactive
 
 		static InteralObservableExtensions()
 		{
+#if !NETFX_CORE
 			var qbservableMethods = typeof(Qbservable).GetMethods(BindingFlags.Static | BindingFlags.Public);
 			var observableMethods = typeof(Observable).GetMethods(BindingFlags.Static | BindingFlags.Public);
+#else
+			var qbservableMethods = typeof(Qbservable).GetTypeInfo().GetDeclaredMethods("AsQbservable").ToArray();
+			var observableMethods = typeof(Observable).GetTypeInfo().GetDeclaredMethods("ToObservable").ToArray();
+#endif
 
 #if !SILVERLIGHT
 			Contract.Assume(qbservableMethods.Length > 0);
