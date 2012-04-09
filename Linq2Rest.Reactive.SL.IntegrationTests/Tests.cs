@@ -14,7 +14,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 	public class Tests
 	{
 		[TestMethod]
-		public void TestMethod1()
+		public void CanSetUpObservable()
 		{
 			var waitHandle = new ManualResetEvent(false);
 			var observable = new RestObservable<SampleDto>(new FakeAsyncRestClientFactory(), new PhoneSerializerFactory());
