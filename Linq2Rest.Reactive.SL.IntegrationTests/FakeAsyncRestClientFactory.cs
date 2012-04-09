@@ -16,7 +16,6 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 		public FakeAsyncRestClientFactory()
 			: this(-1)
 		{
-
 		}
 
 		public FakeAsyncRestClientFactory(int responseDelay)
@@ -75,6 +74,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 						return true;
 					}
 				}
+
 				public WaitHandle AsyncWaitHandle
 				{
 					get
@@ -82,6 +82,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 						return null;
 					}
 				}
+
 				public object AsyncState
 				{
 					get
@@ -89,6 +90,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 						return null;
 					}
 				}
+
 				public bool CompletedSynchronously
 				{
 					get

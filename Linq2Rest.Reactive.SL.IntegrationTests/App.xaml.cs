@@ -1,17 +1,21 @@
-﻿using System;
-using System.Windows;
-using Microsoft.Silverlight.Testing;
+﻿// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://www.opensource.org/licenses/MS-PL] for details.
+// All other rights reserved.
 
 namespace Linq2Rest.Reactive.SL.IntegrationTests
 {
+	using System;
+	using System.Windows;
+	using Microsoft.Silverlight.Testing;
+
 	public partial class App : Application
 	{
-
 		public App()
 		{
-			this.Startup += this.Application_Startup;
-			this.Exit += this.Application_Exit;
-			this.UnhandledException += this.Application_UnhandledException;
+			Startup += Application_Startup;
+			Exit += Application_Exit;
+			UnhandledException += Application_UnhandledException;
 
 			InitializeComponent();
 		}
@@ -23,8 +27,8 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 
 		private void Application_Exit(object sender, EventArgs e)
 		{
-
 		}
+
 		private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
 		{
 			// If the app is running outside of the debugger then report the exception using
@@ -32,7 +36,6 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 			// icon in the status bar and Firefox will display a script error.
 			if (!System.Diagnostics.Debugger.IsAttached)
 			{
-
 				// NOTE: This will allow the application to continue running after an exception has been thrown
 				// but not handled. 
 				// For production applications this error handling should be replaced with something that will 
@@ -41,6 +44,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 				Deployment.Current.Dispatcher.BeginInvoke(delegate { ReportErrorToDOM(e); });
 			}
 		}
+
 		private void ReportErrorToDOM(ApplicationUnhandledExceptionEventArgs e)
 		{
 			try
