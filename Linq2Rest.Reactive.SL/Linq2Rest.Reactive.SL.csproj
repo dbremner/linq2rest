@@ -56,20 +56,11 @@
     <Reference Include="System.Reactive.Linq">
       <HintPath>..\packages\Rx-Linq.2.0.20304-beta\lib\SL5\System.Reactive.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="System.Reactive.PlatformServices">
-      <HintPath>..\packages\Rx-PlatformServices.2.0.20304-beta\lib\SL5\System.Reactive.PlatformServices.dll</HintPath>
-    </Reference>
     <Reference Include="System.Reactive.Providers">
       <HintPath>..\packages\Rx-Providers.2.0.20304-beta\lib\SL5\System.Reactive.Providers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Threading.Tasks.SL5">
-      <HintPath>..\packages\System.Threading.Tasks.3.0\lib\sl50\System.Threading.Tasks.SL5.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Linq2Rest.Reactive\AsyncExpressionProcessor.cs">
