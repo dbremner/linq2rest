@@ -5,7 +5,6 @@ namespace Linq2Rest.Reactive.WP7Sample
 	using System;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using Linq2Rest.Reactive.Tests.Fakes;
 
 	public partial class MainPage : PhoneApplicationPage
 	{

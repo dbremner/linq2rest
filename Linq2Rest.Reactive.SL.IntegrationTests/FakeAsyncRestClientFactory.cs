@@ -3,12 +3,11 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Reactive.WP7Sample
+namespace Linq2Rest.Reactive.SL.IntegrationTests
 {
 	using System;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using Linq2Rest.Reactive;
 
 	public class FakeAsyncRestClientFactory : IAsyncRestClientFactory
 	{
