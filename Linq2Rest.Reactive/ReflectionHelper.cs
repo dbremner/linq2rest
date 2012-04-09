@@ -13,7 +13,14 @@ namespace Linq2Rest.Reactive
 
 	internal static class ReflectionHelper
 	{
+#if !NETFX_CORE
 		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
+#else
+	    private static readonly MethodInfo InnerCreateMethod =
+	        typeof (ISerializerFactory)
+            .GetTypeInfo()
+            .GetDeclaredMethod("Create");
+#endif
 
 		public static MethodInfo CreateMethod
 		{
