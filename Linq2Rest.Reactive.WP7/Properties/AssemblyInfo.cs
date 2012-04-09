@@ -4,13 +4,13 @@
 // All other rights reserved.
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Resources;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Linq2Rest.Reactive")]
+[assembly: AssemblyTitle("Linq2Rest.Reactive.WP7")]
 [assembly: AssemblyDescription("Generates OData style Rx Observables from LINQ queries.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Reimers.dk")]
@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d94a174b-25d9-4262-8462-600251fe7df2")]
+[assembly: Guid("b58ad0a7-fcbf-46e7-8a73-7a5aa11c741c")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,9 +34,8 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-// You can specify all the values or you can default the Build and Revision Numbers 
+// You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.1.0.0")]
 [assembly: AssemblyFileVersion("0.1.0.0")]
-[assembly: InternalsVisibleTo("Linq2Rest.Reactive.Tests")]
+[assembly: NeutralResourcesLanguageAttribute("en-US")]

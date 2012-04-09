@@ -8,7 +8,9 @@ namespace Linq2Rest.Reactive
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+#if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
+#endif
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Linq;
@@ -79,9 +81,10 @@ namespace Linq2Rest.Reactive
 
 		private Task<object> ProcessMethodCallInternal<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(builder != null);
 			Contract.Requires(resultLoader != null);
-
+#endif
 			if (methodCall == null)
 			{
 				return null;
@@ -98,7 +101,9 @@ namespace Linq2Rest.Reactive
 							? GetMethodResult(methodCall, builder, resultLoader, intermediateResultLoader)
 							: GetResult(methodCall, builder, resultLoader, intermediateResultLoader);
 				case "Where":
+#if !SILVERLIGHT
 					Contract.Assume(methodCall.Arguments.Count >= 2);
+#endif
 					{
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
@@ -115,7 +120,9 @@ namespace Linq2Rest.Reactive
 
 					break;
 				case "Select":
+#if !SILVERLIGHT
 					Contract.Assume(methodCall.Arguments.Count >= 2);
+#endif
 					{
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
@@ -155,7 +162,9 @@ namespace Linq2Rest.Reactive
 
 					break;
 				case "Take":
+#if !SILVERLIGHT
 					Contract.Assume(methodCall.Arguments.Count >= 2);
+#endif
 					{
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
@@ -168,7 +177,9 @@ namespace Linq2Rest.Reactive
 
 					break;
 				case "Skip":
+#if !SILVERLIGHT
 					Contract.Assume(methodCall.Arguments.Count >= 2);
+#endif
 					{
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
@@ -189,7 +200,9 @@ namespace Linq2Rest.Reactive
 
 		private Task<object> GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
+#if !SILVERLIGHT
 			Contract.Assume(methodCall.Arguments.Count >= 2);
+#endif
 
 			ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
@@ -211,7 +224,9 @@ namespace Linq2Rest.Reactive
 							  {
 								  var list = t.Result;
 
+#if !SILVERLIGHT
 								  Contract.Assume(list != null);
+#endif
 
 								  var parameters = new object[] { list.ToObservable().AsQbservable() };
 
@@ -221,7 +236,9 @@ namespace Linq2Rest.Reactive
 
 		private Task<object> GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
+#if !SILVERLIGHT
 			Contract.Assume(methodCall.Arguments.Count >= 1);
+#endif
 
 			ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
@@ -229,20 +246,24 @@ namespace Linq2Rest.Reactive
 				.ContinueWith(
 							  t =>
 							  {
-								  var results = t.Result;
+								  var list = t.Result;
 
-								  Contract.Assume(results != null);
+#if !SILVERLIGHT
+								  Contract.Assume(list != null);
+#endif
 
-								  var parameters = ResolveInvocationParameters(results, typeof(T), methodCall);
+								  var parameters = ResolveInvocationParameters(list, typeof(T), methodCall);
 								  return methodCall.Method.Invoke(null, parameters);
 							  });
 		}
 
 		private Task<object> ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(resultLoader != null);
 			Contract.Requires(builder != null);
 			Contract.Assume(methodCall.Arguments.Count >= 2);
+#endif
 
 			var innerMethod = methodCall.Arguments[0] as MethodCallExpression;
 

@@ -51,7 +51,7 @@ namespace Linq2Rest.Reactive.Tests
 				.GroupBy(x => x.CompanyName)
 				.Subscribe(x => waitHandle.Set());
 
-			var result = waitHandle.WaitOne(2000);
+			var result = waitHandle.WaitOne(5000);
 
 			Assert.True(result);
 		}

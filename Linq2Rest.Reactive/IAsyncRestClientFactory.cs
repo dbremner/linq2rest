@@ -6,12 +6,16 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+#if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
+#endif
 
 	/// <summary>
 	/// Defines the public interface for the async REST client factory.
 	/// </summary>
+#if !SILVERLIGHT
 	[ContractClass(typeof(AsyncRestClientFactoryContracts))]
+#endif
 	public interface IAsyncRestClientFactory
 	{
 		/// <summary>
@@ -27,6 +31,7 @@ namespace Linq2Rest.Reactive
 		IAsyncRestClient Create(Uri source);
 	}
 
+#if !SILVERLIGHT
 	[ContractClassFor(typeof(IAsyncRestClientFactory))]
 	internal abstract class AsyncRestClientFactoryContracts : IAsyncRestClientFactory
 	{
@@ -47,4 +52,5 @@ namespace Linq2Rest.Reactive
 			throw new NotImplementedException();
 		}
 	}
+#endif
 }

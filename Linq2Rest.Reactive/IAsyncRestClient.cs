@@ -6,12 +6,16 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+#if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
+#endif
 
 	/// <summary>
 	/// Defines the public interface for an async REST client.
 	/// </summary>
+#if !SILVERLIGHT
 	[ContractClass(typeof(AsyncRestClientContracts))]
+#endif
 	public interface IAsyncRestClient
 	{
 		/// <summary>
@@ -30,6 +34,7 @@ namespace Linq2Rest.Reactive
 		string EndGetResult(IAsyncResult result);
 	}
 
+#if !SILVERLIGHT
 	[ContractClassFor(typeof(IAsyncRestClient))]
 	internal abstract class AsyncRestClientContracts : IAsyncRestClient
 	{
@@ -45,4 +50,5 @@ namespace Linq2Rest.Reactive
 			throw new NotImplementedException();
 		}
 	}
+#endif
 }
