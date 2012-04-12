@@ -25,7 +25,6 @@ namespace Linq2Rest.Parser
 		private static readonly Regex StringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
 		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$", RegexOptions.Compiled);
 		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
-        //private static readonly Regex AnyAllFunctionRx = new Regex(@"^(.*)/(any|all)\((.*)\)$");
 	    private static readonly Regex AnyAllFunctionRx = new Regex(@"^(([0-9a-zA-Z_]*/)+)(any|all)\((.*)\)$");
 		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 		private static readonly ConcurrentDictionary<Type, MethodInfo> ParseMethods = new ConcurrentDictionary<Type, MethodInfo>();
