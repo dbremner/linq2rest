@@ -18,8 +18,10 @@ namespace Linq2Rest.Tests.Provider
 	{
 		private RestContext<SimpleDto> _provider;
 		private RestContext<ComplexDto> _complexProvider;
+        private RestContext<CollectionDto> _collectionProvider;
 		private Mock<IRestClient> _mockClient;
 		private Mock<IRestClient> _mockComplexClient;
+        private Mock<IRestClient> _mockCollectionClient;
 
 		[SetUp]
 		public void TestSetup()
@@ -40,8 +42,15 @@ namespace Linq2Rest.Tests.Provider
 			_mockComplexClient.Setup(x => x.Get(It.IsAny<Uri>()))
 				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
 				.Returns("[{Value : 2, Content : \"blah\", Child : {ID : 2, Name : \"Foo\"}}]");
+            _complexProvider = new RestContext<ComplexDto>(_mockComplexClient.Object, serializerFactory);
 
-			_complexProvider = new RestContext<ComplexDto>(_mockComplexClient.Object, serializerFactory);
+            _mockCollectionClient = new Mock<IRestClient>();
+            _mockCollectionClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
+            _mockCollectionClient.Setup(x => x.Get(It.IsAny<Uri>()))
+                .Callback<Uri>(u => Console.WriteLine(u.ToString()))
+                .Returns("[{Value : 2, Content : \"blah\", Children : [{ID : 1, Name : \"Foo\"}, {ID : 2, Name : \"Bar\"}]}]");
+
+            _collectionProvider = new RestContext<CollectionDto>(_mockCollectionClient.Object, serializerFactory);
 		}
 
 		[Test]
@@ -469,6 +478,24 @@ namespace Linq2Rest.Tests.Provider
             _mockClient.Verify(x => x.Get(uri), Times.Once());
         }
 
+        [Test]
+        public void WhenApplyingFilterWithAnyOnRootCollectionThenCallsRestServiceWithAnySyntax() {
+            var result = _collectionProvider.Query
+                .Where(x => x.Children.Any(y => y.ID == 2))
+                .ToList();
+
+            _mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/any(y:+y/ID+eq+2)")), Times.Once());
+        }
+
+        [Test]
+        public void WhenApplyingFilterWithAllOnRootCollectionThenCallsRestServiceWithAllSyntax() {
+            var result = _collectionProvider.Query
+                .Where(x => x.Children.All(y => y.ID == 2))
+                .ToList();
+
+            _mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/all(y:+y/ID+eq+2)")), Times.Once());
+        }
+
 		private void VerifyCall(Expression<Func<SimpleDto, bool>> selection, string expectedUri)
 		{
 			var result = _provider.Query
@@ -477,5 +504,7 @@ namespace Linq2Rest.Tests.Provider
 
 			_mockClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == expectedUri)), Times.Once());
 		}
+
+
 	}
 }

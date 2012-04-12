@@ -17,6 +17,7 @@ namespace Linq2Rest.Parser
 		private static readonly string[] Arithmetic = new[] { "add", "sub", "mul", "div", "mod" };
 
 		private static readonly string[] BooleanFunctions = new[] { "substringof", "endswith", "startswith" };
+        private static readonly Regex CollectionFunctionRx = new Regex(@"^[0-9a-zA-Z_]+/(all|any)\((.+)\)$", RegexOptions.Compiled);
 		private static readonly Regex CleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
 
 		public static bool IsCombinationOperation(this string operation)
@@ -49,7 +50,8 @@ namespace Linq2Rest.Parser
 				var split = expression.Split(' ');
 				return !split.Intersect(Operations).Any()
 				&& !split.Intersect(Combiners).Any()
-				&& BooleanFunctions.Any(x => split[0].StartsWith(x, StringComparison.OrdinalIgnoreCase));
+				&& (BooleanFunctions.Any(x => split[0].StartsWith(x, StringComparison.OrdinalIgnoreCase)) ||
+                    CollectionFunctionRx.IsMatch(expression));
 			}
 
 			return false;

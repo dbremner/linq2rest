@@ -122,6 +122,12 @@ namespace Linq2Rest.Tests.Parser
 		[TestCase("(startswith(tolower(StringValue),'foo') eq true and endswith(tolower(StringValue),'1') eq true) and (tolower(StringValue) eq 'bar03')", "x => (((x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) == True) AndAlso (x.StringValue.ToLowerInvariant().EndsWith(\"1\", OrdinalIgnoreCase) == True)) AndAlso (x.StringValue.ToLowerInvariant() == \"bar03\"))")]
 		[TestCase("(startswith(tolower(StringValue),'foo') and endswith(tolower(StringValue),'1')) and (tolower(StringValue) eq 'bar03')", "x => ((x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) AndAlso x.StringValue.ToLowerInvariant().EndsWith(\"1\", OrdinalIgnoreCase)) AndAlso (x.StringValue.ToLowerInvariant() == \"bar03\"))")]
 		[TestCase("startswith(tolower(StringValue),'foo')", "x => x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase)")]
+        [TestCase("Children/any(a: a/ChildStringValue eq 'foo')", "x => x.Children.Any(a => (a.ChildStringValue == \"foo\"))")]
+        [TestCase("Children/any(a: startswith(tolower(a/ChildStringValue), 'foo'))", "x => x.Children.Any(a => a.ChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase))")]
+        [TestCase("Children/all(a: startswith(tolower(a/ChildStringValue), 'foo'))", "x => x.Children.All(a => a.ChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase))")]
+        [TestCase("Children/all(a: startswith(tolower(a/ChildStringValue), 'foo') and endswith(tolower(a/ChildStringValue), 'foo'))", "x => x.Children.All(a => (a.ChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) AndAlso a.ChildStringValue.ToLowerInvariant().EndsWith(\"foo\", OrdinalIgnoreCase)))")]
+        [TestCase("Children/any(a: a/Children/any(b: startswith(tolower(b/GrandChildStringValue), 'foo')))", "x => x.Children.Any(a => a.Children.Any(b => b.GrandChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase)))")]
+        [TestCase("Children/any(a: startswith(tolower(a/ChildStringValue), StringValue))", "x => x.Children.Any(a => a.ChildStringValue.ToLowerInvariant().StartsWith(x.StringValue, OrdinalIgnoreCase))")]
 		public void WhenProvidingValidInputThenGetsExpectedExpression(string filter, string expression)
 		{
 			var result = _factory.Create<FakeItem>(filter);

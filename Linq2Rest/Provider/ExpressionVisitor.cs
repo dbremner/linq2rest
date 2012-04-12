@@ -19,10 +19,25 @@ namespace Linq2Rest.Provider
 
 		public string Visit(Expression expression)
 		{
-			return expression == null ? null : Visit(expression, expression.Type);
+            return expression == null ? null : Visit(expression, expression.Type, GetRootParameterName(expression));
 		}
 
-		private static Type GetUnconvertedType(Expression expression)
+        private string Visit(Expression expression, string rootParameterName) {
+            return expression == null ? null : Visit(expression, expression.Type, rootParameterName);
+        }
+
+        private string GetRootParameterName(Expression expression) {
+            if (expression is UnaryExpression) {
+                expression = ((UnaryExpression) expression).Operand;
+            }
+
+            if (expression is LambdaExpression && ((LambdaExpression)expression).Parameters.Count > 0) {
+                return ((LambdaExpression) expression).Parameters.First().Name;
+            }
+            return null;
+        }
+
+	    private static Type GetUnconvertedType(Expression expression)
 		{
 			Contract.Requires(expression != null);
 
@@ -186,7 +201,7 @@ namespace Linq2Rest.Provider
 			return string.Empty;
 		}
 
-		private string GetMethodCall(MethodCallExpression expression)
+		private string GetMethodCall(MethodCallExpression expression, string rootParameterName)
 		{
 			Contract.Requires(expression != null);
 
@@ -195,8 +210,7 @@ namespace Linq2Rest.Provider
 			if (declaringType == typeof(string))
 			{
 				var obj = expression.Object;
-
-				Contract.Assume(obj != null);
+                Contract.Assume(obj != null);
 
 				switch (methodName)
 				{
@@ -212,19 +226,19 @@ namespace Linq2Rest.Provider
 
 							return string.Format(
 								"replace({0}, {1}, {2})",
-								Visit(obj),
-								Visit(firstArgument),
-								Visit(secondArgument));
+								Visit(obj, rootParameterName),
+                                Visit(firstArgument, rootParameterName),
+                                Visit(secondArgument, rootParameterName));
 						}
 
 					case "Trim":
-						return string.Format("trim({0})", Visit(obj));
+                        return string.Format("trim({0})", Visit(obj, rootParameterName));
 					case "ToLower":
 					case "ToLowerInvariant":
-						return string.Format("tolower({0})", Visit(obj));
+                        return string.Format("tolower({0})", Visit(obj, rootParameterName));
 					case "ToUpper":
 					case "ToUpperInvariant":
-						return string.Format("toupper({0})", Visit(obj));
+                        return string.Format("toupper({0})", Visit(obj, rootParameterName));
 					case "Substring":
 						{
 							Contract.Assume(expression.Arguments.Count > 0);
@@ -236,7 +250,7 @@ namespace Linq2Rest.Provider
 								Contract.Assume(argumentExpression != null);
 
 								return string.Format(
-									"substring({0}, {1})", Visit(obj), Visit(argumentExpression));
+                                    "substring({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
 							}
 
 							var firstArgument = expression.Arguments[0];
@@ -247,9 +261,9 @@ namespace Linq2Rest.Provider
 
 							return string.Format(
 								"substring({0}, {1}, {2})",
-								Visit(obj),
-								Visit(firstArgument),
-								Visit(secondArgument));
+                                Visit(obj, rootParameterName),
+                                Visit(firstArgument, rootParameterName),
+                                Visit(secondArgument, rootParameterName));
 						}
 
 					case "IndexOf":
@@ -260,7 +274,7 @@ namespace Linq2Rest.Provider
 
 							Contract.Assume(argumentExpression != null);
 
-							return string.Format("indexof({0}, {1})", Visit(obj), Visit(argumentExpression));
+                            return string.Format("indexof({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
 						}
 
 					case "EndsWith":
@@ -271,7 +285,7 @@ namespace Linq2Rest.Provider
 
 							Contract.Assume(argumentExpression != null);
 
-							return string.Format("endswith({0}, {1})", Visit(obj), Visit(argumentExpression));
+                            return string.Format("endswith({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
 						}
 
 					case "StartsWith":
@@ -282,7 +296,7 @@ namespace Linq2Rest.Provider
 
 							Contract.Assume(argumentExpression != null);
 
-							return string.Format("startswith({0}, {1})", Visit(obj), Visit(argumentExpression));
+                            return string.Format("startswith({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
 						}
 				}
 			}
@@ -297,15 +311,22 @@ namespace Linq2Rest.Provider
 				switch (methodName)
 				{
 					case "Round":
-						return string.Format("round({0})", Visit(mathArgument));
+                        return string.Format("round({0})", Visit(mathArgument, rootParameterName));
 					case "Floor":
-						return string.Format("floor({0})", Visit(mathArgument));
+                        return string.Format("floor({0})", Visit(mathArgument, rootParameterName));
 					case "Ceiling":
-						return string.Format("ceiling({0})", Visit(mathArgument));
+                        return string.Format("ceiling({0})", Visit(mathArgument, rootParameterName));
 				}
 			}
 
-			if (expression.Method.IsStatic)
+            if (expression.Method.Name == "Any" || expression.Method.Name == "All") 
+            {
+                Contract.Assume(expression.Arguments.Count > 1);
+
+                return string.Format("{0}/{1}({2}: {3})", Visit(expression.Arguments[0], rootParameterName), expression.Method.Name.ToLowerInvariant(), expression.Arguments[1] is LambdaExpression ? (expression.Arguments[1] as LambdaExpression).Parameters.First().Name : null, Visit(expression.Arguments[1], rootParameterName));
+            }
+
+		    if (expression.Method.IsStatic)
 			{
 				return expression.ToString();
 			}
@@ -313,14 +334,14 @@ namespace Linq2Rest.Provider
 			return string.Empty;
 		}
 
-		private string Visit(Expression expression, Type type)
+		private string Visit(Expression expression, Type type, string rootParameterName)
 		{
 			Contract.Requires(expression != null);
 
 			if (expression is LambdaExpression)
 			{
 				var body = (expression as LambdaExpression).Body;
-				return Visit(body);
+				return Visit(body, rootParameterName);
 			}
 
 			var memberExpression = expression as MemberExpression;
@@ -328,12 +349,17 @@ namespace Linq2Rest.Provider
 			if (memberExpression != null)
 			{
 				var pathPrefixes = new List<string>();
-				var currentMemberExpression = memberExpression;
+                
+			    var currentMemberExpression = memberExpression;
 				while (currentMemberExpression != null)
 				{
 					pathPrefixes.Add(currentMemberExpression.Member.Name);
+                    if (currentMemberExpression.Expression is ParameterExpression && ((ParameterExpression)currentMemberExpression.Expression).Name != rootParameterName) {
+                        pathPrefixes.Add(((ParameterExpression)currentMemberExpression.Expression).Name);
+                    }
 					currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
 				}
+
 
 				pathPrefixes.Reverse();
 				var prefix = string.Join("/", pathPrefixes);
@@ -345,7 +371,7 @@ namespace Linq2Rest.Provider
 					{
 						Contract.Assume(collapsedExpression != null);
 
-						return Visit(collapsedExpression);
+                        return Visit(collapsedExpression, rootParameterName);
 					}
 
 					memberExpression = (MemberExpression)collapsedExpression;
@@ -359,7 +385,7 @@ namespace Linq2Rest.Provider
 
 				return string.IsNullOrWhiteSpace(memberCall)
 						? prefix
-						: string.Format("{0}({1})", memberCall, Visit(innerExpression));
+                        : string.Format("{0}({1})", memberCall, Visit(innerExpression, rootParameterName));
 			}
 
 			if (expression is ConstantExpression)
@@ -383,9 +409,9 @@ namespace Linq2Rest.Provider
 				{
 					case ExpressionType.Not:
 					case ExpressionType.IsFalse:
-						return string.Format("not({0})", Visit(operand));
+                        return string.Format("not({0})", Visit(operand, rootParameterName));
 					default:
-						return Visit(operand);
+						return Visit(operand, rootParameterName);
 				}
 			}
 
@@ -398,8 +424,8 @@ namespace Linq2Rest.Provider
 				var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
 
 				var leftType = GetUnconvertedType(binaryExpression.Left);
-				var leftString = Visit(binaryExpression.Left);
-				var rightString = Visit(binaryExpression.Right, leftType);
+                var leftString = Visit(binaryExpression.Left, rootParameterName);
+				var rightString = Visit(binaryExpression.Right, leftType, rootParameterName);
 
 				return string.Format(
 					"{0} {1} {2}",
@@ -410,7 +436,7 @@ namespace Linq2Rest.Provider
 
 			if (expression is MethodCallExpression)
 			{
-				return GetMethodCall(expression as MethodCallExpression);
+				return GetMethodCall(expression as MethodCallExpression, rootParameterName);
 			}
 
 			if (expression is NewExpression)

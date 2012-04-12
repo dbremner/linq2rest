@@ -3,6 +3,10 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
 namespace Linq2Rest
 {
 	using System;
@@ -258,5 +262,62 @@ namespace Linq2Rest
 				return DecimalCeilingMethod1;
 			}
 		}
+
+        public static MethodInfo GetAnyMethod(Type collectionType) {
+
+            Type cType = GetIEnumerableImpl(collectionType);
+            
+            Type elemType = cType.GetGenericArguments()[0];
+            Type predType = typeof(Func<,>).MakeGenericType(elemType, typeof(bool));
+
+            // Enumerable.Any<T>(IEnumerable<T>, Func<T,bool>)
+            MethodInfo anyMethod = (MethodInfo)
+                GetGenericMethod(typeof(Enumerable), "Any", new[] { elemType },
+                    new[] { cType, predType }, BindingFlags.Static);
+
+            return anyMethod;
+        }
+
+        public static MethodInfo GetAllMethod(Type collectionType) {
+
+            Type cType = GetIEnumerableImpl(collectionType);
+
+            Type elemType = cType.GetGenericArguments()[0];
+            Type predType = typeof(Func<,>).MakeGenericType(elemType, typeof(bool));
+
+            // Enumerable.Any<T>(IEnumerable<T>, Func<T,bool>)
+            MethodInfo allMethod = (MethodInfo)
+                GetGenericMethod(typeof(Enumerable), "All", new[] { elemType },
+                    new[] { cType, predType }, BindingFlags.Static);
+            
+            return allMethod;
+        }
+
+
+        static MethodBase GetGenericMethod(Type type, string name, Type[] typeArgs,
+    Type[] argTypes, BindingFlags flags) {
+            int typeArity = typeArgs.Length;
+            var methods = type.GetMethods()
+                .Where(m => m.Name == name)
+                .Where(m => m.GetGenericArguments().Length == typeArity)
+                .Select(m => m.MakeGenericMethod(typeArgs));
+
+            return Type.DefaultBinder.SelectMethod(flags, methods.ToArray(), argTypes, null);
+        }
+
+        static bool IsIEnumerable(Type type) {
+            return type.IsGenericType
+                && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+        }
+
+        public static Type GetIEnumerableImpl(Type type) {
+            // Get IEnumerable implementation. Either type is IEnumerable<T> for some T, 
+            // or it implements IEnumerable<T> for some T. We need to find the interface.
+            if (IsIEnumerable(type))
+                return type;
+            Type[] t = type.FindInterfaces((m, o) => IsIEnumerable(m), null);
+            Debug.Assert(t.Length == 1);
+            return t[0];
+        }
 	}
 }

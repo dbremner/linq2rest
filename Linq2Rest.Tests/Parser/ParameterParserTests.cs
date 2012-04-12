@@ -16,6 +16,7 @@ namespace Linq2Rest.Tests.Parser
 		private ParameterParser<FakeItem> _parser;
 
 		private FakeItem[] _items;
+        private FakeItem[] _nestedItems;
 
 		[TestFixtureSetUp]
 		public void TestFixtureSetup()
@@ -31,6 +32,28 @@ namespace Linq2Rest.Tests.Parser
 					new FakeItem { IntValue = 2, DoubleValue = 2 }, 
 					new FakeItem { IntValue = 1, DoubleValue = 1 }, 
 					new FakeItem { IntValue = 3, DoubleValue = 3 }
+				};
+
+            _nestedItems = new[]
+				{
+					new FakeItem { IntValue = 2, DoubleValue = 2, 
+                        Children = {
+                            new FakeChildItem { ChildStringValue = "1"},
+                            new FakeChildItem { ChildStringValue = "2"},
+                            new FakeChildItem { ChildStringValue = "3"}
+                        } }, 
+					new FakeItem { IntValue = 1, DoubleValue = 1, 
+                        Children = {
+                            new FakeChildItem { ChildStringValue = "2"},
+                            new FakeChildItem { ChildStringValue = "3"},
+                            new FakeChildItem { ChildStringValue = "4"}
+                        } }, 
+					new FakeItem { IntValue = 3, DoubleValue = 3, 
+                        Children = {
+                            new FakeChildItem { ChildStringValue = "3"},
+                            new FakeChildItem { ChildStringValue = "4"},
+                            new FakeChildItem { ChildStringValue = "5"}
+                        } }, 
 				};
 		}
 
@@ -109,6 +132,16 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(2, filteredItems.Count());
 		}
 
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void WhenRequestContainsAnyFilterParameterThenReturnedModelFilterFilteringCollectionByValue(bool useModelFilter) {
+            var collection = new NameValueCollection { { "$filter", "Children/any(a: a/ChildStringValue eq '1')" } };
+            var filteredItems = GetFilteredItems(useModelFilter, collection, _nestedItems);
+
+            Assert.AreEqual(1, filteredItems.Count());
+        }
+
 		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
@@ -131,13 +164,16 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(1, filteredItems.Count());
 		}
 
-		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection)
-		{
-			var filteredItems = useModelFilter
-									? GetModelFilter(collection).Filter(_items)
-									: _items.Filter(collection);
-			return filteredItems.ToArray();
+		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection) {
+		    return GetFilteredItems(useModelFilter, collection, _items);
 		}
+
+        private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection, FakeItem[] items) {
+            var filteredItems = useModelFilter
+                                    ? GetModelFilter(collection).Filter(items)
+                                    : items.Filter(collection);
+            return filteredItems.ToArray();
+        }
 
 		private IModelFilter<FakeItem> GetModelFilter(NameValueCollection parameters)
 		{
