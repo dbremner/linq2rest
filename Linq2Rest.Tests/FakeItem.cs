@@ -3,6 +3,9 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
 namespace Linq2Rest.Tests
 {
 	using System;
@@ -39,5 +42,27 @@ namespace Linq2Rest.Tests
 
 		[DataMember(Name = "Choice")]
 		public Choice ChoiceValue { get; set; }
+
+        private readonly Collection<FakeChildItem> children = new Collection<FakeChildItem>();
+
+        public ICollection<FakeChildItem> Children{
+            get { return children; }
+        }
 	}
+
+    [DataContract]
+    public class FakeChildItem {
+        public string ChildStringValue { get; set; }
+
+        private readonly Collection<FakeGrandChildItem> children = new Collection<FakeGrandChildItem>();
+
+        public ICollection<FakeGrandChildItem> Children {
+            get { return children; }
+        }
+    }
+
+    [DataContract]
+    public class FakeGrandChildItem {
+        public string GrandChildStringValue { get; set; }
+    }
 }
