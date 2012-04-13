@@ -16,8 +16,7 @@ namespace Linq2Rest
 
 	internal static class MethodProvider
 	{
-		public static readonly ConstantExpression IgnoreCaseExpression;
-
+		private static readonly ConstantExpression InnerIgnoreCaseExpression;
 		private static readonly MethodInfo InnerContainsMethod;
 		private static readonly MethodInfo InnerIndexOfMethod;
 		private static readonly MethodInfo EndsWithMethod1;
@@ -47,7 +46,7 @@ namespace Linq2Rest
 			var mathType = typeof(Math);
 			var stringComparisonType = typeof(StringComparison);
 
-			IgnoreCaseExpression = Expression.Constant(StringComparison.OrdinalIgnoreCase);
+			InnerIgnoreCaseExpression = Expression.Constant(StringComparison.OrdinalIgnoreCase);
 
 			InnerContainsMethod = stringType.GetMethod("Contains", new[] { stringType });
 			InnerIndexOfMethod = stringType.GetMethod("IndexOf", new[] { stringType, stringComparisonType });
@@ -72,6 +71,14 @@ namespace Linq2Rest
 			DecimalFloorMethod1 = mathType.GetMethod("Floor", new[] { typeof(decimal) });
 			DoubleCeilingMethod1 = mathType.GetMethod("Ceiling", new[] { typeof(double) });
 			DecimalCeilingMethod1 = mathType.GetMethod("Ceiling", new[] { typeof(decimal) });
+		}
+
+		public static ConstantExpression IgnoreCaseExpression
+		{
+			get
+			{
+				return InnerIgnoreCaseExpression;
+			}
 		}
 
 		public static MethodInfo IndexOfMethod
@@ -263,61 +270,73 @@ namespace Linq2Rest
 			}
 		}
 
-        public static MethodInfo GetAnyMethod(Type collectionType) {
+		public static MethodInfo GetAnyMethod(Type collectionType)
+		{
+			var implementation = GetIEnumerableImpl(collectionType);
 
-            Type cType = GetIEnumerableImpl(collectionType);
-            
-            Type elemType = cType.GetGenericArguments()[0];
-            Type predType = typeof(Func<,>).MakeGenericType(elemType, typeof(bool));
+			var elemType = implementation.GetGenericArguments()[0];
+			var predType = typeof(Func<,>).MakeGenericType(elemType, typeof(bool));
 
-            // Enumerable.Any<T>(IEnumerable<T>, Func<T,bool>)
-            MethodInfo anyMethod = (MethodInfo)
-                GetGenericMethod(typeof(Enumerable), "Any", new[] { elemType },
-                    new[] { cType, predType }, BindingFlags.Static);
+			// Enumerable.Any<T>(IEnumerable<T>, Func<T,bool>)
+			var anyMethod = (MethodInfo)GetGenericMethod(
+														 typeof(Enumerable),
+														 "Any",
+														 new[] { elemType },
+														 new[] { implementation, predType },
+														 BindingFlags.Static);
 
-            return anyMethod;
-        }
+			return anyMethod;
+		}
 
-        public static MethodInfo GetAllMethod(Type collectionType) {
+		public static MethodInfo GetAllMethod(Type collectionType)
+		{
+			var implementationType = GetIEnumerableImpl(collectionType);
 
-            Type cType = GetIEnumerableImpl(collectionType);
+			var elemType = implementationType.GetGenericArguments()[0];
+			var predType = typeof(Func<,>).MakeGenericType(elemType, typeof(bool));
 
-            Type elemType = cType.GetGenericArguments()[0];
-            Type predType = typeof(Func<,>).MakeGenericType(elemType, typeof(bool));
+			// Enumerable.Any<T>(IEnumerable<T>, Func<T,bool>)
+			var allMethod = (MethodInfo)GetGenericMethod(
+														 typeof(Enumerable),
+														 "All",
+														 new[] { elemType },
+														 new[] { implementationType, predType },
+														 BindingFlags.Static);
 
-            // Enumerable.Any<T>(IEnumerable<T>, Func<T,bool>)
-            MethodInfo allMethod = (MethodInfo)
-                GetGenericMethod(typeof(Enumerable), "All", new[] { elemType },
-                    new[] { cType, predType }, BindingFlags.Static);
-            
-            return allMethod;
-        }
+			return allMethod;
+		}
 
+		public static Type GetIEnumerableImpl(Type type)
+		{
+			// Get IEnumerable implementation. Either type is IEnumerable<T> for some T, 
+			// or it implements IEnumerable<T> for some T. We need to find the interface.
+			if (IsIEnumerable(type))
+			{
+				return type;
+			}
 
-        static MethodBase GetGenericMethod(Type type, string name, Type[] typeArgs,
-    Type[] argTypes, BindingFlags flags) {
-            int typeArity = typeArgs.Length;
-            var methods = type.GetMethods()
-                .Where(m => m.Name == name)
-                .Where(m => m.GetGenericArguments().Length == typeArity)
-                .Select(m => m.MakeGenericMethod(typeArgs));
+			var t = type.FindInterfaces((m, o) => IsIEnumerable(m), null);
 
-            return Type.DefaultBinder.SelectMethod(flags, methods.ToArray(), argTypes, null);
-        }
+			Contract.Assert(t.Length == 1);
 
-        static bool IsIEnumerable(Type type) {
-            return type.IsGenericType
-                && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
-        }
+			return t[0];
+		}
 
-        public static Type GetIEnumerableImpl(Type type) {
-            // Get IEnumerable implementation. Either type is IEnumerable<T> for some T, 
-            // or it implements IEnumerable<T> for some T. We need to find the interface.
-            if (IsIEnumerable(type))
-                return type;
-            Type[] t = type.FindInterfaces((m, o) => IsIEnumerable(m), null);
-            Debug.Assert(t.Length == 1);
-            return t[0];
-        }
+		private static MethodBase GetGenericMethod(Type type, string name, Type[] typeArgs, Type[] argTypes, BindingFlags flags)
+		{
+			var typeArity = typeArgs.Length;
+			var methods = type.GetMethods()
+				.Where(m => m.Name == name)
+				.Where(m => m.GetGenericArguments().Length == typeArity)
+				.Select(m => m.MakeGenericMethod(typeArgs));
+
+			return Type.DefaultBinder.SelectMethod(flags, methods.ToArray(), argTypes, null);
+		}
+
+		private static bool IsIEnumerable(Type type)
+		{
+			return type.IsGenericType
+				&& type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+		}
 	}
 }

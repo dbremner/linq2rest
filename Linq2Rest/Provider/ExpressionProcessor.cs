@@ -170,6 +170,7 @@ namespace Linq2Rest.Provider
 						{
 							return InvokeEager(methodCall, result);
 						}
+
                         var objectMember = Expression.Convert(methodCall.Arguments[1], typeof(object));
                         var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
                         

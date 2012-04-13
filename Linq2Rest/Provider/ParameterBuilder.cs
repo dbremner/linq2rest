@@ -38,7 +38,7 @@ namespace Linq2Rest.Provider
 
 		public string TakeParameter { get; set; }
 
-        public string ExpandParameter { get; set; }
+		public string ExpandParameter { get; set; }
 
 		public Uri GetFullUri()
 		{
@@ -72,9 +72,10 @@ namespace Linq2Rest.Provider
 				parameters.Add(BuildParameter(StringConstants.OrderByParameter, string.Join(",", OrderByParameter)));
 			}
 
-            if (!string.IsNullOrWhiteSpace(ExpandParameter)) {
-                parameters.Add(BuildParameter(StringConstants.ExpandParameter, ExpandParameter));
-            }
+			if (!string.IsNullOrWhiteSpace(ExpandParameter))
+			{
+				parameters.Add(BuildParameter(StringConstants.ExpandParameter, ExpandParameter));
+			}
 
 			var builder = new UriBuilder(_serviceBase);
 			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
