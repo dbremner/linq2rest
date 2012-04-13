@@ -462,6 +462,10 @@ namespace Linq2Rest.Parser
 				expression = Expression.Constant(stringMatch.Groups[1].Value, typeof(string));
 			}
 
+            if (expression == null) {
+                expression = GetAnyAllFunctionExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider);
+            }
+
 			if (expression == null)
 			{
 				expression = GetConstructorExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider);
@@ -471,10 +475,6 @@ namespace Linq2Rest.Parser
 			{
 				expression = GetArithmeticExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider);
 			}
-
-            if (expression == null) {
-                expression = GetAnyAllFunctionExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider);
-            }
 
 			if (expression == null)
 			{
