@@ -10,11 +10,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Linq2Rest.Rx")]
+[assembly: AssemblyTitle("Linq2Rest.Reactive")]
 [assembly: AssemblyDescription("Generates OData style Rx Observables from LINQ queries.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Reimers.dk")]
-[assembly: AssemblyProduct("Linq2Rest.Rx")]
+[assembly: AssemblyProduct("Linq2Rest.Reactive")]
 [assembly: AssemblyCopyright("Copyright © Reimers.dk 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

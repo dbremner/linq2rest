@@ -8,10 +8,13 @@ namespace Linq2Rest.Reactive
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+#if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
+#endif
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
+	using System.Reflection;
 	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
@@ -35,24 +38,26 @@ namespace Linq2Rest.Reactive
 		/// <param name="restClient">The <see cref="IAsyncRestClientFactory"/> to create a web client.</param>
 		/// <param name="serializerFactory">The <see cref="ISerializerFactory"/> to create the serializer.</param>
 		public RestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory)
-			: this(restClient, serializerFactory, null, Scheduler.Immediate, Scheduler.Immediate)
+			: this(restClient, serializerFactory, null, null, null)
 		{
+#if !SILVERLIGHT
 			Contract.Requires<ArgumentNullException>(restClient != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+#endif
 		}
 
 		internal RestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory, Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(restClient != null);
 			Contract.Requires(serializerFactory != null);
-			Contract.Requires(subscriberScheduler != null);
-			Contract.Requires(observerScheduler != null);
+#endif
 
 			_processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor()); // new ExpressionProcessor(new Provider.ExpressionVisitor());
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
-			_subscriberScheduler = subscriberScheduler;
-			_observerScheduler = observerScheduler;
+			_subscriberScheduler = subscriberScheduler ?? Scheduler.Immediate;
+			_observerScheduler = observerScheduler ?? Scheduler.Immediate;
 			Expression = expression ?? Expression.Constant(this);
 			Provider = new RestQueryableProvider(restClient, serializerFactory, _subscriberScheduler, _observerScheduler);
 		}
@@ -118,10 +123,15 @@ namespace Linq2Rest.Reactive
 		private IEnumerable ReadIntermediateResponse(Type type, string response)
 		{
 			var genericMethod = ReflectionHelper.CreateMethod.MakeGenericMethod(type);
+#if !SILVERLIGHT
 			dynamic serializer = genericMethod.Invoke(_serializerFactory, null);
 			var resultSet = serializer.DeserializeList(response);
-
-			return resultSet;
+#else
+			var serializer = genericMethod.Invoke(_serializerFactory, null);
+			var deserializeListMethod = serializer.GetType().GetMethod("DeserializeList", BindingFlags.Public);
+			var resultSet = deserializeListMethod.Invoke(serializer, new object[] { response });
+#endif
+			return resultSet as IEnumerable;
 		}
 
 		private Task<IList<T>> GetResults(ParameterBuilder builder)
@@ -171,32 +181,7 @@ namespace Linq2Rest.Reactive
 				return;
 			}
 
-			task.Result
-				.Subscribe(
-						   t =>
-						   {
-							   foreach (var observer in _observers)
-							   {
-								   var observer1 = observer;
-								   _observerScheduler.Schedule(() => observer1.OnNext(t));
-							   }
-						   },
-						   t =>
-						   {
-							   foreach (var observer in _observers)
-							   {
-								   var observer1 = observer;
-								   _observerScheduler.Schedule(() => observer1.OnError(t));
-							   }
-						   },
-							() =>
-							{
-								foreach (var observer in _observers)
-								{
-									var observer1 = observer;
-									_observerScheduler.Schedule(observer1.OnCompleted);
-								}
-							});
+			task.Result.Subscribe(new ObserverPublisher(_observers, _observerScheduler));
 		}
 
 		private class RestSubscription : IDisposable
@@ -213,6 +198,45 @@ namespace Linq2Rest.Reactive
 			public void Dispose()
 			{
 				_unsubscription(_observer);
+			}
+		}
+
+		private class ObserverPublisher : IObserver<T>
+		{
+			private readonly IEnumerable<IObserver<T>> _observers;
+			private readonly IScheduler _observerScheduler;
+
+			public ObserverPublisher(IEnumerable<IObserver<T>> observers, IScheduler observerScheduler)
+			{
+				_observers = observers;
+				_observerScheduler = observerScheduler;
+			}
+
+			public void OnNext(T value)
+			{
+				foreach (var observer in _observers)
+				{
+					var observer1 = observer;
+					_observerScheduler.Schedule(() => observer1.OnNext(value));
+				}
+			}
+
+			public void OnError(Exception error)
+			{
+				foreach (var observer in _observers)
+				{
+					var observer1 = observer;
+					_observerScheduler.Schedule(() => observer1.OnError(error));
+				}
+			}
+
+			public void OnCompleted()
+			{
+				foreach (var observer in _observers)
+				{
+					var observer1 = observer;
+					_observerScheduler.Schedule(observer1.OnCompleted);
+				}
 			}
 		}
 	}

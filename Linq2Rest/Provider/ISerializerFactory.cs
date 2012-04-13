@@ -5,12 +5,16 @@
 
 namespace Linq2Rest.Provider
 {
+#if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
+#endif
 
 	/// <summary>
 	/// Defines the public interface for a factory of <see cref="ISerializer{T}"/>.
 	/// </summary>
+#if !SILVERLIGHT
 	[ContractClass(typeof(SerializerFactoryContracts))]
+#endif
 	public interface ISerializerFactory
 	{
 		/// <summary>
@@ -21,6 +25,7 @@ namespace Linq2Rest.Provider
 		ISerializer<T> Create<T>();
 	}
 
+#if !SILVERLIGHT
 	[ContractClassFor(typeof(ISerializerFactory))]
 	internal abstract class SerializerFactoryContracts : ISerializerFactory
 	{
@@ -30,4 +35,5 @@ namespace Linq2Rest.Provider
 			throw new System.NotImplementedException();
 		}
 	}
+#endif
 }

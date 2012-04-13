@@ -5,7 +5,9 @@
 
 namespace Linq2Rest.Reactive
 {
+#if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
+#endif
 	using System.Reflection;
 	using Linq2Rest.Provider;
 
@@ -17,7 +19,9 @@ namespace Linq2Rest.Reactive
 		{
 			get
 			{
+#if !SILVERLIGHT
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
+#endif
 
 				return InnerCreateMethod;
 			}

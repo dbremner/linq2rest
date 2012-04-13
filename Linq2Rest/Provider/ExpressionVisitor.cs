@@ -7,11 +7,13 @@ namespace Linq2Rest.Provider
 {
 	using System;
 	using System.Collections.Generic;
+#if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
+#endif
+	using System.Globalization;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using System.Threading;
 
 	internal class ExpressionVisitor : IExpressionVisitor
 	{
@@ -39,14 +41,18 @@ namespace Linq2Rest.Provider
 
 	    private static Type GetUnconvertedType(Expression expression)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(expression != null);
+#endif
 
 			switch (expression.NodeType)
 			{
 				case ExpressionType.Convert:
 					var unaryExpression = expression as UnaryExpression;
 
+#if !SILVERLIGHT
 					Contract.Assume(unaryExpression != null, "Matches node type.");
+#endif
 
 					return unaryExpression.Operand.Type;
 				default:
@@ -56,8 +62,10 @@ namespace Linq2Rest.Provider
 
 		private static string GetMemberCall(MemberExpression memberExpression)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(memberExpression != null);
 			Contract.Ensures(Contract.Result<string>() != null);
+#endif
 
 			var declaringType = memberExpression.Member.DeclaringType;
 			var name = memberExpression.Member.Name;
@@ -128,7 +136,9 @@ namespace Linq2Rest.Provider
 
 		private static object GetValue(Expression input)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(input != null);
+#endif
 
 			var objectMember = Expression.Convert(input, typeof(object));
 			var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
@@ -138,7 +148,9 @@ namespace Linq2Rest.Provider
 
 		private static bool IsMemberOfParameter(MemberExpression input)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(input != null);
+#endif
 
 			if (input.Expression == null)
 			{
@@ -149,7 +161,9 @@ namespace Linq2Rest.Provider
 			var tempExpression = input.Expression as MemberExpression;
 			while (nodeType == ExpressionType.MemberAccess)
 			{
+#if !SILVERLIGHT
 				Contract.Assume(tempExpression != null, "It's a member access");
+#endif
 
 				nodeType = tempExpression.Expression.NodeType;
 				tempExpression = tempExpression.Expression as MemberExpression;
@@ -160,7 +174,9 @@ namespace Linq2Rest.Provider
 
 		private static string GetOperation(Expression expression)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(expression != null);
+#endif
 
 			switch (expression.NodeType)
 			{
@@ -203,26 +219,34 @@ namespace Linq2Rest.Provider
 
 		private string GetMethodCall(MethodCallExpression expression, string rootParameterName)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(expression != null);
+#endif
 
 			var methodName = expression.Method.Name;
 			var declaringType = expression.Method.DeclaringType;
 			if (declaringType == typeof(string))
 			{
 				var obj = expression.Object;
+#if !SILVERLIGHT
                 Contract.Assume(obj != null);
+#endif
 
 				switch (methodName)
 				{
 					case "Replace":
 						{
+#if !SILVERLIGHT
 							Contract.Assume(expression.Arguments.Count > 1);
+#endif
 
 							var firstArgument = expression.Arguments[0];
 							var secondArgument = expression.Arguments[1];
 
+#if !SILVERLIGHT
 							Contract.Assume(firstArgument != null);
 							Contract.Assume(secondArgument != null);
+#endif
 
 							return string.Format(
 								"replace({0}, {1}, {2})",
@@ -241,13 +265,17 @@ namespace Linq2Rest.Provider
                         return string.Format("toupper({0})", Visit(obj, rootParameterName));
 					case "Substring":
 						{
+#if !SILVERLIGHT
 							Contract.Assume(expression.Arguments.Count > 0);
+#endif
 
 							if (expression.Arguments.Count == 1)
 							{
 								var argumentExpression = expression.Arguments[0];
 
+#if !SILVERLIGHT
 								Contract.Assume(argumentExpression != null);
+#endif
 
 								return string.Format(
                                     "substring({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
@@ -256,8 +284,10 @@ namespace Linq2Rest.Provider
 							var firstArgument = expression.Arguments[0];
 							var secondArgument = expression.Arguments[1];
 
+#if !SILVERLIGHT
 							Contract.Assume(firstArgument != null);
 							Contract.Assume(secondArgument != null);
+#endif
 
 							return string.Format(
 								"substring({0}, {1}, {2})",
@@ -268,33 +298,45 @@ namespace Linq2Rest.Provider
 
 					case "IndexOf":
 						{
+#if !SILVERLIGHT
 							Contract.Assume(expression.Arguments.Count > 0);
+#endif
 
 							var argumentExpression = expression.Arguments[0];
 
+#if !SILVERLIGHT
 							Contract.Assume(argumentExpression != null);
+#endif
 
                             return string.Format("indexof({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
 						}
 
 					case "EndsWith":
 						{
+#if !SILVERLIGHT
 							Contract.Assume(expression.Arguments.Count > 0);
+#endif
 
 							var argumentExpression = expression.Arguments[0];
 
+#if !SILVERLIGHT
 							Contract.Assume(argumentExpression != null);
+#endif
 
                             return string.Format("endswith({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
 						}
 
 					case "StartsWith":
 						{
+#if !SILVERLIGHT
 							Contract.Assume(expression.Arguments.Count > 0);
+#endif
 
 							var argumentExpression = expression.Arguments[0];
 
+#if !SILVERLIGHT
 							Contract.Assume(argumentExpression != null);
+#endif
 
                             return string.Format("startswith({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
 						}
@@ -302,11 +344,15 @@ namespace Linq2Rest.Provider
 			}
 			else if (declaringType == typeof(Math))
 			{
+#if !SILVERLIGHT
 				Contract.Assume(expression.Arguments.Count > 0);
+#endif
 
 				var mathArgument = expression.Arguments[0];
 
+#if !SILVERLIGHT
 				Contract.Assume(mathArgument != null);
+#endif
 
 				switch (methodName)
 				{
@@ -336,7 +382,9 @@ namespace Linq2Rest.Provider
 
 		private string Visit(Expression expression, Type type, string rootParameterName)
 		{
+#if !SILVERLIGHT
 			Contract.Requires(expression != null);
+#endif
 
 			if (expression is LambdaExpression)
 			{
@@ -369,7 +417,9 @@ namespace Linq2Rest.Provider
 					var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
 					if (!(collapsedExpression is MemberExpression))
 					{
+#if !SILVERLIGHT
 						Contract.Assume(collapsedExpression != null);
+#endif
 
                         return Visit(collapsedExpression, rootParameterName);
 					}
@@ -381,7 +431,9 @@ namespace Linq2Rest.Provider
 
 				var innerExpression = memberExpression.Expression;
 
+#if !SILVERLIGHT
 				Contract.Assume(innerExpression != null);
+#endif
 
 				return string.IsNullOrWhiteSpace(memberCall)
 						? prefix
@@ -392,10 +444,12 @@ namespace Linq2Rest.Provider
 			{
 				var value = (expression as ConstantExpression).Value;
 
+#if !SILVERLIGHT
 				Contract.Assume(type != null);
+#endif
 
 				return string.Format(
-					Thread.CurrentThread.CurrentCulture,
+					CultureInfo.CurrentCulture,
 					"{0}{1}{0}",
 					value is string ? "'" : string.Empty,
 					value == null ? "null" : GetValue(Expression.Convert(expression, type)));
@@ -408,7 +462,9 @@ namespace Linq2Rest.Provider
 				switch (unaryExpression.NodeType)
 				{
 					case ExpressionType.Not:
+#if !SILVERLIGHT
 					case ExpressionType.IsFalse:
+#endif
                         return string.Format("not({0})", Visit(operand, rootParameterName));
 					default:
 						return Visit(operand, rootParameterName);
