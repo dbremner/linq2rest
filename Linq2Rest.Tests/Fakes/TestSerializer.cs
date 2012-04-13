@@ -7,34 +7,20 @@ namespace Linq2Rest.Tests.Fakes
 {
 	using System.Collections.Generic;
 	using System.Web.Script.Serialization;
-
 	using Linq2Rest.Provider;
-	using Linq2Rest.Tests.Provider;
 
-	public class TestSerializer : ISerializer<SimpleDto>
+	public class TestSerializer<T> : ISerializer<T>
 	{
 		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 
-		public SimpleDto Deserialize(string input)
+		public T Deserialize(string input)
 		{
-			return _innerSerializer.Deserialize<SimpleDto>(input);
+			return _innerSerializer.Deserialize<T>(input);
 		}
 
-		public IList<SimpleDto> DeserializeList(string input)
+		public IList<T> DeserializeList(string input)
 		{
-			return _innerSerializer.Deserialize<List<SimpleDto>>(input);
+			return _innerSerializer.Deserialize<List<T>>(input ?? "[]");
 		}
 	}
-
-    public class TestComplexSerializer : ISerializer<ComplexDto> {
-        private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
-
-        public ComplexDto Deserialize(string input) {
-            return _innerSerializer.Deserialize<ComplexDto>(input);
-        }
-
-        public IList<ComplexDto> DeserializeList(string input) {
-            return _innerSerializer.Deserialize<List<ComplexDto>>(input);
-        }
-    }
 }
