@@ -496,6 +496,15 @@ namespace Linq2Rest.Tests.Provider
             _mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/all(y:+y/ID+eq+2)")), Times.Once());
         }
 
+        [Test]
+        public void WhenApplyingFilterWithAllOnRootCollectionAndFunctionThenCallsRestServiceWithAllSyntax() {
+            var result = _collectionProvider.Query
+                .Where(x => x.Children.All(y => y.ID == 2 + x.ID))
+                .ToList();
+
+            _mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/all(y:+y/ID+eq+2+add+ID)")), Times.Once());
+        }
+
 		private void VerifyCall(Expression<Func<SimpleDto, bool>> selection, string expectedUri)
 		{
 			var result = _provider.Query

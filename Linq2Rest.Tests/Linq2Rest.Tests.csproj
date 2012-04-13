@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Choice.cs" />
+    <Compile Include="Fakes\InMemoryJsonRestClient.cs" />
     <Compile Include="Implementations\JsonDataContractSerializerFactoryTests.cs" />
     <Compile Include="Implementations\SimpleContractItem.cs" />
     <Compile Include="Implementations\XmlDataContractSerializerFactoryTests.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Provider\CollectionDto.cs" />
     <Compile Include="Provider\ComplexDto.cs" />
     <Compile Include="Provider\QueryableExtensionsTests.cs" />
+    <Compile Include="Provider\RestContextInMemoryTests.cs" />
     <Compile Include="RuntimeTypeProviderTests.cs" />
     <Compile Include="Mvc\ModelFilterBinderTests.cs" />
     <Compile Include="Parser\FilterTests.cs" />

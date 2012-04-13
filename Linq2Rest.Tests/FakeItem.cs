@@ -15,6 +15,8 @@ namespace Linq2Rest.Tests
 	[DataContract]
 	public class FakeItem
 	{
+        public int ID { get; set; }
+
 		[DataMember(Name = "Text")]
 		private string _stringValue;
 
@@ -52,6 +54,8 @@ namespace Linq2Rest.Tests
 
     [DataContract]
     public class FakeChildItem {
+        public int ID { get; set; }
+
         public string ChildStringValue { get; set; }
 
         private readonly Collection<FakeGrandChildItem> children = new Collection<FakeGrandChildItem>();
