@@ -25,7 +25,7 @@ namespace Linq2Rest.Parser
 		private static readonly Regex StringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
 		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$", RegexOptions.Compiled);
 		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
-	    private static readonly Regex AnyAllFunctionRx = new Regex(@"^(([0-9a-zA-Z_]*/)+)(any|all)\((.*)\)$");
+		private static readonly Regex AnyAllFunctionRx = new Regex(@"^(([0-9a-zA-Z_]*/)+)(any|all)\((.*)\)$");
 		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 		private static readonly ConcurrentDictionary<Type, MethodInfo> ParseMethods = new ConcurrentDictionary<Type, MethodInfo>();
 
@@ -61,24 +61,27 @@ namespace Linq2Rest.Parser
 			return expression == null ? x => true : Expression.Lambda<Func<T, bool>>(expression, parameter);
 		}
 
-        private static TokenSet GetAnyAllFunctionTokens(string filter) {
-            Contract.Requires(filter != null);
+		private static TokenSet GetAnyAllFunctionTokens(string filter)
+		{
+			Contract.Requires(filter != null);
 
-            var functionMatch = AnyAllFunctionRx.Match(filter);
-            if (!functionMatch.Success) {
-                return null;
-            }
+			var functionMatch = AnyAllFunctionRx.Match(filter);
+			if (!functionMatch.Success)
+			{
+				return null;
+			}
 
-            var functionCollection = functionMatch.Groups[1].Value.Trim('/');
-            var functionName = functionMatch.Groups[3].Value;
-            var functionContent = functionMatch.Groups[4].Value;
+			var functionCollection = functionMatch.Groups[1].Value.Trim('/');
+			var functionName = functionMatch.Groups[3].Value;
+			var functionContent = functionMatch.Groups[4].Value;
 
-            return new FunctionTokenSet {
-                Operation = functionName,
-                Left = functionCollection,
-                Right = functionContent
-            };
-        }
+			return new FunctionTokenSet
+			{
+				Operation = functionName,
+				Left = functionCollection,
+				Right = functionContent
+			};
+		}
 
 		private static TokenSet GetFunctionTokens(string filter)
 		{
@@ -141,7 +144,7 @@ namespace Linq2Rest.Parser
 			}
 		}
 
-		private static Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters )
+		private static Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters)
 		{
 			Contract.Requires(propertyToken != null);
 
@@ -150,7 +153,7 @@ namespace Linq2Rest.Parser
 				var token = propertyToken.GetTokens().FirstOrDefault();
 				if (token != null)
 				{
-                    return GetPropertyExpression<T>(token.Left, parameter, lambdaParameters) ?? GetPropertyExpression<T>(token.Right, parameter, lambdaParameters);
+					return GetPropertyExpression<T>(token.Left, parameter, lambdaParameters) ?? GetPropertyExpression<T>(token.Right, parameter, lambdaParameters);
 				}
 			}
 
@@ -159,13 +162,14 @@ namespace Linq2Rest.Parser
 
 			var propertyChain = propertyToken.Split('/');
 
-            if (propertyChain.Any() && lambdaParameters.Any(p => p.Name == propertyChain.First())) {
-                ParameterExpression lambdaParameter = lambdaParameters.First(p => p.Name == propertyChain.First());
-                parentType = lambdaParameter.Type;
-                propertyExpression = lambdaParameter;
-            }
+			if (propertyChain.Any() && lambdaParameters.Any(p => p.Name == propertyChain.First()))
+			{
+				ParameterExpression lambdaParameter = lambdaParameters.First(p => p.Name == propertyChain.First());
+				parentType = lambdaParameter.Type;
+				propertyExpression = lambdaParameter;
+			}
 
-		    foreach (var propertyName in propertyChain)
+			foreach (var propertyName in propertyChain)
 			{
 				var property = parentType.GetProperty(propertyName);
 				if (property != null)
@@ -180,7 +184,7 @@ namespace Linq2Rest.Parser
 			return propertyExpression;
 		}
 
-		private static Type GetExpressionType<T>(TokenSet set, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters )
+		private static Type GetExpressionType<T>(TokenSet set, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters)
 		{
 			if (set == null)
 			{
@@ -282,7 +286,7 @@ namespace Linq2Rest.Parser
 			throw new InvalidOperationException("Unsupported operation");
 		}
 
-		private static Expression GetFunction(string function, Expression left, Expression right, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters )
+		private static Expression GetFunction(string function, Expression left, Expression right, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters)
 		{
 			Contract.Requires(function != null);
 
@@ -330,57 +334,40 @@ namespace Linq2Rest.Parser
 					Contract.Assume(left != null);
 
 					return Expression.Call(left.Type == typeof(double) ? MethodProvider.DoubleCeilingMethod : MethodProvider.DecimalCeilingMethod, left);
-                case "any":
-                    Contract.Assume(left != null);
+				case "any":
+					{
+						Contract.Assume(left != null);
 
-			        return Expression.Call(MethodProvider.GetAnyMethod(left.Type), left,
-			                               Expression.Lambda(
-			                                   typeof (Func<,>).MakeGenericType(
-			                                       MethodProvider.GetIEnumerableImpl(left.Type).GetGenericArguments()[0],
-			                                       typeof (bool)), right, new ParameterVisitor().GetParameters(right).Where(p => p.Name != sourceParameter.Name)));
-                case "all":
-                    Contract.Assume(left != null);
+						var genericFunc =
+							typeof(Func<,>).MakeGenericType(
+															MethodProvider.GetIEnumerableImpl(left.Type).GetGenericArguments()[0],
+															typeof(bool));
+						var parameters = new ParameterVisitor().GetParameters(right).Where(p => p.Name != sourceParameter.Name);
+						return Expression.Call(
+											   MethodProvider.GetAnyMethod(left.Type),
+											   left,
+											   Expression.Lambda(genericFunc, right, parameters));
+					}
 
-                    return Expression.Call(MethodProvider.GetAllMethod(left.Type), left, 
-                                            Expression.Lambda(
-                                                typeof(Func<,>).MakeGenericType(
-                                                    MethodProvider.GetIEnumerableImpl(left.Type).GetGenericArguments()[0], 
-                                                    typeof(bool)), right, new ParameterVisitor().GetParameters(right).Where(p => p.Name != sourceParameter.Name)));
+				case "all":
+					{
+						Contract.Assume(left != null);
+
+						var genericFunc =
+							typeof(Func<,>).MakeGenericType(
+															MethodProvider.GetIEnumerableImpl(left.Type).GetGenericArguments()[0],
+															typeof(bool));
+						var parameters = new ParameterVisitor().GetParameters(right).Where(p => p.Name != sourceParameter.Name);
+						return Expression.Call(
+											   MethodProvider.GetAllMethod(left.Type),
+											   left,
+											   Expression.Lambda(genericFunc, right, parameters));
+					}
+
 				default:
 					return null;
 			}
 		}
-
-        /// <summary>
-        /// Used to get the ParameterExpressions used in an Expression so that Expression.Call will have the correct number of parameters supplied
-        /// </summary>
-        private class ParameterVisitor : ExpressionVisitor {
-
-            List<ParameterExpression> m_Parameters;
-
-            public IEnumerable<ParameterExpression> GetParameters(Expression expr) {
-                m_Parameters = new List<ParameterExpression>();
-                Visit(expr);
-                return m_Parameters;
-            }
-
-            public override Expression Visit(Expression node) {
-                
-                if (node is MethodCallExpression && new[] { "Any", "All" }.Contains(((MethodCallExpression)node).Method.Name)) {
-                    // Skip the second parameter of the Any/All as this has already been covered
-                    return base.Visit(((MethodCallExpression) node).Arguments.First());
-                }
-                return base.Visit(node);
-            }
-
-            protected override System.Linq.Expressions.Expression VisitParameter(System.Linq.Expressions.ParameterExpression p) {
-                
-                if (!m_Parameters.Contains(p))
-                    m_Parameters.Add(p);
-
-                return base.VisitParameter(p);
-            }
-        }
 
 		private static Expression GetKnownConstant(string token, Type type, IFormatProvider formatProvider)
 		{
@@ -436,8 +423,7 @@ namespace Linq2Rest.Parser
 
 			return type.GetMethods(BindingFlags.Static | BindingFlags.Public)
 				.Where(x => x.Name == "Parse" && x.GetParameters().Length == 2)
-				.Where(x => x.GetParameters().First().ParameterType == typeof(string) && x.GetParameters().ElementAt(1).ParameterType == typeof(IFormatProvider))
-				.FirstOrDefault();
+				.FirstOrDefault(x => x.GetParameters().First().ParameterType == typeof(string) && x.GetParameters().ElementAt(1).ParameterType == typeof(IFormatProvider));
 		}
 
 		private Expression CreateExpression<T>(string filter, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
@@ -462,9 +448,10 @@ namespace Linq2Rest.Parser
 				expression = Expression.Constant(stringMatch.Groups[1].Value, typeof(string));
 			}
 
-            if (expression == null) {
-                expression = GetAnyAllFunctionExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider);
-            }
+			if (expression == null)
+			{
+				expression = GetAnyAllFunctionExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider);
+			}
 
 			if (expression == null)
 			{
@@ -516,7 +503,7 @@ namespace Linq2Rest.Parser
 						var right = CreateExpression<T>(
 														tokenSet.Right,
 														parameter,
-                                                        lambdaParameters,
+														lambdaParameters,
 														type ?? GetExpressionType<T>(tokenSet, parameter, lambdaParameters),
 														formatProvider);
 
@@ -532,7 +519,7 @@ namespace Linq2Rest.Parser
 					var left = CreateExpression<T>(
 												   tokenSet.Left,
 												   parameter,
-                                                   lambdaParameters,
+												   lambdaParameters,
 												   type ?? GetExpressionType<T>(tokenSet, parameter, lambdaParameters),
 												   formatProvider);
 					var right = CreateExpression<T>(tokenSet.Right, parameter, lambdaParameters, left.Type, formatProvider);
@@ -552,7 +539,7 @@ namespace Linq2Rest.Parser
 			return existing;
 		}
 
-        private Expression GetArithmeticExpression<T>(string filter, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
+		private Expression GetArithmeticExpression<T>(string filter, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
 		{
 			Contract.Requires(filter != null);
 
@@ -567,11 +554,11 @@ namespace Linq2Rest.Parser
 			var rightExpression = CreateExpression<T>(arithmeticToken.Right, parameter, lambdaParameters, type1, formatProvider);
 
 			return leftExpression == null || rightExpression == null
-			       	? null
-			       	: GetLeftRightOperation(arithmeticToken.Operation, leftExpression, rightExpression);
+					? null
+					: GetLeftRightOperation(arithmeticToken.Operation, leftExpression, rightExpression);
 		}
 
-        private Expression GetConstructorExpression<T>(string filter, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type resultType, IFormatProvider formatProvider)
+		private Expression GetConstructorExpression<T>(string filter, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type resultType, IFormatProvider formatProvider)
 		{
 			Contract.Requires(filter != null);
 
@@ -621,34 +608,35 @@ namespace Linq2Rest.Parser
 			return null;
 		}
 
-        private Expression GetAnyAllFunctionExpression<T>(string filter, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider) {
-            Contract.Requires(filter != null);
+		private Expression GetAnyAllFunctionExpression<T>(string filter, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
+		{
+			Contract.Requires(filter != null);
 
-            var functionTokens = GetAnyAllFunctionTokens(filter);
-            if (functionTokens == null) {
-                return null;
-            }
+			var functionTokens = GetAnyAllFunctionTokens(filter);
+			if (functionTokens == null)
+			{
+				return null;
+			}
 
-            //Type leftType = type ?? GetExpressionType<T>(functionTokens, sourceParameter, lambdaParameters);
-            Type leftType = GetPropertyExpression<T>(functionTokens.Left, sourceParameter, lambdaParameters).Type;
-            var left = CreateExpression<T>(
-                functionTokens.Left,
-                sourceParameter,
-                lambdaParameters,
-                leftType,
-                formatProvider);
+			var leftType = GetPropertyExpression<T>(functionTokens.Left, sourceParameter, lambdaParameters).Type;
+			var left = CreateExpression<T>(
+				functionTokens.Left,
+				sourceParameter,
+				lambdaParameters,
+				leftType,
+				formatProvider);
 
-            // Create a new ParameterExpression from the lambda parameter and add to a collection to pass around
-            string parameterName = functionTokens.Right.Substring(0, functionTokens.Right.IndexOf(":")).Trim();
-            ParameterExpression lambdaParameter =
-                Expression.Parameter(MethodProvider.GetIEnumerableImpl(leftType).GetGenericArguments()[0], parameterName);
-            lambdaParameters.Add(lambdaParameter);
-            var right = CreateExpression<T>(functionTokens.Right.Substring(functionTokens.Right.IndexOf(":") + 1).Trim(), sourceParameter, lambdaParameters, GetFunctionParameterType(functionTokens.Operation) ?? left.Type, formatProvider);
+			// Create a new ParameterExpression from the lambda parameter and add to a collection to pass around
+			string parameterName = functionTokens.Right.Substring(0, functionTokens.Right.IndexOf(":")).Trim();
+			ParameterExpression lambdaParameter =
+				Expression.Parameter(MethodProvider.GetIEnumerableImpl(leftType).GetGenericArguments()[0], parameterName);
+			lambdaParameters.Add(lambdaParameter);
+			var right = CreateExpression<T>(functionTokens.Right.Substring(functionTokens.Right.IndexOf(":") + 1).Trim(), sourceParameter, lambdaParameters, GetFunctionParameterType(functionTokens.Operation) ?? left.Type, formatProvider);
 
-            return GetFunction(functionTokens.Operation, left, right, sourceParameter, lambdaParameters);
-        }
+			return GetFunction(functionTokens.Operation, left, right, sourceParameter, lambdaParameters);
+		}
 
-        private Expression GetFunctionExpression<T>(string filter, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
+		private Expression GetFunctionExpression<T>(string filter, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
 		{
 			Contract.Requires(filter != null);
 
@@ -661,13 +649,49 @@ namespace Linq2Rest.Parser
 			var left = CreateExpression<T>(
 				functionTokens.Left,
 				parameter,
-                lambdaParameters,
+				lambdaParameters,
 				type ?? GetExpressionType<T>(functionTokens, parameter, lambdaParameters),
 				formatProvider);
 
 			var right = CreateExpression<T>(functionTokens.Right, parameter, lambdaParameters, GetFunctionParameterType(functionTokens.Operation) ?? left.Type, formatProvider);
 
 			return GetFunction(functionTokens.Operation, left, right, parameter, lambdaParameters);
+		}
+
+		/// <summary>
+		/// Used to get the ParameterExpressions used in an Expression so that Expression.Call will have the correct number of parameters supplied.
+		/// </summary>
+		private class ParameterVisitor : ExpressionVisitor
+		{
+			List<ParameterExpression> _parameters;
+
+			public IEnumerable<ParameterExpression> GetParameters(Expression expr)
+			{
+				_parameters = new List<ParameterExpression>();
+				Visit(expr);
+				return _parameters;
+			}
+
+			public override Expression Visit(Expression node)
+			{
+				if (node is MethodCallExpression && new[] { "Any", "All" }.Contains(((MethodCallExpression)node).Method.Name))
+				{
+					// Skip the second parameter of the Any/All as this has already been covered
+					return base.Visit(((MethodCallExpression)node).Arguments.First());
+				}
+
+				return base.Visit(node);
+			}
+
+			protected override Expression VisitParameter(ParameterExpression p)
+			{
+				if (!_parameters.Contains(p))
+				{
+					_parameters.Add(p);
+				}
+
+				return base.VisitParameter(p);
+			}
 		}
 	}
 }
