@@ -18,12 +18,11 @@ namespace Linq2Rest.Tests.Fakes
 				return new RuntimeAnonymousTypeSerializer<T>();
 			}
 
-			if (typeof(T) == typeof(ComplexDto))
+			if (typeof(T) == typeof(SimpleDto))
 			{
-				return new TestComplexSerializer() as ISerializer<T>;
+				return new TestSerializer() as ISerializer<T>;
 			}
-
-			return new TestSerializer<T>();
+			return new TestComplexSerializer() as ISerializer<T>;
 		}
 	}
 }
