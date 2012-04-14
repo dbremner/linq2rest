@@ -1,10 +1,13 @@
-﻿using Microsoft.Phone.Controls;
+﻿// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://www.opensource.org/licenses/MS-PL] for details.
+// All other rights reserved.
 
 namespace Linq2Rest.Reactive.WP7Sample
 {
 	using System;
-	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
+	using Microsoft.Phone.Controls;
 
 	public partial class MainPage : PhoneApplicationPage
 	{
@@ -23,17 +26,7 @@ namespace Linq2Rest.Reactive.WP7Sample
 				.Subscribe(
 						   x => txtStatus.Text = "Got one",
 						   ex => txtStatus.Text = "Uh oh",
-						   () =>
-						   {
-							   try
-							   {
-								   Dispatcher.BeginInvoke(() => txtStatus.Text = "Finished");
-							   }
-							   catch (Exception ex)
-							   {
-
-							   }
-						   });
+						   () => Dispatcher.BeginInvoke(() => txtStatus.Text = "Finished"));
 		}
 	}
 }
