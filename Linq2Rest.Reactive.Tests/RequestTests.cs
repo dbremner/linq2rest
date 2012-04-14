@@ -132,6 +132,21 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
+		public void WhenApplyingNestedAllQueryThenCallsRestServiceWithFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_observable
+				.Where(x => x.Children.All(y => y.Descendants.Any(z => z.Text == "blah")))
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(2000);
+
+			const string RequestUri = "http://localhost/?$filter=Children/all(y:+y/Descendants/any(z:+z/Text+eq+'blah'))";
+			_mockClientFactory.Verify(x => x.Create(RequestUri), Times.Once());
+		}
+
+		[Test]
 		public void WhenGroupByExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
 		{
 			var waitHandle = new ManualResetEvent(false);
@@ -257,7 +272,6 @@ namespace Linq2Rest.Reactive.Tests
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
 			waitHandle.WaitOne();
-
 
 			const string RequestUri = "http://localhost/?$filter=IntValue+le+3";
 			_mockClientFactory.Verify(x => x.Create(RequestUri), Times.Once());

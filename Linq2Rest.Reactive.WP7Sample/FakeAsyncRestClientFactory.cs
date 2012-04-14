@@ -17,7 +17,6 @@ namespace Linq2Rest.Reactive.WP7Sample
 		public FakeAsyncRestClientFactory()
 			: this(-1)
 		{
-
 		}
 
 		public FakeAsyncRestClientFactory(int responseDelay)
@@ -76,6 +75,7 @@ namespace Linq2Rest.Reactive.WP7Sample
 						return true;
 					}
 				}
+
 				public WaitHandle AsyncWaitHandle
 				{
 					get
@@ -83,6 +83,7 @@ namespace Linq2Rest.Reactive.WP7Sample
 						return null;
 					}
 				}
+
 				public object AsyncState
 				{
 					get
@@ -90,6 +91,7 @@ namespace Linq2Rest.Reactive.WP7Sample
 						return null;
 					}
 				}
+
 				public bool CompletedSynchronously
 				{
 					get

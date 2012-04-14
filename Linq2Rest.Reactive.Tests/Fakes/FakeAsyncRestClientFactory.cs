@@ -16,7 +16,6 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 		public FakeAsyncRestClientFactory()
 			: this(-1)
 		{
-
 		}
 
 		public FakeAsyncRestClientFactory(int responseDelay)
@@ -70,6 +69,7 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 						return true;
 					}
 				}
+
 				public WaitHandle AsyncWaitHandle
 				{
 					get
@@ -77,6 +77,7 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 						return null;
 					}
 				}
+
 				public object AsyncState
 				{
 					get
@@ -84,6 +85,7 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 						return null;
 					}
 				}
+
 				public bool CompletedSynchronously
 				{
 					get

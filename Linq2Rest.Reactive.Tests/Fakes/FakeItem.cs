@@ -5,7 +5,6 @@
 
 namespace Linq2Rest.Reactive.Tests.Fakes
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Runtime.Serialization;
 	using System.Xml.Serialization;
@@ -40,5 +39,7 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 	public class ChildItem
 	{
 		public string Text { get; set; }
+
+		public IList<ChildItem> Descendants { get; set; } 
 	}
 }
