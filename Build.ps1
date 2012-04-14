@@ -12,7 +12,7 @@ function UpdatePackages
 
 function BuildSolution
 {
-	msbuild .\Linq2Rest.sln /p:configuration=$configuration
+	msbuild .\Linq2Rest.All.sln /p:configuration=$configuration
 }
 
 function RunTests
