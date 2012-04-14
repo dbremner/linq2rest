@@ -11,3 +11,5 @@ packages
 *.pidb
 *.userprefs
 Bin
+*.xap
+TestResult.xml
