@@ -89,7 +89,8 @@ namespace Linq2Rest.Provider
 			Contract.Requires(builder != null);
 			Contract.Ensures(Contract.Result<IList<T>>() != null);
 
-			var response = _client.Get(builder.GetFullUri());
+			var fullUri = builder.GetFullUri();
+			var response = _client.Get(new Uri(fullUri));
 			var serializer = _serializerFactory.Create<T>();
 			var resultSet = serializer.DeserializeList(response);
 
@@ -100,7 +101,8 @@ namespace Linq2Rest.Provider
 
 		private IEnumerable GetIntermediateResults(Type type, ParameterBuilder builder)
 		{
-			var response = _client.Get(builder.GetFullUri());
+			var fullUri = builder.GetFullUri();
+			var response = _client.Get(new Uri(fullUri));
 			var genericMethod = CreateMethod.MakeGenericMethod(type);
 			dynamic serializer = genericMethod.Invoke(_serializerFactory, null);
 			var resultSet = serializer.DeserializeList(response);

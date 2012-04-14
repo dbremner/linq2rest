@@ -31,7 +31,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 			}
 		}
 
-		public IAsyncRestClient Create(Uri source)
+		public IAsyncRestClient Create(string source)
 		{
 			return new FakeAsyncResultClient(_responseDelay);
 		}

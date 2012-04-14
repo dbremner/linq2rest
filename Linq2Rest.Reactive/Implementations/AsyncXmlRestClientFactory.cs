@@ -36,9 +36,9 @@ namespace Linq2Rest.Reactive.Implementations
 		/// </summary>
 		/// <param name="source">The <see cref="Uri"/> to download from.</param>
 		/// <returns>An <see cref="IAsyncRestClient"/> instance.</returns>
-		public IAsyncRestClient Create(Uri source)
+		public IAsyncRestClient Create(string source)
 		{
-			return new AsyncXmlRestClient(source);
+			return new AsyncXmlRestClient(new Uri(source));
 		}
 
 		private class AsyncXmlRestClient : IAsyncRestClient
