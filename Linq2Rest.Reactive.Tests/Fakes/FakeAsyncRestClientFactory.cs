@@ -32,7 +32,7 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 			}
 		}
 
-		public IAsyncRestClient Create(Uri source)
+		public IAsyncRestClient Create(string source)
 		{
 			return new FakeAsyncResultClient(_responseDelay);
 		}

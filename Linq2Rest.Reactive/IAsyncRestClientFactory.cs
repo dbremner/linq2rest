@@ -28,7 +28,7 @@ namespace Linq2Rest.Reactive
 		/// </summary>
 		/// <param name="source">The <see cref="Uri"/> to download from.</param>
 		/// <returns>An <see cref="IAsyncRestClient"/> instance.</returns>
-		IAsyncRestClient Create(Uri source);
+		IAsyncRestClient Create(string source);
 	}
 
 #if !SILVERLIGHT
@@ -45,7 +45,7 @@ namespace Linq2Rest.Reactive
 			}
 		}
 
-		public IAsyncRestClient Create(Uri source)
+		public IAsyncRestClient Create(string source)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 

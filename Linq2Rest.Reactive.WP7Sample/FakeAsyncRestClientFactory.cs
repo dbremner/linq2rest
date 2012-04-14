@@ -33,7 +33,7 @@ namespace Linq2Rest.Reactive.WP7Sample
 			}
 		}
 
-		public IAsyncRestClient Create(Uri source)
+		public IAsyncRestClient Create(string source)
 		{
 			return new FakeAsyncResultClient(_responseDelay);
 		}

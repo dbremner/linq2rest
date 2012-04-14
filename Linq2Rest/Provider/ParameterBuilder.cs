@@ -40,7 +40,7 @@ namespace Linq2Rest.Provider
 
 		public string ExpandParameter { get; set; }
 
-		public Uri GetFullUri()
+		public string GetFullUri()
 		{
 			var parameters = new List<string>();
 			if (!string.IsNullOrWhiteSpace(FilterParameter))
@@ -80,7 +80,7 @@ namespace Linq2Rest.Provider
 			var builder = new UriBuilder(_serviceBase);
 			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
 
-			return builder.Uri;
+			return builder.Uri.ToString();
 		}
 
 		private string BuildParameter(string name, string value)
