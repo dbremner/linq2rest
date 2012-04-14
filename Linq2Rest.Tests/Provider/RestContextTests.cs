@@ -187,7 +187,7 @@ namespace Linq2Rest.Tests.Provider
 				.Query
 				.FirstOrDefault(x => x.Child.Name == "Foo");
 
-			var uri = new Uri("http://localhost/?$filter=Child%2fName+eq+'Foo'&$top=1");
+			var uri = new Uri("http://localhost/?$filter=Child/Name+eq+'Foo'&$top=1");
 
 			_mockComplexClient.Verify(x => x.Get(uri), Times.Once());
 		}

@@ -63,6 +63,9 @@
     </Reference>
     <Reference Include="system" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Threading.Tasks.SL5">
+      <HintPath>..\packages\System.Threading.Tasks.3.0.1\lib\sl50\System.Threading.Tasks.SL5.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Linq2Rest.Reactive\AsyncExpressionProcessor.cs">

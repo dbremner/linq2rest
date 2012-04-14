@@ -131,7 +131,7 @@
       <HintPath>..\packages\Rx-Providers.2.0.20304-beta\lib\SL4-WindowsPhone71\System.Reactive.Providers.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.WP71">
-      <HintPath>..\packages\System.Threading.Tasks.3.0\lib\sl4-wp71\System.Threading.Tasks.WP71.dll</HintPath>
+      <HintPath>..\packages\System.Threading.Tasks.3.0.1\lib\sl4-wp71\System.Threading.Tasks.WP71.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
