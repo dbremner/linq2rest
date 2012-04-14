@@ -6,7 +6,7 @@ function UpdatePackages
 {
 	$packageConfigs = Get-ChildItem -Path .\ -Include "packages.config" -Recurse
 	foreach($config in $packageConfigs){
-		.\nuget.exe i $config.FullName -o packages
+		.\.nuget\nuget.exe i $config.FullName -o packages -source https://nuget.org/api/v2/
 	}
 }
 
@@ -23,9 +23,9 @@ function RunTests
 
 function PublishPackage
 {
-	.\nuget.exe pack Linq2Rest.nuspec
-	.\nuget.exe pack Linq2Rest.Mvc.nuspec
-	.\nuget.exe pack Linq2Rest.Reactive.nuspec
+	.\.nuget\nuget.exe pack Linq2Rest.nuspec
+	.\.nuget\nuget.exe pack Linq2Rest.Mvc.nuspec
+	.\.nuget\nuget.exe pack Linq2Rest.Reactive.nuspec
 }
 
 UpdatePackages
