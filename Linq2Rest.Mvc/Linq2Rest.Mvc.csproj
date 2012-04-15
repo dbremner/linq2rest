@@ -63,6 +63,7 @@
     <CodeContractsDisjunctiveRequires>True</CodeContractsDisjunctiveRequires>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>..\Linq2Rest.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -107,6 +108,7 @@
     <CodeContractsSuggestObjectInvariants>True</CodeContractsSuggestObjectInvariants>
     <CodeContractsDisjunctiveRequires>True</CodeContractsDisjunctiveRequires>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\Linq2Rest.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

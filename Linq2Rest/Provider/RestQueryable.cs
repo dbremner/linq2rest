@@ -85,6 +85,7 @@ namespace Linq2Rest.Provider
 		private void Invariants()
 		{
 			Contract.Invariant(_client != null);
+			Contract.Invariant(_restQueryProvider != null);
 			Contract.Invariant(Expression != null);
 		}
 	}

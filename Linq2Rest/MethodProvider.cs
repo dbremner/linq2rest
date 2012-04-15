@@ -272,6 +272,8 @@ namespace Linq2Rest
 
 		public static MethodInfo GetAnyMethod(Type collectionType)
 		{
+			Contract.Requires(collectionType != null);
+
 			var implementation = GetIEnumerableImpl(collectionType);
 
 			var elemType = implementation.GetGenericArguments()[0];
@@ -290,6 +292,8 @@ namespace Linq2Rest
 
 		public static MethodInfo GetAllMethod(Type collectionType)
 		{
+			Contract.Requires(collectionType != null);
+
 			var implementationType = GetIEnumerableImpl(collectionType);
 
 			var elemType = implementationType.GetGenericArguments()[0];
@@ -308,6 +312,8 @@ namespace Linq2Rest
 
 		public static Type GetIEnumerableImpl(Type type)
 		{
+			Contract.Requires(type != null);
+
 			// Get IEnumerable implementation. Either type is IEnumerable<T> for some T, 
 			// or it implements IEnumerable<T> for some T. We need to find the interface.
 			if (IsIEnumerable(type))
@@ -315,15 +321,16 @@ namespace Linq2Rest
 				return type;
 			}
 
-			var t = type.FindInterfaces((m, o) => IsIEnumerable(m), null);
+			var t = type.FindInterfaces((m, o) => IsIEnumerable(m), null).First();
 
-			Contract.Assert(t.Length == 1);
-
-			return t[0];
+			return t;
 		}
 
 		private static MethodBase GetGenericMethod(Type type, string name, Type[] typeArgs, Type[] argTypes, BindingFlags flags)
 		{
+			Contract.Requires(typeArgs != null);
+			Contract.Requires(type != null);
+
 			var typeArity = typeArgs.Length;
 			var methods = type.GetMethods()
 				.Where(m => m.Name == name)
@@ -335,6 +342,8 @@ namespace Linq2Rest
 
 		private static bool IsIEnumerable(Type type)
 		{
+			Contract.Requires(type != null);
+
 			return type.IsGenericType
 				&& type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
 		}

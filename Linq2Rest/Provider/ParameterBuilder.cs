@@ -42,6 +42,9 @@ namespace Linq2Rest.Provider
 
 		public string GetFullUri()
 		{
+#if !SILVERLIGHT
+			Contract.Ensures(Contract.Result<string>() != null);
+#endif
 			var parameters = new List<string>();
 			if (!string.IsNullOrWhiteSpace(FilterParameter))
 			{
@@ -83,7 +86,7 @@ namespace Linq2Rest.Provider
 			return builder.Uri.ToString();
 		}
 
-		private string BuildParameter(string name, string value)
+		private static string BuildParameter(string name, string value)
 		{
 			return string.Format(name + "=" + value);
 		}

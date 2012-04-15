@@ -6,6 +6,7 @@
 namespace Linq2Rest.Implementations
 {
 	using System;
+	using System.Diagnostics.Contracts;
 	using System.Net;
 	using Linq2Rest.Provider;
 
@@ -66,6 +67,12 @@ namespace Linq2Rest.Implementations
 			{
 				_client.Dispose();
 			}
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_client != null);
 		}
 	}
 }

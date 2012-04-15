@@ -103,7 +103,7 @@ namespace Linq2Rest.Mvc.Provider
 
 			if (constructorInfo == null)
 			{
-				throw new NullReferenceException("No public constructor found.");
+				throw new InvalidOperationException("No public constructor found.");
 			}
 
 			var selector =
