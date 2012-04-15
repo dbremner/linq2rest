@@ -202,12 +202,7 @@ namespace Linq2Rest.Provider
 			return string.Empty;
 		}
 
-		private string Visit(Expression expression, string rootParameterName)
-		{
-			return expression == null ? null : Visit(expression, expression.Type, rootParameterName);
-		}
-
-		private string GetRootParameterName(Expression expression)
+		private static string GetRootParameterName(Expression expression)
 		{
 			if (expression is UnaryExpression)
 			{
@@ -220,6 +215,11 @@ namespace Linq2Rest.Provider
 			}
 
 			return null;
+		}
+
+		private string Visit(Expression expression, string rootParameterName)
+		{
+			return expression == null ? null : Visit(expression, expression.Type, rootParameterName);
 		}
 
 		private string GetMethodCall(MethodCallExpression expression, string rootParameterName)

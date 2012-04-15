@@ -55,6 +55,8 @@ namespace Linq2Rest.Implementations
 
 			public XmlSerializer(IEnumerable<Type> knownTypes)
 			{
+				Contract.Requires(knownTypes != null);
+
 				var array = knownTypes.ToArray();
 				_serializer = new XmlSerializer(typeof(T), array);
 				_listSerializer = new XmlSerializer(typeof(List<T>), array);

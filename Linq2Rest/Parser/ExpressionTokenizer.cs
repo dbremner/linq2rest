@@ -9,11 +9,18 @@ namespace Linq2Rest.Parser
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
+	using System.Text.RegularExpressions;
 
 	internal static class ExpressionTokenizer
 	{
+		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$", RegexOptions.Compiled);
+		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
+		private static readonly Regex AnyAllFunctionRx = new Regex(@"^([0-9a-zA-Z]+/)?(([0-9a-zA-Z_]+/)+)(any|all)\((.*)\)$", RegexOptions.Compiled);
+
 		public static IEnumerable<TokenSet> GetTokens(this string expression)
 		{
+			Contract.Ensures(Contract.Result<IEnumerable<TokenSet>>() != null);
+
 			var cleanMatch = expression.EnclosedMatch();
 
 			if (cleanMatch.Success)
@@ -123,6 +130,58 @@ namespace Linq2Rest.Parser
 			var operation = blocks[operationIndex];
 
 			return new TokenSet { Left = left, Operation = operation, Right = right };
+		}
+
+		public static TokenSet GetAnyAllFunctionTokens(this string filter)
+		{
+			Contract.Requires(filter != null);
+
+			var functionMatch = AnyAllFunctionRx.Match(filter);
+			if (!functionMatch.Success)
+			{
+				return null;
+			}
+
+			var functionCollection = functionMatch.Groups[2].Value.Trim('/');
+			var functionName = functionMatch.Groups[4].Value;
+			var functionContent = functionMatch.Groups[5].Value;
+
+			return new FunctionTokenSet
+			{
+				Operation = functionName,
+				Left = functionCollection,
+				Right = functionContent
+			};
+		}
+
+		public static TokenSet GetFunctionTokens(this string filter)
+		{
+			Contract.Requires(filter != null);
+
+			var functionMatch = FunctionRx.Match(filter);
+			if (!functionMatch.Success)
+			{
+				return null;
+			}
+
+			var functionName = functionMatch.Groups[1].Value;
+			var functionContent = functionMatch.Groups[2].Value;
+			var functionContentMatch = FunctionContentRx.Match(functionContent);
+			if (!functionContentMatch.Success)
+			{
+				return new FunctionTokenSet
+				{
+					Operation = functionName,
+					Left = functionContent
+				};
+			}
+
+			return new FunctionTokenSet
+			{
+				Operation = functionName,
+				Left = functionContentMatch.Groups[1].Value,
+				Right = functionContentMatch.Groups[2].Value
+			};
 		}
 
 		private static int GetArithmeticOperationIndex(IList<string> blocks)

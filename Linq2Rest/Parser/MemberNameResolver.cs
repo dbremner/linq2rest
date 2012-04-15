@@ -18,7 +18,11 @@ namespace Linq2Rest.Parser
 
 		public string ResolveName(MemberInfo member)
 		{
-			return KnownMemberNames.GetOrAdd(member, ResolveNameInternal);
+			var result = KnownMemberNames.GetOrAdd(member, ResolveNameInternal);
+
+			Contract.Assume(result != null);
+
+			return result;
 		}
 
 		private static string ResolveNameInternal(MemberInfo member)
@@ -52,7 +56,7 @@ namespace Linq2Rest.Parser
 				return xmlAttribute.AttributeName;
 			}
 
-			Contract.Assume(member.Name != null, "Member must have name");
+			Contract.Assert(member.Name != null, "Member must have name");
 			return member.Name;
 		}
 	}

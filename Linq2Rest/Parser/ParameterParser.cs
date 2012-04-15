@@ -75,5 +75,13 @@ namespace Linq2Rest.Parser
 				string.IsNullOrWhiteSpace(top) ? -1 : Convert.ToInt32(top));
 			return modelFilter;
 		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_filterExpressionFactory != null);
+			Contract.Invariant(_sortExpressionFactory != null);
+			Contract.Invariant(_selectExpressionFactory != null);
+		}
 	}
 }

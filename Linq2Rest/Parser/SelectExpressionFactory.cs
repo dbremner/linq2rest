@@ -98,5 +98,13 @@ namespace Linq2Rest.Parser
 
 			return selector;
 		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_knownSelections != null);
+			Contract.Invariant(_nameResolver != null);
+			Contract.Invariant(_runtimeTypeProvider != null);
+		}
 	}
 }

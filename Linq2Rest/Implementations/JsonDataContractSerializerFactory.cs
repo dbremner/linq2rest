@@ -55,6 +55,8 @@ namespace Linq2Rest.Implementations
 
 			public JsonDataContractSerializer(IEnumerable<Type> knownTypes)
 			{
+				Contract.Requires(knownTypes != null);
+
 				var array = knownTypes.ToArray();
 				_serializer = new DataContractJsonSerializer(typeof(T), array);
 				_listSerializer = new DataContractJsonSerializer(typeof(List<T>), array);

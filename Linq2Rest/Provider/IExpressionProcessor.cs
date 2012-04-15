@@ -24,6 +24,7 @@ namespace Linq2Rest.Provider
 		{
 			Contract.Requires(builder != null);
 			Contract.Requires(resultLoader != null);
+			Contract.Requires(intermediateResultLoader != null);
 
 			throw new NotImplementedException();
 		}
