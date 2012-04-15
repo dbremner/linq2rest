@@ -30,11 +30,17 @@
 		</frameworkAssemblies>
 	</metadata>
 	<files>
-		<file src="Linq2Rest.Mvc\bin\Release\Linq2Rest.Mvc.dll"
+		<file src="Linq2Rest.Mvc\bin\v4.0\Release\Linq2Rest.Mvc.dll"
 			  target="lib\Net40" />
-		<file src="Linq2Rest.Mvc\bin\Release\Linq2Rest.Mvc.xml"
+		<file src="Linq2Rest.Mvc\bin\v4.0\Release\Linq2Rest.Mvc.xml"
 			  target="lib\Net40" />
-		<file src="Linq2Rest.Mvc\bin\Release\CodeContracts\Linq2Rest.Mvc.Contracts.dll"
+		<file src="Linq2Rest.Mvc\bin\v4.0\Release\CodeContracts\Linq2Rest.Mvc.Contracts.dll"
 			  target="lib\Net40\CodeContracts" />
+		<file src="Linq2Rest.Mvc\bin\v4.5\Release\Linq2Rest.Mvc.dll"
+			  target="lib\Net45" />
+		<file src="Linq2Rest.Mvc\bin\v4.5\Release\Linq2Rest.Mvc.xml"
+			  target="lib\Net45" />
+		<file src="Linq2Rest.Mvc\bin\v4.5\Release\CodeContracts\Linq2Rest.Mvc.Contracts.dll"
+			  target="lib\Net45\CodeContracts" />
 	</files>
 </package>

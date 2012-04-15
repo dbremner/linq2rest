@@ -1,34 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E0D84C0C-2286-4370-8635-0FFB673DCEA6}</ProjectGuid>
-    <ProjectTypeGuids>{E53F8FEA-EAE0-44A6-8774-FFD645390401};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <ProjectGuid>{F7D2A74E-5A11-4FC9-8AA4-D0D3431BBF40}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Linq2Rest.MvcSite</RootNamespace>
-    <AssemblyName>Linq2Rest.MvcSite</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>true</UseIISExpress>
+    <RootNamespace>Linq2Rest</RootNamespace>
+    <AssemblyName>Linq2Rest</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>4.0</OldToolsVersion>
-    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\v4.5\Debug\</OutputPath>
+	<BaseIntermediateOutputPath>obj\v4.5</BaseIntermediateOutputPath>
+    <DocumentationFile>bin\v4.5\Debug\Linq2Rest.xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,7 +35,7 @@
     <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
     <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
-    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
     <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
     <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
     <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
@@ -57,11 +51,23 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>True</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>True</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>True</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>True</CodeContractsSuggestObjectInvariants>
+    <CodeContractsDisjunctiveRequires>True</CodeContractsDisjunctiveRequires>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\v4.5\Release\</OutputPath>
+	<BaseIntermediateOutputPath>obj\v4.5</BaseIntermediateOutputPath>
+    <DocumentationFile>bin\v4.5\Release\Linq2Rest.xml</DocumentationFile>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -74,7 +80,7 @@
     <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
     <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
-    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
     <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
     <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
     <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
@@ -90,106 +96,79 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
-    <DocumentationFile>bin\Linq2Rest.MvcSite.xml</DocumentationFile>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>True</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>True</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>True</CodeContractsSuggestObjectInvariants>
+    <CodeContractsDisjunctiveRequires>True</CodeContractsDisjunctiveRequires>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.4.2.0.0\lib\net40\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc" />
-    <Reference Include="System.Web.WebPages" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
-    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\SimpleController.cs" />
-    <Compile Include="Global.asax.cs">
-      <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SimpleContext.cs" />
-    <Compile Include="Models\SimpleDto.cs" />
+    <Compile Include="IModelFilter.cs" />
+    <Compile Include="Implementations\JsonDataContractSerializerFactory.cs" />
+    <Compile Include="Implementations\RestClientBase.cs" />
+    <Compile Include="Implementations\XmlDataContractSerializerFactory.cs" />
+    <Compile Include="Implementations\XmlRestClient.cs" />
+    <Compile Include="Implementations\XmlSerializerFactory.cs" />
+    <Compile Include="IRuntimeTypeProvider.cs" />
+    <Compile Include="MethodProvider.cs" />
+    <Compile Include="ModelFilterExtensions.cs" />
+    <Compile Include="Parser\ExpressionTokenizer.cs" />
+    <Compile Include="Parser\FilterExpressionFactory.cs" />
+    <Compile Include="Parser\FunctionTokenSet.cs" />
+    <Compile Include="Parser\IFilterExpressionFactory.cs" />
+    <Compile Include="Parser\IMemberNameResolver.cs" />
+    <Compile Include="Parser\IParameterParser.cs" />
+    <Compile Include="LinqExtensions.cs" />
+    <Compile Include="Parser\ISelectExpressionFactory.cs" />
+    <Compile Include="ModelFilter.cs" />
+    <Compile Include="Parser\ISortExpressionFactory.cs" />
+    <Compile Include="Parser\MemberNameResolver.cs" />
+    <Compile Include="Parser\ParameterParser.cs" />
+    <Compile Include="Parser\SelectExpressionFactory.cs" />
+    <Compile Include="Parser\TokenOperatorExtensions.cs" />
+    <Compile Include="Parser\TokenSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Support\ResponseFormat.cs" />
-    <Compile Include="Support\ResponseFormatBinder.cs" />
-    <Compile Include="Support\ResponseFormatExtensions.cs" />
+    <Compile Include="Parser\SortDescription.cs" />
+    <Compile Include="Parser\SortExpressionFactory.cs" />
+    <Compile Include="Provider\ExpressionProcessor.cs" />
+    <Compile Include="Provider\ExpressionVisitor.cs" />
+    <Compile Include="Provider\IExpressionProcessor.cs" />
+    <Compile Include="Provider\IExpressionVisitor.cs" />
+    <Compile Include="Provider\IRestClient.cs" />
+    <Compile Include="Provider\ISerializer.cs" />
+    <Compile Include="Provider\ISerializerFactory.cs" />
+    <Compile Include="Provider\ParameterBuilder.cs" />
+    <Compile Include="Implementations\JsonRestClient.cs" />
+    <Compile Include="Provider\QueryableExtensions.cs" />
+    <Compile Include="Provider\RestContext.cs" />
+    <Compile Include="Provider\RestQueryable.cs" />
+    <Compile Include="Provider\RestQueryProvider.cs" />
+    <Compile Include="Provider\RestQueryProviderBase.cs" />
+    <Compile Include="RuntimeTypeProvider.cs" />
+    <Compile Include="StringConstants.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\simple.sdf" />
-    <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Views\Web.config" />
-    <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Settings.StyleCop" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Simple\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Linq2Rest.Mvc\Linq2Rest.Mvc.csproj">
-      <Project>{B4462F0E-AF9E-4955-81D7-5E487D9178A8}</Project>
-      <Name>Linq2Rest.Mvc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Linq2Rest\Linq2Rest.csproj">
-      <Project>{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}</Project>
-      <Name>Linq2Rest</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
-  </ItemGroup>
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-  </PropertyGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
-  </Target> -->
-  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
-    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>
-  <ProjectExtensions>
-    <VisualStudio>
-      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
-        <WebProjectProperties>
-          <UseIIS>True</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:33198/</IISUrl>
-          <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
-          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
-        </WebProjectProperties>
-      </FlavorProperties>
-    </VisualStudio>
-  </ProjectExtensions>
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  -->
 </Project>
