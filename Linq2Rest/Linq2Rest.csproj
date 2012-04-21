@@ -152,6 +152,9 @@
     <Compile Include="Parser\Readers\ShortExpressionFactory.cs" />
     <Compile Include="Parser\Readers\SingleExpressionFactory.cs" />
     <Compile Include="Parser\Readers\StreamExpressionFactory.cs" />
+    <Compile Include="Parser\Readers\UnsignedIntExpressionFactory.cs" />
+    <Compile Include="Parser\Readers\UnsignedLongExpressionFactory.cs" />
+    <Compile Include="Parser\Readers\UnsignedShortExpressionFactory.cs" />
     <Compile Include="Parser\SelectExpressionFactory.cs" />
     <Compile Include="Parser\TokenOperatorExtensions.cs" />
     <Compile Include="Parser\TokenSet.cs" />
@@ -172,12 +175,32 @@
     <Compile Include="Provider\RestQueryable.cs" />
     <Compile Include="Provider\RestQueryProvider.cs" />
     <Compile Include="Provider\RestQueryProviderBase.cs" />
+    <Compile Include="Provider\Writers\BooleanValueWriter.cs" />
+    <Compile Include="Provider\Writers\ByteArrayValueWriter.cs" />
+    <Compile Include="Provider\Writers\ByteValueWriter.cs" />
+    <Compile Include="Provider\Writers\DecimalValueWriter.cs" />
+    <Compile Include="Provider\Writers\DoubleValueWriter.cs" />
+    <Compile Include="Provider\Writers\GuidValueWriter.cs" />
+    <Compile Include="Provider\Writers\IntegerValueWriter.cs" />
+    <Compile Include="Provider\Writers\IntValueWriter.cs" />
+    <Compile Include="Provider\Writers\IValueWriter.cs" />
+    <Compile Include="Provider\Writers\LongValueWriter.cs" />
+    <Compile Include="Provider\Writers\ParameterValueWriter.cs" />
+    <Compile Include="Provider\Writers\RationalValueWriter.cs" />
+    <Compile Include="Provider\Writers\ShortValueWriter.cs" />
+    <Compile Include="Provider\Writers\SingleValueWriter.cs" />
+    <Compile Include="Provider\Writers\StreamValueWriter.cs" />
+    <Compile Include="Provider\Writers\StringValueWriter.cs" />
+    <Compile Include="Provider\Writers\UnsignedIntValueWriter.cs" />
+    <Compile Include="Provider\Writers\UnsignedLongValueWriter.cs" />
+    <Compile Include="Provider\Writers\UnsignedShortValueWriter.cs" />
     <Compile Include="RuntimeTypeProvider.cs" />
     <Compile Include="StringConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Settings.StyleCop" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

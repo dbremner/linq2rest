@@ -28,7 +28,10 @@ namespace Linq2Rest.Parser.Readers
 										new StreamExpressionFactory(),
 										new LongExpressionFactory(),
 										new IntExpressionFactory(),
-										new ShortExpressionFactory()
+										new ShortExpressionFactory(),
+										new UnsignedIntExpressionFactory(),
+										new UnsignedLongExpressionFactory(),
+										new UnsignedShortExpressionFactory()
 			                      	};
 		}
 

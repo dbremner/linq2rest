@@ -14,6 +14,7 @@ namespace Linq2Rest.Provider
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
+	using Linq2Rest.Provider.Writers;
 
 	internal class ExpressionVisitor : IExpressionVisitor
 	{
@@ -88,7 +89,7 @@ namespace Linq2Rest.Provider
 
 			if (input.Expression is MemberExpression)
 			{
-				object value = GetValue(input);
+				var value = GetValue(input);
 				return Expression.Constant(value);
 			}
 
@@ -450,17 +451,13 @@ namespace Linq2Rest.Provider
 
 			if (expression is ConstantExpression)
 			{
-				var value = (expression as ConstantExpression).Value;
+				var value = GetValue(Expression.Convert(expression, type));
 
 #if !SILVERLIGHT
 				Contract.Assume(type != null);
 #endif
 
-				return string.Format(
-					CultureInfo.CurrentCulture,
-					"{0}{1}{0}",
-					value is string ? "'" : string.Empty,
-					value == null ? "null" : GetValue(Expression.Convert(expression, type)));
+				return ParameterValueWriter.Write(value);
 			}
 
 			if (expression is UnaryExpression)
