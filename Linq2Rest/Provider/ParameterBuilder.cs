@@ -40,10 +40,10 @@ namespace Linq2Rest.Provider
 
 		public string ExpandParameter { get; set; }
 
-		public string GetFullUri()
+		public Uri GetFullUri()
 		{
 #if !SILVERLIGHT
-			Contract.Ensures(Contract.Result<string>() != null);
+			Contract.Ensures(Contract.Result<Uri>() != null);
 #endif
 			var parameters = new List<string>();
 			if (!string.IsNullOrWhiteSpace(FilterParameter))
@@ -83,7 +83,7 @@ namespace Linq2Rest.Provider
 			var builder = new UriBuilder(_serviceBase);
 			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
 
-			return builder.Uri.ToString();
+			return builder.Uri;
 		}
 
 		private static string BuildParameter(string name, string value)

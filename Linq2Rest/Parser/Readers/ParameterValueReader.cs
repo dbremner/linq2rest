@@ -43,6 +43,7 @@ namespace Linq2Rest.Parser.Readers
 		public static Expression Read(Type type, string token, IFormatProvider formatProvider)
 		{
 			Contract.Requires(token != null);
+			Contract.Requires(type != null);
 
 			if (string.Equals(token, "null", StringComparison.OrdinalIgnoreCase))
 			{
@@ -68,6 +69,7 @@ namespace Linq2Rest.Parser.Readers
 		private static Expression GetKnownConstant(Type type, string token, IFormatProvider formatProvider)
 		{
 			Contract.Requires(token != null);
+			Contract.Requires(type != null);
 
 			if (type.IsEnum)
 			{

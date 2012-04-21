@@ -392,6 +392,7 @@ namespace Linq2Rest.Provider
 		{
 #if !SILVERLIGHT
 			Contract.Requires(expression != null);
+			Contract.Requires(type != null);
 #endif
 
 			if (expression is LambdaExpression)

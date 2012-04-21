@@ -137,7 +137,7 @@ namespace Linq2Rest.Reactive.Tests
 
 			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
 			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
-			mockClientFactory.Setup(x => x.Create(It.IsAny<string>())).Returns(mockRestClient.Object);
+			mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(mockRestClient.Object);
 
 			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
 				.Where(x => x.StringValue == "blah")

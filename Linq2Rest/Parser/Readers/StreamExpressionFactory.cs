@@ -19,6 +19,7 @@ namespace Linq2Rest.Parser.Readers
 			}
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
 		public override ConstantExpression Convert(string token)
 		{
 			var baseResult = base.Convert(token);
