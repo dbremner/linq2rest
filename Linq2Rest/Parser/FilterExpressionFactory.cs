@@ -279,20 +279,14 @@ namespace Linq2Rest.Parser
 				case "year":
 					return Expression.Property(left, MethodProvider.YearProperty);
 				case "round":
-					Contract.Assume(left != null);
-
 					return Expression.Call(left.Type == typeof(double) ? MethodProvider.DoubleRoundMethod : MethodProvider.DecimalRoundMethod, left);
 				case "floor":
-					Contract.Assume(left != null);
-
 					return Expression.Call(left.Type == typeof(double) ? MethodProvider.DoubleFloorMethod : MethodProvider.DecimalFloorMethod, left);
 				case "ceiling":
-					Contract.Assume(left != null);
-
 					return Expression.Call(left.Type == typeof(double) ? MethodProvider.DoubleCeilingMethod : MethodProvider.DecimalCeilingMethod, left);
 				case "any":
 					{
-						Contract.Assume(left != null);
+						Contract.Assume(right != null);
 
 						return CreateAnyAllExpression(
 													  left,
@@ -304,7 +298,7 @@ namespace Linq2Rest.Parser
 
 				case "all":
 					{
-						Contract.Assume(left != null);
+						Contract.Assume(right != null);
 
 						return CreateAnyAllExpression(
 													  left,
@@ -612,6 +606,9 @@ namespace Linq2Rest.Parser
 
 			public IEnumerable<ParameterExpression> GetParameters(Expression expr)
 			{
+				Contract.Requires(expr != null);
+				Contract.Ensures(Contract.Result<IEnumerable<ParameterExpression>>() != null);
+
 				_parameters = new List<ParameterExpression>();
 				Visit(expr);
 				return _parameters;

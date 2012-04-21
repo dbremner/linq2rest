@@ -14,10 +14,7 @@ namespace Linq2Rest.Provider.Writers
 
 		public string Write(object value)
 		{
-			return string.Format(
-								 CultureInfo.InvariantCulture,
-								 "{0}",
-								 value);
+			return string.Format(CultureInfo.InvariantCulture, "{0}", value);
 		}
 	}
 }
