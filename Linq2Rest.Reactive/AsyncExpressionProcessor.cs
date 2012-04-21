@@ -14,6 +14,7 @@ namespace Linq2Rest.Reactive
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Linq;
+	using System.Reflection;
 	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
@@ -214,10 +215,17 @@ namespace Linq2Rest.Reactive
 			builder.FilterParameter = currentParameter;
 
 			var genericArguments = methodCall.Method.GetGenericArguments();
-			var method = typeof(Queryable)
-				.GetMethods()
-				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
+#if !NETFX_CORE
+            var method = typeof(Queryable)
+                .GetMethods()
+                .Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
+                .MakeGenericMethod(genericArguments);
+#else
+			var method = typeof(Queryable).GetTypeInfo()
+				.GetDeclaredMethods(methodCall.Method.Name)
+				.Single(x => x.GetParameters().Length == 1)
 				.MakeGenericMethod(genericArguments);
+#endif
 
 			return resultLoader(builder)
 				.ContinueWith(
@@ -281,7 +289,11 @@ namespace Linq2Rest.Reactive
 				return InvokeEager<T>(innerMethod, result);
 			}
 
-			var genericArgument = innerMethod.Method.ReturnType.GetGenericArguments()[0];
+#if !NETFX_CORE
+            var genericArgument = innerMethod.Method.ReturnType.GetGenericArguments()[0];
+#else
+			var genericArgument = innerMethod.Method.ReturnType.GenericTypeArguments[0];
+#endif
 			var type = typeof(T);
 
 			var methodInfo = methodCall.Method;
