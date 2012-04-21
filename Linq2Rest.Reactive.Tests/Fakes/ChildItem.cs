@@ -3,18 +3,14 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Provider.Writers
+namespace Linq2Rest.Reactive.Tests.Fakes
 {
-	using System;
+	using System.Collections.Generic;
 
-	internal class IntValueWriter : IntegerValueWriter
+	public class ChildItem
 	{
-		public override Type Handles
-		{
-			get
-			{
-				return typeof(int);
-			}
-		}
+		public string Text { get; set; }
+
+		public IList<ChildItem> Descendants { get; set; } 
 	}
 }

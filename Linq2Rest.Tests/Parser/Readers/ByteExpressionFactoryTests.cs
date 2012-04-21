@@ -1,3 +1,8 @@
+// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://www.opensource.org/licenses/MS-PL] for details.
+// All other rights reserved.
+
 namespace Linq2Rest.Tests.Parser.Readers
 {
 	using System;
@@ -28,7 +33,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 		{
 			var expression = _factory.Convert("12");
 
-			Assert.IsAssignableFrom<Byte>(expression.Value);
+			Assert.IsAssignableFrom<byte>(expression.Value);
 		}
 		
 		[Test]
@@ -36,7 +41,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 		{
 			var expression = _factory.Convert("f2");
 
-			Assert.IsAssignableFrom<Byte>(expression.Value);
+			Assert.IsAssignableFrom<byte>(expression.Value);
 		}
 	}
 }

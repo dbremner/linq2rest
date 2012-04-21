@@ -120,6 +120,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fakes\ChildItem.cs" />
     <Compile Include="Fakes\FakeAsyncRestClientFactory.cs" />
     <Compile Include="Fakes\FakeItem.cs" />
     <Compile Include="Fakes\NorthwindCustomer.cs" />

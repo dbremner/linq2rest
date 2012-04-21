@@ -67,6 +67,7 @@ namespace Linq2Rest.Reactive
 								subscribeScheduler,
 								_observerScheduler);
 						}
+
 					case "ObserveOn":
 						{
 							var constantExpression = methodCallExpression.Arguments[1] as ConstantExpression;

@@ -1,3 +1,8 @@
+// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://www.opensource.org/licenses/MS-PL] for details.
+// All other rights reserved.
+
 namespace Linq2Rest.Tests.Parser.Readers
 {
 	using System;
@@ -28,7 +33,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 		{
 			var expression = _factory.Convert("1.23");
 
-			Assert.IsAssignableFrom<Single>(expression.Value);
+			Assert.IsAssignableFrom<float>(expression.Value);
 		}
 
 		[Test]
@@ -36,7 +41,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 		{
 			var expression = _factory.Convert("1.23F");
 
-			Assert.IsAssignableFrom<Single>(expression.Value);
+			Assert.IsAssignableFrom<float>(expression.Value);
 		}
 
 		[Test]
@@ -44,7 +49,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 		{
 			var expression = _factory.Convert("1.23f");
 
-			Assert.IsAssignableFrom<Single>(expression.Value);
+			Assert.IsAssignableFrom<float>(expression.Value);
 		}
 	}
 }

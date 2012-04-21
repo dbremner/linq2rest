@@ -1,3 +1,8 @@
+// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://www.opensource.org/licenses/MS-PL] for details.
+// All other rights reserved.
+
 namespace Linq2Rest.Parser.Readers
 {
 	using System;
@@ -63,16 +68,6 @@ namespace Linq2Rest.Parser.Readers
 		private static Expression GetKnownConstant(Type type, string token, IFormatProvider formatProvider)
 		{
 			Contract.Requires(token != null);
-
-			//if (type == typeof(Guid) || type == typeof(Guid?))
-			//{
-			//    return
-			//        String.Equals(token, "newguid()", StringComparison.OrdinalIgnoreCase)
-			//            ? Expression.Convert(Expression.Constant(Guid.NewGuid()), type)
-			//            : String.Equals(token, "empty", StringComparison.OrdinalIgnoreCase)
-			//                ? Expression.Convert(Expression.Constant(Guid.Empty), type)
-			//                : Expression.Convert(Expression.Constant(Guid.Parse(token)), type);
-			//}
 
 			if (type.IsEnum)
 			{
