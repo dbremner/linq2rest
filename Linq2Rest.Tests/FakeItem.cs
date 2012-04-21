@@ -6,14 +6,19 @@
 namespace Linq2Rest.Tests
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
 	using System.Runtime.Serialization;
 	using System.Xml.Serialization;
 
 	[DataContract]
 	public class FakeItem
 	{
+		private readonly Collection<FakeChildItem> _children = new Collection<FakeChildItem>();
 		[DataMember(Name = "Text")]
 		private string _stringValue;
+
+		public int ID { get; set; }
 
 		[XmlElement(ElementName = "Number")]
 		public int IntValue { get; set; }
@@ -39,5 +44,10 @@ namespace Linq2Rest.Tests
 
 		[DataMember(Name = "Choice")]
 		public Choice ChoiceValue { get; set; }
+
+		public ICollection<FakeChildItem> Children
+		{
+			get { return _children; }
+		}
 	}
 }

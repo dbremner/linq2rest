@@ -18,6 +18,8 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 		{
 			var waitHandle = new ManualResetEvent(false);
 			var observable = new RestObservable<SampleDto>(new FakeAsyncRestClientFactory(), new PhoneSerializerFactory());
+			
+			// Note: Reported erroneous ReSharper error message to JetBrains.
 			var subscription = observable
 				.Where(x => x.Text != "blah")
 				.Subscribe(new TestObserver<SampleDto>(waitHandle));

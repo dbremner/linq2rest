@@ -47,31 +47,48 @@ namespace Linq2Rest.Reactive
 				switch (methodCallExpression.Method.Name)
 				{
 					case "SubscribeOn":
-						var subscribeScheduler = (methodCallExpression.Arguments[1] as ConstantExpression).Value as IScheduler;
+						{
+							var constantExpression = methodCallExpression.Arguments[1] as ConstantExpression;
 
 #if !SILVERLIGHT
-						Contract.Assume(subscribeScheduler != null);
+							Contract.Assume(constantExpression != null);
 #endif
 
-						return new RestObservable<TResult>(
-							_asyncRestClient,
-							_serializerFactory,
-							methodCallExpression.Arguments[0],
-							subscribeScheduler,
-							_observerScheduler);
+							var subscribeScheduler = constantExpression.Value as IScheduler;
+
+#if !SILVERLIGHT
+							Contract.Assume(subscribeScheduler != null);
+#endif
+
+							return new RestObservable<TResult>(
+								_asyncRestClient,
+								_serializerFactory,
+								methodCallExpression.Arguments[0],
+								subscribeScheduler,
+								_observerScheduler);
+						}
+
 					case "ObserveOn":
-						var observeScheduler = (methodCallExpression.Arguments[1] as ConstantExpression).Value as IScheduler;
+						{
+							var constantExpression = methodCallExpression.Arguments[1] as ConstantExpression;
 
 #if !SILVERLIGHT
-						Contract.Assume(observeScheduler != null);
+							Contract.Assume(constantExpression != null);
 #endif
 
-						return new RestObservable<TResult>(
-							_asyncRestClient,
-							_serializerFactory,
-							methodCallExpression.Arguments[0],
-							_subscriberScheduler,
-							observeScheduler);
+							var observeScheduler = constantExpression.Value as IScheduler;
+
+#if !SILVERLIGHT
+							Contract.Assume(observeScheduler != null);
+#endif
+
+							return new RestObservable<TResult>(
+								_asyncRestClient,
+								_serializerFactory,
+								methodCallExpression.Arguments[0],
+								_subscriberScheduler,
+								observeScheduler);
+						}
 				}
 			}
 

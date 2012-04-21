@@ -202,6 +202,7 @@ namespace Linq2Rest.Reactive
 		private Task<object> GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 #if !SILVERLIGHT
+			Contract.Requires(builder != null);
 			Contract.Assume(methodCall.Arguments.Count >= 2);
 #endif
 
@@ -245,6 +246,7 @@ namespace Linq2Rest.Reactive
 		private Task<object> GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IList<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
 #if !SILVERLIGHT
+			Contract.Requires(resultLoader != null);
 			Contract.Assume(methodCall.Arguments.Count >= 1);
 #endif
 
@@ -269,6 +271,7 @@ namespace Linq2Rest.Reactive
 		{
 #if !SILVERLIGHT
 			Contract.Requires(resultLoader != null);
+			Contract.Requires(intermediateResultLoader != null);
 			Contract.Requires(builder != null);
 			Contract.Assume(methodCall.Arguments.Count >= 2);
 #endif

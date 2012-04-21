@@ -18,6 +18,7 @@ namespace Linq2Rest.Provider
 
 		public ExpressionProcessor(IExpressionVisitor visitor)
 		{
+			Contract.Requires(visitor != null);
 			_visitor = visitor;
 		}
 
@@ -162,6 +163,22 @@ namespace Linq2Rest.Provider
 					}
 
 					break;
+				case "Expand":
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+					{
+						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
+						if (result != null)
+						{
+							return InvokeEager(methodCall, result);
+						}
+
+						var objectMember = Expression.Convert(methodCall.Arguments[1], typeof(object));
+						var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
+
+						builder.ExpandParameter = getterLambda().ToString();
+					}
+
+					break;
 				default:
 					return ExecuteMethod(methodCall, builder, resultLoader, intermediateResultLoader);
 			}
@@ -171,12 +188,22 @@ namespace Linq2Rest.Provider
 
 		private static object InvokeEager(MethodCallExpression methodCall, object source)
 		{
-			var parameters = ResolveInvocationParameters(source as IEnumerable, methodCall);
+			Contract.Requires(source != null);
+			Contract.Requires(methodCall != null);
+
+			var results = source as IEnumerable;
+
+			Contract.Assume(results != null);
+
+			var parameters = ResolveInvocationParameters(results, methodCall);
 			return methodCall.Method.Invoke(null, parameters);
 		}
 
 		private static object[] ResolveInvocationParameters(IEnumerable results, MethodCallExpression methodCall)
 		{
+			Contract.Requires(results != null);
+			Contract.Requires(methodCall != null);
+
 			var parameters = new object[] { results.AsQueryable() }
 				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue))
 				.Where(x => x != null)
@@ -201,6 +228,10 @@ namespace Linq2Rest.Provider
 
 		private object GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
 		{
+			Contract.Requires(methodCall != null);
+			Contract.Requires(builder != null);
+			Contract.Requires(resultLoader != null);
+			Contract.Requires(intermediateResultLoader != null);
 			Contract.Assume(methodCall.Arguments.Count >= 2);
 
 			ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
@@ -212,9 +243,11 @@ namespace Linq2Rest.Provider
 			builder.FilterParameter = currentParameter;
 
 			var genericArguments = methodCall.Method.GetGenericArguments();
-			var method = typeof(Queryable)
-				.GetMethods()
-				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
+			var nonGenericMethod = typeof(Queryable).GetMethods().Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1);
+
+			Contract.Assume(nonGenericMethod != null);
+
+			var method = nonGenericMethod
 				.MakeGenericMethod(genericArguments);
 
 			var list = resultLoader(builder);
@@ -227,6 +260,11 @@ namespace Linq2Rest.Provider
 
 		private object GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
 		{
+			Contract.Requires(builder != null);
+			Contract.Requires(methodCall != null);
+			Contract.Requires(resultLoader != null);
+			Contract.Requires(intermediateResultLoader != null);
+
 			Contract.Assume(methodCall.Arguments.Count >= 1);
 
 			ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
@@ -241,7 +279,9 @@ namespace Linq2Rest.Provider
 
 		private object ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
 		{
+			Contract.Requires(methodCall != null);
 			Contract.Requires(resultLoader != null);
+			Contract.Requires(intermediateResultLoader != null);
 			Contract.Requires(builder != null);
 			Contract.Assume(methodCall.Arguments.Count >= 2);
 
@@ -267,6 +307,12 @@ namespace Linq2Rest.Provider
 			var arguments = ResolveInvocationParameters(list, methodCall);
 
 			return methodCall.Method.Invoke(null, arguments);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_visitor != null);
 		}
 	}
 }

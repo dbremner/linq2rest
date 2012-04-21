@@ -6,6 +6,7 @@
 namespace Linq2Rest.Reactive.Tests
 {
 	using System;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Linq;
 	using System.Threading;
@@ -32,7 +33,7 @@ namespace Linq2Rest.Reactive.Tests
 
 			_mockClientFactory = new Mock<IAsyncRestClientFactory>();
 			_mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
-			_mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns<Uri>(x => _mockRestClient.Object);
+			_mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(_mockRestClient.Object);
 
 			_observable = new RestObservable<FakeItem>(_mockClientFactory.Object, new TestSerializerFactory());
 		}
@@ -53,8 +54,8 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var uri = new Uri("http://localhost/?$filter=IntValue+le+3");
-			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+			var requestUri = new Uri("http://localhost/?$filter=IntValue+le+3");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
@@ -66,8 +67,8 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var uri = new Uri("http://localhost/");
-			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+			var requestUri = new Uri("http://localhost/");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
@@ -96,8 +97,53 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var uri = new Uri("http://localhost/?$filter=(IntValue+le+3)+and+(StringValue+eq+'blah')");
-			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+			var requestUri = new Uri("http://localhost/?$filter=(IntValue+le+3)+and+(StringValue+eq+'blah')");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingAnyQueryThenCallsRestServiceWithFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_observable
+				.Where(x => x.Children.Any(y => y.Text == "blah"))
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(2000);
+
+			var requestUri = new Uri("http://localhost/?$filter=Children%2fany(y:+y%2fText+eq+'blah')");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingAllQueryThenCallsRestServiceWithFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_observable
+				.Where(x => x.Children.All(y => y.Text == "blah"))
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(2000);
+
+			var requestUri = new Uri("http://localhost/?$filter=Children%2fall(y:+y%2fText+eq+'blah')");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingNestedAllQueryThenCallsRestServiceWithFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_observable
+				.Where(x => x.Children.All(y => y.Descendants.Any(z => z.Text == "blah")))
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(2000);
+
+			var requestUri = new Uri("http://localhost/?$filter=Children%2fall(y:+y%2fDescendants%2fany(z:+z%2fText+eq+'blah'))");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
@@ -112,8 +158,8 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var uri = new Uri("http://localhost/?$filter=IntValue+le+3");
-			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+			var requestUri = new Uri("http://localhost/?$filter=IntValue+le+3");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
@@ -128,8 +174,8 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var uri = new Uri("http://localhost/?$top=1");
-			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+			var requestUri = new Uri("http://localhost/?$top=1");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
@@ -145,8 +191,8 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var uri = new Uri("http://localhost/?$top=1");
-			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+			var requestUri = new Uri("http://localhost/?$top=1");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
@@ -196,8 +242,8 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var uri = new Uri("http://localhost/?$skip=1");
-			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+			var requestUri = new Uri("http://localhost/?$skip=1");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
@@ -211,8 +257,8 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var uri = new Uri("http://localhost/?$select=StringValue,IntValue");
-			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+			var requestUri = new Uri("http://localhost/?$select=StringValue,IntValue");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
@@ -227,9 +273,8 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-
-			var uri = new Uri("http://localhost/?$filter=IntValue+le+3");
-			_mockClientFactory.Verify(x => x.Create(uri), Times.Once());
+			var requestUri = new Uri("http://localhost/?$filter=IntValue+le+3");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 	}
 }

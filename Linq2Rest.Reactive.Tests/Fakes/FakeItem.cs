@@ -5,7 +5,7 @@
 
 namespace Linq2Rest.Reactive.Tests.Fakes
 {
-	using System;
+	using System.Collections.Generic;
 	using System.Runtime.Serialization;
 	using System.Xml.Serialization;
 
@@ -20,8 +20,6 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 
 		public double DoubleValue { get; set; }
 
-		public decimal DecimalValue { get; set; }
-
 		public string StringValue
 		{
 			get
@@ -35,6 +33,6 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 			}
 		}
 
-		public DateTime DateValue { get; set; }
+		public IList<ChildItem> Children { get; set; }
 	}
 }

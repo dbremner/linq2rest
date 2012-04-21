@@ -1,18 +1,63 @@
 param(
-$configuration = "Release"
+$configuration = "Release",
+$folderPath = ".\",
+$cleanPackages = $false
 )
+
+$oldEnvPath = ""
+
+function CheckMsBuildPath
+{
+	$envPath = $Env:Path
+	if($envPath.Contains("C:\Windows\Microsoft.NET\Framework\v4.0") -eq $false)
+	{
+		if(Test-Path "C:\Windows\Microsoft.NET\Framework\v4.0.30319")
+		{
+			$oldEnvPath = $envPath
+			$Env:Path = $envPath + ";C:\Windows\Microsoft.NET\Framework\v4.0.30319"
+		}
+		else
+		{
+			Write-Host "Could not determine path to MSBuild. Make sure you have .NET 4.0.30319 installed"
+		}
+	}
+}
+
+function CleanUpMsBuildPath
+{
+	if($oldEnvPath -ne "")
+	{
+		Write-Host "Reverting Path variable"
+		$Env:Path = $oldEnvPath
+	}
+}
+
+function CleanFolder
+{
+	Write-Host "Cleaning Folders in $folderPath"
+	Get-ChildItem $folderPath -include bin,obj -Recurse | foreach ($_) { remove-item $_.fullname -Force -Recurse }
+	if($cleanPackages -eq $true){
+		if(Test-Path "$folderPath\packages"){
+			Get-ChildItem "$folderPath\packages" -Recurse | Where { $_.PSIsContainer } | foreach ($_) { Write-Host $_.fullname; remove-item $_.fullname -Force -Recurse }
+		}
+	}
+	
+	if(Test-Path "$folderPath\BuildOutput"){
+		Get-ChildItem "$folderPath\BuildOutput" -Recurse | foreach ($_) { Write-Host $_.fullname; remove-item $_.fullname -Force -Recurse }
+	}
+}
 
 function UpdatePackages
 {
 	$packageConfigs = Get-ChildItem -Path .\ -Include "packages.config" -Recurse
 	foreach($config in $packageConfigs){
-		.\nuget.exe i $config.FullName -o packages
+		.\.nuget\nuget.exe i $config.FullName -o packages -source https://nuget.org/api/v2/
 	}
 }
 
 function BuildSolution
 {
-	msbuild .\Linq2Rest.sln /p:configuration=$configuration
+	msbuild .\Linq2Rest.All.sln /p:configuration=$configuration
 }
 
 function RunTests
@@ -23,12 +68,15 @@ function RunTests
 
 function PublishPackage
 {
-	.\nuget.exe pack Linq2Rest.nuspec
-	.\nuget.exe pack Linq2Rest.Mvc.nuspec
-	.\nuget.exe pack Linq2Rest.Reactive.nuspec
+	.\.nuget\nuget.exe pack Linq2Rest.nuspec
+	.\.nuget\nuget.exe pack Linq2Rest.Mvc.nuspec
+	.\.nuget\nuget.exe pack Linq2Rest.Reactive.nuspec
 }
 
+CheckMsBuildPath
+CleanFolder
 UpdatePackages
 BuildSolution
 RunTests
 PublishPackage
+CleanUpMsBuildPath

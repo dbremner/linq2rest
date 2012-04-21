@@ -63,7 +63,7 @@ namespace Linq2Rest.Provider
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return GetEnumerator();
+			return Provider.Execute<IEnumerable>(Expression).GetEnumerator();
 		}
 
 		public void Dispose()
@@ -85,6 +85,7 @@ namespace Linq2Rest.Provider
 		private void Invariants()
 		{
 			Contract.Invariant(_client != null);
+			Contract.Invariant(_restQueryProvider != null);
 			Contract.Invariant(Expression != null);
 		}
 	}

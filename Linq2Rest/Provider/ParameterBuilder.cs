@@ -38,8 +38,13 @@ namespace Linq2Rest.Provider
 
         public string TakeParameter { get; set; }
 
+		public string ExpandParameter { get; set; }
+
         public Uri GetFullUri()
         {
+#if !SILVERLIGHT
+			Contract.Ensures(Contract.Result<Uri>() != null);
+#endif
             var parameters = new List<string>();
             if (!string.IsNullOrWhiteSpace(FilterParameter))
 			{
@@ -70,13 +75,18 @@ namespace Linq2Rest.Provider
                 parameters.Add(BuildParameter(StringConstants.OrderByParameter, string.Join(",", OrderByParameter)));
             }
 
+			if (!string.IsNullOrWhiteSpace(ExpandParameter))
+			{
+				parameters.Add(BuildParameter(StringConstants.ExpandParameter, ExpandParameter));
+			}
+
             var builder = new UriBuilder(_serviceBase);
             builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
 
             return builder.Uri;
         }
 
-        private string BuildParameter(string name, string value)
+		private static string BuildParameter(string name, string value)
         {
             return string.Format(name + "=" + value);
         }

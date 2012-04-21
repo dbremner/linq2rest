@@ -23,12 +23,15 @@ namespace Linq2Rest.Provider
 		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory)
 			: this(client, serializerFactory, new ExpressionProcessor(new ExpressionVisitor()))
 		{
+			Contract.Requires<ArgumentNullException>(client != null);
+			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 		}
 
 		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory, ExpressionProcessor expressionProcessor)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+			Contract.Requires<ArgumentNullException>(expressionProcessor != null);
 
 			_client = client;
 			_serializerFactory = serializerFactory;
@@ -89,7 +92,8 @@ namespace Linq2Rest.Provider
 			Contract.Requires(builder != null);
 			Contract.Ensures(Contract.Result<IList<T>>() != null);
 
-			var response = _client.Get(builder.GetFullUri());
+			var fullUri = builder.GetFullUri();
+			var response = _client.Get(fullUri);
 			var serializer = _serializerFactory.Create<T>();
 			var resultSet = serializer.DeserializeList(response);
 
@@ -100,7 +104,8 @@ namespace Linq2Rest.Provider
 
 		private IEnumerable GetIntermediateResults(Type type, ParameterBuilder builder)
 		{
-			var response = _client.Get(builder.GetFullUri());
+			var fullUri = builder.GetFullUri();
+			var response = _client.Get(fullUri);
 			var genericMethod = CreateMethod.MakeGenericMethod(type);
 			dynamic serializer = genericMethod.Invoke(_serializerFactory, null);
 			var resultSet = serializer.DeserializeList(response);
@@ -113,6 +118,8 @@ namespace Linq2Rest.Provider
 		{
 			Contract.Invariant(_client != null);
 			Contract.Invariant(_serializerFactory != null);
+			Contract.Invariant(_expressionProcessor != null);
+			Contract.Invariant(_parameterBuilder != null);
 		}
 	}
 }

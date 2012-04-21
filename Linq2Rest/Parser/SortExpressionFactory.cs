@@ -57,7 +57,7 @@ namespace Linq2Rest.Parser
 					   select new SortDescription<T>(property.Compile(), direction);
 		}
 
-		private Expression<Func<T, object>> GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
+		private static Expression<Func<T, object>> GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
 		{
 			Contract.Requires(propertyToken != null);
 
