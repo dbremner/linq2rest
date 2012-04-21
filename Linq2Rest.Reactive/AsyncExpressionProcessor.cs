@@ -30,7 +30,7 @@ namespace Linq2Rest.Reactive
 		{
 			var task = ProcessMethodCallInternal(methodCall, builder, resultLoader, intermediateResultLoader);
 			return task == null
-					? resultLoader(builder).ContinueWith(x => x.Result.ToObservable())
+					? (Task<IObservable<T>>)resultLoader(builder).ContinueWith(x => x.Result.ToObservable())
 					: task.ContinueWith(o => LoadIntermediateResult<T>(o));
 		}
 
