@@ -35,11 +35,4 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 
 		public IList<ChildItem> Children { get; set; }
 	}
-
-	public class ChildItem
-	{
-		public string Text { get; set; }
-
-		public IList<ChildItem> Descendants { get; set; } 
-	}
 }

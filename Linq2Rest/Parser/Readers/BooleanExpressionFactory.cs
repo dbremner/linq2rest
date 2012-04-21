@@ -1,3 +1,8 @@
+// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://www.opensource.org/licenses/MS-PL] for details.
+// All other rights reserved.
+
 namespace Linq2Rest.Parser.Readers
 {
 	using System;
@@ -19,12 +24,12 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			if(TrueRegex.IsMatch(token))
+			if (TrueRegex.IsMatch(token))
 			{
 				return Expression.Constant(true);
 			}
 
-			if(FalseRegex.IsMatch(token))
+			if (FalseRegex.IsMatch(token))
 			{
 				return Expression.Constant(false);
 			}
