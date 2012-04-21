@@ -15,6 +15,7 @@ namespace Linq2Rest.Parser
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Text.RegularExpressions;
+	using Linq2Rest.Parser.Readers;
 
 	/// <summary>
 	/// Defines the FilterExpressionFactory.
@@ -24,7 +25,6 @@ namespace Linq2Rest.Parser
 		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
 		private static readonly Regex StringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
 		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-		private static readonly ConcurrentDictionary<Type, MethodInfo> ParseMethods = new ConcurrentDictionary<Type, MethodInfo>();
 
 		/// <summary>
 		/// Creates a filter expression from its string representation.
@@ -353,63 +353,6 @@ namespace Linq2Rest.Parser
 								   Expression.Lambda(genericFunc, right, lambdaParameters));
 		}
 
-		private static Expression GetKnownConstant(string token, Type type, IFormatProvider formatProvider)
-		{
-			Contract.Requires(token != null);
-
-			if (string.Equals(token, "null", StringComparison.OrdinalIgnoreCase))
-			{
-				return Expression.Constant(null);
-			}
-
-			if (type == typeof(Guid) || type == typeof(Guid?))
-			{
-				return
-					string.Equals(token, "newguid()", StringComparison.OrdinalIgnoreCase)
-						? Expression.Convert(Expression.Constant(Guid.NewGuid()), type)
-						: string.Equals(token, "empty", StringComparison.OrdinalIgnoreCase)
-							? Expression.Convert(Expression.Constant(Guid.Empty), type)
-							: Expression.Convert(Expression.Constant(Guid.Parse(token)), type);
-			}
-
-			if (type != null)
-			{
-				var parseMethod = ParseMethods.GetOrAdd(type, ResolveParseMethod);
-				if (parseMethod != null)
-				{
-					var parseResult = parseMethod.Invoke(null, new object[] { token, formatProvider });
-					return Expression.Constant(parseResult);
-				}
-
-				if (type.IsEnum)
-				{
-					var enumValue = Enum.Parse(type, token, true);
-					return Expression.Constant(enumValue);
-				}
-
-				if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
-				{
-					var genericTypeArgument = type.GetGenericArguments()[0];
-					var value = GetKnownConstant(token, genericTypeArgument, formatProvider);
-					if (value != null)
-					{
-						return Expression.Convert(value, type);
-					}
-				}
-			}
-
-			return null;
-		}
-
-		private static MethodInfo ResolveParseMethod(Type type)
-		{
-			Contract.Requires(type != null);
-
-			return type.GetMethods(BindingFlags.Static | BindingFlags.Public)
-				.Where(x => x.Name == "Parse" && x.GetParameters().Length == 2)
-				.FirstOrDefault(x => x.GetParameters().First().ParameterType == typeof(string) && x.GetParameters().ElementAt(1).ParameterType == typeof(IFormatProvider));
-		}
-
 		private Expression CreateExpression<T>(string filter, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
 		{
 			Contract.Requires(filter != null);
@@ -463,7 +406,7 @@ namespace Linq2Rest.Parser
 
 			if (expression == null)
 			{
-				expression = GetKnownConstant(filter, type, formatProvider);
+				expression = ParameterValueReader.Read(type, filter, formatProvider);
 			}
 
 			if (expression == null)
