@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>Linq2Rest.Reactive</id>
+		<version>1.0.0.1-beta2</version>
+		<authors>Jacob Reimers</authors>
+		<owners>Jacob Reimers</owners>
+		<licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
+		<projectUrl>https://bitbucket.org/jjrdk/linq2rest</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Generates OData style Rx Observables from LINQ queries.</description>
+		<tags>OData LINQ REST Rx Reactive SL WP7</tags>
+		<references>
+			<reference file="Linq2Rest.Reactive.dll" />
+			<reference file="Linq2Rest.Reactive.xml" />
+		</references>
+		<dependencies>
+			<dependency id="Linq2Rest"
+						version="2.2.0.0" />
+			<dependency id="Rx-Providers"
+						version="1.0.11226" />
+			<!-- Waiting for Rx Team to add .NET 4 support to package
+			<dependency id="Rx-Providers"
+						version="2.0.20304-beta" />
+			-->
+			<dependency id="System.Threading.Tasks"
+						version="3.0.1" />
+		</dependencies>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Core"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="Microsoft.CSharp"
+							   targetFramework="net40" />
+		</frameworkAssemblies>
+	</metadata>
+	<files>
+		<file src="Linq2Rest.Reactive\bin\v4.0\Release\Linq2Rest.Reactive.dll"
+			  target="lib\Net40" />
+		<file src="Linq2Rest.Reactive\bin\v4.0\Release\Linq2Rest.Reactive.xml"
+			  target="lib\Net40" />
+		<file src="Linq2Rest.Reactive\bin\v4.0\Release\CodeContracts\Linq2Rest.Reactive.Contracts.dll"
+			  target="lib\Net40\CodeContracts" />
+		<file src="Linq2Rest.Reactive\bin\v4.5\Release\Linq2Rest.Reactive.dll"
+			  target="lib\Net45" />
+		<file src="Linq2Rest.Reactive\bin\v4.5\Release\Linq2Rest.Reactive.xml"
+			  target="lib\Net45" />
+		<file src="Linq2Rest.Reactive\bin\v4.5\Release\CodeContracts\Linq2Rest.Reactive.Contracts.dll"
+			  target="lib\Net45\CodeContracts" />
+		<file src="Linq2Rest.Reactive.SL\bin\Release\Linq2Rest.Reactive.dll"
+			  target="lib\SL5" />
+		<file src="Linq2Rest.Reactive.SL\bin\Release\Linq2Rest.Reactive.xml"
+			  target="lib\SL5" />
+		<file src="Linq2Rest.Reactive.WP7\bin\Release\Linq2Rest.Reactive.dll"
+			  target="lib\SL4-WindowsPhone71" />
+		<file src="Linq2Rest.Reactive.WP7\bin\Release\Linq2Rest.Reactive.xml"
+			  target="lib\SL4-WindowsPhone71" />
+	</files>
+</package>

@@ -1,0 +1,512 @@
+// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://www.opensource.org/licenses/MS-PL] for details.
+// All other rights reserved.
+
+namespace Linq2Rest.Provider
+{
+	using System;
+	using System.Collections.Generic;
+#if !SILVERLIGHT
+	using System.Diagnostics.Contracts;
+#endif
+	using System.Globalization;
+	using System.Linq;
+	using System.Linq.Expressions;
+	using System.Reflection;
+	using Linq2Rest.Provider.Writers;
+
+	internal class ExpressionVisitor : IExpressionVisitor
+	{
+		private static readonly ExpressionType[] CompositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
+
+		public string Visit(Expression expression)
+		{
+			return expression == null ? null : Visit(expression, expression.Type, GetRootParameterName(expression));
+		}
+
+		private static Type GetUnconvertedType(Expression expression)
+		{
+#if !SILVERLIGHT
+			Contract.Requires(expression != null);
+#endif
+
+			switch (expression.NodeType)
+			{
+				case ExpressionType.Convert:
+					var unaryExpression = expression as UnaryExpression;
+
+#if !SILVERLIGHT
+					Contract.Assume(unaryExpression != null, "Matches node type.");
+#endif
+
+					return unaryExpression.Operand.Type;
+				default:
+					return expression.Type;
+			}
+		}
+
+		private static string GetMemberCall(MemberExpression memberExpression)
+		{
+#if !SILVERLIGHT
+			Contract.Requires(memberExpression != null);
+			Contract.Ensures(Contract.Result<string>() != null);
+#endif
+
+			var declaringType = memberExpression.Member.DeclaringType;
+			var name = memberExpression.Member.Name;
+
+			if (declaringType == typeof(string))
+			{
+				if (name == "Length")
+				{
+					return name.ToLowerInvariant();
+				}
+			}
+			else if (declaringType == typeof(DateTime))
+			{
+				switch (name)
+				{
+					case "Hour":
+					case "Minute":
+					case "Second":
+					case "Day":
+					case "Month":
+					case "Year":
+						return name.ToLowerInvariant();
+				}
+			}
+
+			return string.Empty;
+		}
+
+		private static Expression CollapseCapturedOuterVariables(MemberExpression input)
+		{
+			if (input == null || input.NodeType != ExpressionType.MemberAccess)
+			{
+				return input;
+			}
+
+			if (input.Expression is MemberExpression)
+			{
+				var value = GetValue(input);
+				return Expression.Constant(value);
+			}
+
+			var constantExpression = input.Expression as ConstantExpression;
+			if (constantExpression != null)
+			{
+				var obj = constantExpression.Value;
+				if (obj == null)
+				{
+					return input;
+				}
+
+				var fieldInfo = input.Member as FieldInfo;
+				if (fieldInfo != null)
+				{
+					var result = fieldInfo.GetValue(obj);
+					return result is Expression ? (Expression)result : Expression.Constant(result);
+				}
+
+				var propertyInfo = input.Member as PropertyInfo;
+				if (propertyInfo != null)
+				{
+					var result = propertyInfo.GetValue(obj, null);
+					return result is Expression ? (Expression)result : Expression.Constant(result);
+				}
+			}
+
+			return input;
+		}
+
+		private static object GetValue(Expression input)
+		{
+#if !SILVERLIGHT
+			Contract.Requires(input != null);
+#endif
+
+			var objectMember = Expression.Convert(input, typeof(object));
+			var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
+
+			return getterLambda();
+		}
+
+		private static bool IsMemberOfParameter(MemberExpression input)
+		{
+#if !SILVERLIGHT
+			Contract.Requires(input != null);
+#endif
+
+			if (input.Expression == null)
+			{
+				return false;
+			}
+
+			var nodeType = input.Expression.NodeType;
+			var tempExpression = input.Expression as MemberExpression;
+			while (nodeType == ExpressionType.MemberAccess)
+			{
+#if !SILVERLIGHT
+				Contract.Assume(tempExpression != null, "It's a member access");
+#endif
+
+				nodeType = tempExpression.Expression.NodeType;
+				tempExpression = tempExpression.Expression as MemberExpression;
+			}
+
+			return nodeType == ExpressionType.Parameter;
+		}
+
+		private static string GetOperation(Expression expression)
+		{
+#if !SILVERLIGHT
+			Contract.Requires(expression != null);
+#endif
+
+			switch (expression.NodeType)
+			{
+				case ExpressionType.Add:
+					return "add";
+				case ExpressionType.AddChecked:
+					break;
+				case ExpressionType.And:
+				case ExpressionType.AndAlso:
+					return "and";
+				case ExpressionType.Divide:
+					return "div";
+				case ExpressionType.Equal:
+					return "eq";
+				case ExpressionType.GreaterThan:
+					return "gt";
+				case ExpressionType.GreaterThanOrEqual:
+					return "ge";
+				case ExpressionType.LessThan:
+					return "lt";
+				case ExpressionType.LessThanOrEqual:
+					return "le";
+				case ExpressionType.Modulo:
+					return "mod";
+				case ExpressionType.Multiply:
+					return "mul";
+				case ExpressionType.Not:
+					return "not";
+				case ExpressionType.NotEqual:
+					return "ne";
+				case ExpressionType.Or:
+				case ExpressionType.OrElse:
+					return "or";
+				case ExpressionType.Subtract:
+					return "sub";
+			}
+
+			return string.Empty;
+		}
+
+		private static string GetRootParameterName(Expression expression)
+		{
+			if (expression is UnaryExpression)
+			{
+				expression = ((UnaryExpression)expression).Operand;
+			}
+
+			if (expression is LambdaExpression && ((LambdaExpression)expression).Parameters.Count > 0)
+			{
+				return ((LambdaExpression)expression).Parameters.First().Name;
+			}
+
+			return null;
+		}
+
+		private string Visit(Expression expression, string rootParameterName)
+		{
+			return expression == null ? null : Visit(expression, expression.Type, rootParameterName);
+		}
+
+		private string GetMethodCall(MethodCallExpression expression, string rootParameterName)
+		{
+#if !SILVERLIGHT
+			Contract.Requires(expression != null);
+#endif
+
+			var methodName = expression.Method.Name;
+			var declaringType = expression.Method.DeclaringType;
+			if (declaringType == typeof(string))
+			{
+				var obj = expression.Object;
+#if !SILVERLIGHT
+				Contract.Assume(obj != null);
+#endif
+
+				switch (methodName)
+				{
+					case "Replace":
+						{
+#if !SILVERLIGHT
+							Contract.Assume(expression.Arguments.Count > 1);
+#endif
+
+							var firstArgument = expression.Arguments[0];
+							var secondArgument = expression.Arguments[1];
+
+#if !SILVERLIGHT
+							Contract.Assume(firstArgument != null);
+							Contract.Assume(secondArgument != null);
+#endif
+
+							return string.Format(
+								"replace({0}, {1}, {2})",
+								Visit(obj, rootParameterName),
+								Visit(firstArgument, rootParameterName),
+								Visit(secondArgument, rootParameterName));
+						}
+
+					case "Trim":
+						return string.Format("trim({0})", Visit(obj, rootParameterName));
+					case "ToLower":
+					case "ToLowerInvariant":
+						return string.Format("tolower({0})", Visit(obj, rootParameterName));
+					case "ToUpper":
+					case "ToUpperInvariant":
+						return string.Format("toupper({0})", Visit(obj, rootParameterName));
+					case "Substring":
+						{
+#if !SILVERLIGHT
+							Contract.Assume(expression.Arguments.Count > 0);
+#endif
+
+							if (expression.Arguments.Count == 1)
+							{
+								var argumentExpression = expression.Arguments[0];
+
+#if !SILVERLIGHT
+								Contract.Assume(argumentExpression != null);
+#endif
+
+								return string.Format(
+									"substring({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
+							}
+
+							var firstArgument = expression.Arguments[0];
+							var secondArgument = expression.Arguments[1];
+
+#if !SILVERLIGHT
+							Contract.Assume(firstArgument != null);
+							Contract.Assume(secondArgument != null);
+#endif
+
+							return string.Format(
+								"substring({0}, {1}, {2})",
+								Visit(obj, rootParameterName),
+								Visit(firstArgument, rootParameterName),
+								Visit(secondArgument, rootParameterName));
+						}
+
+					case "IndexOf":
+						{
+#if !SILVERLIGHT
+							Contract.Assume(expression.Arguments.Count > 0);
+#endif
+
+							var argumentExpression = expression.Arguments[0];
+
+#if !SILVERLIGHT
+							Contract.Assume(argumentExpression != null);
+#endif
+
+							return string.Format("indexof({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
+						}
+
+					case "EndsWith":
+						{
+#if !SILVERLIGHT
+							Contract.Assume(expression.Arguments.Count > 0);
+#endif
+
+							var argumentExpression = expression.Arguments[0];
+
+#if !SILVERLIGHT
+							Contract.Assume(argumentExpression != null);
+#endif
+
+							return string.Format("endswith({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
+						}
+
+					case "StartsWith":
+						{
+#if !SILVERLIGHT
+							Contract.Assume(expression.Arguments.Count > 0);
+#endif
+
+							var argumentExpression = expression.Arguments[0];
+
+#if !SILVERLIGHT
+							Contract.Assume(argumentExpression != null);
+#endif
+
+							return string.Format("startswith({0}, {1})", Visit(obj, rootParameterName), Visit(argumentExpression, rootParameterName));
+						}
+				}
+			}
+			else if (declaringType == typeof(Math))
+			{
+#if !SILVERLIGHT
+				Contract.Assume(expression.Arguments.Count > 0);
+#endif
+
+				var mathArgument = expression.Arguments[0];
+
+#if !SILVERLIGHT
+				Contract.Assume(mathArgument != null);
+#endif
+
+				switch (methodName)
+				{
+					case "Round":
+						return string.Format("round({0})", Visit(mathArgument, rootParameterName));
+					case "Floor":
+						return string.Format("floor({0})", Visit(mathArgument, rootParameterName));
+					case "Ceiling":
+						return string.Format("ceiling({0})", Visit(mathArgument, rootParameterName));
+				}
+			}
+
+			if (expression.Method.Name == "Any" || expression.Method.Name == "All")
+			{
+#if !SILVERLIGHT
+				Contract.Assume(expression.Arguments.Count > 1);
+#endif
+
+				return string.Format("{0}/{1}({2}: {3})", Visit(expression.Arguments[0], rootParameterName), expression.Method.Name.ToLowerInvariant(), expression.Arguments[1] is LambdaExpression ? (expression.Arguments[1] as LambdaExpression).Parameters.First().Name : null, Visit(expression.Arguments[1], rootParameterName));
+			}
+
+			if (expression.Method.IsStatic)
+			{
+				return expression.ToString();
+			}
+
+			return string.Empty;
+		}
+
+		private string Visit(Expression expression, Type type, string rootParameterName)
+		{
+#if !SILVERLIGHT
+			Contract.Requires(expression != null);
+			Contract.Requires(type != null);
+#endif
+
+			if (expression is LambdaExpression)
+			{
+				var body = (expression as LambdaExpression).Body;
+				return Visit(body, rootParameterName);
+			}
+
+			var memberExpression = expression as MemberExpression;
+
+			if (memberExpression != null)
+			{
+				var pathPrefixes = new List<string>();
+
+				var currentMemberExpression = memberExpression;
+				while (currentMemberExpression != null)
+				{
+					pathPrefixes.Add(currentMemberExpression.Member.Name);
+					if (currentMemberExpression.Expression is ParameterExpression && ((ParameterExpression)currentMemberExpression.Expression).Name != rootParameterName)
+					{
+						pathPrefixes.Add(((ParameterExpression)currentMemberExpression.Expression).Name);
+					}
+
+					currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
+				}
+
+				pathPrefixes.Reverse();
+				var prefix = string.Join("/", pathPrefixes);
+
+				if (!IsMemberOfParameter(memberExpression))
+				{
+					var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
+					if (!(collapsedExpression is MemberExpression))
+					{
+#if !SILVERLIGHT
+						Contract.Assume(collapsedExpression != null);
+#endif
+
+						return Visit(collapsedExpression, rootParameterName);
+					}
+
+					memberExpression = (MemberExpression)collapsedExpression;
+				}
+
+				var memberCall = GetMemberCall(memberExpression);
+
+				var innerExpression = memberExpression.Expression;
+
+#if !SILVERLIGHT
+				Contract.Assume(innerExpression != null);
+#endif
+
+				return string.IsNullOrWhiteSpace(memberCall)
+						? prefix
+						: string.Format("{0}({1})", memberCall, Visit(innerExpression, rootParameterName));
+			}
+
+			if (expression is ConstantExpression)
+			{
+				var value = GetValue(Expression.Convert(expression, type));
+
+#if !SILVERLIGHT
+				Contract.Assume(type != null);
+#endif
+
+				return ParameterValueWriter.Write(value);
+			}
+
+			if (expression is UnaryExpression)
+			{
+				var unaryExpression = expression as UnaryExpression;
+				var operand = unaryExpression.Operand;
+				switch (unaryExpression.NodeType)
+				{
+					case ExpressionType.Not:
+#if !SILVERLIGHT
+					case ExpressionType.IsFalse:
+#endif
+						return string.Format("not({0})", Visit(operand, rootParameterName));
+					default:
+						return Visit(operand, rootParameterName);
+				}
+			}
+
+			if (expression is BinaryExpression)
+			{
+				var binaryExpression = expression as BinaryExpression;
+				var operation = GetOperation(binaryExpression);
+
+				var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
+				var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
+
+				var leftType = GetUnconvertedType(binaryExpression.Left);
+				var leftString = Visit(binaryExpression.Left, rootParameterName);
+				var rightString = Visit(binaryExpression.Right, leftType, rootParameterName);
+
+				return string.Format(
+					"{0} {1} {2}",
+					string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
+					operation,
+					string.Format(isRightComposite ? "({0})" : "{0}", rightString));
+			}
+
+			if (expression is MethodCallExpression)
+			{
+				return GetMethodCall(expression as MethodCallExpression, rootParameterName);
+			}
+
+			if (expression is NewExpression)
+			{
+				return GetValue(expression).ToString();
+			}
+
+			throw new InvalidOperationException("Expression is not recognized or supported");
+		}
+	}
+}
