@@ -33,7 +33,7 @@ namespace Linq2Rest.Tests.Provider
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
 			_mockClient.Setup(x => x.Get(It.IsAny<Uri>()))
 				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
-				.Returns("[{Value : 2, Content : \"blah\" }]");
+				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\" }]".ToStream());
 
 			_provider = new RestContext<SimpleDto>(_mockClient.Object, serializerFactory);
 
@@ -41,14 +41,14 @@ namespace Linq2Rest.Tests.Provider
 			_mockComplexClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
 			_mockComplexClient.Setup(x => x.Get(It.IsAny<Uri>()))
 				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
-				.Returns("[{Value : 2, Content : \"blah\", Child : {ID : 2, Name : \"Foo\"}}]");
+				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\", \"Child\" : {\"ID\" : 2, \"Name\" : \"Foo\"}}]".ToStream());
 			_complexProvider = new RestContext<ComplexDto>(_mockComplexClient.Object, serializerFactory);
 
 			_mockCollectionClient = new Mock<IRestClient>();
 			_mockCollectionClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
 			_mockCollectionClient.Setup(x => x.Get(It.IsAny<Uri>()))
 				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
-				.Returns("[{Value : 2, Content : \"blah\", Children : [{ID : 1, Name : \"Foo\"}, {ID : 2, Name : \"Bar\"}]}]");
+				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\", \"Children\" : [{\"ID\" : 1, \"Name\" : \"Foo\"}, {\"ID\" : 2, \"Name\" : \"Bar\"}]}]".ToStream());
 
 			_collectionProvider = new RestContext<CollectionDto>(_mockCollectionClient.Object, serializerFactory);
 		}

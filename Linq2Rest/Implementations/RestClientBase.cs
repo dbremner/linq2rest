@@ -7,6 +7,7 @@ namespace Linq2Rest.Implementations
 {
 	using System;
 	using System.Diagnostics.Contracts;
+	using System.IO;
 	using System.Net;
 	using Linq2Rest.Provider;
 
@@ -40,11 +41,11 @@ namespace Linq2Rest.Implementations
 		/// </summary>
 		/// <param name="uri">The <see cref="Uri"/> to load the resource from.</param>
 		/// <returns>A string representation of the resource.</returns>
-		public string Get(Uri uri)
+		public Stream Get(Uri uri)
 		{
 			_client.Headers[HttpRequestHeader.Accept] = _acceptHeader;
 
-			return _client.DownloadString(uri);
+			return new MemoryStream(_client.DownloadData(uri));
 		}
 
 		/// <summary>

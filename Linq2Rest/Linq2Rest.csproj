@@ -132,7 +132,7 @@
     <Compile Include="Parser\IFilterExpressionFactory.cs" />
     <Compile Include="Parser\IMemberNameResolver.cs" />
     <Compile Include="Parser\IParameterParser.cs" />
-    <Compile Include="LinqExtensions.cs" />
+    <Compile Include="GeneralExtensions.cs" />
     <Compile Include="Parser\ISelectExpressionFactory.cs" />
     <Compile Include="ModelFilter.cs" />
     <Compile Include="Parser\ISortExpressionFactory.cs" />

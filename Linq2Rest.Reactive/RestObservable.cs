@@ -11,6 +11,7 @@ namespace Linq2Rest.Reactive
 #if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
 #endif
+	using System.IO;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
@@ -116,11 +117,11 @@ namespace Linq2Rest.Reactive
 			var client = _restClient.Create(builder.GetFullUri());
 
 			return Task.Factory
-				.FromAsync<string>(client.BeginGetResult, client.EndGetResult, null)
+				.FromAsync<Stream>(client.BeginGetResult, client.EndGetResult, null)
 				.ContinueWith<IEnumerable>(x => ReadIntermediateResponse(type, x.Result));
 		}
 
-		private IEnumerable ReadIntermediateResponse(Type type, string response)
+		private IEnumerable ReadIntermediateResponse(Type type, Stream response)
 		{
 			var genericMethod = ReflectionHelper.CreateMethod.MakeGenericMethod(type);
 #if !SILVERLIGHT
@@ -140,11 +141,11 @@ namespace Linq2Rest.Reactive
 			var client = _restClient.Create(fullUri);
 
 			return Task.Factory
-				.FromAsync<string>(client.BeginGetResult, client.EndGetResult, null)
+				.FromAsync<Stream>(client.BeginGetResult, client.EndGetResult, null)
 				.ContinueWith<IList<T>>(ReadResponse);
 		}
 
-		private IList<T> ReadResponse(Task<string> downloadTask)
+		private IList<T> ReadResponse(Task<Stream> downloadTask)
 		{
 			var serializer = _serializerFactory.Create<T>();
 

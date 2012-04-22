@@ -6,11 +6,12 @@
 namespace Linq2Rest.Reactive.Tests.Fakes
 {
 	using System.Collections.Generic;
-	using System.Diagnostics.CodeAnalysis;
+	using System.Runtime.Serialization;
 
+	[DataContract]
 	public class ODataResult<T>
 	{
-		[SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Needed for test.")]
-		public List<T> results { get; set; }
+		[DataMember(Name = "results")]
+		public List<T> Results { get; set; }
 	}
 }

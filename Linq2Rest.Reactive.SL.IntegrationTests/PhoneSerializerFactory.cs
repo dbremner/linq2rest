@@ -29,20 +29,14 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 				_innerListSerializer = new DataContractJsonSerializer(typeof(List<T>));
 			}
 
-			public T Deserialize(string input)
+			public T Deserialize(Stream input)
 			{
-				using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(input)))
-				{
-					return (T)_innerSerializer.ReadObject(ms);
-				}
+				return (T)_innerSerializer.ReadObject(input);
 			}
 
-			public IList<T> DeserializeList(string input)
+			public IList<T> DeserializeList(Stream input)
 			{
-				using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(input)))
-				{
-					return (IList<T>)_innerListSerializer.ReadObject(ms);
-				}
+				return (IList<T>)_innerListSerializer.ReadObject(input);
 			}
 		}
 	}

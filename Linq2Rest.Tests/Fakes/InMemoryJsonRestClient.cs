@@ -10,7 +10,6 @@ namespace Linq2Rest.Tests.Fakes
 	using System.IO;
 	using System.Linq;
 	using System.Runtime.Serialization.Json;
-	using System.Text;
 	using System.Web;
 	using Linq2Rest.Provider;
 
@@ -34,17 +33,13 @@ namespace Linq2Rest.Tests.Fakes
 		{
 		}
 
-		public string Get(Uri uri)
+		public Stream Get(Uri uri)
 		{
-			string content;
-			using (var stream = new MemoryStream())
-			{
-				_serializer.WriteObject(stream, _data.Filter(HttpUtility.ParseQueryString(uri.Query)).ToArray());
-				stream.Seek(0, SeekOrigin.Begin);
-				content = Encoding.Default.GetString(stream.ToArray());
-			}
+			var stream = new MemoryStream();
 
-			return content;
+			_serializer.WriteObject(stream, _data.Filter(HttpUtility.ParseQueryString(uri.Query)).ToArray());
+			stream.Seek(0, SeekOrigin.Begin);
+			return stream;
 		}
 	}
 }
