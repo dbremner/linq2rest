@@ -11,6 +11,7 @@ namespace Linq2Rest.Reactive
 #if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
 #endif
+	using System.IO;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
@@ -53,7 +54,7 @@ namespace Linq2Rest.Reactive
 			Contract.Requires(serializerFactory != null);
 #endif
 
-			_processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor()); // new ExpressionProcessor(new Provider.ExpressionVisitor());
+			_processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor());
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
 			_subscriberScheduler = subscriberScheduler ?? Scheduler.Immediate;
@@ -116,11 +117,11 @@ namespace Linq2Rest.Reactive
 			var client = _restClient.Create(builder.GetFullUri());
 
 			return Task.Factory
-				.FromAsync<string>(client.BeginGetResult, client.EndGetResult, null)
+				.FromAsync<Stream>(client.BeginGetResult, client.EndGetResult, null)
 				.ContinueWith<IEnumerable>(x => ReadIntermediateResponse(type, x.Result));
 		}
 
-		private IEnumerable ReadIntermediateResponse(Type type, string response)
+		private IEnumerable ReadIntermediateResponse(Type type, Stream response)
 		{
 			var genericMethod = ReflectionHelper.CreateMethod.MakeGenericMethod(type);
 #if !SILVERLIGHT
@@ -134,17 +135,17 @@ namespace Linq2Rest.Reactive
 			return resultSet as IEnumerable;
 		}
 
-		private Task<IList<T>> GetResults(ParameterBuilder builder)
+		private Task<IEnumerable<T>> GetResults(ParameterBuilder builder)
 		{
 			var fullUri = builder.GetFullUri();
 			var client = _restClient.Create(fullUri);
 
 			return Task.Factory
-				.FromAsync<string>(client.BeginGetResult, client.EndGetResult, null)
-				.ContinueWith<IList<T>>(ReadResponse);
+				.FromAsync<Stream>(client.BeginGetResult, client.EndGetResult, null)
+				.ContinueWith<IEnumerable<T>>(ReadResponse);
 		}
 
-		private IList<T> ReadResponse(Task<string> downloadTask)
+		private IEnumerable<T> ReadResponse(Task<Stream> downloadTask)
 		{
 			var serializer = _serializerFactory.Create<T>();
 

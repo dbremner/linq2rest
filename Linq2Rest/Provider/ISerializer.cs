@@ -6,6 +6,7 @@
 namespace Linq2Rest.Provider
 {
 	using System.Collections.Generic;
+	using System.IO;
 
 	/// <summary>
 	/// Defines the public interface for an object serializer.
@@ -18,13 +19,13 @@ namespace Linq2Rest.Provider
 		/// </summary>
 		/// <param name="input">The serialized item.</param>
 		/// <returns>An instance of the serialized item.</returns>
-		T Deserialize(string input);
+		T Deserialize(Stream input);
 
 		/// <summary>
 		/// Deserializes a list of items.
 		/// </summary>
 		/// <param name="input">The serialized items.</param>
 		/// <returns>An list of the serialized items.</returns>
-		IList<T> DeserializeList(string input);
+		IEnumerable<T> DeserializeList(Stream input);
 	}
 }

@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\v4.5\Debug\</OutputPath>
-	<BaseIntermediateOutputPath>obj\v4.5</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>obj\v4.5</BaseIntermediateOutputPath>
     <DocumentationFile>bin\v4.5\Debug\Linq2Rest.xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -67,7 +67,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\v4.5\Release\</OutputPath>
-	<BaseIntermediateOutputPath>obj\v4.5</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>obj\v4.5</BaseIntermediateOutputPath>
     <DocumentationFile>bin\v4.5\Release\Linq2Rest.xml</DocumentationFile>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -117,6 +117,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeneralExtensions.cs" />
     <Compile Include="IModelFilter.cs" />
     <Compile Include="Implementations\JsonDataContractSerializerFactory.cs" />
     <Compile Include="Implementations\RestClientBase.cs" />
@@ -132,7 +133,6 @@
     <Compile Include="Parser\IFilterExpressionFactory.cs" />
     <Compile Include="Parser\IMemberNameResolver.cs" />
     <Compile Include="Parser\IParameterParser.cs" />
-    <Compile Include="LinqExtensions.cs" />
     <Compile Include="Parser\ISelectExpressionFactory.cs" />
     <Compile Include="ModelFilter.cs" />
     <Compile Include="Parser\ISortExpressionFactory.cs" />

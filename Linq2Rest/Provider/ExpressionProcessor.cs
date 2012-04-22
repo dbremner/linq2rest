@@ -22,7 +22,7 @@ namespace Linq2Rest.Provider
 			_visitor = visitor;
 		}
 
-		public object ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
+		public object ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IEnumerable<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
 		{
 			if (methodCall == null)
 			{
@@ -172,7 +172,11 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						var objectMember = Expression.Convert(methodCall.Arguments[1], typeof(object));
+						var expression = methodCall.Arguments[1];
+
+						Contract.Assume(expression != null);
+
+						var objectMember = Expression.Convert(expression, typeof(object));
 						var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
 
 						builder.ExpandParameter = getterLambda().ToString();
@@ -226,7 +230,7 @@ namespace Linq2Rest.Provider
 			return null;
 		}
 
-		private object GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
+		private object GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IEnumerable<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
 		{
 			Contract.Requires(methodCall != null);
 			Contract.Requires(builder != null);
@@ -243,7 +247,12 @@ namespace Linq2Rest.Provider
 			builder.FilterParameter = currentParameter;
 
 			var genericArguments = methodCall.Method.GetGenericArguments();
-			var nonGenericMethod = typeof(Queryable).GetMethods().Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1);
+			var queryableMethods = typeof(Queryable).GetMethods();
+
+			Contract.Assume(queryableMethods.Count() > 0);
+
+			var nonGenericMethod = queryableMethods
+				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1);
 
 			Contract.Assume(nonGenericMethod != null);
 
@@ -254,11 +263,12 @@ namespace Linq2Rest.Provider
 
 			Contract.Assume(list != null);
 
-			var parameters = new object[] { list.AsQueryable() };
+			var queryable = list.AsQueryable();
+			var parameters = new object[] { queryable };
 			return method.Invoke(null, parameters);
 		}
 
-		private object GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
+		private object GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IEnumerable<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
 		{
 			Contract.Requires(builder != null);
 			Contract.Requires(methodCall != null);
@@ -277,7 +287,7 @@ namespace Linq2Rest.Provider
 			return final;
 		}
 
-		private object ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IList<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
+		private object ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IEnumerable<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
 		{
 			Contract.Requires(methodCall != null);
 			Contract.Requires(resultLoader != null);

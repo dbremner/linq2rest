@@ -33,7 +33,7 @@ namespace Linq2Rest.Tests.Provider
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
 			_mockClient.Setup(x => x.Get(It.IsAny<Uri>()))
 				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
-				.Returns("[{Value : 2, Content : \"blah\" }]");
+				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\" }]".ToStream());
 
 			_provider = new RestContext<SimpleDto>(_mockClient.Object, serializerFactory);
 
@@ -41,14 +41,14 @@ namespace Linq2Rest.Tests.Provider
 			_mockComplexClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
 			_mockComplexClient.Setup(x => x.Get(It.IsAny<Uri>()))
 				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
-				.Returns("[{Value : 2, Content : \"blah\", Child : {ID : 2, Name : \"Foo\"}}]");
+				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\", \"Child\" : {\"ID\" : 2, \"Name\" : \"Foo\"}}]".ToStream());
 			_complexProvider = new RestContext<ComplexDto>(_mockComplexClient.Object, serializerFactory);
 
 			_mockCollectionClient = new Mock<IRestClient>();
 			_mockCollectionClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
 			_mockCollectionClient.Setup(x => x.Get(It.IsAny<Uri>()))
 				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
-				.Returns("[{Value : 2, Content : \"blah\", Children : [{ID : 1, Name : \"Foo\"}, {ID : 2, Name : \"Bar\"}]}]");
+				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\", \"Children\" : [{\"ID\" : 1, \"Name\" : \"Foo\"}, {\"ID\" : 2, \"Name\" : \"Bar\"}]}]".ToStream());
 
 			_collectionProvider = new RestContext<CollectionDto>(_mockCollectionClient.Object, serializerFactory);
 		}
@@ -94,6 +94,25 @@ namespace Linq2Rest.Tests.Provider
 				.Count(x => x.ID != 0);
 
 			_mockClient.Verify(x => x.Get(It.IsAny<Uri>()), Times.Once());
+		}
+		[Test]
+		public void WhenApplyingNegateQueryThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Count(x => -x.Value < 3);
+
+			var uri = new Uri("http://localhost/?$filter=-Value+lt+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingEqualsQueryThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Count(x => x.Value.Equals(3));
+
+			var uri = new Uri("http://localhost/?$filter=Value+eq+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]

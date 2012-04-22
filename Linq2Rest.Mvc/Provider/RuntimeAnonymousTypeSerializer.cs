@@ -9,6 +9,7 @@ namespace Linq2Rest.Mvc.Provider
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
+	using System.IO;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Web.Script.Serialization;
@@ -29,10 +30,11 @@ namespace Linq2Rest.Mvc.Provider
 		/// </summary>
 		/// <param name="input">The serialized item.</param>
 		/// <returns>An instance of the serialized item.</returns>
-		public T Deserialize(string input)
+		public T Deserialize(Stream input)
 		{
+			var content = new StreamReader(input).ReadToEnd();
 			var selectorFunction = CreateSelector(typeof(IDictionary<string, object>));
-			var dictionary = _innerSerializer.DeserializeObject(input);
+			var dictionary = _innerSerializer.DeserializeObject(content);
 
 			return selectorFunction(dictionary);
 		}
@@ -42,9 +44,10 @@ namespace Linq2Rest.Mvc.Provider
 		/// </summary>
 		/// <param name="input">The serialized items.</param>
 		/// <returns>An list of the serialized items.</returns>
-		public IList<T> DeserializeList(string input)
+		public IEnumerable<T> DeserializeList(Stream input)
 		{
-			return ReadToAnonymousType(input);
+			var content = new StreamReader(input).ReadToEnd();
+			return ReadToAnonymousType(content);
 		}
 
 		private IList<T> ReadToAnonymousType(string response)

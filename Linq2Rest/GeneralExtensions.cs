@@ -8,10 +8,12 @@ namespace Linq2Rest
 {
 	using System;
 	using System.Diagnostics.Contracts;
+	using System.IO;
 	using System.Reflection;
 	using System.Runtime.CompilerServices;
+	using System.Text;
 
-	internal static class LinqExtensions
+	internal static class GeneralExtensions
 	{
 		public static bool IsAnonymousType(this Type type)
 		{
@@ -21,6 +23,18 @@ namespace Linq2Rest
 				&& type.IsGenericType
 				&& type.Name.Contains("AnonymousType") && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
 				&& (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
+		}
+
+		public static string Capitalize(this string input)
+		{
+			Contract.Requires(!String.IsNullOrEmpty(input));
+
+			return Char.ToUpperInvariant(input[0]) + input.Substring(1);
+		}
+
+		public static Stream ToStream(this string input)
+		{
+			return new MemoryStream(Encoding.UTF8.GetBytes(input));
 		}
 	}
 }

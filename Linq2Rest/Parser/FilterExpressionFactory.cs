@@ -8,7 +8,6 @@ using System.Collections.Generic;
 namespace Linq2Rest.Parser
 {
 	using System;
-	using System.Collections.Concurrent;
 	using System.Diagnostics.Contracts;
 	using System.Globalization;
 	using System.Linq;
@@ -24,6 +23,7 @@ namespace Linq2Rest.Parser
 	{
 		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
 		private static readonly Regex StringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
+		private static readonly Regex NegateRx = new Regex(@"^-[^\d]*", RegexOptions.Compiled);
 		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		/// <summary>
@@ -285,17 +285,6 @@ namespace Linq2Rest.Parser
 				case "ceiling":
 					return Expression.Call(left.Type == typeof(double) ? MethodProvider.DoubleCeilingMethod : MethodProvider.DecimalCeilingMethod, left);
 				case "any":
-					{
-						Contract.Assume(right != null);
-
-						return CreateAnyAllExpression(
-													  left,
-													  right,
-													  sourceParameter,
-													  lambdaParameters,
-													  MethodProvider.GetAnyMethod(left.Type));
-					}
-
 				case "all":
 					{
 						Contract.Assume(right != null);
@@ -305,7 +294,7 @@ namespace Linq2Rest.Parser
 													  right,
 													  sourceParameter,
 													  lambdaParameters,
-													  MethodProvider.GetAllMethod(left.Type));
+													  MethodProvider.GetAnyAllMethod(function.Capitalize(), left.Type));
 					}
 
 				default:
@@ -342,7 +331,7 @@ namespace Linq2Rest.Parser
 			}
 
 			return Expression.Call(
-								   MethodProvider.GetAllMethod(left.Type),
+								   MethodProvider.GetAnyAllMethod("All", left.Type),
 								   left,
 								   Expression.Lambda(genericFunc, right, lambdaParameters));
 		}
@@ -371,6 +360,16 @@ namespace Linq2Rest.Parser
 			if (stringMatch.Success)
 			{
 				expression = Expression.Constant(stringMatch.Groups[1].Value, typeof(string));
+			}
+
+			if (NegateRx.IsMatch(filter))
+			{
+				expression = Expression.Negate(CreateExpression<T>(
+					filter.Substring(1),
+					sourceParameter,
+					lambdaParameters,
+					type,
+					formatProvider));
 			}
 
 			if (expression == null)

@@ -6,6 +6,7 @@
 namespace Linq2Rest.Reactive.WP7Sample
 {
 	using System;
+	using System.IO;
 	using System.Threading;
 	using System.Threading.Tasks;
 	using Linq2Rest.Reactive;
@@ -51,14 +52,14 @@ namespace Linq2Rest.Reactive.WP7Sample
 				return new FakeAsyncResult(callback);
 			}
 
-			public string EndGetResult(IAsyncResult result)
+			public Stream EndGetResult(IAsyncResult result)
 			{
 				if (_responseDelay > 0)
 				{
 					Thread.Sleep(_responseDelay);
 				}
 
-				return "[]";
+				return "[]".ToStream();
 			}
 
 			private class FakeAsyncResult : IAsyncResult

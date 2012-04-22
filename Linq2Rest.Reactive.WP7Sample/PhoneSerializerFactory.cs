@@ -8,7 +8,6 @@ namespace Linq2Rest.Reactive.WP7Sample
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Runtime.Serialization.Json;
-	using System.Text;
 	using Linq2Rest.Provider;
 
 	public class PhoneSerializerFactory : ISerializerFactory
@@ -29,20 +28,14 @@ namespace Linq2Rest.Reactive.WP7Sample
 				_innerListSerializer = new DataContractJsonSerializer(typeof(List<T>));
 			}
 
-			public T Deserialize(string input)
+			public T Deserialize(Stream input)
 			{
-				using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(input)))
-				{
-					return (T)_innerSerializer.ReadObject(ms);
-				}
+					return (T)_innerSerializer.ReadObject(input);
 			}
 
-			public IList<T> DeserializeList(string input)
+			public IEnumerable<T> DeserializeList(Stream input)
 			{
-				using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(input)))
-				{
-					return (IList<T>)_innerListSerializer.ReadObject(ms);
-				}
+					return (IEnumerable<T>)_innerListSerializer.ReadObject(input);
 			}
 		}
 	}

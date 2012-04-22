@@ -19,6 +19,7 @@ namespace Linq2Rest.Parser
 
 		public static IEnumerable<TokenSet> GetTokens(this string expression)
 		{
+			Contract.Requires(expression != null);
 			Contract.Ensures(Contract.Result<IEnumerable<TokenSet>>() != null);
 
 			var cleanMatch = expression.EnclosedMatch();
@@ -37,27 +38,36 @@ namespace Linq2Rest.Parser
 				yield break;
 			}
 
-			var blocks = expression.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			var blocks = expression.Split(new[] { ' ' });
 
 			var openGroups = 0;
 			var startExpression = 0;
 			var currentTokens = new TokenSet();
 
+			var processingString = false;
+
 			for (int i = 0; i < blocks.Length; i++)
 			{
+				if (blocks[i].IsStringStart())
+				{
+					processingString = true;
+				}
+
 				var netEnclosed = blocks[i].Count(c => c == '(') - blocks[i].Count(c => c == ')');
 				openGroups += netEnclosed;
 
 				if (openGroups == 0)
 				{
-					if (blocks[i].IsOperation())
+					if (!processingString && blocks[i].IsOperation())
 					{
 						var expression1 = startExpression;
-						Func<string, int, bool> predicate = (x, j) => j >= expression1 && j < i;
 
 						if (string.IsNullOrWhiteSpace(currentTokens.Left))
 						{
-							currentTokens.Left = string.Join(" ", blocks.Where(predicate));
+							var i1 = i;
+							Func<string, int, bool> leftPredicate = (x, j) => j >= expression1 && j < i1;
+
+							currentTokens.Left = string.Join(" ", blocks.Where(leftPredicate));
 							currentTokens.Operation = blocks[i];
 							startExpression = i + 1;
 
@@ -71,7 +81,9 @@ namespace Linq2Rest.Parser
 						}
 						else
 						{
-							currentTokens.Right = string.Join(" ", blocks.Where(predicate));
+							var i2 = i;
+							Func<string, int, bool> rightPredicate = (x, j) => j >= expression1 && j < i2;
+							currentTokens.Right = string.Join(" ", blocks.Where(rightPredicate));
 
 							yield return currentTokens;
 
@@ -84,6 +96,11 @@ namespace Linq2Rest.Parser
 							}
 						}
 					}
+				}
+
+				if (blocks[i].IsStringEnd())
+				{
+					processingString = false;
 				}
 			}
 

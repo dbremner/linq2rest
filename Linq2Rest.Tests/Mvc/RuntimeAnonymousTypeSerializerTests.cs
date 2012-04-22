@@ -27,7 +27,8 @@ namespace Linq2Rest.Tests.Mvc
 				.GetMethods()
 				.First(m => m.Name == "Deserialize" && m.ReturnType == anonymousType.GetType());
 
-			dynamic result = deserializeMethod.Invoke(serializer, new object[] { Json });
+			var stream = Json.ToStream();
+			dynamic result = deserializeMethod.Invoke(serializer, new object[] { stream });
 
 			Assert.AreEqual("blah", result.Title);
 		}
@@ -38,7 +39,7 @@ namespace Linq2Rest.Tests.Mvc
 			const string Json = "[]";
 
 			var serializer = new RuntimeAnonymousTypeSerializer<FakeItem>();
-			var result = serializer.DeserializeList(Json).ToList();
+			var result = serializer.DeserializeList(Json.ToStream()).ToList();
 			
 			Assert.IsEmpty(result);
 		}
@@ -49,7 +50,7 @@ namespace Linq2Rest.Tests.Mvc
 			const string Json = "null";
 
 			var serializer = new RuntimeAnonymousTypeSerializer<FakeItem>();
-			var result = serializer.DeserializeList(Json).ToList();
+			var result = serializer.DeserializeList(Json.ToStream()).ToList();
 			
 			Assert.IsEmpty(result);
 		}

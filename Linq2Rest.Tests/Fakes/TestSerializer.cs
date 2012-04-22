@@ -6,21 +6,23 @@
 namespace Linq2Rest.Tests.Fakes
 {
 	using System.Collections.Generic;
-	using System.Web.Script.Serialization;
+	using System.IO;
+	using System.Runtime.Serialization.Json;
 	using Linq2Rest.Provider;
 
 	public class TestSerializer<T> : ISerializer<T>
 	{
-		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
+		private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(T));
+		private readonly DataContractJsonSerializer _innerListSerializer = new DataContractJsonSerializer(typeof(List<T>));
 
-		public T Deserialize(string input)
+		public T Deserialize(Stream input)
 		{
-			return _innerSerializer.Deserialize<T>(input);
+			return (T)_innerSerializer.ReadObject(input);
 		}
 
-		public IList<T> DeserializeList(string input)
+		public IEnumerable<T> DeserializeList(Stream input)
 		{
-			return _innerSerializer.Deserialize<List<T>>(input ?? "[]");
+			return (IEnumerable<T>)_innerListSerializer.ReadObject(input);
 		}
 	}
 }

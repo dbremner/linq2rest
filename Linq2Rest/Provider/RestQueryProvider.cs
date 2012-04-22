@@ -17,7 +17,7 @@ namespace Linq2Rest.Provider
 	{
 		private readonly IRestClient _client;
 		private readonly ISerializerFactory _serializerFactory;
-		private readonly ExpressionProcessor _expressionProcessor;
+		private readonly IExpressionProcessor _expressionProcessor;
 		private readonly ParameterBuilder _parameterBuilder;
 
 		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory)
@@ -27,7 +27,7 @@ namespace Linq2Rest.Provider
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 		}
 
-		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory, ExpressionProcessor expressionProcessor)
+		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
@@ -87,10 +87,10 @@ namespace Linq2Rest.Provider
 			}
 		}
 
-		private IList<T> GetResults(ParameterBuilder builder)
+		private IEnumerable<T> GetResults(ParameterBuilder builder)
 		{
 			Contract.Requires(builder != null);
-			Contract.Ensures(Contract.Result<IList<T>>() != null);
+			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
 
 			var fullUri = builder.GetFullUri();
 			var response = _client.Get(fullUri);

@@ -6,6 +6,8 @@
 namespace Linq2Rest.Reactive.Tests.Fakes
 {
 	using System;
+	using System.IO;
+	using System.Text;
 	using System.Threading;
 	using Linq2Rest.Reactive;
 
@@ -50,14 +52,14 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 				return new FakeAsyncResult();
 			}
 
-			public string EndGetResult(IAsyncResult result)
+			public Stream EndGetResult(IAsyncResult result)
 			{
 				if (_responseDelay > 0)
 				{
 					Thread.Sleep(_responseDelay);
 				}
 
-				return "[]";
+				return "[]".ToStream();
 			}
 
 			private class FakeAsyncResult : IAsyncResult

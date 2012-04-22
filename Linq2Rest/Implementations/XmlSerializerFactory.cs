@@ -62,24 +62,18 @@ namespace Linq2Rest.Implementations
 				_listSerializer = new XmlSerializer(typeof(List<T>), array);
 			}
 
-			public T Deserialize(string input)
+			public T Deserialize(Stream input)
 			{
-				using (var reader = new StringReader(input))
-				{
-					var result = (T)_serializer.Deserialize(XmlReader.Create(reader));
+				var result = (T)_serializer.Deserialize(XmlReader.Create(input));
 
-					return result;
-				}
+				return result;
 			}
 
-			public IList<T> DeserializeList(string input)
+			public IEnumerable<T> DeserializeList(Stream input)
 			{
-				using (var reader = new StringReader(input))
-				{
-					var result = (List<T>)_listSerializer.Deserialize(XmlReader.Create(reader));
+				var result = (List<T>)_listSerializer.Deserialize(XmlReader.Create(input));
 
-					return result;
-				}
+				return result;
 			}
 
 			[ContractInvariantMethod]

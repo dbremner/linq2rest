@@ -6,6 +6,8 @@
 namespace Linq2Rest.Reactive.SL.IntegrationTests
 {
 	using System;
+	using System.IO;
+	using System.Text;
 	using System.Threading;
 	using System.Threading.Tasks;
 
@@ -50,14 +52,14 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 				return new FakeAsyncResult(callback);
 			}
 
-			public string EndGetResult(IAsyncResult result)
+			public Stream EndGetResult(IAsyncResult result)
 			{
 				if (_responseDelay > 0)
 				{
 					Thread.Sleep(_responseDelay);
 				}
 
-				return "[]";
+				return new MemoryStream(Encoding.UTF8.GetBytes("[]"));
 			}
 
 			private class FakeAsyncResult : IAsyncResult

@@ -7,6 +7,7 @@ namespace Linq2Rest.Provider
 {
 	using System;
 	using System.Diagnostics.Contracts;
+	using System.IO;
 
 	/// <summary>
 	/// Defines the public interface for a REST client.
@@ -24,7 +25,7 @@ namespace Linq2Rest.Provider
 		/// </summary>
 		/// <param name="uri">The <see cref="Uri"/> to load the resource from.</param>
 		/// <returns>A string representation of the resource.</returns>
-		string Get(Uri uri);
+		Stream Get(Uri uri);
 	}
 
 	[ContractClassFor(typeof(IRestClient))]
@@ -39,9 +40,10 @@ namespace Linq2Rest.Provider
 			}
 		}
 
-		public string Get(Uri uri)
+		public Stream Get(Uri uri)
 		{
 			Contract.Requires<ArgumentNullException>(uri != null);
+			Contract.Ensures(Contract.Result<Stream>() != null);
 
 			throw new NotImplementedException();
 		}

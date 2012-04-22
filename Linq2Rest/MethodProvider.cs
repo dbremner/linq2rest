@@ -3,14 +3,12 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
 namespace Linq2Rest
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
 
@@ -270,27 +268,7 @@ namespace Linq2Rest
 			}
 		}
 
-		public static MethodInfo GetAnyMethod(Type collectionType)
-		{
-			Contract.Requires(collectionType != null);
-
-			var implementation = GetIEnumerableImpl(collectionType);
-
-			var elemType = implementation.GetGenericArguments()[0];
-			var predType = typeof(Func<,>).MakeGenericType(elemType, typeof(bool));
-
-			// Enumerable.Any<T>(IEnumerable<T>, Func<T,bool>)
-			var anyMethod = (MethodInfo)GetGenericMethod(
-														 typeof(Enumerable),
-														 "Any",
-														 new[] { elemType },
-														 new[] { implementation, predType },
-														 BindingFlags.Static);
-
-			return anyMethod;
-		}
-
-		public static MethodInfo GetAllMethod(Type collectionType)
+		public static MethodInfo GetAnyAllMethod(string name, Type collectionType)
 		{
 			Contract.Requires(collectionType != null);
 
@@ -299,10 +277,9 @@ namespace Linq2Rest
 			var elemType = implementationType.GetGenericArguments()[0];
 			var predType = typeof(Func<,>).MakeGenericType(elemType, typeof(bool));
 
-			// Enumerable.Any<T>(IEnumerable<T>, Func<T,bool>)
 			var allMethod = (MethodInfo)GetGenericMethod(
 														 typeof(Enumerable),
-														 "All",
+														 name,
 														 new[] { elemType },
 														 new[] { implementationType, predType },
 														 BindingFlags.Static);

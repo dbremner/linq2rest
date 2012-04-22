@@ -6,6 +6,7 @@
 namespace Linq2Rest.Tests.Implementations
 {
 	using System;
+	using System.Linq;
 	using Linq2Rest.Implementations;
 	using NUnit.Framework;
 
@@ -33,7 +34,7 @@ namespace Linq2Rest.Tests.Implementations
 
 			var serializer = _factory.Create<SimpleContractItem>();
 
-			var deserializedResult = serializer.Deserialize(Xml);
+			var deserializedResult = serializer.Deserialize(Xml.ToStream());
 
 			Assert.AreEqual(2, deserializedResult.Value);
 			Assert.AreEqual("test", deserializedResult.SomeString);
@@ -46,9 +47,9 @@ namespace Linq2Rest.Tests.Implementations
 
 			var serializer = _factory.Create<SimpleContractItem>();
 
-			var deserializedResult = serializer.DeserializeList(Xml);
+			var deserializedResult = serializer.DeserializeList(Xml.ToStream());
 
-			Assert.AreEqual(1, deserializedResult.Count);
+			Assert.AreEqual(1, deserializedResult.Count());
 		}
 	}
 }
