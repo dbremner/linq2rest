@@ -53,7 +53,8 @@ namespace Linq2Rest.Parser
 					if (blocks[i].IsOperation())
 					{
 						var expression1 = startExpression;
-						Func<string, int, bool> predicate = (x, j) => j >= expression1 && j < i;
+						var i1 = i;
+						Func<string, int, bool> predicate = (x, j) => j >= expression1 && j < i1;
 
 						if (string.IsNullOrWhiteSpace(currentTokens.Left))
 						{

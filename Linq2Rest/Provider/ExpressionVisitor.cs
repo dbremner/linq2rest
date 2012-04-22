@@ -10,7 +10,6 @@ namespace Linq2Rest.Provider
 #if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
 #endif
-	using System.Globalization;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;

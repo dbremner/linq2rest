@@ -31,7 +31,7 @@ namespace Linq2Rest.Parser
 			Contract.Requires<ArgumentNullException>(member != null);
 			Contract.Ensures(Contract.Result<string>() != null);
 
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }
