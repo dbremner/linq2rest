@@ -234,9 +234,9 @@ namespace Linq2Rest.Provider
 			if (methodName == "Equals")
 			{
 				return string.Format(
-				                     "{0} eq {1}",
-				                     Visit(expression.Object, rootParameterName),
-				                     Visit(expression.Arguments[0], rootParameterName));
+									 "{0} eq {1}",
+									 Visit(expression.Object, rootParameterName),
+									 Visit(expression.Arguments[0], rootParameterName));
 			}
 
 			if (declaringType == typeof(string))
@@ -402,124 +402,133 @@ namespace Linq2Rest.Provider
 			Contract.Requires(expression != null);
 			Contract.Requires(type != null);
 #endif
-
-			if (expression is LambdaExpression)
+			switch (expression.NodeType)
 			{
-				var body = (expression as LambdaExpression).Body;
-				return Visit(body, rootParameterName);
-			}
-
-			var memberExpression = expression as MemberExpression;
-
-			if (memberExpression != null)
-			{
-				var pathPrefixes = new List<string>();
-
-				var currentMemberExpression = memberExpression;
-				while (currentMemberExpression != null)
-				{
-					pathPrefixes.Add(currentMemberExpression.Member.Name);
-					if (currentMemberExpression.Expression is ParameterExpression && ((ParameterExpression)currentMemberExpression.Expression).Name != rootParameterName)
+				case ExpressionType.Constant:
 					{
-						pathPrefixes.Add(((ParameterExpression)currentMemberExpression.Expression).Name);
+						var value = GetValue(Expression.Convert(expression, type));
+
+#if !SILVERLIGHT
+						Contract.Assume(type != null);
+#endif
+
+						return ParameterValueWriter.Write(value);
 					}
-
-					currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
-				}
-
-				pathPrefixes.Reverse();
-				var prefix = string.Join("/", pathPrefixes);
-
-				if (!IsMemberOfParameter(memberExpression))
-				{
-					var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
-					if (!(collapsedExpression is MemberExpression))
+				case ExpressionType.Add:
+				case ExpressionType.And:
+				case ExpressionType.AndAlso:
+				case ExpressionType.Divide:
+				case ExpressionType.Equal:
+				case ExpressionType.GreaterThan:
+				case ExpressionType.GreaterThanOrEqual:
+				case ExpressionType.LessThan:
+				case ExpressionType.LessThanOrEqual:
+				case ExpressionType.Modulo:
+				case ExpressionType.Multiply:
+				case ExpressionType.NotEqual:
+				case ExpressionType.Or:
+				case ExpressionType.OrElse:
+				case ExpressionType.Subtract:
 					{
-#if !SILVERLIGHT
-						Contract.Assume(collapsedExpression != null);
-#endif
+						var binaryExpression = expression as BinaryExpression;
+						var operation = GetOperation(binaryExpression);
 
-						return Visit(collapsedExpression, rootParameterName);
+						var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
+						var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
+
+						var leftType = GetUnconvertedType(binaryExpression.Left);
+						var leftString = Visit(binaryExpression.Left, rootParameterName);
+						var rightString = Visit(binaryExpression.Right, leftType, rootParameterName);
+
+						return string.Format(
+											 "{0} {1} {2}",
+											 string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
+											 operation,
+											 string.Format(isRightComposite ? "({0})" : "{0}", rightString));
 					}
-
-					memberExpression = (MemberExpression)collapsedExpression;
-				}
-
-				var memberCall = GetMemberCall(memberExpression);
-
-				var innerExpression = memberExpression.Expression;
-
+				case ExpressionType.Not:
 #if !SILVERLIGHT
-				Contract.Assume(innerExpression != null);
+				case ExpressionType.IsFalse:
 #endif
+					{
+						var unaryExpression = expression as UnaryExpression;
+						var operand = unaryExpression.Operand;
 
-				return string.IsNullOrWhiteSpace(memberCall)
-						? prefix
-						: string.Format("{0}({1})", memberCall, Visit(innerExpression, rootParameterName));
-			}
-
-			if (expression is ConstantExpression)
-			{
-				var value = GetValue(Expression.Convert(expression, type));
-
-#if !SILVERLIGHT
-				Contract.Assume(type != null);
-#endif
-
-				return ParameterValueWriter.Write(value);
-			}
-
-			if (expression is UnaryExpression)
-			{
-				var unaryExpression = expression as UnaryExpression;
-				var operand = unaryExpression.Operand;
-				switch (unaryExpression.NodeType)
-				{
-					case ExpressionType.Not:
-#if !SILVERLIGHT
-					case ExpressionType.IsFalse:
-#endif
 						return string.Format("not({0})", Visit(operand, rootParameterName));
-					case ExpressionType.Quote:
-						var lambda = operand as LambdaExpression;
-						return lambda != null 
-							? Visit(lambda.Body, type, rootParameterName)
-							: Visit(operand, rootParameterName);
-					default:
+					}
+#if !SILVERLIGHT
+				case ExpressionType.IsTrue:
+					{
+						var unaryExpression = expression as UnaryExpression;
+						var operand = unaryExpression.Operand;
+
 						return Visit(operand, rootParameterName);
-				}
+					}
+#endif
+				case ExpressionType.Convert:
+				case ExpressionType.Quote:
+					{
+						var unaryExpression = expression as UnaryExpression;
+						var operand = unaryExpression.Operand;
+						return Visit(operand, rootParameterName);
+					}
+				case ExpressionType.MemberAccess:
+					{
+						var memberExpression = expression as MemberExpression;
+						var pathPrefixes = new List<string>();
+
+						var currentMemberExpression = memberExpression;
+						while (currentMemberExpression != null)
+						{
+							pathPrefixes.Add(currentMemberExpression.Member.Name);
+							if (currentMemberExpression.Expression is ParameterExpression && ((ParameterExpression)currentMemberExpression.Expression).Name != rootParameterName)
+							{
+								pathPrefixes.Add(((ParameterExpression)currentMemberExpression.Expression).Name);
+							}
+
+							currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
+						}
+
+						pathPrefixes.Reverse();
+						var prefix = string.Join("/", pathPrefixes);
+
+						if (!IsMemberOfParameter(memberExpression))
+						{
+							var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
+							if (!(collapsedExpression is MemberExpression))
+							{
+#if !SILVERLIGHT
+								Contract.Assume(collapsedExpression != null);
+#endif
+
+								return Visit(collapsedExpression, rootParameterName);
+							}
+
+							memberExpression = (MemberExpression)collapsedExpression;
+						}
+
+						var memberCall = GetMemberCall(memberExpression);
+
+						var innerExpression = memberExpression.Expression;
+
+#if !SILVERLIGHT
+						Contract.Assume(innerExpression != null);
+#endif
+
+						return string.IsNullOrWhiteSpace(memberCall)
+								? prefix
+								: string.Format("{0}({1})", memberCall, Visit(innerExpression, rootParameterName));
+					}
+				case ExpressionType.Call:
+					return GetMethodCall(expression as MethodCallExpression, rootParameterName);
+				case ExpressionType.New:
+					return GetValue(expression).ToString();
+				case ExpressionType.Lambda:
+					var body = (expression as LambdaExpression).Body;
+					return Visit(body, rootParameterName);
+				default:
+					throw new InvalidOperationException("Expression is not recognized or supported");
 			}
-
-			if (expression is BinaryExpression)
-			{
-				var binaryExpression = expression as BinaryExpression;
-				var operation = GetOperation(binaryExpression);
-
-				var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
-				var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
-
-				var leftType = GetUnconvertedType(binaryExpression.Left);
-				var leftString = Visit(binaryExpression.Left, rootParameterName);
-				var rightString = Visit(binaryExpression.Right, leftType, rootParameterName);
-
-				return string.Format(
-					"{0} {1} {2}",
-					string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
-					operation,
-					string.Format(isRightComposite ? "({0})" : "{0}", rightString));
-			}
-
-			if (expression is MethodCallExpression)
-			{
-				return GetMethodCall(expression as MethodCallExpression, rootParameterName);
-			}
-
-			if (expression is NewExpression)
-			{
-				return GetValue(expression).ToString();
-			}
-
-			throw new InvalidOperationException("Expression is not recognized or supported");
 		}
 	}
 }
