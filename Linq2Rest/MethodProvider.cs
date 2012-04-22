@@ -3,14 +3,12 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
 namespace Linq2Rest
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
 
