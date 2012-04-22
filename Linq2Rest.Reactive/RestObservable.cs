@@ -54,7 +54,7 @@ namespace Linq2Rest.Reactive
 			Contract.Requires(serializerFactory != null);
 #endif
 
-			_processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor()); // new ExpressionProcessor(new Provider.ExpressionVisitor());
+			_processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor());
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
 			_subscriberScheduler = subscriberScheduler ?? Scheduler.Immediate;

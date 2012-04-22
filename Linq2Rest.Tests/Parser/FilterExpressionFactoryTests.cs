@@ -31,6 +31,7 @@ namespace Linq2Rest.Tests.Parser
 		[TestCase("(10 mod 2) eq IntValue", "x => ((10 % 2) == x.IntValue)")]
 		[TestCase("IntValue ne 1", "x => (x.IntValue != 1)")]
 		[TestCase("IntValue gt 1", "x => (x.IntValue > 1)")]
+		[TestCase("-IntValue lt 1", "x => (-x.IntValue < 1)")]
 		[TestCase("IntValue ge 1", "x => (x.IntValue >= 1)")]
 		[TestCase("IntValue lt 1", "x => (x.IntValue < 1)")]
 		[TestCase("IntValue le 1", "x => (x.IntValue <= 1)")]

@@ -23,6 +23,7 @@ namespace Linq2Rest.Parser
 	{
 		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
 		private static readonly Regex StringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
+		private static readonly Regex NegateRx = new Regex(@"^-[^\d]*", RegexOptions.Compiled);
 		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		/// <summary>
@@ -359,6 +360,16 @@ namespace Linq2Rest.Parser
 			if (stringMatch.Success)
 			{
 				expression = Expression.Constant(stringMatch.Groups[1].Value, typeof(string));
+			}
+
+			if (NegateRx.IsMatch(filter))
+			{
+				expression = Expression.Negate(CreateExpression<T>(
+					filter.Substring(1),
+					sourceParameter,
+					lambdaParameters,
+					type,
+					formatProvider));
 			}
 
 			if (expression == null)
