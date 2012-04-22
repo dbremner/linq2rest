@@ -19,6 +19,7 @@ namespace Linq2Rest.Parser
 
 		public static IEnumerable<TokenSet> GetTokens(this string expression)
 		{
+			Contract.Requires(expression != null);
 			Contract.Ensures(Contract.Result<IEnumerable<TokenSet>>() != null);
 
 			var cleanMatch = expression.EnclosedMatch();
@@ -47,8 +48,8 @@ namespace Linq2Rest.Parser
 
 			for (int i = 0; i < blocks.Length; i++)
 			{
-				if (blocks[i].IsStringStart()) 
-				{ 
+				if (blocks[i].IsStringStart())
+				{
 					processingString = true;
 				}
 
@@ -60,11 +61,12 @@ namespace Linq2Rest.Parser
 					if (!processingString && blocks[i].IsOperation())
 					{
 						var expression1 = startExpression;
-						var i1 = i;
-						Func<string, int, bool> predicate = (x, j) => j >= expression1 && j < i1;
 
 						if (string.IsNullOrWhiteSpace(currentTokens.Left))
 						{
+							var i1 = i;
+							Func<string, int, bool> leftPredicate = (x, j) => j >= expression1 && j < i1;
+
 							currentTokens.Left = string.Join(" ", blocks.Where(leftPredicate));
 							currentTokens.Operation = blocks[i];
 							startExpression = i + 1;
@@ -79,7 +81,8 @@ namespace Linq2Rest.Parser
 						}
 						else
 						{
-							Func<string, int, bool> rightPredicate = (x, j) => j >= expression1 && j < i;
+							var i2 = i;
+							Func<string, int, bool> rightPredicate = (x, j) => j >= expression1 && j < i2;
 							currentTokens.Right = string.Join(" ", blocks.Where(rightPredicate));
 
 							yield return currentTokens;
@@ -95,7 +98,8 @@ namespace Linq2Rest.Parser
 					}
 				}
 
-				if (blocks[i].IsStringEnd()) {
+				if (blocks[i].IsStringEnd())
+				{
 					processingString = false;
 				}
 			}

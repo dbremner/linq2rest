@@ -135,17 +135,17 @@ namespace Linq2Rest.Reactive
 			return resultSet as IEnumerable;
 		}
 
-		private Task<IList<T>> GetResults(ParameterBuilder builder)
+		private Task<IEnumerable<T>> GetResults(ParameterBuilder builder)
 		{
 			var fullUri = builder.GetFullUri();
 			var client = _restClient.Create(fullUri);
 
 			return Task.Factory
 				.FromAsync<Stream>(client.BeginGetResult, client.EndGetResult, null)
-				.ContinueWith<IList<T>>(ReadResponse);
+				.ContinueWith<IEnumerable<T>>(ReadResponse);
 		}
 
-		private IList<T> ReadResponse(Task<Stream> downloadTask)
+		private IEnumerable<T> ReadResponse(Task<Stream> downloadTask)
 		{
 			var serializer = _serializerFactory.Create<T>();
 

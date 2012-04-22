@@ -21,7 +21,7 @@ namespace Linq2Rest.Tests.Fakes
 			return response.Result.Results.FirstOrDefault();
 		}
 
-		public IList<T> DeserializeList(Stream input)
+		public IEnumerable<T> DeserializeList(Stream input)
 		{
 			var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
 			return response.Result.Results;

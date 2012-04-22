@@ -8,7 +8,6 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Runtime.Serialization.Json;
-	using System.Text;
 	using Linq2Rest.Provider;
 
 	public class PhoneSerializerFactory : ISerializerFactory
@@ -34,9 +33,9 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 				return (T)_innerSerializer.ReadObject(input);
 			}
 
-			public IList<T> DeserializeList(Stream input)
+			public IEnumerable<T> DeserializeList(Stream input)
 			{
-				return (IList<T>)_innerListSerializer.ReadObject(input);
+				return (IEnumerable<T>)_innerListSerializer.ReadObject(input);
 			}
 		}
 	}

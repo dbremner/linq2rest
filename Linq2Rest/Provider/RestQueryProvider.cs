@@ -87,10 +87,10 @@ namespace Linq2Rest.Provider
 			}
 		}
 
-		private IList<T> GetResults(ParameterBuilder builder)
+		private IEnumerable<T> GetResults(ParameterBuilder builder)
 		{
 			Contract.Requires(builder != null);
-			Contract.Ensures(Contract.Result<IList<T>>() != null);
+			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
 
 			var fullUri = builder.GetFullUri();
 			var response = _client.Get(fullUri);

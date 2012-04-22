@@ -21,7 +21,7 @@ namespace Linq2Rest.Tests.Fakes
 			return (ComplexDto)_innerSerializer.ReadObject(input);
 		}
 
-		public IList<ComplexDto> DeserializeList(Stream input)
+		public IEnumerable<ComplexDto> DeserializeList(Stream input)
 		{
 			return (List<ComplexDto>)_innerListSerializer.ReadObject(input);
 		}
