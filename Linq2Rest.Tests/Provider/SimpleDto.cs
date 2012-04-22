@@ -11,7 +11,7 @@ namespace Linq2Rest.Tests.Provider
 	[DataContract]
 	public class SimpleDto
 	{
-		[DataMember]
+		[DataMember(IsRequired = false)]
 		public int ID { get; set; }
 
 		[DataMember]
@@ -20,10 +20,10 @@ namespace Linq2Rest.Tests.Provider
 		[DataMember]
 		public double Value { get; set; }
 
-		[DataMember]
+		[DataMember(IsRequired = false)]
 		public DateTime Date { get; set; }
 
-		[DataMember]
+		[DataMember(IsRequired = false)]
 		public Choice Choice { get; set; }
 	}
 }

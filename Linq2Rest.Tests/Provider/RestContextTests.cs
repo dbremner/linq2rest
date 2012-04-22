@@ -97,6 +97,16 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenApplyingEqualsQueryThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Count(x => x.Value.Equals(3));
+
+			var uri = new Uri("http://localhost/?$filter=Value+eq+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
 		public void WhenApplyingQueryWithMultipleFiltersThenCallsRestServiceWithSingleFilterParameter()
 		{
 			var result = _provider
