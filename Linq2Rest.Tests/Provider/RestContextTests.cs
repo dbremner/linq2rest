@@ -95,6 +95,15 @@ namespace Linq2Rest.Tests.Provider
 
 			_mockClient.Verify(x => x.Get(It.IsAny<Uri>()), Times.Once());
 		}
+		[Test]
+		public void WhenApplyingNegateQueryThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Count(x => -x.Value < 3);
+
+			var uri = new Uri("http://localhost/?$filter=-Value+lt+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
 
 		[Test]
 		public void WhenApplyingEqualsQueryThenCallsRestServiceWithFilter()

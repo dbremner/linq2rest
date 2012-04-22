@@ -446,6 +446,13 @@ namespace Linq2Rest.Provider
 											 operation,
 											 string.Format(isRightComposite ? "({0})" : "{0}", rightString));
 					}
+				case ExpressionType.Negate:
+					{
+						var unaryExpression = expression as UnaryExpression;
+						var operand = unaryExpression.Operand;
+
+						return string.Format("-{0}", Visit(operand, rootParameterName));
+					}
 				case ExpressionType.Not:
 #if !SILVERLIGHT
 				case ExpressionType.IsFalse:
