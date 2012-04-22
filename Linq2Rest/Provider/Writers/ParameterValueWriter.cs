@@ -9,6 +9,7 @@ namespace Linq2Rest.Provider.Writers
 	using System.Collections.Generic;
 	using System.Globalization;
 	using System.Linq;
+	using System.Reflection;
 
 	internal static class ParameterValueWriter
 	{
@@ -43,26 +44,44 @@ namespace Linq2Rest.Provider.Writers
 				return "null";
 			}
 
+
+#if !NETFX_CORE
 			var type = value.GetType();
 
 			if (type.IsEnum)
 			{
 				return value.ToString();
 			}
-
+#else
+			var type = value.GetType();
+			if (type.GetTypeInfo().IsEnum)
+			{
+				return value.ToString();
+			}
+#endif
 			var writer = ValueWriters.FirstOrDefault(x => x.Handles == type);
 
 			if (writer != null)
 			{
 				return writer.Write(value);
 			}
-
+			
+#if !NETFX_CORE
 			if (typeof(Nullable<>).IsAssignableFrom(type))
 			{
 				var genericParameter = type.GetGenericArguments()[0];
 
 				return Write(Convert.ChangeType(value, genericParameter, CultureInfo.CurrentCulture));
 			}
+#else
+			var typeInfo = type.GetTypeInfo();
+			if (typeof(Nullable<>).GetTypeInfo().IsAssignableFrom(typeInfo))
+			{
+				var genericParameter = typeInfo.GenericTypeArguments[0];
+
+				return Write(Convert.ChangeType(value, genericParameter, CultureInfo.CurrentCulture));
+			}
+#endif
 
 			return value.ToString();
 		}
