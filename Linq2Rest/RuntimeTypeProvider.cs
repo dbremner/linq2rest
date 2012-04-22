@@ -183,7 +183,7 @@ namespace Linq2Rest
 				        x =>
 				        	{
 				        		var namedArguments = x.NamedArguments;
-				        		var properties = namedArguments.Select(a => a.MemberInfo).OfType<PropertyInfo>().ToArray();
+								var properties = namedArguments.Select(a => a.MemberInfo).OfType<PropertyInfo>().ToArray();
 				        		var values = namedArguments.Select(a => a.TypedValue.Value).ToArray();
 				        		var constructorArgs = x.ConstructorArguments.Select(a => a.Value).ToArray();
 				        		var constructor = x.Constructor;

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 namespace Linq2Rest.Parser
 {
 	using System;
-	using System.Collections.Concurrent;
 	using System.Diagnostics.Contracts;
 	using System.Globalization;
 	using System.Linq;
@@ -285,17 +284,6 @@ namespace Linq2Rest.Parser
 				case "ceiling":
 					return Expression.Call(left.Type == typeof(double) ? MethodProvider.DoubleCeilingMethod : MethodProvider.DecimalCeilingMethod, left);
 				case "any":
-					{
-						Contract.Assume(right != null);
-
-						return CreateAnyAllExpression(
-													  left,
-													  right,
-													  sourceParameter,
-													  lambdaParameters,
-													  MethodProvider.GetAnyMethod(left.Type));
-					}
-
 				case "all":
 					{
 						Contract.Assume(right != null);
@@ -305,7 +293,7 @@ namespace Linq2Rest.Parser
 													  right,
 													  sourceParameter,
 													  lambdaParameters,
-													  MethodProvider.GetAllMethod(left.Type));
+													  MethodProvider.GetAnyAllMethod(function.Capitalize(), left.Type));
 					}
 
 				default:
@@ -342,7 +330,7 @@ namespace Linq2Rest.Parser
 			}
 
 			return Expression.Call(
-								   MethodProvider.GetAllMethod(left.Type),
+								   MethodProvider.GetAnyAllMethod("All", left.Type),
 								   left,
 								   Expression.Lambda(genericFunc, right, lambdaParameters));
 		}

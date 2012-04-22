@@ -22,5 +22,12 @@ namespace Linq2Rest
 				&& type.Name.Contains("AnonymousType") && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
 				&& (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
 		}
+
+		public static string Capitalize(this string input)
+		{
+			Contract.Requires(!string.IsNullOrEmpty(input));
+
+			return char.ToUpperInvariant(input[0]) + input.Substring(1);
+		}
 	}
 }
