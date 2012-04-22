@@ -6,6 +6,7 @@
 namespace Linq2Rest.Tests.Implementations
 {
 	using System;
+	using System.Linq;
 	using Linq2Rest.Implementations;
 	using NUnit.Framework;
 
@@ -48,7 +49,7 @@ namespace Linq2Rest.Tests.Implementations
 
 			var deserializedResult = serializer.DeserializeList(Xml.ToStream());
 
-			Assert.AreEqual(1, deserializedResult.Count);
+			Assert.AreEqual(1, deserializedResult.Count());
 		}
 	}
 }

@@ -44,7 +44,7 @@ namespace Linq2Rest.Mvc.Provider
 		/// </summary>
 		/// <param name="input">The serialized items.</param>
 		/// <returns>An list of the serialized items.</returns>
-		public IList<T> DeserializeList(Stream input)
+		public IEnumerable<T> DeserializeList(Stream input)
 		{
 			var content = new StreamReader(input).ReadToEnd();
 			return ReadToAnonymousType(content);

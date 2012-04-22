@@ -33,9 +33,9 @@ namespace Linq2Rest.Reactive.WP7Sample
 					return (T)_innerSerializer.ReadObject(input);
 			}
 
-			public IList<T> DeserializeList(Stream input)
+			public IEnumerable<T> DeserializeList(Stream input)
 			{
-					return (IList<T>)_innerListSerializer.ReadObject(input);
+					return (IEnumerable<T>)_innerListSerializer.ReadObject(input);
 			}
 		}
 	}

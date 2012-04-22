@@ -68,7 +68,7 @@ namespace Linq2Rest.Implementations
 					return result;
 			}
 
-			public IList<T> DeserializeList(Stream input)
+			public IEnumerable<T> DeserializeList(Stream input)
 			{
 				var result = (List<T>)_listSerializer.ReadObject(input);
 

@@ -26,6 +26,6 @@ namespace Linq2Rest.Provider
 		/// </summary>
 		/// <param name="input">The serialized items.</param>
 		/// <returns>An list of the serialized items.</returns>
-		IList<T> DeserializeList(Stream input);
+		IEnumerable<T> DeserializeList(Stream input);
 	}
 }
