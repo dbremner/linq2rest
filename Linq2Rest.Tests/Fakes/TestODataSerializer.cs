@@ -6,26 +6,32 @@
 namespace Linq2Rest.Tests.Fakes
 {
 	using System.Collections.Generic;
+	using System.IO;
 	using System.Linq;
-	using System.Web.Script.Serialization;
+	using System.Runtime.Serialization.Json;
+	using System.Text;
 	using Linq2Rest.Provider;
 
 	public class TestODataSerializer<T> : ISerializer<T>
 	{
-		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
-
+		private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(ODataResponse<T>));
+		
 		public T Deserialize(string input)
 		{
-			var response = _innerSerializer.Deserialize<ODataResponse<T>>(input);
-			return response.d.results.FirstOrDefault();
+			using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(input)))
+			{
+				var response = (ODataResponse<T>)_innerSerializer.ReadObject(ms);
+				return response.Result.Results.FirstOrDefault();
+			}
 		}
 
 		public IList<T> DeserializeList(string input)
 		{
-			var list = _innerSerializer.Deserialize<ODataResponse<T>>(input);
-			var items = list.d.results;
-
-			return items;
+			using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(input)))
+			{
+				var response = (ODataResponse<T>)_innerSerializer.ReadObject(ms);
+				return response.Result.Results;
+			}
 		}
 	}
 }
