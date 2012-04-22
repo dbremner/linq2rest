@@ -29,7 +29,7 @@ namespace Linq2Rest.Reactive.Tests
 			mockResult.SetupGet(x => x.CompletedSynchronously).Returns(true);
 			_mockRestClient = new Mock<IAsyncRestClient>();
 			_mockRestClient.Setup(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>())).Returns(mockResult.Object);
-			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[]");
+			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[]".ToStream());
 
 			_mockClientFactory = new Mock<IAsyncRestClientFactory>();
 			_mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
@@ -198,7 +198,7 @@ namespace Linq2Rest.Reactive.Tests
 		[Test]
 		public void WhenQueryIncludesSideEffectsThenInvokesSideEffect()
 		{
-			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[{\"DoubleValue\":1.2}]");
+			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[{\"DoubleValue\":1.2}]".ToStream());
 			var waitHandle = new ManualResetEvent(false);
 			var action = new Action<FakeItem>(x => waitHandle.Set());
 			var mockObserver = new Mock<IObserver<FakeItem>>();
@@ -216,7 +216,7 @@ namespace Linq2Rest.Reactive.Tests
 		[Test]
 		public void WhenQueryIncludesFinalEffectsThenInvokesSideEffect()
 		{
-			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[{\"DoubleValue\":1.2}]");
+			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[{\"DoubleValue\":1.2}]".ToStream());
 			var waitHandle = new ManualResetEvent(false);
 			var action = new Action(() => waitHandle.Set());
 			var mockObserver = new Mock<IObserver<FakeItem>>();

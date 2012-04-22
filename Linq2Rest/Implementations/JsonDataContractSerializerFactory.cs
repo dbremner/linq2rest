@@ -11,7 +11,6 @@ namespace Linq2Rest.Implementations
 	using System.IO;
 	using System.Linq;
 	using System.Runtime.Serialization.Json;
-	using System.Text;
 	using Linq2Rest.Provider;
 
 	/// <summary>
@@ -62,26 +61,18 @@ namespace Linq2Rest.Implementations
 				_listSerializer = new DataContractJsonSerializer(typeof(List<T>), array);
 			}
 
-			public T Deserialize(string input)
+			public T Deserialize(Stream input)
 			{
-				using (var ms = new MemoryStream(Encoding.Default.GetBytes(input)))
-				{
-					ms.Seek(0, SeekOrigin.Begin);
-					var result = (T)_serializer.ReadObject(ms);
+					var result = (T)_serializer.ReadObject(input);
 
 					return result;
-				}
 			}
 
-			public IList<T> DeserializeList(string input)
+			public IList<T> DeserializeList(Stream input)
 			{
-				using (var ms = new MemoryStream(Encoding.Default.GetBytes(input)))
-				{
-					ms.Seek(0, SeekOrigin.Begin);
-					var result = (List<T>)_listSerializer.ReadObject(ms);
+				var result = (List<T>)_listSerializer.ReadObject(input);
 
-					return result;
-				}
+				return result;
 			}
 
 			[ContractInvariantMethod]

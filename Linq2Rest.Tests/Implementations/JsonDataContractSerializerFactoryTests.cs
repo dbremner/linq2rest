@@ -33,7 +33,7 @@ namespace Linq2Rest.Tests.Implementations
 
 			var serializer = _factory.Create<SimpleContractItem>();
 
-			var deserializedResult = serializer.Deserialize(Json);
+			var deserializedResult = serializer.Deserialize(Json.ToStream());
 
 			Assert.AreEqual(2, deserializedResult.Value);
 			Assert.AreEqual("test", deserializedResult.SomeString);
@@ -46,7 +46,7 @@ namespace Linq2Rest.Tests.Implementations
 
 			var serializer = _factory.Create<SimpleContractItem>();
 
-			var deserializedResult = serializer.DeserializeList(Json);
+			var deserializedResult = serializer.DeserializeList(Json.ToStream());
 
 			Assert.AreEqual(1, deserializedResult.Count);
 		}

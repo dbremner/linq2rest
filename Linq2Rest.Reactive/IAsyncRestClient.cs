@@ -6,6 +6,8 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+	using System.IO;
+
 #if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
 #endif
@@ -31,7 +33,7 @@ namespace Linq2Rest.Reactive
 		/// </summary>
 		/// <param name="result">The async operation result.</param>
 		/// <returns>The downloaded resource as a <see cref="string"/>.</returns>
-		string EndGetResult(IAsyncResult result);
+		Stream EndGetResult(IAsyncResult result);
 	}
 
 #if !SILVERLIGHT
@@ -44,9 +46,10 @@ namespace Linq2Rest.Reactive
 			throw new NotImplementedException();
 		}
 
-		public string EndGetResult(IAsyncResult result)
+		public Stream EndGetResult(IAsyncResult result)
 		{
 			Contract.Requires<ArgumentNullException>(result != null);
+			Contract.Ensures(Contract.Result<Stream>() != null);
 			throw new NotImplementedException();
 		}
 	}

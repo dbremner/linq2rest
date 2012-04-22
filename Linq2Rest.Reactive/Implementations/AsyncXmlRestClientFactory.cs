@@ -58,12 +58,12 @@ namespace Linq2Rest.Reactive.Implementations
 				return _request.BeginGetResponse(callback, state);
 			}
 
-			public string EndGetResult(IAsyncResult result)
+			public Stream EndGetResult(IAsyncResult result)
 			{
 				var response = _request.EndGetResponse(result);
-				var reader = new StreamReader(response.GetResponseStream());
+				var stream = response.GetResponseStream();
 
-				return reader.ReadToEnd();
+				return stream;
 			}
 
 			[ContractInvariantMethod]
