@@ -1,5 +1,6 @@
 param(
 $configuration = "Release",
+$platform = "Any CPU",
 $folderPath = ".\",
 $cleanPackages = $false
 )
@@ -57,7 +58,8 @@ function UpdatePackages
 
 function BuildSolution
 {
-	msbuild .\Linq2Rest.All.sln /p:configuration=$configuration
+    $options = "/p:configuration=$configuration;platform=$platform"
+	msbuild .\Linq2Rest.All.sln $options
 }
 
 function RunTests
