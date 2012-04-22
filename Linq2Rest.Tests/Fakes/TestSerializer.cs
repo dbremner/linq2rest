@@ -22,7 +22,7 @@ namespace Linq2Rest.Tests.Fakes
 
 		public IEnumerable<T> DeserializeList(Stream input)
 		{
-			return (List<T>)_innerListSerializer.ReadObject(input);
+			return (IEnumerable<T>)_innerListSerializer.ReadObject(input);
 		}
 	}
 }

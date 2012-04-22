@@ -230,6 +230,15 @@ namespace Linq2Rest.Provider
 
 			var methodName = expression.Method.Name;
 			var declaringType = expression.Method.DeclaringType;
+
+			if (methodName == "Equals")
+			{
+				return string.Format(
+				                     "{0} eq {1}",
+				                     Visit(expression.Object, rootParameterName),
+				                     Visit(expression.Arguments[0], rootParameterName));
+			}
+
 			if (declaringType == typeof(string))
 			{
 				var obj = expression.Object;
@@ -471,6 +480,11 @@ namespace Linq2Rest.Provider
 					case ExpressionType.IsFalse:
 #endif
 						return string.Format("not({0})", Visit(operand, rootParameterName));
+					case ExpressionType.Quote:
+						var lambda = operand as LambdaExpression;
+						return lambda != null 
+							? Visit(lambda.Body, type, rootParameterName)
+							: Visit(operand, rootParameterName);
 					default:
 						return Visit(operand, rootParameterName);
 				}
