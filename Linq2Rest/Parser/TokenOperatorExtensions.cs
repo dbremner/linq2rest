@@ -18,6 +18,8 @@ namespace Linq2Rest.Parser
 
 		private static readonly string[] BooleanFunctions = new[] { "substringof", "endswith", "startswith" };
 		private static readonly Regex CleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
+		private static readonly Regex StringStartRx = new Regex("^[(]*'", RegexOptions.Compiled);
+		private static readonly Regex StringEndRx = new Regex("'[)]*$", RegexOptions.Compiled);
 
 		public static bool IsCombinationOperation(this string operation)
 		{
@@ -68,6 +70,16 @@ namespace Linq2Rest.Parser
 
 			var match = expression.EnclosedMatch();
 			return match != null && match.Success;
+		}
+
+		public static bool IsStringStart(this string expression)
+		{
+			return StringStartRx.IsMatch(expression);
+		}
+
+		public static bool IsStringEnd(this string expression) 
+		{
+			return StringEndRx.IsMatch(expression);
 		}
 
 		private static bool IsFunction(this string expression)
