@@ -19,6 +19,13 @@ namespace Linq2Rest.Mvc
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ModelFilterBinder{T}"/> class.
 		/// </summary>
+		public ModelFilterBinder()
+			: this(new ParameterParser<T>())
+		{ }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ModelFilterBinder{T}"/> class.
+		/// </summary>
 		/// <param name="parser">The <see cref="IParameterParser{T}"/> to use.</param>
 		public ModelFilterBinder(IParameterParser<T> parser)
 		{
