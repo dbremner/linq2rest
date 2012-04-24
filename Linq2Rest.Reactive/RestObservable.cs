@@ -57,8 +57,8 @@ namespace Linq2Rest.Reactive
 			_processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor());
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
-			_subscriberScheduler = subscriberScheduler ?? Scheduler.Immediate;
-			_observerScheduler = observerScheduler ?? Scheduler.Immediate;
+			_subscriberScheduler = subscriberScheduler ?? Scheduler.CurrentThread;
+			_observerScheduler = observerScheduler ?? Scheduler.CurrentThread;
 			Expression = expression ?? Expression.Constant(this);
 			Provider = new RestQueryableProvider(restClient, serializerFactory, _subscriberScheduler, _observerScheduler);
 		}
@@ -118,7 +118,14 @@ namespace Linq2Rest.Reactive
 
 			return Task.Factory
 				.FromAsync<Stream>(client.BeginGetResult, client.EndGetResult, null)
-				.ContinueWith<IEnumerable>(x => ReadIntermediateResponse(type, x.Result));
+				.ContinueWith<IEnumerable>(x =>
+											{
+												if (x.IsFaulted)
+												{
+													throw x.Exception;
+												}
+												return ReadIntermediateResponse(type, x.Result);
+											});
 		}
 
 		private IEnumerable ReadIntermediateResponse(Type type, Stream response)
@@ -147,6 +154,10 @@ namespace Linq2Rest.Reactive
 
 		private IEnumerable<T> ReadResponse(Task<Stream> downloadTask)
 		{
+			if (downloadTask.IsFaulted)
+			{
+				throw downloadTask.Exception;
+			}
 			var serializer = _serializerFactory.Create<T>();
 
 			return serializer.DeserializeList(downloadTask.Result);
@@ -168,7 +179,13 @@ namespace Linq2Rest.Reactive
 		{
 			if (task.IsFaulted)
 			{
-				throw task.Exception;
+				foreach (var observer in _observers)
+				{
+					var observer1 = observer;
+					_observerScheduler.Schedule(() => observer1.OnError(task.Exception));
+				}
+
+				return;
 			}
 
 			if (task.IsCanceled)
