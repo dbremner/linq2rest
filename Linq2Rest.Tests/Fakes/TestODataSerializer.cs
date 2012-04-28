@@ -25,7 +25,6 @@ namespace Linq2Rest.Tests.Fakes
 		{
 			var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
 			return response.Result.Results;
-
 		}
 	}
 }

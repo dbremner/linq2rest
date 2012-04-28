@@ -27,9 +27,9 @@ namespace Linq2Rest
 
 		public static string Capitalize(this string input)
 		{
-			Contract.Requires(!String.IsNullOrEmpty(input));
+			Contract.Requires(!string.IsNullOrEmpty(input));
 
-			return Char.ToUpperInvariant(input[0]) + input.Substring(1);
+			return char.ToUpperInvariant(input[0]) + input.Substring(1);
 		}
 
 		public static Stream ToStream(this string input)

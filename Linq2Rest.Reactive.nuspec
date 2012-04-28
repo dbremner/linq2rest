@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest.Reactive</id>
-		<version>1.0.0.1-beta2</version>
+		<version>1.0.0.0-beta2</version>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
 		<licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
@@ -16,7 +16,7 @@
 		</references>
 		<dependencies>
 			<dependency id="Linq2Rest"
-						version="2.2.0.0" />
+						version="2.2.0.0-beta" />
 			<dependency id="Rx-Providers"
 						version="1.0.11226" />
 			<!-- Waiting for Rx Team to add .NET 4 support to package

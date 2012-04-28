@@ -414,6 +414,7 @@ namespace Linq2Rest.Provider
 
 						return ParameterValueWriter.Write(value);
 					}
+
 				case ExpressionType.Add:
 				case ExpressionType.And:
 				case ExpressionType.AndAlso:
@@ -446,6 +447,7 @@ namespace Linq2Rest.Provider
 											 operation,
 											 string.Format(isRightComposite ? "({0})" : "{0}", rightString));
 					}
+
 				case ExpressionType.Negate:
 					{
 						var unaryExpression = expression as UnaryExpression;
@@ -453,6 +455,7 @@ namespace Linq2Rest.Provider
 
 						return string.Format("-{0}", Visit(operand, rootParameterName));
 					}
+
 				case ExpressionType.Not:
 #if !SILVERLIGHT
 				case ExpressionType.IsFalse:
@@ -479,6 +482,7 @@ namespace Linq2Rest.Provider
 						var operand = unaryExpression.Operand;
 						return Visit(operand, rootParameterName);
 					}
+
 				case ExpressionType.MemberAccess:
 					{
 						var memberExpression = expression as MemberExpression;
@@ -526,6 +530,7 @@ namespace Linq2Rest.Provider
 								? prefix
 								: string.Format("{0}({1})", memberCall, Visit(innerExpression, rootParameterName));
 					}
+
 				case ExpressionType.Call:
 					return GetMethodCall(expression as MethodCallExpression, rootParameterName);
 				case ExpressionType.New:

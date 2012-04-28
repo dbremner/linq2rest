@@ -8,11 +8,9 @@ namespace Linq2Rest.MvcSite
 	using System.Web;
 	using System.Web.Mvc;
 	using System.Web.Routing;
-
 	using Linq2Rest.Mvc;
 	using Linq2Rest.MvcSite.Models;
 	using Linq2Rest.MvcSite.Support;
-	using Linq2Rest.Parser;
 
 	public class MvcApplication : HttpApplication
 	{
@@ -38,7 +36,7 @@ namespace Linq2Rest.MvcSite
 			RegisterGlobalFilters(GlobalFilters.Filters);
 			RegisterRoutes(RouteTable.Routes);
 
-			var binder = new ModelFilterBinder<SimpleDto>(new ParameterParser<SimpleDto>());
+			var binder = new ModelFilterBinder<SimpleDto>();
 
 			ModelBinders.Binders.Add(typeof(IModelFilter<SimpleDto>), binder);
 			ModelBinders.Binders.Add(typeof(ResponseFormat), new ResponseFormatBinder());
