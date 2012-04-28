@@ -33,7 +33,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 		{
 			var expression = _factory.Convert("1");
 
-			Assert.IsAssignableFrom<Boolean>(expression.Value);
+			Assert.IsAssignableFrom<bool>(expression.Value);
 		}
 
 		[Test]
@@ -41,7 +41,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 		{
 			var expression = _factory.Convert("true");
 
-			Assert.IsAssignableFrom<Boolean>(expression.Value);
+			Assert.IsAssignableFrom<bool>(expression.Value);
 		}
 	}
 }

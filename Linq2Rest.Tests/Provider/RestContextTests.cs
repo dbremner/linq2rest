@@ -95,6 +95,7 @@ namespace Linq2Rest.Tests.Provider
 
 			_mockClient.Verify(x => x.Get(It.IsAny<Uri>()), Times.Once());
 		}
+
 		[Test]
 		public void WhenApplyingNegateQueryThenCallsRestServiceWithFilter()
 		{

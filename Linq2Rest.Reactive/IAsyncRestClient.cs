@@ -6,11 +6,10 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
-	using System.IO;
-
 #if !SILVERLIGHT
 	using System.Diagnostics.Contracts;
 #endif
+	using System.IO;
 
 	/// <summary>
 	/// Defines the public interface for an async REST client.
