@@ -309,6 +309,19 @@ namespace Linq2Rest.Provider
 								Visit(firstArgument, rootParameterName),
 								Visit(secondArgument, rootParameterName));
 						}
+					case "Contains":
+						{
+							var argumentExpression = expression.Arguments[0];
+
+#if !SILVERLIGHT
+							Contract.Assume(argumentExpression != null);
+#endif
+
+							return string.Format(
+								"substringof({0}, {1})",
+								Visit(argumentExpression, rootParameterName),
+								Visit(obj, rootParameterName));
+						}
 
 					case "IndexOf":
 						{
