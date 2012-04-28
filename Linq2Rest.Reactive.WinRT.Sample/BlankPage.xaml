@@ -1,0 +1,14 @@
+﻿<Page
+    x:Class="Linq2Rest.Reactive.WinRT.Sample.BlankPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
+	<Page.Resources>
+	</Page.Resources>
+	<Grid Background="{StaticResource ApplicationPageBackgroundBrush}">
+		<ListBox x:Name="films">
+
+		</ListBox>
+	</Grid>
+</Page>
