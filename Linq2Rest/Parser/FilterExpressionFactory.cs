@@ -288,6 +288,7 @@ namespace Linq2Rest.Parser
 				case "all":
 					{
 						Contract.Assume(right != null);
+						Contract.Assume(!string.IsNullOrEmpty(function));
 
 						return CreateAnyAllExpression(
 													  left,
@@ -364,12 +365,16 @@ namespace Linq2Rest.Parser
 
 			if (NegateRx.IsMatch(filter))
 			{
-				expression = Expression.Negate(CreateExpression<T>(
+				var negateExpression = CreateExpression<T>(
 					filter.Substring(1),
 					sourceParameter,
 					lambdaParameters,
 					type,
-					formatProvider));
+					formatProvider);
+
+				Contract.Assume(negateExpression != null);
+
+				expression = Expression.Negate(negateExpression);
 			}
 
 			if (expression == null)
@@ -397,7 +402,7 @@ namespace Linq2Rest.Parser
 				expression = GetPropertyExpression<T>(filter, sourceParameter, lambdaParameters);
 			}
 
-			if (expression == null)
+			if (expression == null && type != null)
 			{
 				expression = ParameterValueReader.Read(type, filter, formatProvider);
 			}
@@ -569,7 +574,9 @@ namespace Linq2Rest.Parser
 				? GetAnyAllFunctionExpression<T>(lambdaFilter, lambdaParameter, lambdaParameters, formatProvider)
 				: CreateExpression<T>(lambdaFilter, sourceParameter, lambdaParameters, lambdaType, formatProvider);
 
-			return GetFunction(functionTokens.Operation, left, right, sourceParameter, lambdaParameters);
+			return left == null
+				? null
+				: GetFunction(functionTokens.Operation, left, right, sourceParameter, lambdaParameters);
 		}
 
 		private Expression GetFunctionExpression<T>(string filter, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
@@ -593,7 +600,9 @@ namespace Linq2Rest.Parser
 
 			var right = CreateExpression<T>(functionTokens.Right, sourceParameter, lambdaParameters, GetFunctionParameterType(functionTokens.Operation) ?? left.Type, formatProvider);
 
-			return GetFunction(functionTokens.Operation, left, right, sourceParameter, lambdaParameters);
+			return left == null
+				? null
+				: GetFunction(functionTokens.Operation, left, right, sourceParameter, lambdaParameters);
 		}
 
 		/// <summary>

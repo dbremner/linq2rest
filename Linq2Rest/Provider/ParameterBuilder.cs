@@ -7,7 +7,7 @@ namespace Linq2Rest.Provider
 {
 	using System;
 	using System.Collections.Generic;
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 	using System.Linq;
@@ -21,7 +21,7 @@ namespace Linq2Rest.Provider
 
 		public ParameterBuilder(Uri serviceBase)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(serviceBase != null);
 #endif
 			_serviceBase = serviceBase;
@@ -42,7 +42,7 @@ namespace Linq2Rest.Provider
 
 		public Uri GetFullUri()
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Ensures(Contract.Result<Uri>() != null);
 #endif
 			var parameters = new List<string>();
@@ -91,7 +91,7 @@ namespace Linq2Rest.Provider
 			return string.Format(name + "=" + value);
 		}
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 		[ContractInvariantMethod]
 		private void Invariants()
 		{

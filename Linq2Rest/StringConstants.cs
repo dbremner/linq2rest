@@ -13,5 +13,7 @@ namespace Linq2Rest
 		internal const string SkipParameter = "$skip";
 		internal const string TopParameter = "$top";
         internal const string ExpandParameter = "$expand";
+		internal const string JsonMimeType = "application/json";
+		internal const string XmlMimeType = "application/xml";
 	}
 }
