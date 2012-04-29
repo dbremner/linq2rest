@@ -52,6 +52,8 @@
 			  target="lib\SL5" />
 		<file src="Linq2Rest.Reactive.SL\bin\Release\Linq2Rest.Reactive.xml"
 			  target="lib\SL5" />
+		<file src="Linq2Rest.Reactive.SL\bin\Release\CodeContracts\Linq2Rest.Reactive.Contracts.dll"
+			  target="lib\SL5\CodeContracts" />
 		<file src="Linq2Rest.Reactive.WP7\bin\Release\Linq2Rest.Reactive.dll"
 			  target="lib\SL4-WindowsPhone71" />
 		<file src="Linq2Rest.Reactive.WP7\bin\Release\Linq2Rest.Reactive.xml"

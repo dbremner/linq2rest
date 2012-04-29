@@ -298,7 +298,11 @@ namespace Linq2Rest
 				return type;
 			}
 
-			var t = type.FindInterfaces((m, o) => IsIEnumerable(m), null).First();
+			var interfaces = type.FindInterfaces((m, o) => IsIEnumerable(m), null);
+			
+			Contract.Assume(interfaces.Count() > 0);
+			
+			var t = interfaces.First();
 
 			return t;
 		}

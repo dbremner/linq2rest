@@ -6,7 +6,7 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 	using System.IO;
@@ -14,7 +14,7 @@ namespace Linq2Rest.Reactive
 	/// <summary>
 	/// Defines the public interface for an async REST client.
 	/// </summary>
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	[ContractClass(typeof(AsyncRestClientContracts))]
 #endif
 	public interface IAsyncRestClient
@@ -35,7 +35,7 @@ namespace Linq2Rest.Reactive
 		Stream EndGetResult(IAsyncResult result);
 	}
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	[ContractClassFor(typeof(IAsyncRestClient))]
 	internal abstract class AsyncRestClientContracts : IAsyncRestClient
 	{

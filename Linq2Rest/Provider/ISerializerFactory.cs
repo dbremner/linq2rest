@@ -5,14 +5,14 @@
 
 namespace Linq2Rest.Provider
 {
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 
 	/// <summary>
 	/// Defines the public interface for a factory of <see cref="ISerializer{T}"/>.
 	/// </summary>
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	[ContractClass(typeof(SerializerFactoryContracts))]
 #endif
 	public interface ISerializerFactory
@@ -25,7 +25,7 @@ namespace Linq2Rest.Provider
 		ISerializer<T> Create<T>();
 	}
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	[ContractClassFor(typeof(ISerializerFactory))]
 	internal abstract class SerializerFactoryContracts : ISerializerFactory
 	{

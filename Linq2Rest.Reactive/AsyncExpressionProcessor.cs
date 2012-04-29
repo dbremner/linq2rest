@@ -8,7 +8,7 @@ namespace Linq2Rest.Reactive
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 	using System.Linq;
@@ -81,7 +81,7 @@ namespace Linq2Rest.Reactive
 
 		private Task<object> ProcessMethodCallInternal<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(builder != null);
 			Contract.Requires(resultLoader != null);
 #endif
@@ -101,7 +101,7 @@ namespace Linq2Rest.Reactive
 							? GetMethodResult(methodCall, builder, resultLoader, intermediateResultLoader)
 							: GetResult(methodCall, builder, resultLoader, intermediateResultLoader);
 				case "Where":
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 #endif
 					{
@@ -120,7 +120,7 @@ namespace Linq2Rest.Reactive
 
 					break;
 				case "Select":
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 #endif
 					{
@@ -162,7 +162,7 @@ namespace Linq2Rest.Reactive
 
 					break;
 				case "Take":
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 #endif
 					{
@@ -177,7 +177,7 @@ namespace Linq2Rest.Reactive
 
 					break;
 				case "Skip":
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 #endif
 					{
@@ -200,7 +200,7 @@ namespace Linq2Rest.Reactive
 
 		private Task<object> GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(builder != null);
 			Contract.Assume(methodCall.Arguments.Count >= 2);
 #endif
@@ -225,7 +225,7 @@ namespace Linq2Rest.Reactive
 							  {
 								  var list = t.Result;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 								  Contract.Assume(list != null);
 #endif
 
@@ -237,7 +237,7 @@ namespace Linq2Rest.Reactive
 
 		private Task<object> GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(resultLoader != null);
 			Contract.Assume(methodCall.Arguments.Count >= 1);
 #endif
@@ -250,7 +250,7 @@ namespace Linq2Rest.Reactive
 							  {
 								  var list = t.Result;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 								  Contract.Assume(list != null);
 #endif
 
@@ -261,7 +261,7 @@ namespace Linq2Rest.Reactive
 
 		private Task<object> ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(resultLoader != null);
 			Contract.Requires(intermediateResultLoader != null);
 			Contract.Requires(builder != null);

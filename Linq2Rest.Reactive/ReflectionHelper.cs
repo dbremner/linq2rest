@@ -5,7 +5,7 @@
 
 namespace Linq2Rest.Reactive
 {
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 	using System.Reflection;
@@ -19,7 +19,7 @@ namespace Linq2Rest.Reactive
 		{
 			get
 			{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 #endif
 
