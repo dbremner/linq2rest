@@ -7,8 +7,34 @@
 	<Page.Resources>
 	</Page.Resources>
 	<Grid Background="{StaticResource ApplicationPageBackgroundBrush}">
-		<ListBox x:Name="films">
-
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="Auto"/>
+		</Grid.ColumnDefinitions>
+		<TextBox x:Name="search" Grid.Row="0" Grid.Column="0" Padding="3,2" Margin="0,0,10,0" VerticalAlignment="Center" />
+		<Button Grid.Row="0" Grid.Column="1" Content="Search" Click="OnSearch" VerticalAlignment="Top" />
+		<ListBox x:Name="films" Grid.Row="1" Grid.ColumnSpan="2">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Path=Name}"/>
+						<TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Path=ReleaseYear}"/>
+						<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=AverageRating}"/>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
 		</ListBox>
 	</Grid>
 </Page>

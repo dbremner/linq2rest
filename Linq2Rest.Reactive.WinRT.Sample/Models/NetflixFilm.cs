@@ -1,33 +1,17 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace Linq2Rest.Reactive.WinRT.Sample.Models
 {
 	[DataContract]
-	public class NetflixFilm
+	internal sealed class NetflixFilm
 	{
 		[DataMember]
 		public string Name { get; set; }
 
-		[DataMember]
-		public int ReleaseYear { get; set; }
+		[DataMember(IsRequired = false)]
+		public int? ReleaseYear { get; set; }
 
-		[DataMember]
-		public BoxArt BoxArt { get; set; }
-	}
-
-	public class BoxArt
-	{
-		[DataMember]
-		public Uri SmallUrl { get; set; }
-
-		[DataMember]
-		public Uri MediumUrl { get; set; }
-
-		[DataMember]
-		public Uri LargeUrl { get; set; }
-
-		[DataMember]
-		public Uri HighDefinitionUrl { get; set; }
+		[DataMember(IsRequired = false)]
+		public double? AverageRating { get; set; }
 	}
 }
