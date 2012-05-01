@@ -6,7 +6,7 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 	using System.Reactive.Linq;
@@ -23,7 +23,7 @@ namespace Linq2Rest.Reactive
 
 		public RestObservable(IAsyncRestClientFactory restClientFactory, ISerializerFactory serializerFactory)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(restClientFactory != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 #endif

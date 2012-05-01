@@ -17,7 +17,7 @@ namespace Linq2Rest.Implementations
 		/// </summary>
 		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
 		public XmlRestClient(Uri uri)
-			: base(uri, "application/xml")
+			: base(uri, StringConstants.XmlMimeType)
 		{
 		}
 	}

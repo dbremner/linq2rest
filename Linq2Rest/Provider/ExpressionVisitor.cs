@@ -7,7 +7,7 @@ namespace Linq2Rest.Provider
 {
 	using System;
 	using System.Collections.Generic;
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 	using System.Linq;
@@ -26,7 +26,7 @@ namespace Linq2Rest.Provider
 
 		private static Type GetUnconvertedType(Expression expression)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
 #endif
 
@@ -35,7 +35,7 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Convert:
 					var unaryExpression = expression as UnaryExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 					Contract.Assume(unaryExpression != null, "Matches node type.");
 #endif
 
@@ -47,7 +47,7 @@ namespace Linq2Rest.Provider
 
 		private static string GetMemberCall(MemberExpression memberExpression)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(memberExpression != null);
 			Contract.Ensures(Contract.Result<string>() != null);
 #endif
@@ -121,7 +121,7 @@ namespace Linq2Rest.Provider
 
 		private static object GetValue(Expression input)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(input != null);
 #endif
 
@@ -133,7 +133,7 @@ namespace Linq2Rest.Provider
 
 		private static bool IsMemberOfParameter(MemberExpression input)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(input != null);
 #endif
 
@@ -146,7 +146,7 @@ namespace Linq2Rest.Provider
 			var tempExpression = input.Expression as MemberExpression;
 			while (nodeType == ExpressionType.MemberAccess)
 			{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 				Contract.Assume(tempExpression != null, "It's a member access");
 #endif
 
@@ -159,7 +159,7 @@ namespace Linq2Rest.Provider
 
 		private static string GetOperation(Expression expression)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
 #endif
 
@@ -209,7 +209,7 @@ namespace Linq2Rest.Provider
 				expression = ((UnaryExpression)expression).Operand;
 			}
 
-			if (expression is LambdaExpression && ((LambdaExpression)expression).Parameters.Count > 0)
+			if (expression is LambdaExpression && ((LambdaExpression)expression).Parameters.Count() > 0)
 			{
 				return ((LambdaExpression)expression).Parameters.First().Name;
 			}
@@ -224,7 +224,7 @@ namespace Linq2Rest.Provider
 
 		private string GetMethodCall(MethodCallExpression expression, string rootParameterName)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
 #endif
 
@@ -242,7 +242,7 @@ namespace Linq2Rest.Provider
 			if (declaringType == typeof(string))
 			{
 				var obj = expression.Object;
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 				Contract.Assume(obj != null);
 #endif
 
@@ -250,14 +250,14 @@ namespace Linq2Rest.Provider
 				{
 					case "Replace":
 						{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(expression.Arguments.Count > 1);
 #endif
 
 							var firstArgument = expression.Arguments[0];
 							var secondArgument = expression.Arguments[1];
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(firstArgument != null);
 							Contract.Assume(secondArgument != null);
 #endif
@@ -279,7 +279,7 @@ namespace Linq2Rest.Provider
 						return string.Format("toupper({0})", Visit(obj, rootParameterName));
 					case "Substring":
 						{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(expression.Arguments.Count > 0);
 #endif
 
@@ -287,7 +287,7 @@ namespace Linq2Rest.Provider
 							{
 								var argumentExpression = expression.Arguments[0];
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 								Contract.Assume(argumentExpression != null);
 #endif
 
@@ -298,7 +298,7 @@ namespace Linq2Rest.Provider
 							var firstArgument = expression.Arguments[0];
 							var secondArgument = expression.Arguments[1];
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(firstArgument != null);
 							Contract.Assume(secondArgument != null);
 #endif
@@ -313,7 +313,7 @@ namespace Linq2Rest.Provider
 						{
 							var argumentExpression = expression.Arguments[0];
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(argumentExpression != null);
 #endif
 
@@ -325,13 +325,13 @@ namespace Linq2Rest.Provider
 
 					case "IndexOf":
 						{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(expression.Arguments.Count > 0);
 #endif
 
 							var argumentExpression = expression.Arguments[0];
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(argumentExpression != null);
 #endif
 
@@ -340,13 +340,13 @@ namespace Linq2Rest.Provider
 
 					case "EndsWith":
 						{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(expression.Arguments.Count > 0);
 #endif
 
 							var argumentExpression = expression.Arguments[0];
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(argumentExpression != null);
 #endif
 
@@ -355,13 +355,13 @@ namespace Linq2Rest.Provider
 
 					case "StartsWith":
 						{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(expression.Arguments.Count > 0);
 #endif
 
 							var argumentExpression = expression.Arguments[0];
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(argumentExpression != null);
 #endif
 
@@ -371,13 +371,13 @@ namespace Linq2Rest.Provider
 			}
 			else if (declaringType == typeof(Math))
 			{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 				Contract.Assume(expression.Arguments.Count > 0);
 #endif
 
 				var mathArgument = expression.Arguments[0];
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 				Contract.Assume(mathArgument != null);
 #endif
 
@@ -394,7 +394,7 @@ namespace Linq2Rest.Provider
 
 			if (expression.Method.Name == "Any" || expression.Method.Name == "All")
 			{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 				Contract.Assume(expression.Arguments.Count > 1);
 #endif
 
@@ -411,7 +411,7 @@ namespace Linq2Rest.Provider
 
 		private string Visit(Expression expression, Type type, string rootParameterName)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
 			Contract.Requires(type != null);
 #endif
@@ -421,7 +421,7 @@ namespace Linq2Rest.Provider
 					{
 						var value = GetValue(Expression.Convert(expression, type));
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(type != null);
 #endif
 
@@ -470,7 +470,7 @@ namespace Linq2Rest.Provider
 					{
 						var unaryExpression = expression as UnaryExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(unaryExpression != null);
 #endif
 
@@ -480,13 +480,13 @@ namespace Linq2Rest.Provider
 					}
 
 				case ExpressionType.Not:
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 				case ExpressionType.IsFalse:
 #endif
 					{
 						var unaryExpression = expression as UnaryExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(unaryExpression != null);
 #endif
 
@@ -494,13 +494,13 @@ namespace Linq2Rest.Provider
 
 						return string.Format("not({0})", Visit(operand, rootParameterName));
 					}
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 				case ExpressionType.IsTrue:
 					{
 						var unaryExpression = expression as UnaryExpression;
 
-#if !SILVERLIGHT
 						Contract.Assume(unaryExpression != null);
+
 #endif
 
 						var operand = unaryExpression.Operand;
@@ -517,7 +517,7 @@ namespace Linq2Rest.Provider
 					{
 						var unaryExpression = expression as UnaryExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(unaryExpression != null);
 #endif
 
@@ -555,7 +555,7 @@ namespace Linq2Rest.Provider
 							var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
 							if (!(collapsedExpression is MemberExpression))
 							{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 								Contract.Assume(collapsedExpression != null);
 #endif
 
@@ -569,7 +569,7 @@ namespace Linq2Rest.Provider
 
 						var innerExpression = memberExpression.Expression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(innerExpression != null);
 #endif
 
@@ -589,7 +589,13 @@ namespace Linq2Rest.Provider
 				case ExpressionType.New:
 					return GetValue(expression).ToString();
 				case ExpressionType.Lambda:
-					var body = (expression as LambdaExpression).Body;
+					var lambdaExpression = expression as LambdaExpression;
+
+#if !WINDOWS_PHONE
+					Contract.Assume(lambdaExpression != null);
+#endif
+
+					var body = lambdaExpression.Body;
 					return Visit(body, rootParameterName);
 				default:
 					throw new InvalidOperationException("Expression is not recognized or supported");

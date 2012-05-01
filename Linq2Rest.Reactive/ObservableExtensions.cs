@@ -7,7 +7,7 @@ namespace Linq2Rest.Reactive
 {
 	using System;
 	using System.Collections;
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 	using System.Linq;
@@ -29,7 +29,7 @@ namespace Linq2Rest.Reactive
 			var observableMethods = typeof(Observable).GetTypeInfo().GetDeclaredMethods("ToObservable").ToArray();
 #endif
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Assume(qbservableMethods.Length > 0);
 			Contract.Assume(observableMethods.Length > 0);
 #endif
