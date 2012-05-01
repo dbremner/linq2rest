@@ -445,6 +445,11 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Subtract:
 					{
 						var binaryExpression = expression as BinaryExpression;
+
+#if !SILVERLIGHT
+						Contract.Assume(binaryExpression != null);
+#endif
+
 						var operation = GetOperation(binaryExpression);
 
 						var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
@@ -464,6 +469,11 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Negate:
 					{
 						var unaryExpression = expression as UnaryExpression;
+
+#if !SILVERLIGHT
+						Contract.Assume(unaryExpression != null);
+#endif
+
 						var operand = unaryExpression.Operand;
 
 						return string.Format("-{0}", Visit(operand, rootParameterName));
@@ -475,6 +485,11 @@ namespace Linq2Rest.Provider
 #endif
 					{
 						var unaryExpression = expression as UnaryExpression;
+
+#if !SILVERLIGHT
+						Contract.Assume(unaryExpression != null);
+#endif
+
 						var operand = unaryExpression.Operand;
 
 						return string.Format("not({0})", Visit(operand, rootParameterName));
@@ -483,7 +498,16 @@ namespace Linq2Rest.Provider
 				case ExpressionType.IsTrue:
 					{
 						var unaryExpression = expression as UnaryExpression;
+
+#if !SILVERLIGHT
+						Contract.Assume(unaryExpression != null);
+#endif
+
 						var operand = unaryExpression.Operand;
+
+#if !SILVERLIGHT
+						Contract.Assume(operand != null);
+#endif
 
 						return Visit(operand, rootParameterName);
 					}
@@ -492,6 +516,11 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Quote:
 					{
 						var unaryExpression = expression as UnaryExpression;
+
+#if !SILVERLIGHT
+						Contract.Assume(unaryExpression != null);
+#endif
+
 						var operand = unaryExpression.Operand;
 						return Visit(operand, rootParameterName);
 					}
@@ -499,6 +528,11 @@ namespace Linq2Rest.Provider
 				case ExpressionType.MemberAccess:
 					{
 						var memberExpression = expression as MemberExpression;
+
+#if !SILVERLIGHT
+						Contract.Assume(memberExpression != null);
+#endif
+
 						var pathPrefixes = new List<string>();
 
 						var currentMemberExpression = memberExpression;
@@ -545,7 +579,13 @@ namespace Linq2Rest.Provider
 					}
 
 				case ExpressionType.Call:
-					return GetMethodCall(expression as MethodCallExpression, rootParameterName);
+					var methodCallExpression = expression as MethodCallExpression;
+
+#if !SILVERLIGHT
+					Contract.Assume(methodCallExpression != null);
+#endif
+
+					return GetMethodCall(methodCallExpression, rootParameterName);
 				case ExpressionType.New:
 					return GetValue(expression).ToString();
 				case ExpressionType.Lambda:

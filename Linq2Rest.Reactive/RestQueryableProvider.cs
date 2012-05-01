@@ -60,7 +60,7 @@ namespace Linq2Rest.Reactive
 							Contract.Assume(subscribeScheduler != null);
 #endif
 
-							return new RestObservable<TResult>(
+							return new InnerRestObservable<TResult>(
 								_asyncRestClient,
 								_serializerFactory,
 								methodCallExpression.Arguments[0],
@@ -82,7 +82,7 @@ namespace Linq2Rest.Reactive
 							Contract.Assume(observeScheduler != null);
 #endif
 
-							return new RestObservable<TResult>(
+							return new InnerRestObservable<TResult>(
 								_asyncRestClient,
 								_serializerFactory,
 								methodCallExpression.Arguments[0],
@@ -92,7 +92,7 @@ namespace Linq2Rest.Reactive
 				}
 			}
 
-			return new RestObservable<TResult>(_asyncRestClient, _serializerFactory, expression, _subscriberScheduler, _observerScheduler);
+			return new InnerRestObservable<TResult>(_asyncRestClient, _serializerFactory, expression, _subscriberScheduler, _observerScheduler);
 		}
 
 #if !SILVERLIGHT

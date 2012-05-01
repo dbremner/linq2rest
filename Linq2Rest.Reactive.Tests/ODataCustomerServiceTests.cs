@@ -33,6 +33,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_customerContext
+				.Create()
 				.Where(x => x.CompanyName.IndexOf("Alfreds") > -1)
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
@@ -47,6 +48,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_customerContext
+				.Create()
 				.Where(x => x.CompanyName.IndexOf("Alfreds") > -1)
 				.GroupBy(x => x.CompanyName)
 				.Subscribe(x => waitHandle.Set());
@@ -62,6 +64,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_customerContext
+				.Create()
 				.Where(x => x.CompanyName.EndsWith("Futterkiste"))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
@@ -76,6 +79,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_customerContext
+				.Create()
 				.Where(x => x.CompanyName.StartsWith("Alfr"))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
@@ -90,6 +94,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_customerContext
+				.Create()
 				.Where(x => x.CompanyName.Length > 10)
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
