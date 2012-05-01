@@ -5,7 +5,7 @@
 
 namespace Linq2Rest.Reactive
 {
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 	using System.Linq.Expressions;
@@ -26,7 +26,7 @@ namespace Linq2Rest.Reactive
 			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(asyncRestClient != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(subscriberScheduler != null);
@@ -50,17 +50,17 @@ namespace Linq2Rest.Reactive
 						{
 							var constantExpression = methodCallExpression.Arguments[1] as ConstantExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(constantExpression != null);
 #endif
 
 							var subscribeScheduler = constantExpression.Value as IScheduler;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(subscribeScheduler != null);
 #endif
 
-							return new RestObservable<TResult>(
+							return new InnerRestObservable<TResult>(
 								_asyncRestClient,
 								_serializerFactory,
 								methodCallExpression.Arguments[0],
@@ -72,17 +72,17 @@ namespace Linq2Rest.Reactive
 						{
 							var constantExpression = methodCallExpression.Arguments[1] as ConstantExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(constantExpression != null);
 #endif
 
 							var observeScheduler = constantExpression.Value as IScheduler;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 							Contract.Assume(observeScheduler != null);
 #endif
 
-							return new RestObservable<TResult>(
+							return new InnerRestObservable<TResult>(
 								_asyncRestClient,
 								_serializerFactory,
 								methodCallExpression.Arguments[0],
@@ -92,10 +92,10 @@ namespace Linq2Rest.Reactive
 				}
 			}
 
-			return new RestObservable<TResult>(_asyncRestClient, _serializerFactory, expression, _subscriberScheduler, _observerScheduler);
+			return new InnerRestObservable<TResult>(_asyncRestClient, _serializerFactory, expression, _subscriberScheduler, _observerScheduler);
 		}
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 		[ContractInvariantMethod]
 		private void Invariants()
 		{

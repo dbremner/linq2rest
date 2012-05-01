@@ -194,6 +194,9 @@
     <Compile Include="..\Linq2Rest.Reactive\Implementations\AsyncXmlRestClientFactory.cs">
       <Link>Implementations\AsyncXmlRestClientFactory.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\InnerRestObservable.cs">
+      <Link>InnerRestObservable.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest.Reactive\ObservableExtensions.cs">
       <Link>ObservableExtensions.cs</Link>
     </Compile>

@@ -16,7 +16,6 @@ namespace Linq2Rest.Implementations
 	/// </summary>
 	public class RestClientBase : IRestClient
 	{
-		private readonly WebClient _client;
 		private readonly string _acceptHeader;
 
 		/// <summary>
@@ -26,7 +25,6 @@ namespace Linq2Rest.Implementations
 		/// <param name="acceptHeader">The accept header to use in web requests.</param>
 		protected RestClientBase(Uri uri, string acceptHeader)
 		{
-			_client = new WebClient();
 			_acceptHeader = acceptHeader;
 			ServiceBase = uri;
 		}
@@ -43,9 +41,14 @@ namespace Linq2Rest.Implementations
 		/// <returns>A string representation of the resource.</returns>
 		public Stream Get(Uri uri)
 		{
-			_client.Headers[HttpRequestHeader.Accept] = _acceptHeader;
+			var request = (HttpWebRequest)WebRequest.Create(uri);
+			request.Accept = _acceptHeader;
+			var response = request.GetResponse();
+			var stream = response.GetResponseStream();
 
-			return new MemoryStream(_client.DownloadData(uri));
+			Contract.Assume(stream != null);
+
+			return stream;
 		}
 
 		/// <summary>
@@ -66,14 +69,13 @@ namespace Linq2Rest.Implementations
 		{
 			if (disposing)
 			{
-				_client.Dispose();
 			}
 		}
 
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
-			Contract.Invariant(_client != null);
+			Contract.Invariant(_acceptHeader != null);
 		}
 	}
 }

@@ -33,6 +33,7 @@ namespace Linq2Rest.Reactive.Tests
 			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
 
 			observable
+				.Create()
 				.SubscribeOn(Scheduler.NewThread)
 				.Where(x => x.StringValue == "blah")
 				.ObserveOn(Scheduler.ThreadPool)
@@ -61,20 +62,21 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
 			observable
-					.Where(x => x.StringValue == "blah")
-					.ObserveOn(Scheduler.ThreadPool)
-					.Subscribe(
-							   x =>
-							   {
-							   },
-							   () =>
-							   {
-								   var observerThreadId = Thread.CurrentThread.ManagedThreadId;
-								   if (observerThreadId != testThreadId)
-								   {
-									   waitHandle.Set();
-								   }
-							   });
+				.Create()
+				.Where(x => x.StringValue == "blah")
+				.ObserveOn(Scheduler.ThreadPool)
+				.Subscribe(
+					x =>
+						{
+						},
+					() =>
+						{
+							var observerThreadId = Thread.CurrentThread.ManagedThreadId;
+							if (observerThreadId != testThreadId)
+							{
+								waitHandle.Set();
+							}
+						});
 
 			var result = waitHandle.WaitOne(2000);
 
@@ -87,6 +89,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(2000), new TestSerializerFactory());
 			var subscription = observable
+				.Create()
 				.SubscribeOn(Scheduler.TaskPool)
 				.Where(x => x.StringValue == "blah")
 				.ObserveOn(Scheduler.CurrentThread)
@@ -104,9 +107,10 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
 			observable
-						.Where(x => x.StringValue == "blah")
-						.GroupBy(x => x.StringValue)
-						.Subscribe(x => { }, () => waitHandle.Set());
+				.Create()
+				.Where(x => x.StringValue == "blah")
+				.GroupBy(x => x.StringValue)
+				.Subscribe(x => { }, () => waitHandle.Set());
 
 			var result = waitHandle.WaitOne();
 
@@ -118,6 +122,7 @@ namespace Linq2Rest.Reactive.Tests
 		{
 			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
 			var result = observable
+				.Create()
 				.Where(x => x.StringValue == "blah")
 				.SingleOrDefault();
 
@@ -140,6 +145,7 @@ namespace Linq2Rest.Reactive.Tests
 			mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(mockRestClient.Object);
 
 			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
+				.Create()
 				.Where(x => x.StringValue == "blah")
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
