@@ -6,11 +6,11 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	[ContractClass(typeof(ValueWriterContracts))]
 #endif
 	internal interface IValueWriter
@@ -20,7 +20,7 @@ namespace Linq2Rest.Provider.Writers
 		string Write(object value);
 	}
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 	[ContractClassFor(typeof(IValueWriter))]
 	internal abstract class ValueWriterContracts : IValueWriter
 	{

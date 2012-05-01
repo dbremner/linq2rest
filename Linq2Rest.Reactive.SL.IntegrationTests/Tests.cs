@@ -21,6 +21,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 			
 			// Note: Reported erroneous ReSharper error message to JetBrains.
 			var subscription = observable
+				.Create()
 				.Where(x => x.Text != "blah")
 				.Subscribe(new TestObserver<SampleDto>(waitHandle));
 

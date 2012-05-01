@@ -49,6 +49,7 @@ namespace Linq2Rest.Reactive.Tests
 				Expression.LessThanOrEqual(Expression.Property(parameter, "IntValue"), Expression.Constant(3)));
 
 			_observable
+				.Create()
 				.Where(Expression.Lambda<Func<FakeItem, bool>>(trueExpression, parameter))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
@@ -63,7 +64,9 @@ namespace Linq2Rest.Reactive.Tests
 		{
 			var waitHandle = new ManualResetEvent(false);
 
-			_observable.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+			_observable
+				.Create()
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
 			waitHandle.WaitOne();
 
@@ -77,6 +80,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
+				.Create()
 				.Where(x => x.IntValue <= 3)
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
@@ -91,6 +95,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
+				.Create()
 				.Where(x => x.IntValue <= 3)
 				.Where(x => x.StringValue == "blah")
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
@@ -107,6 +112,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
+				.Create()
 				.Where(x => x.Children.Any(y => y.Text == "blah"))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
@@ -122,6 +128,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
+				.Create()
 				.Where(x => x.Children.All(y => y.Text == "blah"))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
@@ -137,6 +144,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
+				.Create()
 				.Where(x => x.Children.All(y => y.Descendants.Any(z => z.Text == "blah")))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
@@ -152,6 +160,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
+				.Create()
 				.Where(x => x.IntValue <= 3)
 				.GroupBy(x => x.StringValue)
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
@@ -168,6 +177,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
+				.Create()
 				.Take(1)
 
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
@@ -185,6 +195,7 @@ namespace Linq2Rest.Reactive.Tests
 			var action = new Action<FakeItem>(x => { });
 
 			_observable
+				.Create()
 				.Take(1)
 				.Do(action)
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
@@ -204,6 +215,7 @@ namespace Linq2Rest.Reactive.Tests
 			var mockObserver = new Mock<IObserver<FakeItem>>();
 
 			_observable
+				.Create()
 				.Take(1)
 				.Do(action)
 				.Subscribe(mockObserver.Object);
@@ -222,6 +234,7 @@ namespace Linq2Rest.Reactive.Tests
 			var mockObserver = new Mock<IObserver<FakeItem>>();
 
 			_observable
+				.Create()
 				.Take(1)
 				.Finally(action)
 				.Subscribe(mockObserver.Object);
@@ -237,6 +250,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
+				.Create()
 				.Skip(1)
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
@@ -252,6 +266,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
+				.Create()
 				.Select(x => new { x.StringValue, x.IntValue })
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
@@ -267,6 +282,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
+				.Create()
 				.Where(x => x.IntValue <= 3)
 				.Any(x => x.DoubleValue.Equals(3d))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());

@@ -314,6 +314,8 @@ namespace Linq2Rest.Provider
 			 ? intermediateResultLoader(genericArgument, builder)
 			 : resultLoader(builder);
 
+			Contract.Assume(list != null);
+
 			var arguments = ResolveInvocationParameters(list, methodCall);
 
 			return methodCall.Method.Invoke(null, arguments);

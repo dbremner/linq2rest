@@ -47,13 +47,14 @@ namespace Linq2Rest.Reactive.WinRT.Sample
 
 			var query = search.Text;
 			new RestObservable<NetflixFilm>(
-					new AsyncJsonRestClientFactory(
-						new Uri("http://odata.netflix.com/v2/Catalog/Titles")),
-					new ODataSerializerFactory())
+				new AsyncJsonRestClientFactory(
+					new Uri("http://odata.netflix.com/v2/Catalog/Titles")),
+				new ODataSerializerFactory())
+				.Create()
 				.Where(x => x.Name.Contains(query))
 				.Subscribe(
-				x => Dispatcher.InvokeAsync(CoreDispatcherPriority.Normal, AddFilm, this, x),
-				() => Dispatcher.InvokeAsync(CoreDispatcherPriority.Normal, (s, ea) => button.IsEnabled = true, this, null));
+					x => Dispatcher.InvokeAsync(CoreDispatcherPriority.Normal, AddFilm, this, x),
+					() => Dispatcher.InvokeAsync(CoreDispatcherPriority.Normal, (s, ea) => button.IsEnabled = true, this, null));
 		}
 	}
 }
