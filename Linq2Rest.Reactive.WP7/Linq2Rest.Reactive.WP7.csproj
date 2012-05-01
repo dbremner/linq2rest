@@ -160,6 +160,9 @@
     <Compile Include="..\Linq2Rest.Reactive\RestObservable.cs">
       <Link>RestObservable.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\InnerRestObservable.cs">
+      <Link>InnerRestObservable.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest.Reactive\RestQueryableProvider.cs">
       <Link>RestQueryableProvider.cs</Link>
     </Compile>

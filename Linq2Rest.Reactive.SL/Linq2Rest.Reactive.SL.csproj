@@ -84,6 +84,9 @@
     <Compile Include="..\Linq2Rest.Reactive\IAsyncRestClientFactory.cs">
       <Link>IAsyncRestClientFactory.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\InnerRestObservable.cs">
+      <Link>InnerRestObservable.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest.Reactive\ObservableExtensions.cs">
       <Link>ObservableExtensions.cs</Link>
     </Compile>
