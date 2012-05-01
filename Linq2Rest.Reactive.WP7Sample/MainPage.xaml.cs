@@ -30,6 +30,7 @@ namespace Linq2Rest.Reactive.WP7Sample
 				new AsyncJsonRestClientFactory(new Uri("http://odata.netflix.com/v2/Catalog/Titles")),
 				new ODataSerializerFactory());
 			var subscription = observable
+				.Create()
 				.Where(x => x.Name.Contains("harry"))
 				.Subscribe(
 						   x => Dispatcher.BeginInvoke(() => films.Add(x)),

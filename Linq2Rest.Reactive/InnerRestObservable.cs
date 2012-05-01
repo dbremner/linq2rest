@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if !WINDOWS_PHONE
 using System.Diagnostics.Contracts;
+#endif
 using System.IO;
 using System.Linq.Expressions;
 using System.Reactive.Concurrency;
@@ -34,7 +36,7 @@ namespace Linq2Rest.Reactive
 		internal InnerRestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory)
 			: this(restClient, serializerFactory, null, null, null)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(restClient != null);
 			Contract.Requires(serializerFactory != null);
 #endif
@@ -42,7 +44,7 @@ namespace Linq2Rest.Reactive
 
 		internal InnerRestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory, Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
 		{
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 			Contract.Requires(restClient != null);
 			Contract.Requires(serializerFactory != null);
 #endif
