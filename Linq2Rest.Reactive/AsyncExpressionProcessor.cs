@@ -47,7 +47,7 @@ namespace Linq2Rest.Reactive
 				throw o.Exception;
 			}
 
-			throw new Exception("Could not get observable result.");
+			throw new InvalidOperationException("Could not get observable result.");
 		}
 
 		private static Task<object> InvokeEager<T>(MethodCallExpression methodCall, object source)

@@ -485,9 +485,10 @@ namespace Linq2Rest.Provider
 						var unaryExpression = expression as UnaryExpression;
 						var operand = unaryExpression.Operand;
 
+#if !WINDOWS_PHONE
 						return Visit(operand, rootParameterName);
 					}
-#endif
+
 				case ExpressionType.Convert:
 				case ExpressionType.Quote:
 					{
@@ -499,6 +500,7 @@ namespace Linq2Rest.Provider
 				case ExpressionType.MemberAccess:
 					{
 						var memberExpression = expression as MemberExpression;
+#if !WINDOWS_PHONE
 						var pathPrefixes = new List<string>();
 
 						var currentMemberExpression = memberExpression;
@@ -546,6 +548,7 @@ namespace Linq2Rest.Provider
 
 				case ExpressionType.Call:
 					return GetMethodCall(expression as MethodCallExpression, rootParameterName);
+#if !WINDOWS_PHONE
 				case ExpressionType.New:
 					return GetValue(expression).ToString();
 				case ExpressionType.Lambda:
