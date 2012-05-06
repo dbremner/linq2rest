@@ -446,7 +446,7 @@ namespace Linq2Rest.Provider
 					{
 						var binaryExpression = expression as BinaryExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(binaryExpression != null);
 #endif
 
@@ -503,11 +503,13 @@ namespace Linq2Rest.Provider
 					
 						var operand = unaryExpression.Operand;
 					
+#if !WINDOWS_PHONE
 						Contract.Assume(operand != null);
+#endif
 
 						return Visit(operand, rootParameterName);
 					}
-#endif
+
 				case ExpressionType.Convert:
 				case ExpressionType.Quote:
 					{
@@ -524,8 +526,7 @@ namespace Linq2Rest.Provider
 				case ExpressionType.MemberAccess:
 					{
 						var memberExpression = expression as MemberExpression;
-
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(memberExpression != null);
 #endif
 
@@ -576,8 +577,7 @@ namespace Linq2Rest.Provider
 
 				case ExpressionType.Call:
 					var methodCallExpression = expression as MethodCallExpression;
-
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 					Contract.Assume(methodCallExpression != null);
 #endif
 
