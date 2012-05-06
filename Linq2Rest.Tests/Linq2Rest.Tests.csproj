@@ -119,6 +119,7 @@
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\BooleanExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\ByteExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\DateTimeOffsetExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\ParameterValueReaderTests.cs" />
     <Compile Include="Parser\Readers\ByteArrayExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\DateTimeExpressionFactoryTests.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Parser\Readers\ShortExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\SingleExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\StreamExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\TimeSpanExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\UnsignedIntExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\UnsignedLongExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\UnsignedShortExpressionFactoryTests.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="Provider\Writers\BooleanValueWriterTests.cs" />
     <Compile Include="Provider\Writers\ByteArrayValueWriterTests.cs" />
     <Compile Include="Provider\Writers\ByteValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\DateTimeValueWriterTests.cs" />
     <Compile Include="Provider\Writers\DecimalValueWriterTests.cs" />
     <Compile Include="Provider\Writers\DoubleValueWriterTests.cs" />
     <Compile Include="Provider\Writers\GuidValueWriterTests.cs" />
@@ -149,6 +152,7 @@
     <Compile Include="Provider\Writers\ShortValueWriterTests.cs" />
     <Compile Include="Provider\Writers\SingleValueWriterTests.cs" />
     <Compile Include="Provider\Writers\StringValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\TimeSpanValueWriterTests.cs" />
     <Compile Include="Provider\Writers\UnsignedIntValueWriterTests.cs" />
     <Compile Include="Provider\Writers\UnsignedLongValueWriterTests.cs" />
     <Compile Include="Provider\Writers\UnsignedShortValueWriterTests.cs" />

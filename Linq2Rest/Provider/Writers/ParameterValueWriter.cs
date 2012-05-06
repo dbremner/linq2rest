@@ -33,7 +33,10 @@ namespace Linq2Rest.Provider.Writers
 								new DoubleValueWriter(),
 								new SingleValueWriter(),
 								new ByteValueWriter(),
-								new GuidValueWriter()
+								new GuidValueWriter(),
+								new DateTimeValueWriter(),
+								new TimeSpanValueWriter(),
+								new DateTimeOffsetValueWriter()
 							};
 		}
 
