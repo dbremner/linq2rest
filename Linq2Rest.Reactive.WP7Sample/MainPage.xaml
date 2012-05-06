@@ -30,17 +30,56 @@
 					   Text="Linq2Rest Demo"
 					   Style="{StaticResource PhoneTextNormalStyle}" />
 			<TextBlock x:Name="txtStatus"
-					   Text="Initial Text"
-					   Style="{StaticResource PhoneTextTitle1Style}" />
+					   Text="Dependent Nuget Packages"
+					   Style="{StaticResource PhoneTextTitle2Style}" />
 		</StackPanel>
 
 		<!--ContentPanel - place additional content here-->
 		<Grid x:Name="ContentPanel"
 			  Grid.Row="1"
 			  Margin="12,0,12,0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<TextBox x:Name="txtSearch" />
+			<Button Grid.Row="0"
+					Grid.Column="1"
+					Content="Search"
+					Click="Button_Click" />
 			<ListBox Grid.Row="1"
-					 ItemsSource="{Binding Source={StaticResource Films}}"
-					 DisplayMemberPath="Name"></ListBox>
+					 Grid.ColumnSpan="2"
+					 ItemsSource="{Binding Source={StaticResource Packages}}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<TextBlock Grid.Column="0"
+									   Text="{Binding Path=Id}"
+									   Style="{StaticResource PhoneTextTitle2Style}"
+									   VerticalAlignment="Bottom" />
+							<TextBlock Grid.Column="1"
+									   Text="{Binding Path=Version}"
+									   VerticalAlignment="Bottom" />
+							<TextBlock Grid.Row="1"
+									   Grid.ColumnSpan="2"
+									   Text="{Binding Path=Description}"
+									   TextWrapping="Wrap" />
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
 		</Grid>
 	</Grid>
 
