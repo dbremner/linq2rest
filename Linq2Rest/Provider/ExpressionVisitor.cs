@@ -446,7 +446,7 @@ namespace Linq2Rest.Provider
 					{
 						var binaryExpression = expression as BinaryExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(binaryExpression != null);
 #endif
 
@@ -529,7 +529,6 @@ namespace Linq2Rest.Provider
 					{
 						var memberExpression = expression as MemberExpression;
 #if !WINDOWS_PHONE
-#if !SILVERLIGHT
 						Contract.Assume(memberExpression != null);
 #endif
 
@@ -581,7 +580,6 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Call:
 					var methodCallExpression = expression as MethodCallExpression;
 #if !WINDOWS_PHONE
-#if !SILVERLIGHT
 					Contract.Assume(methodCallExpression != null);
 #endif
 
