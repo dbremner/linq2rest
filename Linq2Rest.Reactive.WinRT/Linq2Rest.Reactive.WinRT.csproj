@@ -233,6 +233,12 @@
     <Compile Include="..\Linq2Rest\Provider\Writers\ByteValueWriter.cs">
       <Link>Provider\Writers\ByteValueWriter.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DateTimeOffsetValueWriter.cs">
+      <Link>Provider\Writers\DateTimeOffsetValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DateTimeValueWriter.cs">
+      <Link>Provider\Writers\DateTimeValueWriter.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\DecimalValueWriter.cs">
       <Link>Provider\Writers\DecimalValueWriter.cs</Link>
     </Compile>
@@ -272,6 +278,9 @@
     <Compile Include="..\Linq2Rest\Provider\Writers\StringValueWriter.cs">
       <Link>Provider\Writers\StringValueWriter.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\TimeSpanValueWriter.cs">
+      <Link>Provider\Writers\TimeSpanValueWriter.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\UnsignedIntValueWriter.cs">
       <Link>Provider\Writers\UnsignedIntValueWriter.cs</Link>
     </Compile>
@@ -302,6 +311,7 @@
     <Reference Include="System.Reactive.Providers">
       <HintPath>..\packages\Rx-Providers.2.0.20304-beta\lib\WinRT45\System.Reactive.Providers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.ReaderWriter" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
