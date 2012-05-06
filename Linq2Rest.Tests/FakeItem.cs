@@ -42,6 +42,10 @@ namespace Linq2Rest.Tests
 
 		public DateTime DateValue { get; set; }
 
+		public TimeSpan Duration { get; set; }
+
+		public DateTimeOffset PointInTime { get; set; }
+
 		[DataMember(Name = "Choice")]
 		public Choice ChoiceValue { get; set; }
 

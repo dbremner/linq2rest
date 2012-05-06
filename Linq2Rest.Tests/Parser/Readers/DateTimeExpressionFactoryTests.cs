@@ -37,7 +37,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 
 			var expression = _factory.Convert(parameter);
 
-			Assert.IsAssignableFrom<DateTime>(((ConstantExpression)expression).Value);
+			Assert.IsAssignableFrom<DateTime>(expression.Value);
 		}
 
 		[Test]
@@ -48,7 +48,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 
 			var expression = _factory.Convert(parameter);
 
-			Assert.IsAssignableFrom<DateTime>(((ConstantExpression)expression).Value);
+			Assert.IsAssignableFrom<DateTime>(expression.Value);
 		}
 	}
 }

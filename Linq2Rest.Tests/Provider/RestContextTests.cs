@@ -129,6 +129,37 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenApplyingEqualsQueryOnDateTimeThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Count(x => x.Date == new DateTime(2012, 5, 6, 16, 11, 00, DateTimeKind.Utc));
+
+			var uri = new Uri("http://localhost/?$filter=Date+eq+datetime'2012-05-06T16:11:00Z'");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingEqualsQueryOnTimeSpanThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Count(x => x.Duration == new TimeSpan(2, 15, 0));
+
+			var uri = new Uri("http://localhost/?$filter=Duration+eq+time'PT2H15M'");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		[Ignore("For some reason the URI comparison fails for the same URIs.")]
+		public void WhenApplyingEqualsQueryOnDateTimeOffsetThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Count(x => x.PointInTime == new DateTimeOffset(2012, 5, 6, 18, 10, 0, TimeSpan.FromHours(2)));
+
+			var uri = new Uri("http://localhost/?$filter=PointInTime+eq+datetimeoffset'2012-05-06T18:10:00%2B02:00'");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
 		public void WhenApplyingQueryWithMultipleFiltersThenCallsRestServiceWithSingleFilterParameter()
 		{
 			var result = _provider

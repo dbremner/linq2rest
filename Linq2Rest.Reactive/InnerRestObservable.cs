@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if !WINDOWS_PHONE
 using System.Diagnostics.Contracts;
+#endif
 using System.IO;
 using System.Linq.Expressions;
 using System.Reactive.Concurrency;

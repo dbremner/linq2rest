@@ -7,6 +7,7 @@ namespace Linq2Rest.Reactive.WP7Sample
 {
 	using System;
 	using System.Collections.ObjectModel;
+	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using Linq2Rest.Reactive.WP7Sample.Models;
 	using Linq2Rest.Reactive.WP7Sample.Support;
@@ -14,25 +15,27 @@ namespace Linq2Rest.Reactive.WP7Sample
 
 	public partial class MainPage : PhoneApplicationPage
 	{
+		private readonly RestObservable<NugetPackage> _nugetObservable;
+		private readonly ObservableCollection<NugetPackage> _packageCollection;
 		// Constructor
 		public MainPage()
 		{
-			Loaded += MainPage_Loaded;
-			Resources.Add("Films", new ObservableCollection<NetflixFilm>());
+			_packageCollection = new ObservableCollection<NugetPackage>();
+			Resources.Add("Packages", _packageCollection);
 			InitializeComponent();
+			_nugetObservable = new RestObservable<NugetPackage>(
+				new AsyncJsonRestClientFactory(new Uri("http://nuget.org/api/v2/Packages")),
+				new ODataSerializerFactory());
 		}
 
-		void MainPage_Loaded(object sender, System.Windows.RoutedEventArgs e)
+		private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
-			var films = Resources["Films"] as ObservableCollection<NetflixFilm>;
-			// http://odata.netflix.com/v2/Catalog/Titles
-			var observable = new RestObservable<NetflixFilm>(
-				new AsyncJsonRestClientFactory(new Uri("http://odata.netflix.com/v2/Catalog/Titles")),
-				new ODataSerializerFactory());
-			var subscription = observable
-				.Where(x => x.Name.Contains("harry"))
+			_packageCollection.Clear();
+			var subscription = _nugetObservable
+				.Create()
+				.Where(x => x.Dependencies.Contains(txtSearch.Text) && x.IsLatestVersion)
 				.Subscribe(
-						   x => Dispatcher.BeginInvoke(() => films.Add(x)),
+						   x => Dispatcher.BeginInvoke(() => _packageCollection.Add(x)),
 						   ex => Dispatcher.BeginInvoke(() => txtStatus.Text = ex.Message),
 						   () => Dispatcher.BeginInvoke(() => txtStatus.Text = "Finished"));
 		}

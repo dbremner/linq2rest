@@ -480,7 +480,7 @@ namespace Linq2Rest.Provider
 					}
 
 				case ExpressionType.Not:
-#if !WINDOWS_PHONE
+#if !SILVERLIGHT
 				case ExpressionType.IsFalse:
 #endif
 					{
@@ -494,17 +494,15 @@ namespace Linq2Rest.Provider
 
 						return string.Format("not({0})", Visit(operand, rootParameterName));
 					}
-#if !WINDOWS_PHONE
+#if !SILVERLIGHT
 				case ExpressionType.IsTrue:
 					{
 						var unaryExpression = expression as UnaryExpression;
 
 						Contract.Assume(unaryExpression != null);
-
-#endif
-
+					
 						var operand = unaryExpression.Operand;
-
+					
 #if !WINDOWS_PHONE
 						Contract.Assume(operand != null);
 #endif
@@ -585,7 +583,8 @@ namespace Linq2Rest.Provider
 
 					return GetMethodCall(methodCallExpression, rootParameterName);
 				case ExpressionType.New:
-					return GetValue(expression).ToString();
+					var newValue = GetValue(expression);
+					return ParameterValueWriter.Write(newValue);
 				case ExpressionType.Lambda:
 					var lambdaExpression = expression as LambdaExpression;
 

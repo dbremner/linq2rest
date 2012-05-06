@@ -142,6 +142,7 @@
     <Compile Include="Parser\Readers\ByteArrayExpressionFactory.cs" />
     <Compile Include="Parser\Readers\ByteExpressionFactory.cs" />
     <Compile Include="Parser\Readers\DateTimeExpressionFactory.cs" />
+    <Compile Include="Parser\Readers\DateTimeOffsetExpressionFactory.cs" />
     <Compile Include="Parser\Readers\DecimalExpressionFactory.cs" />
     <Compile Include="Parser\Readers\DoubleExpressionFactory.cs" />
     <Compile Include="Parser\Readers\GuidExpressionFactory.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Parser\Readers\ShortExpressionFactory.cs" />
     <Compile Include="Parser\Readers\SingleExpressionFactory.cs" />
     <Compile Include="Parser\Readers\StreamExpressionFactory.cs" />
+    <Compile Include="Parser\Readers\TimeSpanExpressionFactory.cs" />
     <Compile Include="Parser\Readers\UnsignedIntExpressionFactory.cs" />
     <Compile Include="Parser\Readers\UnsignedLongExpressionFactory.cs" />
     <Compile Include="Parser\Readers\UnsignedShortExpressionFactory.cs" />
@@ -178,6 +180,8 @@
     <Compile Include="Provider\Writers\BooleanValueWriter.cs" />
     <Compile Include="Provider\Writers\ByteArrayValueWriter.cs" />
     <Compile Include="Provider\Writers\ByteValueWriter.cs" />
+    <Compile Include="Provider\Writers\DateTimeOffsetValueWriter.cs" />
+    <Compile Include="Provider\Writers\DateTimeValueWriter.cs" />
     <Compile Include="Provider\Writers\DecimalValueWriter.cs" />
     <Compile Include="Provider\Writers\DoubleValueWriter.cs" />
     <Compile Include="Provider\Writers\GuidValueWriter.cs" />
@@ -191,6 +195,7 @@
     <Compile Include="Provider\Writers\SingleValueWriter.cs" />
     <Compile Include="Provider\Writers\StreamValueWriter.cs" />
     <Compile Include="Provider\Writers\StringValueWriter.cs" />
+    <Compile Include="Provider\Writers\TimeSpanValueWriter.cs" />
     <Compile Include="Provider\Writers\UnsignedIntValueWriter.cs" />
     <Compile Include="Provider\Writers\UnsignedLongValueWriter.cs" />
     <Compile Include="Provider\Writers\UnsignedShortValueWriter.cs" />

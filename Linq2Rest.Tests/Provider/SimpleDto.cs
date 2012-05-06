@@ -24,6 +24,12 @@ namespace Linq2Rest.Tests.Provider
 		public DateTime Date { get; set; }
 
 		[DataMember(IsRequired = false)]
+		public TimeSpan Duration { get; set; }
+
+		[DataMember(IsRequired = false)]
+		public DateTimeOffset PointInTime { get; set; }
+
+		[DataMember(IsRequired = false)]
 		public Choice Choice { get; set; }
 	}
 }
