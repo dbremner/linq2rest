@@ -583,7 +583,8 @@ namespace Linq2Rest.Provider
 
 					return GetMethodCall(methodCallExpression, rootParameterName);
 				case ExpressionType.New:
-					return GetValue(expression).ToString();
+					var newValue = GetValue(expression);
+					return ParameterValueWriter.Write(newValue);
 				case ExpressionType.Lambda:
 					var lambdaExpression = expression as LambdaExpression;
 

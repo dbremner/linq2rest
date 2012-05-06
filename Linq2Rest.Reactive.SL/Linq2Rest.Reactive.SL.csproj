@@ -139,6 +139,7 @@
     <Reference Include="System.Threading.Tasks.SL5">
       <HintPath>..\packages\System.Threading.Tasks.3.0.1\lib\sl50\System.Threading.Tasks.SL5.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Linq2Rest.Reactive\AsyncExpressionProcessor.cs">
@@ -192,6 +193,12 @@
     <Compile Include="..\Linq2Rest\Provider\Writers\ByteValueWriter.cs">
       <Link>Provider\Writers\ByteValueWriter.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DateTimeOffsetValueWriter.cs">
+      <Link>Provider\Writers\DateTimeOffsetValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DateTimeValueWriter.cs">
+      <Link>Provider\Writers\DateTimeValueWriter.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\DecimalValueWriter.cs">
       <Link>Provider\Writers\DecimalValueWriter.cs</Link>
     </Compile>
@@ -230,6 +237,9 @@
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\StringValueWriter.cs">
       <Link>Provider\Writers\StringValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\TimeSpanValueWriter.cs">
+      <Link>Provider\Writers\TimeSpanValueWriter.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\UnsignedIntValueWriter.cs">
       <Link>Provider\Writers\UnsignedIntValueWriter.cs</Link>

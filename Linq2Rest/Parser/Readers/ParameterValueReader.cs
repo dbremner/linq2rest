@@ -26,6 +26,8 @@ namespace Linq2Rest.Parser.Readers
 										new ByteExpressionFactory(),
 			                      		new GuidExpressionFactory(),
 										new DateTimeExpressionFactory(),
+										new TimeSpanExpressionFactory(),
+										new DateTimeOffsetExpressionFactory(),
 										new DecimalExpressionFactory(),
 										new DoubleExpressionFactory(),
 										new SingleExpressionFactory(),
