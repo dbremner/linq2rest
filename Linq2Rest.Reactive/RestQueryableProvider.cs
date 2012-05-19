@@ -6,21 +6,23 @@
 namespace Linq2Rest.Reactive
 {
 #if !WINDOWS_PHONE
+	using System;
 	using System.Diagnostics.Contracts;
 #endif
+	using System;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using Linq2Rest.Provider;
 
-	internal class RestQueryableProvider : IQbservableProvider
+	internal abstract class RestQueryableProviderBase : IQbservableProvider
 	{
 		private readonly IAsyncRestClientFactory _asyncRestClient;
 		private readonly ISerializerFactory _serializerFactory;
 		private readonly IScheduler _subscriberScheduler;
 		private readonly IScheduler _observerScheduler;
 
-		public RestQueryableProvider(
+		public RestQueryableProviderBase(
 			IAsyncRestClientFactory asyncRestClient,
 			ISerializerFactory serializerFactory,
 			IScheduler subscriberScheduler,
@@ -37,6 +39,16 @@ namespace Linq2Rest.Reactive
 			_serializerFactory = serializerFactory;
 			_subscriberScheduler = subscriberScheduler;
 			_observerScheduler = observerScheduler;
+		}
+
+		protected IAsyncRestClientFactory AsyncRestClient
+		{
+			get { return _asyncRestClient; }
+		}
+
+		protected ISerializerFactory SerializerFactory
+		{
+			get { return _serializerFactory; }
 		}
 
 		public IQbservable<TResult> CreateQuery<TResult>(Expression expression)
@@ -60,9 +72,7 @@ namespace Linq2Rest.Reactive
 							Contract.Assume(subscribeScheduler != null);
 #endif
 
-							return new InnerRestObservable<TResult>(
-								_asyncRestClient,
-								_serializerFactory,
+							return CreateQbservable<TResult>(
 								methodCallExpression.Arguments[0],
 								subscribeScheduler,
 								_observerScheduler);
@@ -82,9 +92,7 @@ namespace Linq2Rest.Reactive
 							Contract.Assume(observeScheduler != null);
 #endif
 
-							return new InnerRestObservable<TResult>(
-								_asyncRestClient,
-								_serializerFactory,
+							return CreateQbservable<TResult>(
 								methodCallExpression.Arguments[0],
 								_subscriberScheduler,
 								observeScheduler);
@@ -92,18 +100,54 @@ namespace Linq2Rest.Reactive
 				}
 			}
 
-			return new InnerRestObservable<TResult>(_asyncRestClient, _serializerFactory, expression, _subscriberScheduler, _observerScheduler);
+			return CreateQbservable<TResult>(expression, _subscriberScheduler, _observerScheduler);
 		}
+
+		protected abstract IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler);
 
 #if !WINDOWS_PHONE
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
-			Contract.Invariant(_asyncRestClient != null);
-			Contract.Invariant(_serializerFactory != null);
+			Contract.Invariant(AsyncRestClient != null);
+			Contract.Invariant(SerializerFactory != null);
 			Contract.Invariant(_subscriberScheduler != null);
 			Contract.Invariant(_observerScheduler != null);
 		}
 #endif
+	}
+
+	internal class RestQueryableProvider : RestQueryableProviderBase
+	{
+		public RestQueryableProvider(IAsyncRestClientFactory asyncRestClient, ISerializerFactory serializerFactory, IScheduler subscriberScheduler, IScheduler observerScheduler)
+			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)
+		{
+		}
+
+		protected override IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
+		{
+			return new InnerRestObservable<TResult>(AsyncRestClient, SerializerFactory, expression, subscriberScheduler, observerScheduler);
+		}
+	}
+
+	internal class PollingRestQueryableProvider : RestQueryableProviderBase
+	{
+		private readonly TimeSpan _frequency;
+
+		public PollingRestQueryableProvider(
+			TimeSpan frequency,
+			IAsyncRestClientFactory asyncRestClient,
+			ISerializerFactory serializerFactory,
+			IScheduler subscriberScheduler,
+			IScheduler observerScheduler)
+			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)
+		{
+			_frequency = frequency;
+		}
+
+		protected override IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
+		{
+			return new PollingRestObservable<TResult>(_frequency, AsyncRestClient, SerializerFactory, expression, subscriberScheduler, observerScheduler);
+		}
 	}
 }

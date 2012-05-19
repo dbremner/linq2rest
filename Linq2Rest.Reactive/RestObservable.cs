@@ -9,6 +9,7 @@ namespace Linq2Rest.Reactive
 #if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
+	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using Linq2Rest.Provider;
 
@@ -37,7 +38,12 @@ namespace Linq2Rest.Reactive
 		/// <returns></returns>
 		public IQbservable<T> Create()
 		{
-			return new InnerRestObservable<T>(_restClientFactory, _serializerFactory);
+			return new InnerRestObservable<T>(_restClientFactory, _serializerFactory, null, Scheduler.CurrentThread, Scheduler.CurrentThread);
+		}
+
+		public IQbservable<T> Poll(TimeSpan frequency)
+		{
+			return new PollingRestObservable<T>(frequency, _restClientFactory, _serializerFactory, null, Scheduler.CurrentThread, Scheduler.CurrentThread);
 		}
 	}
 }

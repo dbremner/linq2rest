@@ -20,11 +20,7 @@ namespace Linq2Rest.Reactive
 #endif
 	internal interface IAsyncExpressionProcessor
 	{
-		Task<IObservable<T>> ProcessMethodCall<T>(
-			MethodCallExpression methodCall,
-			ParameterBuilder builder,
-			Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader,
-			Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader);
+		IObservable<T> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader);
 	}
 
 #if !WINDOWS_PHONE
@@ -32,7 +28,7 @@ namespace Linq2Rest.Reactive
 #endif
 	internal abstract class AsyncExpressionProcessorContracts : IAsyncExpressionProcessor
 	{
-		public Task<IObservable<T>> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		public IObservable<T> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(resultLoader != null);
