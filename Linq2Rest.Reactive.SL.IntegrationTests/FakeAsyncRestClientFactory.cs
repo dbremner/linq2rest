@@ -7,17 +7,23 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 {
 	using System;
 	using System.IO;
-	using System.Text;
 	using System.Threading;
 	using System.Threading.Tasks;
 
 	public class FakeAsyncRestClientFactory : IAsyncRestClientFactory
 	{
 		private readonly int _responseDelay;
+		private readonly string _response = "[]";
 
 		public FakeAsyncRestClientFactory()
 			: this(-1)
 		{
+		}
+
+		public FakeAsyncRestClientFactory(string response)
+			: this(-1)
+		{
+			_response = response;
 		}
 
 		public FakeAsyncRestClientFactory(int responseDelay)
@@ -35,16 +41,18 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 
 		public IAsyncRestClient Create(Uri source)
 		{
-			return new FakeAsyncResultClient(_responseDelay);
+			return new FakeAsyncResultClient(_responseDelay, _response);
 		}
 
 		private class FakeAsyncResultClient : IAsyncRestClient
 		{
 			private readonly int _responseDelay;
+			private readonly string _response;
 
-			public FakeAsyncResultClient(int responseDelay)
+			public FakeAsyncResultClient(int responseDelay, string response)
 			{
 				_responseDelay = responseDelay;
+				_response = response;
 			}
 
 			public IAsyncResult BeginGetResult(AsyncCallback callback, object state)
@@ -59,14 +67,14 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 					Thread.Sleep(_responseDelay);
 				}
 
-				return new MemoryStream(Encoding.UTF8.GetBytes("[]"));
+				return _response.ToStream();
 			}
 
 			private class FakeAsyncResult : IAsyncResult
 			{
 				public FakeAsyncResult(AsyncCallback callback)
 				{
-					Task.Factory.StartNew(() => callback.Invoke(this));
+					Task.Factory.StartNew(() => callback(this));
 				}
 
 				public bool IsCompleted
@@ -81,7 +89,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 				{
 					get
 					{
-						return null;
+						return new ManualResetEvent(true);
 					}
 				}
 

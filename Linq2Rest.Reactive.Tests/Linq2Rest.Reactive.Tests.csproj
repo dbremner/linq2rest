@@ -133,6 +133,7 @@
     <Compile Include="Fakes\TestODataSerializer.cs" />
     <Compile Include="Fakes\TestODataSerializerFactory.cs" />
     <Compile Include="ODataCustomerServiceTests.cs" />
+    <Compile Include="PollingRestObservableTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestTests.cs" />
     <Compile Include="RestObservableTests.cs" />

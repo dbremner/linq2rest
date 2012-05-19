@@ -28,7 +28,9 @@ namespace Linq2Rest.Reactive.Tests
 			var mockResult = new Mock<IAsyncResult>();
 			mockResult.SetupGet(x => x.CompletedSynchronously).Returns(true);
 			_mockRestClient = new Mock<IAsyncRestClient>();
-			_mockRestClient.Setup(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>())).Returns(mockResult.Object);
+			_mockRestClient.Setup(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>()))
+				.Callback<AsyncCallback, object>((a, o) => a.Invoke(mockResult.Object))
+				.Returns(mockResult.Object);
 			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[]".ToStream());
 
 			_mockClientFactory = new Mock<IAsyncRestClientFactory>();
@@ -287,7 +289,7 @@ namespace Linq2Rest.Reactive.Tests
 				.Any(x => x.DoubleValue.Equals(3d))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
-			waitHandle.WaitOne();
+			waitHandle.WaitOne(2000);
 
 			var requestUri = new Uri("http://localhost/?$filter=IntValue+le+3");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());

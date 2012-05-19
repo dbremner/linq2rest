@@ -9,16 +9,13 @@ using System.Linq.Expressions;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Linq2Rest.Provider;
 
 namespace Linq2Rest.Reactive
 {
-	/// <summary>
-	/// Defines an observable REST query.
-	/// </summary>
-	/// <typeparam name="T">The <see cref="Type"/> of object returned by the REST service.</typeparam>
-	internal class InnerRestObservable<T> : IQbservable<T>
+	using System.Reactive.Subjects;
+
+	internal abstract class InnerRestObservableBase<T> : IQbservable<T>
 	{
 		private readonly IAsyncRestClientFactory _restClient;
 		private readonly ISerializerFactory _serializerFactory;
@@ -27,22 +24,14 @@ namespace Linq2Rest.Reactive
 		private readonly IList<IObserver<T>> _observers = new List<IObserver<T>>();
 		private readonly IAsyncExpressionProcessor _processor;
 		private IDisposable _subscribeSubscription;
+		private IDisposable _internalSubscription;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="RestObservable{T}"/> class.
-		/// </summary>
-		/// <param name="restClient">The <see cref="IAsyncRestClientFactory"/> to create a web client.</param>
-		/// <param name="serializerFactory">The <see cref="ISerializerFactory"/> to create the serializer.</param>
-		internal InnerRestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory)
-			: this(restClient, serializerFactory, null, null, null)
-		{
-#if !WINDOWS_PHONE
-			Contract.Requires(restClient != null);
-			Contract.Requires(serializerFactory != null);
-#endif
-		}
-
-		internal InnerRestObservable(IAsyncRestClientFactory restClient, ISerializerFactory serializerFactory, Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
+		internal InnerRestObservableBase(
+			IAsyncRestClientFactory restClient,
+			ISerializerFactory serializerFactory,
+			Expression expression,
+			IScheduler subscriberScheduler,
+			IScheduler observerScheduler)
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(restClient != null);
@@ -55,7 +44,6 @@ namespace Linq2Rest.Reactive
 			_subscriberScheduler = subscriberScheduler ?? Scheduler.CurrentThread;
 			_observerScheduler = observerScheduler ?? Scheduler.CurrentThread;
 			Expression = expression ?? Expression.Constant(this);
-			Provider = new RestQueryableProvider(restClient, serializerFactory, _subscriberScheduler, _observerScheduler);
 		}
 
 		/// <summary>
@@ -63,10 +51,7 @@ namespace Linq2Rest.Reactive
 		/// </summary>
 		public Type ElementType
 		{
-			get
-			{
-				return typeof(T);
-			}
+			get { return typeof(T); }
 		}
 
 		/// <summary>
@@ -77,7 +62,17 @@ namespace Linq2Rest.Reactive
 		/// <summary>
 		/// Gets the query provider that is associated with this data source.
 		/// </summary>
-		public IQbservableProvider Provider { get; private set; }
+		public abstract IQbservableProvider Provider { get; }
+
+		protected IAsyncRestClientFactory RestClient
+		{
+			get { return _restClient; }
+		}
+
+		protected ISerializerFactory SerializerFactory
+		{
+			get { return _serializerFactory; }
+		}
 
 		/// <summary>
 		/// Notifies the provider that an observer is to receive notifications.
@@ -88,46 +83,52 @@ namespace Linq2Rest.Reactive
 		/// <param name="observer">The object that is to receive notifications.</param>
 		public IDisposable Subscribe(IObserver<T> observer)
 		{
+			var t = typeof(T);
 			_observers.Add(observer);
 			_subscribeSubscription = _subscriberScheduler
 				.Schedule(
-					observer,
-					(s, o) =>
-						{
-							var filter = Expression as MethodCallExpression;
-							var parameterBuilder = new ParameterBuilder(_restClient.ServiceBase);
+						  observer,
+						  (s, o) =>
+						  {
+							  var filter = Expression as MethodCallExpression;
+							  var parameterBuilder = new ParameterBuilder(RestClient.ServiceBase);
 
-							_processor.ProcessMethodCall(
-								filter,
-								parameterBuilder,
-								GetResults,
-								GetIntermediateResults)
-								.ContinueWith(OnGotResult, TaskContinuationOptions.PreferFairness);
-						});
+							  _internalSubscription = _processor.ProcessMethodCall(
+																				   filter,
+																				   parameterBuilder,
+																				   GetResults,
+																				   GetIntermediateResults)
+								.Subscribe(new ObserverPublisher(_observers, _observerScheduler));
+						  });
 			return new RestSubscription(observer, Unsubscribe);
 		}
 
-		private Task<IEnumerable> GetIntermediateResults(Type type, ParameterBuilder builder)
+		protected virtual IObservable<IEnumerable> GetIntermediateResults(Type type, ParameterBuilder builder)
 		{
-			var client = _restClient.Create(builder.GetFullUri());
+			var client = RestClient.Create(builder.GetFullUri());
 
-			return Task.Factory
-				.FromAsync<Stream>(client.BeginGetResult, client.EndGetResult, null)
-				.ContinueWith<IEnumerable>(x =>
-				                           	{
-				                           		if (x.IsFaulted)
-				                           		{
-				                           			throw x.Exception;
-				                           		}
-				                           		return ReadIntermediateResponse(type, x.Result);
-				                           	});
+			return Observable
+				.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)
+				.Invoke()
+				.Select(x => ReadIntermediateResponse(type, x));
 		}
 
-		private IEnumerable ReadIntermediateResponse(Type type, Stream response)
+		protected virtual IObservable<IEnumerable<T>> GetResults(ParameterBuilder builder)
+		{
+			var fullUri = builder.GetFullUri();
+			var client = RestClient.Create(fullUri);
+
+			return Observable
+				.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)
+				.Invoke()
+				.Select(ReadResponse);
+		}
+
+		protected IEnumerable ReadIntermediateResponse(Type type, Stream response)
 		{
 			var genericMethod = ReflectionHelper.CreateMethod.MakeGenericMethod(type);
 #if !SILVERLIGHT
-			dynamic serializer = genericMethod.Invoke(_serializerFactory, null);
+			dynamic serializer = genericMethod.Invoke(SerializerFactory, null);
 			var resultSet = serializer.DeserializeList(response);
 #else
 			var serializer = genericMethod.Invoke(_serializerFactory, null);
@@ -137,64 +138,33 @@ namespace Linq2Rest.Reactive
 			return resultSet as IEnumerable;
 		}
 
-		private Task<IEnumerable<T>> GetResults(ParameterBuilder builder)
+		private IEnumerable<T> ReadResponse(Stream stream)
 		{
-			var fullUri = builder.GetFullUri();
-			var client = _restClient.Create(fullUri);
+			var serializer = SerializerFactory.Create<T>();
 
-			return Task.Factory
-				.FromAsync<Stream>(client.BeginGetResult, client.EndGetResult, null)
-				.ContinueWith<IEnumerable<T>>(ReadResponse);
-		}
-
-		private IEnumerable<T> ReadResponse(Task<Stream> downloadTask)
-		{
-			if (downloadTask.IsFaulted)
-			{
-				throw downloadTask.Exception;
-			}
-			var serializer = _serializerFactory.Create<T>();
-
-			return serializer.DeserializeList(downloadTask.Result);
+			return serializer.DeserializeList(stream);
 		}
 
 		private void Unsubscribe(IObserver<T> observer)
 		{
-			if (_observers.Contains(observer))
+			if (!_observers.Contains(observer))
 			{
-				_observers.Remove(observer);
-				if (_observers.Count == 0)
+				return;
+			}
+
+			_observers.Remove(observer);
+			observer.OnCompleted();
+			if (_observers.Count == 0)
+			{
+				if (_internalSubscription != null)
+				{
+					_internalSubscription.Dispose();
+				}
+				if (_subscribeSubscription != null)
 				{
 					_subscribeSubscription.Dispose();
 				}
 			}
-		}
-
-		private void OnGotResult(Task<IObservable<T>> task)
-		{
-			if (task.IsFaulted)
-			{
-				foreach (var observer in _observers)
-				{
-					var observer1 = observer;
-					_observerScheduler.Schedule(() => observer1.OnError(task.Exception));
-				}
-
-				return;
-			}
-
-			if (task.IsCanceled)
-			{
-				foreach (var observer in _observers)
-				{
-					var observer1 = observer;
-					_observerScheduler.Schedule(observer1.OnCompleted);
-				}
-
-				return;
-			}
-
-			task.Result.Subscribe(new ObserverPublisher(_observers, _observerScheduler));
 		}
 
 		private class RestSubscription : IDisposable
@@ -251,6 +221,84 @@ namespace Linq2Rest.Reactive
 					_observerScheduler.Schedule(observer1.OnCompleted);
 				}
 			}
+		}
+	}
+
+	/// <summary>
+	/// Defines an observable REST query.
+	/// </summary>
+	/// <typeparam name="T">The <see cref="Type"/> of object returned by the REST service.</typeparam>
+	internal class InnerRestObservable<T> : InnerRestObservableBase<T>
+	{
+		private readonly RestQueryableProvider _provider;
+
+		internal InnerRestObservable(
+			IAsyncRestClientFactory restClient,
+			ISerializerFactory serializerFactory,
+			Expression expression,
+			IScheduler subscriberScheduler,
+			IScheduler observerScheduler)
+			: base(restClient, serializerFactory, expression, subscriberScheduler, observerScheduler)
+		{
+			_provider = new RestQueryableProvider(restClient, serializerFactory, subscriberScheduler, observerScheduler);
+		}
+
+		/// <summary>
+		/// Gets the query provider that is associated with this data source.
+		/// </summary>
+		public override IQbservableProvider Provider
+		{
+			get { return _provider; }
+		}
+	}
+
+	internal class PollingRestObservable<T> : InnerRestObservableBase<T>
+	{
+		private readonly IQbservableProvider _provider;
+		private readonly TimeSpan _frequency;
+		private readonly ISubject<T> _subject = new Subject<T>();
+
+		internal PollingRestObservable(
+			TimeSpan frequency,
+			IAsyncRestClientFactory restClient,
+			ISerializerFactory serializerFactory,
+			Expression expression,
+			IScheduler subscriberScheduler,
+			IScheduler observerScheduler)
+			: base(restClient, serializerFactory, expression, subscriberScheduler, observerScheduler)
+		{
+			_frequency = frequency;
+			_provider = new PollingRestQueryableProvider(frequency, restClient, serializerFactory, subscriberScheduler, observerScheduler);
+			_subject.Subscribe();
+		}
+
+		/// <summary>
+		/// Gets the query provider that is associated with this data source.
+		/// </summary>
+		public override IQbservableProvider Provider
+		{
+			get { return _provider; }
+		}
+
+		protected override IObservable<IEnumerable> GetIntermediateResults(Type type, ParameterBuilder builder)
+		{
+			var client = RestClient.Create(builder.GetFullUri());
+
+			return Observable
+				.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)
+				.Invoke()
+				.Select(x => ReadIntermediateResponse(type, x));
+		}
+
+		protected override IObservable<IEnumerable<T>> GetResults(ParameterBuilder builder)
+		{
+			var fullUri = builder.GetFullUri();
+			var client = RestClient.Create(fullUri);
+			var serializer = SerializerFactory.Create<T>();
+			return Observable.Interval(_frequency)
+				.Select(x => Observable.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)())
+				.Select(x => x.Select(serializer.DeserializeList))
+				.SelectMany(x => x);
 		}
 	}
 }

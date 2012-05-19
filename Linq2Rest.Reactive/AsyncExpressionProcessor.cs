@@ -14,8 +14,6 @@ namespace Linq2Rest.Reactive
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Linq;
-	using System.Reflection;
-	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
 	internal class AsyncExpressionProcessor : IAsyncExpressionProcessor
@@ -27,33 +25,18 @@ namespace Linq2Rest.Reactive
 			_visitor = visitor;
 		}
 
-		public Task<IObservable<T>> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		public IObservable<T> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
 			var task = ProcessMethodCallInternal(methodCall, builder, resultLoader, intermediateResultLoader);
 			return task == null
-					? (Task<IObservable<T>>)resultLoader(builder).ContinueWith(x => x.Result.ToObservable())
-					: task.ContinueWith(o => LoadIntermediateResult<T>(o));
+					? (IObservable<T>)resultLoader(builder).SelectMany(x => x)
+					: task.Select(o => (IQbservable<T>)o).SelectMany(x => x);
 		}
 
-		private static IObservable<T> LoadIntermediateResult<T>(Task<object> o)
-		{
-			if (o.IsCompleted)
-			{
-				return (IObservable<T>)o.Result;
-			}
-
-			if (o.IsFaulted && o.Exception != null)
-			{
-				throw o.Exception;
-			}
-
-			throw new Exception("Could not get observable result.");
-		}
-
-		private static Task<object> InvokeEager<T>(MethodCallExpression methodCall, object source)
+		private static IObservable<object> InvokeEager<T>(MethodCallExpression methodCall, object source)
 		{
 			var parameters = ResolveInvocationParameters(source as IEnumerable, typeof(T), methodCall);
-			return Task.Factory.StartNew(() => methodCall.Method.Invoke(null, parameters));
+			return new[] { (methodCall.Method.Invoke(null, parameters)) }.ToObservable();
 		}
 
 		private static object[] ResolveInvocationParameters(IEnumerable results, Type type, MethodCallExpression methodCall)
@@ -80,7 +63,7 @@ namespace Linq2Rest.Reactive
 			return null;
 		}
 
-		private Task<object> ProcessMethodCallInternal<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private IObservable<object> ProcessMethodCallInternal<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(builder != null);
@@ -199,7 +182,7 @@ namespace Linq2Rest.Reactive
 			return null;
 		}
 
-		private Task<object> GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private IObservable<object> GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(builder != null);
@@ -216,10 +199,10 @@ namespace Linq2Rest.Reactive
 
 			var genericArguments = methodCall.Method.GetGenericArguments();
 #if !NETFX_CORE
-            var method = typeof(Queryable)
-                .GetMethods()
-                .Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
-                .MakeGenericMethod(genericArguments);
+			var method = typeof(Queryable)
+				.GetMethods()
+				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
+				.MakeGenericMethod(genericArguments);
 #else
 			var method = typeof(Queryable).GetTypeInfo()
 				.GetDeclaredMethods(methodCall.Method.Name)
@@ -228,22 +211,21 @@ namespace Linq2Rest.Reactive
 #endif
 
 			return resultLoader(builder)
-				.ContinueWith(
-							  t =>
+				.Select(
+							  list =>
 							  {
-								  var list = t.Result;
-
 #if !WINDOWS_PHONE
 								  Contract.Assume(list != null);
 #endif
 
-								  var parameters = new object[] { list.ToObservable().AsQbservable() };
+								  var qbservable = list.ToObservable().AsQbservable();
+								  var parameters = new object[] { qbservable };
 
 								  return method.Invoke(null, parameters);
 							  });
 		}
 
-		private Task<object> GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private IObservable<object> GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(resultLoader != null);
@@ -253,10 +235,9 @@ namespace Linq2Rest.Reactive
 			ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
 			return resultLoader(builder)
-				.ContinueWith(
-							  t =>
+				.Select(
+							  list =>
 							  {
-								  var list = t.Result;
 
 #if !WINDOWS_PHONE
 								  Contract.Assume(list != null);
@@ -267,7 +248,7 @@ namespace Linq2Rest.Reactive
 							  });
 		}
 
-		private Task<object> ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, Task<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, Task<IEnumerable>> intermediateResultLoader)
+		private IObservable<object> ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(resultLoader != null);
@@ -290,7 +271,7 @@ namespace Linq2Rest.Reactive
 			}
 
 #if !NETFX_CORE
-            var genericArgument = innerMethod.Method.ReturnType.GetGenericArguments()[0];
+			var genericArgument = innerMethod.Method.ReturnType.GetGenericArguments()[0];
 #else
 			var genericArgument = innerMethod.Method.ReturnType.GenericTypeArguments[0];
 #endif
@@ -298,27 +279,25 @@ namespace Linq2Rest.Reactive
 
 			var methodInfo = methodCall.Method;
 
-			var list = type != genericArgument
+			var observable = type != genericArgument
 						? intermediateResultLoader(genericArgument, builder)
-							.ContinueWith(
-										  t =>
+							.Select(
+										  resultList =>
 										  {
-											  var resultList = t.Result;
-											  var arguments = ResolveInvocationParameters(resultList, genericArgument, methodCall);
+											  var arguments = ResolveInvocationParameters(resultList as IEnumerable, genericArgument, methodCall);
 											  var methodResult = methodInfo.Invoke(null, arguments);
 
 											  return methodResult;
 										  })
 						: resultLoader(builder)
-							.ContinueWith(
-										  t =>
+							.Select(
+										  resultList =>
 										  {
-											  var resultList = t.Result;
-											  var arguments = ResolveInvocationParameters(resultList, genericArgument, methodCall);
+											  var arguments = ResolveInvocationParameters(resultList as IEnumerable, genericArgument, methodCall);
 											  return methodInfo.Invoke(null, arguments);
 										  });
 
-			return list;
+			return observable;
 		}
 	}
 }
