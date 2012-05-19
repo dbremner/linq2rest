@@ -132,7 +132,7 @@ namespace Linq2Rest.Reactive
 			var resultSet = serializer.DeserializeList(response);
 #else
 			var serializer = genericMethod.Invoke(_serializerFactory, null);
-			var deserializeListMethod = serializer.GetType().GetMethod("DeserializeList", BindingFlags.Public);
+			var deserializeListMethod = serializer.GetType().GetMethod("DeserializeList");
 			var resultSet = deserializeListMethod.Invoke(serializer, new object[] { response });
 #endif
 			return resultSet as IEnumerable;
@@ -256,7 +256,6 @@ namespace Linq2Rest.Reactive
 	{
 		private readonly IQbservableProvider _provider;
 		private readonly TimeSpan _frequency;
-		private readonly ISubject<T> _subject = new Subject<T>();
 
 		internal PollingRestObservable(
 			TimeSpan frequency,
@@ -269,7 +268,6 @@ namespace Linq2Rest.Reactive
 		{
 			_frequency = frequency;
 			_provider = new PollingRestQueryableProvider(frequency, restClient, serializerFactory, subscriberScheduler, observerScheduler);
-			_subject.Subscribe();
 		}
 
 		/// <summary>
