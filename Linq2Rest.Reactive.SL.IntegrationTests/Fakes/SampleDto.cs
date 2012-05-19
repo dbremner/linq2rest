@@ -3,7 +3,7 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-namespace Linq2Rest.Reactive.SL.IntegrationTests
+namespace Linq2Rest.Reactive.SL.IntegrationTests.Fakes
 {
 	using System.Runtime.Serialization;
 
