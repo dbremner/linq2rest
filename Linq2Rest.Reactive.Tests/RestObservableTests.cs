@@ -130,6 +130,21 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
+		public void WhenResultReturnedThenCompletesSubscription()
+		{
+			var waitHandle = new ManualResetEvent(false);
+			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
+			var subscription = observable
+				.Create()
+				.Where(x => x.StringValue == "blah")
+				.Subscribe(x => { }, () => waitHandle.Set());
+
+			var result = waitHandle.WaitOne();
+
+			Assert.True(result);
+		}
+
+		[Test]
 		public void WhenInvokingThenCallsRestClient()
 		{
 			var waitHandle = new ManualResetEvent(false);
