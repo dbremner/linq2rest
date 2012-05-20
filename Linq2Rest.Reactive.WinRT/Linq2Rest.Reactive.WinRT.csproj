@@ -197,8 +197,17 @@
     <Compile Include="..\Linq2Rest.Reactive\InnerRestObservable.cs">
       <Link>InnerRestObservable.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\InnerRestObservableBase.cs">
+      <Link>InnerRestObservableBase.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest.Reactive\ObservableExtensions.cs">
       <Link>ObservableExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\PollingRestObservable.cs">
+      <Link>PollingRestObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\PollingRestQueryableProvider.cs">
+      <Link>PollingRestQueryableProvider.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest.Reactive\ReflectionHelper.cs">
       <Link>ReflectionHelper.cs</Link>
@@ -208,6 +217,9 @@
     </Compile>
     <Compile Include="..\Linq2Rest.Reactive\RestQueryableProvider.cs">
       <Link>RestQueryableProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\RestQueryableProviderBase.cs">
+      <Link>RestQueryableProviderBase.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\ExpressionVisitor.cs">
       <Link>Provider\ExpressionVisitor.cs</Link>
@@ -232,6 +244,12 @@
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\ByteValueWriter.cs">
       <Link>Provider\Writers\ByteValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DateTimeOffsetValueWriter.cs">
+      <Link>Provider\Writers\DateTimeOffsetValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DateTimeValueWriter.cs">
+      <Link>Provider\Writers\DateTimeValueWriter.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\DecimalValueWriter.cs">
       <Link>Provider\Writers\DecimalValueWriter.cs</Link>
@@ -272,6 +290,9 @@
     <Compile Include="..\Linq2Rest\Provider\Writers\StringValueWriter.cs">
       <Link>Provider\Writers\StringValueWriter.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\TimeSpanValueWriter.cs">
+      <Link>Provider\Writers\TimeSpanValueWriter.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\UnsignedIntValueWriter.cs">
       <Link>Provider\Writers\UnsignedIntValueWriter.cs</Link>
     </Compile>
@@ -302,6 +323,7 @@
     <Reference Include="System.Reactive.Providers">
       <HintPath>..\packages\Rx-Providers.2.0.20304-beta\lib\WinRT45\System.Reactive.Providers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.ReaderWriter" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

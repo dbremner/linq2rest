@@ -442,7 +442,7 @@ namespace Linq2Rest.Provider
 					{
 						var binaryExpression = expression as BinaryExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(binaryExpression != null);
 #endif
 
@@ -456,10 +456,10 @@ namespace Linq2Rest.Provider
 						var rightString = Visit(binaryExpression.Right, leftType, rootParameterName);
 
 						return string.Format(
-											 "{0} {1} {2}",
-											 string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
-											 operation,
-											 string.Format(isRightComposite ? "({0})" : "{0}", rightString));
+							"{0} {1} {2}",
+							string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
+							operation,
+							string.Format(isRightComposite ? "({0})" : "{0}", rightString));
 					}
 
 				case ExpressionType.Negate:
@@ -504,6 +504,7 @@ namespace Linq2Rest.Provider
 						return Visit(operand, rootParameterName);
 					}
 #endif
+
 				case ExpressionType.Convert:
 				case ExpressionType.Quote:
 					{
@@ -520,8 +521,7 @@ namespace Linq2Rest.Provider
 				case ExpressionType.MemberAccess:
 					{
 						var memberExpression = expression as MemberExpression;
-
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(memberExpression != null);
 #endif
 
@@ -531,9 +531,10 @@ namespace Linq2Rest.Provider
 						while (currentMemberExpression != null)
 						{
 							pathPrefixes.Add(currentMemberExpression.Member.Name);
-							if (currentMemberExpression.Expression is ParameterExpression && ((ParameterExpression)currentMemberExpression.Expression).Name != rootParameterName)
+							if (currentMemberExpression.Expression is ParameterExpression &&
+							    ((ParameterExpression) currentMemberExpression.Expression).Name != rootParameterName)
 							{
-								pathPrefixes.Add(((ParameterExpression)currentMemberExpression.Expression).Name);
+								pathPrefixes.Add(((ParameterExpression) currentMemberExpression.Expression).Name);
 							}
 
 							currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
@@ -554,7 +555,7 @@ namespace Linq2Rest.Provider
 								return Visit(collapsedExpression, rootParameterName);
 							}
 
-							memberExpression = (MemberExpression)collapsedExpression;
+							memberExpression = (MemberExpression) collapsedExpression;
 						}
 
 						var memberCall = GetMemberCall(memberExpression);
@@ -566,14 +567,13 @@ namespace Linq2Rest.Provider
 #endif
 
 						return string.IsNullOrWhiteSpace(memberCall)
-								? prefix
-								: string.Format("{0}({1})", memberCall, Visit(innerExpression, rootParameterName));
+						       	? prefix
+						       	: string.Format("{0}({1})", memberCall, Visit(innerExpression, rootParameterName));
 					}
-
+					
 				case ExpressionType.Call:
 					var methodCallExpression = expression as MethodCallExpression;
-
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 					Contract.Assume(methodCallExpression != null);
 #endif
 
