@@ -45,7 +45,7 @@ namespace Linq2Rest.Reactive
 		{
 			return new InnerRestObservable<T>(_restClientFactory, _serializerFactory, null, Scheduler.CurrentThread, Scheduler.CurrentThread);
 		}
-		
+
 		/// <summary>
 		/// Creates an observable performing a continuous calls to the defined service at the defined intervals.
 		/// </summary>
@@ -54,6 +54,16 @@ namespace Linq2Rest.Reactive
 		public IQbservable<T> Poll(TimeSpan interval)
 		{
 			return new PollingRestObservable<T>(interval, _restClientFactory, _serializerFactory, null, Scheduler.CurrentThread, Scheduler.CurrentThread);
+		}
+
+		/// <summary>
+		/// Creates an observable performing a continuous calls to the defined service at the defined intervals.
+		/// </summary>
+		/// <param name="interval">The interval between requests.</param>
+		/// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
+		public IQbservable<T> Requery(TimeSpan interval)
+		{
+			return new RequeryingRestObservable<T>(interval, _restClientFactory, _serializerFactory, null, Scheduler.CurrentThread, Scheduler.CurrentThread);
 		}
 	}
 }

@@ -21,10 +21,6 @@ namespace Linq2Rest.Reactive
 	{
 		private readonly IAsyncRestClientFactory _restClient;
 		private readonly ISerializerFactory _serializerFactory;
-		private readonly IScheduler _subscriberScheduler;
-		private readonly IScheduler _observerScheduler;
-		private readonly IList<IObserver<T>> _observers = new List<IObserver<T>>();
-		private readonly IAsyncExpressionProcessor _processor;
 		private IDisposable _subscribeSubscription;
 		private IDisposable _internalSubscription;
 
@@ -40,11 +36,12 @@ namespace Linq2Rest.Reactive
 			Contract.Requires(serializerFactory != null);
 #endif
 
-			_processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor());
+			Observers = new List<IObserver<T>>();
+			Processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor());
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
-			_subscriberScheduler = subscriberScheduler ?? Scheduler.CurrentThread;
-			_observerScheduler = observerScheduler ?? Scheduler.CurrentThread;
+			SubscriberScheduler = subscriberScheduler ?? Scheduler.CurrentThread;
+			ObserverScheduler = observerScheduler ?? Scheduler.CurrentThread;
 			Expression = expression ?? Expression.Constant(this);
 		}
 
@@ -76,6 +73,14 @@ namespace Linq2Rest.Reactive
 			get { return _serializerFactory; }
 		}
 
+		protected IAsyncExpressionProcessor Processor { get; private set; }
+
+		protected IList<IObserver<T>> Observers { get; private set; }
+
+		protected IScheduler ObserverScheduler { get; private set; }
+
+		protected IScheduler SubscriberScheduler { get; private set; }
+
 		/// <summary>
 		/// Notifies the provider that an observer is to receive notifications.
 		/// </summary>
@@ -83,10 +88,10 @@ namespace Linq2Rest.Reactive
 		/// A reference to an interface that allows observers to stop receiving notifications before the provider has finished sending them.
 		/// </returns>
 		/// <param name="observer">The object that is to receive notifications.</param>
-		public IDisposable Subscribe(IObserver<T> observer)
+		public virtual IDisposable Subscribe(IObserver<T> observer)
 		{
-			_observers.Add(observer);
-			_subscribeSubscription = _subscriberScheduler
+			Observers.Add(observer);
+			_subscribeSubscription = SubscriberScheduler
 				.Schedule(
 						  observer,
 						  (s, o) =>
@@ -94,12 +99,12 @@ namespace Linq2Rest.Reactive
 							  var filter = Expression as MethodCallExpression;
 							  var parameterBuilder = new ParameterBuilder(RestClient.ServiceBase);
 
-							  _internalSubscription = _processor.ProcessMethodCall(
+							  _internalSubscription = Processor.ProcessMethodCall(
 																				   filter,
 																				   parameterBuilder,
 																				   GetResults,
 																				   GetIntermediateResults)
-								  .Subscribe(new ObserverPublisher(_observers, _observerScheduler));
+								  .Subscribe(new ObserverPublisher(Observers, ObserverScheduler));
 						  });
 			return new RestSubscription(observer, Unsubscribe);
 		}
@@ -148,14 +153,14 @@ namespace Linq2Rest.Reactive
 
 		private void Unsubscribe(IObserver<T> observer)
 		{
-			if (!_observers.Contains(observer))
+			if (!Observers.Contains(observer))
 			{
 				return;
 			}
 
-			_observers.Remove(observer);
+			Observers.Remove(observer);
 			observer.OnCompleted();
-			if (_observers.Count == 0)
+			if (Observers.Count == 0)
 			{
 				if (_internalSubscription != null)
 				{
@@ -169,7 +174,7 @@ namespace Linq2Rest.Reactive
 			}
 		}
 
-		private class RestSubscription : IDisposable
+		protected class RestSubscription : IDisposable
 		{
 			private readonly IObserver<T> _observer;
 			private readonly Action<IObserver<T>> _unsubscription;
@@ -186,7 +191,7 @@ namespace Linq2Rest.Reactive
 			}
 		}
 
-		private class ObserverPublisher : IObserver<T>
+		protected class ObserverPublisher : IObserver<T>
 		{
 			private readonly IEnumerable<IObserver<T>> _observers;
 			private readonly IScheduler _observerScheduler;
