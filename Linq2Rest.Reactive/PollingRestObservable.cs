@@ -17,7 +17,6 @@ namespace Linq2Rest.Reactive
 	internal class PollingRestObservable<T> : InnerRestObservableBase<T>
 	{
 		private readonly IQbservableProvider _provider;
-		private readonly TimeSpan _frequency;
 
 		internal PollingRestObservable(
 			TimeSpan frequency,
@@ -28,7 +27,7 @@ namespace Linq2Rest.Reactive
 			IScheduler observerScheduler)
 			: base(restClient, serializerFactory, expression, subscriberScheduler, observerScheduler)
 		{
-			_frequency = frequency;
+			Frequency = frequency;
 			_provider = new PollingRestQueryableProvider(frequency, restClient, serializerFactory, subscriberScheduler, observerScheduler);
 		}
 
@@ -40,22 +39,26 @@ namespace Linq2Rest.Reactive
 			get { return _provider; }
 		}
 
+		protected TimeSpan Frequency { get; private set; }
+
 		protected override IObservable<IEnumerable> GetIntermediateResults(Type type, ParameterBuilder builder)
 		{
 			var client = RestClient.Create(builder.GetFullUri());
 
-			return Observable
-				.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)
-				.Invoke()
-				.Select(x => ReadIntermediateResponse(type, x));
+			return Observable.Interval(Frequency)
+				.Select(x => Observable.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult).Invoke())
+				.Select(x => x.Select(s => ReadIntermediateResponse(type, s)))
+				.SelectMany(x => x);
 		}
 
 		protected override IObservable<IEnumerable<T>> GetResults(ParameterBuilder builder)
 		{
+			var serializer = SerializerFactory.Create<T>();
+
 			var fullUri = builder.GetFullUri();
 			var client = RestClient.Create(fullUri);
-			var serializer = SerializerFactory.Create<T>();
-			return Observable.Interval(_frequency)
+
+			return Observable.Interval(Frequency)
 				.Select(x => Observable.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)())
 				.Select(x => x.Select(serializer.DeserializeList))
 				.SelectMany(x => x);
