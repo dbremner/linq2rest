@@ -1,8 +1,7 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="TimeSpanExpressionFactory.cs" company="">
-// TODO: Update copyright text.
-// </copyright>
-// -----------------------------------------------------------------------
+﻿// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://www.opensource.org/licenses/MS-PL] for details.
+// All other rights reserved.
 
 namespace Linq2Rest.Parser.Readers
 {
@@ -13,7 +12,7 @@ namespace Linq2Rest.Parser.Readers
 
 	internal class TimeSpanExpressionFactory : IValueExpressionFactory
 	{
-		private static readonly Regex TimeSpanRegex = new Regex(@"^time['\""](P.+)['\""]$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex _timeSpanRegex = new Regex(@"^time['\""](P.+)['\""]$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		public Type Handles
 		{
@@ -25,7 +24,7 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			var match = TimeSpanRegex.Match(token);
+			var match = _timeSpanRegex.Match(token);
 			if (match.Success)
 			{
 				var timespan = XmlConvert.ToTimeSpan(match.Groups[1].Value);

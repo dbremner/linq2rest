@@ -36,7 +36,8 @@ namespace Linq2Rest.Reactive
 		private static IObservable<object> InvokeEager<T>(MethodCallExpression methodCall, object source)
 		{
 			var parameters = ResolveInvocationParameters(source as IEnumerable, typeof(T), methodCall);
-			return new[] { (methodCall.Method.Invoke(null, parameters)) }.ToObservable();
+			
+			return Observable.Return(methodCall.Method.Invoke(null, parameters));
 		}
 
 		private static object[] ResolveInvocationParameters(IEnumerable results, Type type, MethodCallExpression methodCall)
@@ -238,7 +239,6 @@ namespace Linq2Rest.Reactive
 				.Select(
 							  list =>
 							  {
-
 #if !WINDOWS_PHONE
 								  Contract.Assume(list != null);
 #endif
