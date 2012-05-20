@@ -3,6 +3,8 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Reactive;
+
 namespace Linq2Rest.Reactive
 {
 	using System;
@@ -28,7 +30,28 @@ namespace Linq2Rest.Reactive
 
 		protected override IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
 		{
-			return new PollingRestObservable<TResult>(this._frequency, this.AsyncRestClient, this.SerializerFactory, expression, subscriberScheduler, observerScheduler);
+			return new PollingRestObservable<TResult>(_frequency, AsyncRestClient, SerializerFactory, expression, subscriberScheduler, observerScheduler);
+		}
+	}
+
+	internal class TriggeredRestQueryableProvider : RestQueryableProviderBase
+	{
+		private readonly IObservable<Unit> _trigger;
+
+		public TriggeredRestQueryableProvider(
+			IObservable<Unit> trigger,
+			IAsyncRestClientFactory asyncRestClient,
+			ISerializerFactory serializerFactory,
+			IScheduler subscriberScheduler,
+			IScheduler observerScheduler)
+			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)
+		{
+			_trigger = trigger;
+		}
+
+		protected override IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
+		{
+			return new TriggeredRestObservable<TResult>(_trigger, AsyncRestClient, SerializerFactory, expression, subscriberScheduler, observerScheduler);
 		}
 	}
 }
