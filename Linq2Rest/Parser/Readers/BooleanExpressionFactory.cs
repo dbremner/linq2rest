@@ -11,8 +11,8 @@ namespace Linq2Rest.Parser.Readers
 
 	internal class BooleanExpressionFactory : IValueExpressionFactory
 	{
-		private static readonly Regex TrueRegex = new Regex("1|true", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-		private static readonly Regex FalseRegex = new Regex("0|false", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		private static readonly Regex _trueRegex = new Regex("1|true", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		private static readonly Regex _falseRegex = new Regex("0|false", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 		public Type Handles
 		{
@@ -24,12 +24,12 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			if (TrueRegex.IsMatch(token))
+			if (_trueRegex.IsMatch(token))
 			{
 				return Expression.Constant(true);
 			}
 
-			if (FalseRegex.IsMatch(token))
+			if (_falseRegex.IsMatch(token))
 			{
 				return Expression.Constant(false);
 			}

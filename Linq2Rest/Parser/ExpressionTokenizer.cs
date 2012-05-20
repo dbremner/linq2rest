@@ -13,9 +13,9 @@ namespace Linq2Rest.Parser
 
 	internal static class ExpressionTokenizer
 	{
-		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$", RegexOptions.Compiled);
-		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
-		private static readonly Regex AnyAllFunctionRx = new Regex(@"^([0-9a-zA-Z]+/)?(([0-9a-zA-Z_]+/)+)(any|all)\((.*)\)$", RegexOptions.Compiled);
+		private static readonly Regex _functionRx = new Regex(@"^([^\(\)]+)\((.+)\)$", RegexOptions.Compiled);
+		private static readonly Regex _functionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
+		private static readonly Regex _anyAllFunctionRx = new Regex(@"^([0-9a-zA-Z]+/)?(([0-9a-zA-Z_]+/)+)(any|all)\((.*)\)$", RegexOptions.Compiled);
 
 		public static IEnumerable<TokenSet> GetTokens(this string expression)
 		{
@@ -153,7 +153,7 @@ namespace Linq2Rest.Parser
 		{
 			Contract.Requires(filter != null);
 
-			var functionMatch = AnyAllFunctionRx.Match(filter);
+			var functionMatch = _anyAllFunctionRx.Match(filter);
 			if (!functionMatch.Success)
 			{
 				return null;
@@ -175,7 +175,7 @@ namespace Linq2Rest.Parser
 		{
 			Contract.Requires(filter != null);
 
-			var functionMatch = FunctionRx.Match(filter);
+			var functionMatch = _functionRx.Match(filter);
 			if (!functionMatch.Success)
 			{
 				return null;
@@ -183,7 +183,7 @@ namespace Linq2Rest.Parser
 
 			var functionName = functionMatch.Groups[1].Value;
 			var functionContent = functionMatch.Groups[2].Value;
-			var functionContentMatch = FunctionContentRx.Match(functionContent);
+			var functionContentMatch = _functionContentRx.Match(functionContent);
 			if (!functionContentMatch.Success)
 			{
 				return new FunctionTokenSet
