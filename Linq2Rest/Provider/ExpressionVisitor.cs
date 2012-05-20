@@ -402,12 +402,7 @@ namespace Linq2Rest.Provider
 				return string.Format("{0}/{1}({2}: {3})", Visit(expression.Arguments[0], rootParameterName), expression.Method.Name.ToLowerInvariant(), expression.Arguments[1] is LambdaExpression ? (expression.Arguments[1] as LambdaExpression).Parameters.First().Name : null, Visit(expression.Arguments[1], rootParameterName));
 			}
 
-			if (expression.Method.IsStatic)
-			{
-				return expression.ToString();
-			}
-
-			return string.Empty;
+			return ParameterValueWriter.Write(GetValue(expression));
 		}
 
 		private string Visit(Expression expression, Type type, string rootParameterName)

@@ -5,99 +5,99 @@
 
 namespace Linq2Rest.Provider
 {
-    using System;
-    using System.Collections.Generic;
+	using System;
+	using System.Collections.Generic;
 #if !WINDOWS_PHONE
-    using System.Diagnostics.Contracts;
+	using System.Diagnostics.Contracts;
 #endif
-    using System.Linq;
+	using System.Linq;
 #if !NETFX_CORE && !SILVERLIGHT
 	using System.Web;
 #endif
 
 	internal class ParameterBuilder
-    {
-        private readonly Uri _serviceBase;
+	{
+		private readonly Uri _serviceBase;
 
-        public ParameterBuilder(Uri serviceBase)
-        {
+		public ParameterBuilder(Uri serviceBase)
+		{
 #if !WINDOWS_PHONE
-            Contract.Requires(serviceBase != null);
+			Contract.Requires(serviceBase != null);
 #endif
-            _serviceBase = serviceBase;
-            OrderByParameter = new List<string>();
-        }
+			_serviceBase = serviceBase;
+			OrderByParameter = new List<string>();
+		}
 
-        public string FilterParameter { get; set; }
+		public string FilterParameter { get; set; }
 
-        public IList<string> OrderByParameter { get; private set; }
+		public IList<string> OrderByParameter { get; private set; }
 
-        public string SelectParameter { get; set; }
+		public string SelectParameter { get; set; }
 
-        public string SkipParameter { get; set; }
+		public string SkipParameter { get; set; }
 
-        public string TakeParameter { get; set; }
+		public string TakeParameter { get; set; }
 
 		public string ExpandParameter { get; set; }
 
-        public Uri GetFullUri()
-        {
+		public Uri GetFullUri()
+		{
 #if !WINDOWS_PHONE
 			Contract.Ensures(Contract.Result<Uri>() != null);
 #endif
-            var parameters = new List<string>();
-            if (!string.IsNullOrWhiteSpace(FilterParameter))
+			var parameters = new List<string>();
+			if (!string.IsNullOrWhiteSpace(FilterParameter))
 			{
 #if !SILVERLIGHT && !NETFX_CORE
 				parameters.Add(BuildParameter(StringConstants.FilterParameter, HttpUtility.UrlEncode(FilterParameter)));
 #else
 				parameters.Add(BuildParameter(StringConstants.FilterParameter, FilterParameter));
 #endif
-            }
+			}
 
-            if (!string.IsNullOrWhiteSpace(SelectParameter))
-            {
-                parameters.Add(BuildParameter(StringConstants.SelectParameter, SelectParameter));
-            }
+			if (!string.IsNullOrWhiteSpace(SelectParameter))
+			{
+				parameters.Add(BuildParameter(StringConstants.SelectParameter, SelectParameter));
+			}
 
-            if (!string.IsNullOrWhiteSpace(SkipParameter))
-            {
-                parameters.Add(BuildParameter(StringConstants.SkipParameter, SkipParameter));
-            }
+			if (!string.IsNullOrWhiteSpace(SkipParameter))
+			{
+				parameters.Add(BuildParameter(StringConstants.SkipParameter, SkipParameter));
+			}
 
-            if (!string.IsNullOrWhiteSpace(TakeParameter))
-            {
-                parameters.Add(BuildParameter(StringConstants.TopParameter, TakeParameter));
-            }
+			if (!string.IsNullOrWhiteSpace(TakeParameter))
+			{
+				parameters.Add(BuildParameter(StringConstants.TopParameter, TakeParameter));
+			}
 
-            if (OrderByParameter.Any())
-            {
-                parameters.Add(BuildParameter(StringConstants.OrderByParameter, string.Join(",", OrderByParameter)));
-            }
+			if (OrderByParameter.Any())
+			{
+				parameters.Add(BuildParameter(StringConstants.OrderByParameter, string.Join(",", OrderByParameter)));
+			}
 
 			if (!string.IsNullOrWhiteSpace(ExpandParameter))
 			{
 				parameters.Add(BuildParameter(StringConstants.ExpandParameter, ExpandParameter));
 			}
 
-            var builder = new UriBuilder(_serviceBase);
-            builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
+			var builder = new UriBuilder(_serviceBase);
+			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
 
-            return builder.Uri;
-        }
+			return builder.Uri;
+		}
 
 		private static string BuildParameter(string name, string value)
-        {
-            return string.Format(name + "=" + value);
-        }
+		{
+			return name + "=" + value;
+		}
 
 #if !WINDOWS_PHONE
-        [ContractInvariantMethod]
-        private void Invariants()
-        {
-            Contract.Invariant(_serviceBase != null);
-            Contract.Invariant(OrderByParameter != null);
-        }
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_serviceBase != null);
+			Contract.Invariant(OrderByParameter != null);
+		}
 #endif
-    }
+	}
 }

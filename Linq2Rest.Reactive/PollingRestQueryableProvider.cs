@@ -28,7 +28,7 @@ namespace Linq2Rest.Reactive
 
 		protected override IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
 		{
-			return new PollingRestObservable<TResult>(_frequency, AsyncRestClient, SerializerFactory, expression, subscriberScheduler, observerScheduler);
+			return new PollingRestObservable<TResult>(this._frequency, this.AsyncRestClient, this.SerializerFactory, expression, subscriberScheduler, observerScheduler);
 		}
 	}
 }

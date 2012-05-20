@@ -129,6 +129,49 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenApplyingExpandsQueryThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Expand("Value")
+				.ToArray();
+
+			var uri = new Uri("http://localhost/?$expand=Value");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingExpandsUsingExpressionQueryThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Expand(x => x.Value)
+				.ToArray();
+
+			var uri = new Uri("http://localhost/?$expand=Value");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+		[Test]
+		public void WhenApplyingExpandsUsingMultipleExpressionQueryThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Expand(x => x.Value, x => x.Content)
+				.ToArray();
+
+			var uri = new Uri("http://localhost/?$expand=Value,Content");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingExpandsOnSubPropertyUsingExpressionQueryThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Expand(x => x.Date.Year)
+				.ToArray();
+
+			var uri = new Uri("http://localhost/?$expand=Date/Year");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
 		public void WhenApplyingEqualsQueryOnDateTimeThenCallsRestServiceWithFilter()
 		{
 			var result = _provider.Query
