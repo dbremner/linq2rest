@@ -210,6 +210,8 @@
       <AnalyzerSettings>
         <CollectionProperty Name="Hungarian">
           <Value>as</Value>
+		  <Value>on</Value>
+		  <Value>to</Value>
           <Value>is</Value>
           <Value>xe</Value>
           <Value>xn</Value>

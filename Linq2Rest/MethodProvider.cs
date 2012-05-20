@@ -14,28 +14,28 @@ namespace Linq2Rest
 
 	internal static class MethodProvider
 	{
-		private static readonly ConstantExpression InnerIgnoreCaseExpression;
-		private static readonly MethodInfo InnerContainsMethod;
-		private static readonly MethodInfo InnerIndexOfMethod;
-		private static readonly MethodInfo EndsWithMethod1;
-		private static readonly MethodInfo StartsWithMethod1;
-		private static readonly PropertyInfo LengthProperty1;
-		private static readonly MethodInfo SubstringMethod1;
-		private static readonly MethodInfo ToLowerMethod1;
-		private static readonly MethodInfo ToUpperMethod1;
-		private static readonly MethodInfo TrimMethod1;
-		private static readonly PropertyInfo DayProperty1;
-		private static readonly PropertyInfo HourProperty1;
-		private static readonly PropertyInfo MinuteProperty1;
-		private static readonly PropertyInfo SecondProperty1;
-		private static readonly PropertyInfo MonthProperty1;
-		private static readonly PropertyInfo YearProperty1;
-		private static readonly MethodInfo DoubleRoundMethod1;
-		private static readonly MethodInfo DecimalRoundMethod1;
-		private static readonly MethodInfo DoubleFloorMethod1;
-		private static readonly MethodInfo DecimalFloorMethod1;
-		private static readonly MethodInfo DoubleCeilingMethod1;
-		private static readonly MethodInfo DecimalCeilingMethod1;
+		private static readonly ConstantExpression _innerIgnoreCaseExpression;
+		private static readonly MethodInfo _innerContainsMethod;
+		private static readonly MethodInfo _innerIndexOfMethod;
+		private static readonly MethodInfo _endsWithMethod1;
+		private static readonly MethodInfo _startsWithMethod;
+		private static readonly PropertyInfo _lengthProperty;
+		private static readonly MethodInfo _substringMethod;
+		private static readonly MethodInfo _toLowerMethod;
+		private static readonly MethodInfo _toUpperMethod;
+		private static readonly MethodInfo _trimMethod1;
+		private static readonly PropertyInfo _dayProperty;
+		private static readonly PropertyInfo _hourProperty;
+		private static readonly PropertyInfo _minuteProperty;
+		private static readonly PropertyInfo _secondProperty;
+		private static readonly PropertyInfo _monthProperty;
+		private static readonly PropertyInfo _yearProperty;
+		private static readonly MethodInfo _doubleRoundMethod;
+		private static readonly MethodInfo _decimalRoundMethod;
+		private static readonly MethodInfo _doubleFloorMethod;
+		private static readonly MethodInfo _decimalFloorMethod;
+		private static readonly MethodInfo _doubleCeilingMethod;
+		private static readonly MethodInfo _decimalCeilingMethod;
 
 		static MethodProvider()
 		{
@@ -44,38 +44,38 @@ namespace Linq2Rest
 			var mathType = typeof(Math);
 			var stringComparisonType = typeof(StringComparison);
 
-			InnerIgnoreCaseExpression = Expression.Constant(StringComparison.OrdinalIgnoreCase);
+			_innerIgnoreCaseExpression = Expression.Constant(StringComparison.OrdinalIgnoreCase);
 
-			InnerContainsMethod = stringType.GetMethod("Contains", new[] { stringType });
-			InnerIndexOfMethod = stringType.GetMethod("IndexOf", new[] { stringType, stringComparisonType });
-			EndsWithMethod1 = stringType.GetMethod("EndsWith", new[] { stringType, stringComparisonType });
-			StartsWithMethod1 = stringType.GetMethod("StartsWith", new[] { stringType, stringComparisonType });
-			LengthProperty1 = stringType.GetProperty("Length", Type.EmptyTypes);
-			SubstringMethod1 = stringType.GetMethod("Substring", new[] { typeof(int) });
-			ToLowerMethod1 = stringType.GetMethod("ToLowerInvariant", Type.EmptyTypes);
-			ToUpperMethod1 = stringType.GetMethod("ToUpperInvariant", Type.EmptyTypes);
-			TrimMethod1 = stringType.GetMethod("Trim", Type.EmptyTypes);
+			_innerContainsMethod = stringType.GetMethod("Contains", new[] { stringType });
+			_innerIndexOfMethod = stringType.GetMethod("IndexOf", new[] { stringType, stringComparisonType });
+			_endsWithMethod1 = stringType.GetMethod("EndsWith", new[] { stringType, stringComparisonType });
+			_startsWithMethod = stringType.GetMethod("StartsWith", new[] { stringType, stringComparisonType });
+			_lengthProperty = stringType.GetProperty("Length", Type.EmptyTypes);
+			_substringMethod = stringType.GetMethod("Substring", new[] { typeof(int) });
+			_toLowerMethod = stringType.GetMethod("ToLowerInvariant", Type.EmptyTypes);
+			_toUpperMethod = stringType.GetMethod("ToUpperInvariant", Type.EmptyTypes);
+			_trimMethod1 = stringType.GetMethod("Trim", Type.EmptyTypes);
 
-			DayProperty1 = datetimeType.GetProperty("Day", Type.EmptyTypes);
-			HourProperty1 = datetimeType.GetProperty("Hour", Type.EmptyTypes);
-			MinuteProperty1 = datetimeType.GetProperty("Minute", Type.EmptyTypes);
-			SecondProperty1 = datetimeType.GetProperty("Second", Type.EmptyTypes);
-			MonthProperty1 = datetimeType.GetProperty("Month", Type.EmptyTypes);
-			YearProperty1 = datetimeType.GetProperty("Year", Type.EmptyTypes);
+			_dayProperty = datetimeType.GetProperty("Day", Type.EmptyTypes);
+			_hourProperty = datetimeType.GetProperty("Hour", Type.EmptyTypes);
+			_minuteProperty = datetimeType.GetProperty("Minute", Type.EmptyTypes);
+			_secondProperty = datetimeType.GetProperty("Second", Type.EmptyTypes);
+			_monthProperty = datetimeType.GetProperty("Month", Type.EmptyTypes);
+			_yearProperty = datetimeType.GetProperty("Year", Type.EmptyTypes);
 
-			DoubleRoundMethod1 = mathType.GetMethod("Round", new[] { typeof(double) });
-			DecimalRoundMethod1 = mathType.GetMethod("Round", new[] { typeof(decimal) });
-			DoubleFloorMethod1 = mathType.GetMethod("Floor", new[] { typeof(double) });
-			DecimalFloorMethod1 = mathType.GetMethod("Floor", new[] { typeof(decimal) });
-			DoubleCeilingMethod1 = mathType.GetMethod("Ceiling", new[] { typeof(double) });
-			DecimalCeilingMethod1 = mathType.GetMethod("Ceiling", new[] { typeof(decimal) });
+			_doubleRoundMethod = mathType.GetMethod("Round", new[] { typeof(double) });
+			_decimalRoundMethod = mathType.GetMethod("Round", new[] { typeof(decimal) });
+			_doubleFloorMethod = mathType.GetMethod("Floor", new[] { typeof(double) });
+			_decimalFloorMethod = mathType.GetMethod("Floor", new[] { typeof(decimal) });
+			_doubleCeilingMethod = mathType.GetMethod("Ceiling", new[] { typeof(double) });
+			_decimalCeilingMethod = mathType.GetMethod("Ceiling", new[] { typeof(decimal) });
 		}
 
 		public static ConstantExpression IgnoreCaseExpression
 		{
 			get
 			{
-				return InnerIgnoreCaseExpression;
+				return _innerIgnoreCaseExpression;
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return InnerIndexOfMethod;
+				return _innerIndexOfMethod;
 			}
 		}
 
@@ -93,7 +93,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return InnerContainsMethod;
+				return _innerContainsMethod;
 			}
 		}
 
@@ -102,7 +102,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return EndsWithMethod1;
+				return _endsWithMethod1;
 			}
 		}
 
@@ -111,7 +111,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return StartsWithMethod1;
+				return _startsWithMethod;
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
-				return LengthProperty1;
+				return _lengthProperty;
 			}
 		}
 
@@ -129,7 +129,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return SubstringMethod1;
+				return _substringMethod;
 			}
 		}
 
@@ -138,7 +138,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return ToLowerMethod1;
+				return _toLowerMethod;
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return ToUpperMethod1;
+				return _toUpperMethod;
 			}
 		}
 
@@ -156,7 +156,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return TrimMethod1;
+				return _trimMethod1;
 			}
 		}
 
@@ -165,7 +165,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
-				return DayProperty1;
+				return _dayProperty;
 			}
 		}
 
@@ -174,7 +174,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
-				return HourProperty1;
+				return _hourProperty;
 			}
 		}
 
@@ -183,7 +183,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
-				return MinuteProperty1;
+				return _minuteProperty;
 			}
 		}
 
@@ -192,7 +192,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
-				return SecondProperty1;
+				return _secondProperty;
 			}
 		}
 
@@ -201,7 +201,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
-				return MonthProperty1;
+				return _monthProperty;
 			}
 		}
 
@@ -210,7 +210,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<PropertyInfo>() != null);
-				return YearProperty1;
+				return _yearProperty;
 			}
 		}
 
@@ -219,7 +219,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return DoubleRoundMethod1;
+				return _doubleRoundMethod;
 			}
 		}
 
@@ -228,7 +228,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return DecimalRoundMethod1;
+				return _decimalRoundMethod;
 			}
 		}
 
@@ -237,7 +237,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return DoubleFloorMethod1;
+				return _doubleFloorMethod;
 			}
 		}
 
@@ -246,7 +246,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return DecimalFloorMethod1;
+				return _decimalFloorMethod;
 			}
 		}
 
@@ -255,7 +255,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return DoubleCeilingMethod1;
+				return _doubleCeilingMethod;
 			}
 		}
 
@@ -264,7 +264,7 @@ namespace Linq2Rest
 			get
 			{
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
-				return DecimalCeilingMethod1;
+				return _decimalCeilingMethod;
 			}
 		}
 

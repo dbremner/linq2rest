@@ -49,7 +49,7 @@ namespace Linq2Rest.Reactive.Tests
 							   waitHandle.Set();
 						   });
 
-			var result = waitHandle.WaitOne();
+			var result = waitHandle.WaitOne(5000);
 
 			Assert.True(result);
 		}
@@ -67,16 +67,16 @@ namespace Linq2Rest.Reactive.Tests
 				.ObserveOn(Scheduler.ThreadPool)
 				.Subscribe(
 					x =>
-						{
-						},
+					{
+					},
 					() =>
+					{
+						var observerThreadId = Thread.CurrentThread.ManagedThreadId;
+						if (observerThreadId != testThreadId)
 						{
-							var observerThreadId = Thread.CurrentThread.ManagedThreadId;
-							if (observerThreadId != testThreadId)
-							{
-								waitHandle.Set();
-							}
-						});
+							waitHandle.Set();
+						}
+					});
 
 			var result = waitHandle.WaitOne(2000);
 
@@ -86,19 +86,24 @@ namespace Linq2Rest.Reactive.Tests
 		[Test]
 		public void WhenDisposingSubscriptionThenDoesNotExecute()
 		{
-			var waitHandle = new ManualResetEvent(false);
+			var completedWaitHandle = new ManualResetEvent(false);
+			var onnextWaitHandle = new ManualResetEvent(false);
+
 			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(2000), new TestSerializerFactory());
 			var subscription = observable
 				.Create()
-				.SubscribeOn(Scheduler.TaskPool)
+				.SubscribeOn(Scheduler.CurrentThread)
 				.Where(x => x.StringValue == "blah")
 				.ObserveOn(Scheduler.CurrentThread)
-				.Subscribe(x => { }, () => waitHandle.Set());
+				.Subscribe(x => onnextWaitHandle.Set(), () => completedWaitHandle.Set());
 
 			subscription.Dispose();
-			var result = waitHandle.WaitOne(2000);
 
-			Assert.False(result);
+			var next = onnextWaitHandle.WaitOne(2000);
+			var completed = completedWaitHandle.WaitOne(2000);
+
+			Assert.False(next);
+			Assert.True(completed);
 		}
 
 		[Test]
@@ -130,6 +135,21 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
+		public void WhenResultReturnedThenCompletesSubscription()
+		{
+			var waitHandle = new ManualResetEvent(false);
+			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
+			var subscription = observable
+				.Create()
+				.Where(x => x.StringValue == "blah")
+				.Subscribe(x => { }, () => waitHandle.Set());
+
+			var result = waitHandle.WaitOne();
+
+			Assert.True(result);
+		}
+
+		[Test]
 		public void WhenInvokingThenCallsRestClient()
 		{
 			var waitHandle = new ManualResetEvent(false);
@@ -137,7 +157,9 @@ namespace Linq2Rest.Reactive.Tests
 			var mockResult = new Mock<IAsyncResult>();
 			mockResult.SetupGet(x => x.CompletedSynchronously).Returns(true);
 			var mockRestClient = new Mock<IAsyncRestClient>();
-			mockRestClient.Setup(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>())).Returns(mockResult.Object);
+			mockRestClient.Setup(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>()))
+				.Callback<AsyncCallback, object>((a, o) => a.Invoke(mockResult.Object))
+				.Returns(mockResult.Object);
 			mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[]".ToStream());
 
 			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
@@ -149,7 +171,7 @@ namespace Linq2Rest.Reactive.Tests
 				.Where(x => x.StringValue == "blah")
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
-			waitHandle.WaitOne();
+			waitHandle.WaitOne(5000);
 
 			mockRestClient.Verify(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>()));
 			mockRestClient.Verify(x => x.EndGetResult(It.IsAny<IAsyncResult>()));
