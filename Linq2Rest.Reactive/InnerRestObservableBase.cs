@@ -1,3 +1,8 @@
+// (c) Copyright Reimers.dk.
+// This source is subject to the Microsoft Public License (Ms-PL).
+// Please see http://www.opensource.org/licenses/MS-PL] for details.
+// All other rights reserved.
+
 namespace Linq2Rest.Reactive
 {
 	using System;
@@ -80,7 +85,6 @@ namespace Linq2Rest.Reactive
 		/// <param name="observer">The object that is to receive notifications.</param>
 		public IDisposable Subscribe(IObserver<T> observer)
 		{
-			var t = typeof(T);
 			_observers.Add(observer);
 			_subscribeSubscription = _subscriberScheduler
 				.Schedule(
@@ -157,6 +161,7 @@ namespace Linq2Rest.Reactive
 				{
 					_internalSubscription.Dispose();
 				}
+
 				if (_subscribeSubscription != null)
 				{
 					_subscribeSubscription.Dispose();

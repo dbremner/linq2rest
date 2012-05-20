@@ -65,7 +65,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 		public void WhenDisposingSubscriptionThenDoesNotExecute()
 		{
 			var completedWaitHandle = new ManualResetEvent(false);
-			var onNextWaitHandle = new ManualResetEvent(false);
+			var onnextWaitHandle = new ManualResetEvent(false);
 
 			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(2000), new TestSerializerFactory());
 			var subscription = observable
@@ -73,11 +73,11 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 				.SubscribeOn(Scheduler.CurrentThread)
 				.Where(x => x.StringValue == "blah")
 				.ObserveOn(Scheduler.CurrentThread)
-				.Subscribe(x => onNextWaitHandle.Set(), () => completedWaitHandle.Set());
+				.Subscribe(x => onnextWaitHandle.Set(), () => completedWaitHandle.Set());
 
 			subscription.Dispose();
 
-			var next = onNextWaitHandle.WaitOne(2000);
+			var next = onnextWaitHandle.WaitOne(2000);
 			var completed = completedWaitHandle.WaitOne(2000);
 
 			Assert.IsFalse(next);
