@@ -21,10 +21,10 @@ namespace Linq2Rest.Parser
 	/// </summary>
 	public class FilterExpressionFactory : IFilterExpressionFactory
 	{
-		private static readonly CultureInfo DefaultCulture = CultureInfo.GetCultureInfo("en-US");
-		private static readonly Regex StringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
-		private static readonly Regex NegateRx = new Regex(@"^-[^\d]*", RegexOptions.Compiled);
-		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly CultureInfo _defaultCulture = CultureInfo.GetCultureInfo("en-US");
+		private static readonly Regex _stringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
+		private static readonly Regex _negateRx = new Regex(@"^-[^\d]*", RegexOptions.Compiled);
+		private static readonly Regex _newRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		/// <summary>
 		/// Creates a filter expression from its string representation.
@@ -34,7 +34,7 @@ namespace Linq2Rest.Parser
 		/// <returns>An <see cref="Expression{TDelegate}"/> if the passed filter is valid, otherwise null.</returns>
 		public Expression<Func<T, bool>> Create<T>(string filter)
 		{
-			return Create<T>(filter, DefaultCulture);
+			return Create<T>(filter, _defaultCulture);
 		}
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace Linq2Rest.Parser
 		{
 			Contract.Requires(filter != null);
 
-			var constructorMatch = NewRx.Match(filter);
+			var constructorMatch = _newRx.Match(filter);
 			if (!constructorMatch.Success)
 			{
 				return null;
@@ -356,14 +356,14 @@ namespace Linq2Rest.Parser
 			}
 
 			Expression expression = null;
-			var stringMatch = StringRx.Match(filter);
+			var stringMatch = _stringRx.Match(filter);
 
 			if (stringMatch.Success)
 			{
 				expression = Expression.Constant(stringMatch.Groups[1].Value, typeof(string));
 			}
 
-			if (NegateRx.IsMatch(filter))
+			if (_negateRx.IsMatch(filter))
 			{
 				var negateExpression = CreateExpression<T>(
 					filter.Substring(1),
@@ -495,7 +495,7 @@ namespace Linq2Rest.Parser
 		{
 			Contract.Requires(filter != null);
 
-			var newMatch = NewRx.Match(filter);
+			var newMatch = _newRx.Match(filter);
 			if (newMatch.Success)
 			{
 				var matchGroup = newMatch.Groups["type"];

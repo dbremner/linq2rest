@@ -9,6 +9,7 @@ namespace Linq2Rest.Reactive
 #if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
+	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using Linq2Rest.Provider;
 
@@ -21,6 +22,11 @@ namespace Linq2Rest.Reactive
 		private readonly IAsyncRestClientFactory _restClientFactory;
 		private readonly ISerializerFactory _serializerFactory;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RestObservable{T}"/> class.
+		/// </summary>
+		/// <param name="restClientFactory">An <see cref="IAsyncRestClientFactory"/> to perform requests.</param>
+		/// <param name="serializerFactory">An <see cref="ISerializerFactory"/> to perform deserialization.</param>
 		public RestObservable(IAsyncRestClientFactory restClientFactory, ISerializerFactory serializerFactory)
 		{
 #if !WINDOWS_PHONE
@@ -32,12 +38,22 @@ namespace Linq2Rest.Reactive
 		}
 
 		/// <summary>
-		/// Creates an observable
+		/// Creates an observable performing a single call to the defined service.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
 		public IQbservable<T> Create()
 		{
-			return new InnerRestObservable<T>(_restClientFactory, _serializerFactory);
+			return new InnerRestObservable<T>(_restClientFactory, _serializerFactory, null, Scheduler.CurrentThread, Scheduler.CurrentThread);
+		}
+		
+		/// <summary>
+		/// Creates an observable performing a continuous calls to the defined service at the defined intervals.
+		/// </summary>
+		/// <param name="interval">The interval between requests.</param>
+		/// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
+		public IQbservable<T> Poll(TimeSpan interval)
+		{
+			return new PollingRestObservable<T>(interval, _restClientFactory, _serializerFactory, null, Scheduler.CurrentThread, Scheduler.CurrentThread);
 		}
 	}
 }

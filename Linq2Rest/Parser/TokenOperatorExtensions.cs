@@ -12,35 +12,35 @@ namespace Linq2Rest.Parser
 
 	internal static class TokenOperatorExtensions
 	{
-		private static readonly string[] Operations = new[] { "eq", "ne", "gt", "ge", "lt", "le", "and", "or", "not" };
-		private static readonly string[] Combiners = new[] { "and", "or", "not" };
-		private static readonly string[] Arithmetic = new[] { "add", "sub", "mul", "div", "mod" };
+		private static readonly string[] _operations = new[] { "eq", "ne", "gt", "ge", "lt", "le", "and", "or", "not" };
+		private static readonly string[] _combiners = new[] { "and", "or", "not" };
+		private static readonly string[] _arithmetic = new[] { "add", "sub", "mul", "div", "mod" };
 
-		private static readonly string[] BooleanFunctions = new[] { "substringof", "endswith", "startswith" };
-        private static readonly Regex CollectionFunctionRx = new Regex(@"^[0-9a-zA-Z_]+/(all|any)\((.+)\)$", RegexOptions.Compiled);
-		private static readonly Regex CleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
-		private static readonly Regex StringStartRx = new Regex("^[(]*'", RegexOptions.Compiled);
-		private static readonly Regex StringEndRx = new Regex("'[)]*$", RegexOptions.Compiled);
+		private static readonly string[] _booleanFunctions = new[] { "substringof", "endswith", "startswith" };
+        private static readonly Regex _collectionFunctionRx = new Regex(@"^[0-9a-zA-Z_]+/(all|any)\((.+)\)$", RegexOptions.Compiled);
+		private static readonly Regex _cleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
+		private static readonly Regex _stringStartRx = new Regex("^[(]*'", RegexOptions.Compiled);
+		private static readonly Regex _stringEndRx = new Regex("'[)]*$", RegexOptions.Compiled);
 
 		public static bool IsCombinationOperation(this string operation)
 		{
 			Contract.Requires<ArgumentNullException>(operation != null);
 
-			return Combiners.Any(x => string.Equals(x, operation, StringComparison.OrdinalIgnoreCase));
+			return _combiners.Any(x => string.Equals(x, operation, StringComparison.OrdinalIgnoreCase));
 		}
 
 		public static bool IsOperation(this string operation)
 		{
 			Contract.Requires<ArgumentNullException>(operation != null);
 
-			return Operations.Any(x => string.Equals(x, operation, StringComparison.OrdinalIgnoreCase));
+			return _operations.Any(x => string.Equals(x, operation, StringComparison.OrdinalIgnoreCase));
 		}
 
 		public static bool IsArithmetic(this string operation)
 		{
 			Contract.Requires<ArgumentNullException>(operation != null);
 
-			return Arithmetic.Any(x => string.Equals(x, operation, StringComparison.OrdinalIgnoreCase));
+			return _arithmetic.Any(x => string.Equals(x, operation, StringComparison.OrdinalIgnoreCase));
 		}
 
 		public static bool IsImpliedBoolean(this string expression)
@@ -50,10 +50,10 @@ namespace Linq2Rest.Parser
 			if (!string.IsNullOrWhiteSpace(expression) && !expression.IsEnclosed() && expression.IsFunction())
 			{
 				var split = expression.Split(' ');
-				return !split.Intersect(Operations).Any()
-				&& !split.Intersect(Combiners).Any()
-				&& (BooleanFunctions.Any(x => split[0].StartsWith(x, StringComparison.OrdinalIgnoreCase)) ||
-                    CollectionFunctionRx.IsMatch(expression));
+				return !split.Intersect(_operations).Any()
+				&& !split.Intersect(_combiners).Any()
+				&& (_booleanFunctions.Any(x => split[0].StartsWith(x, StringComparison.OrdinalIgnoreCase)) ||
+                    _collectionFunctionRx.IsMatch(expression));
 			}
 
 			return false;
@@ -63,7 +63,7 @@ namespace Linq2Rest.Parser
 		{
 			Contract.Requires<ArgumentNullException>(expression != null);
 
-			return CleanRx.Match(expression);
+			return _cleanRx.Match(expression);
 		}
 
 		public static bool IsEnclosed(this string expression)
@@ -76,12 +76,12 @@ namespace Linq2Rest.Parser
 
 		public static bool IsStringStart(this string expression)
 		{
-			return StringStartRx.IsMatch(expression);
+			return _stringStartRx.IsMatch(expression);
 		}
 
 		public static bool IsStringEnd(this string expression) 
 		{
-			return StringEndRx.IsMatch(expression);
+			return _stringEndRx.IsMatch(expression);
 		}
 
 		private static bool IsFunction(this string expression)

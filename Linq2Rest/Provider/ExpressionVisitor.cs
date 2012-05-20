@@ -17,7 +17,7 @@ namespace Linq2Rest.Provider
 
 	internal class ExpressionVisitor : IExpressionVisitor
 	{
-		private static readonly ExpressionType[] CompositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
+		private static readonly ExpressionType[] _compositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
 
 		public string Visit(Expression expression)
 		{
@@ -309,6 +309,7 @@ namespace Linq2Rest.Provider
 								Visit(firstArgument, rootParameterName),
 								Visit(secondArgument, rootParameterName));
 						}
+
 					case "Contains":
 						{
 							var argumentExpression = expression.Arguments[0];
@@ -452,8 +453,8 @@ namespace Linq2Rest.Provider
 
 						var operation = GetOperation(binaryExpression);
 
-						var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
-						var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
+						var isLeftComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
+						var isRightComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
 
 						var leftType = GetUnconvertedType(binaryExpression.Left);
 						var leftString = Visit(binaryExpression.Left, rootParameterName);
