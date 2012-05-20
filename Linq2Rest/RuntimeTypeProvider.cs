@@ -20,20 +20,20 @@ namespace Linq2Rest
 	/// </summary>
 	public class RuntimeTypeProvider : IRuntimeTypeProvider
 	{
-		private static readonly AssemblyName AssemblyName = new AssemblyName { Name = "Linq2RestTypes" };
-		private static readonly ModuleBuilder ModuleBuilder;
-		private static readonly Dictionary<string, Type> BuiltTypes = new Dictionary<string, Type>();
-		private static readonly ConcurrentDictionary<Type, CustomAttributeBuilder[]> TypeAttributeBuilders = new ConcurrentDictionary<Type, CustomAttributeBuilder[]>();
-		private static readonly ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]> PropertyAttributeBuilders = new ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]>();
 		private const MethodAttributes GetSetAttr = MethodAttributes.Final | MethodAttributes.Public;
+		private static readonly AssemblyName _assemblyName = new AssemblyName { Name = "Linq2RestTypes" };
+		private static readonly ModuleBuilder _moduleBuilder;
+		private static readonly Dictionary<string, Type> _builtTypes = new Dictionary<string, Type>();
+		private static readonly ConcurrentDictionary<Type, CustomAttributeBuilder[]> _typeAttributeBuilders = new ConcurrentDictionary<Type, CustomAttributeBuilder[]>();
+		private static readonly ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]> _propertyAttributeBuilders = new ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]>();
 		private readonly IMemberNameResolver _nameResolver;
 
 		static RuntimeTypeProvider()
 		{
-			ModuleBuilder = Thread
+			_moduleBuilder = Thread
 				.GetDomain()
-				.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess.Run)
-				.DefineDynamicModule(AssemblyName.Name);
+				.DefineDynamicAssembly(_assemblyName, AssemblyBuilderAccess.Run)
+				.DefineDynamicModule(_assemblyName.Name);
 		}
 
 		/// <summary>
@@ -63,15 +63,15 @@ namespace Linq2Rest
 
 			var dictionary = properties.ToDictionary(f => _nameResolver.ResolveName(f), f => f);
 
-			Monitor.Enter(BuiltTypes);
+			Monitor.Enter(_builtTypes);
 
 			var className = GetTypeKey(sourceType, dictionary);
-			if (BuiltTypes.ContainsKey(className))
+			if (_builtTypes.ContainsKey(className))
 			{
-				return BuiltTypes[className];
+				return _builtTypes[className];
 			}
 
-			var typeBuilder = ModuleBuilder.DefineType(className, TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable);
+			var typeBuilder = _moduleBuilder.DefineType(className, TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable);
 
 			Contract.Assume(typeBuilder != null);
 
@@ -82,11 +82,11 @@ namespace Linq2Rest
 				CreateProperty(typeBuilder, field);
 			}
 
-			BuiltTypes[className] = typeBuilder.CreateType();
+			_builtTypes[className] = typeBuilder.CreateType();
 
-			Monitor.Exit(BuiltTypes);
+			Monitor.Exit(_builtTypes);
 
-			return BuiltTypes[className];
+			return _builtTypes[className];
 		}
 
 		private static void CreateProperty(TypeBuilder typeBuilder, KeyValuePair<string, MemberInfo> field)
@@ -94,8 +94,8 @@ namespace Linq2Rest
 			Contract.Requires(typeBuilder != null);
 
 			var propertyType = field.Value.MemberType == MemberTypes.Property
-			                   	? ((PropertyInfo)field.Value).PropertyType
-			                   	: ((FieldInfo)field.Value).FieldType;
+								? ((PropertyInfo)field.Value).PropertyType
+								: ((FieldInfo)field.Value).FieldType;
 			var fieldBuilder = typeBuilder.DefineField("_" + field.Key, propertyType, FieldAttributes.Private);
 
 			var propertyBuilder = typeBuilder.DefineProperty(field.Key, PropertyAttributes.None, propertyType, null);
@@ -105,10 +105,10 @@ namespace Linq2Rest
 			SetAttributes(propertyBuilder, field.Value);
 
 			var getAccessor = typeBuilder.DefineMethod(
-			                                           "get_" + field.Key,
-			                                           GetSetAttr,
-			                                           propertyType,
-			                                           Type.EmptyTypes);
+													   "get_" + field.Key,
+													   GetSetAttr,
+													   propertyType,
+													   Type.EmptyTypes);
 
 			var getIl = getAccessor.GetILGenerator();
 			getIl.Emit(OpCodes.Ldarg_0);
@@ -116,10 +116,10 @@ namespace Linq2Rest
 			getIl.Emit(OpCodes.Ret);
 
 			var setAccessor = typeBuilder.DefineMethod(
-			                                           "set_" + field.Key,
-			                                           GetSetAttr,
-			                                           null,
-			                                           new[] { propertyType });
+													   "set_" + field.Key,
+													   GetSetAttr,
+													   null,
+													   new[] { propertyType });
 
 			var setIl = setAccessor.GetILGenerator();
 			setIl.Emit(OpCodes.Ldarg_0);
@@ -135,14 +135,14 @@ namespace Linq2Rest
 		{
 			Contract.Requires(typeBuilder != null);
 
-			var attributeBuilders = TypeAttributeBuilders
+			var attributeBuilders = _typeAttributeBuilders
 				.GetOrAdd(
-				          type,
-				          t =>
-				          	{
-				          		var customAttributes = t.GetCustomAttributesData();
-				          		return CreateCustomAttributeBuilders(customAttributes).ToArray();
-				          	});
+						  type,
+						  t =>
+						  {
+							  var customAttributes = t.GetCustomAttributesData();
+							  return CreateCustomAttributeBuilders(customAttributes).ToArray();
+						  });
 
 			Contract.Assume(attributeBuilders != null);
 
@@ -157,14 +157,14 @@ namespace Linq2Rest
 			Contract.Requires(propertyBuilder != null);
 			Contract.Requires(memberInfo != null);
 
-			var customAttributeBuilders = PropertyAttributeBuilders
+			var customAttributeBuilders = _propertyAttributeBuilders
 				.GetOrAdd(
-				          memberInfo,
-				          p =>
-				          	{
-				          		var customAttributes = p.GetCustomAttributesData();
-				          		return CreateCustomAttributeBuilders(customAttributes).ToArray();
-				          	});
+						  memberInfo,
+						  p =>
+						  {
+							  var customAttributes = p.GetCustomAttributesData();
+							  return CreateCustomAttributeBuilders(customAttributes).ToArray();
+						  });
 
 			Contract.Assume(customAttributeBuilders != null);
 
@@ -180,15 +180,15 @@ namespace Linq2Rest
 
 			var attributeBuilders = customAttributes
 				.Select(
-				        x =>
-				        	{
-				        		var namedArguments = x.NamedArguments;
-								var properties = namedArguments.Select(a => a.MemberInfo).OfType<PropertyInfo>().ToArray();
-				        		var values = namedArguments.Select(a => a.TypedValue.Value).ToArray();
-				        		var constructorArgs = x.ConstructorArguments.Select(a => a.Value).ToArray();
-				        		var constructor = x.Constructor;
-				        		return new CustomAttributeBuilder(constructor, constructorArgs, properties, values);
-				        	});
+						x =>
+						{
+							var namedArguments = x.NamedArguments;
+							var properties = namedArguments.Select(a => a.MemberInfo).OfType<PropertyInfo>().ToArray();
+							var values = namedArguments.Select(a => a.TypedValue.Value).ToArray();
+							var constructorArgs = x.ConstructorArguments.Select(a => a.Value).ToArray();
+							var constructor = x.Constructor;
+							return new CustomAttributeBuilder(constructor, constructorArgs, properties, values);
+						});
 			return attributeBuilders;
 		}
 

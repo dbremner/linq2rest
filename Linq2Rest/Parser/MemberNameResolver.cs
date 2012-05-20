@@ -14,11 +14,11 @@ namespace Linq2Rest.Parser
 
 	internal class MemberNameResolver : IMemberNameResolver
 	{
-		private static readonly ConcurrentDictionary<MemberInfo, string> KnownMemberNames = new ConcurrentDictionary<MemberInfo, string>();
+		private static readonly ConcurrentDictionary<MemberInfo, string> _knownMemberNames = new ConcurrentDictionary<MemberInfo, string>();
 
 		public string ResolveName(MemberInfo member)
 		{
-			var result = KnownMemberNames.GetOrAdd(member, ResolveNameInternal);
+			var result = _knownMemberNames.GetOrAdd(member, ResolveNameInternal);
 
 			Contract.Assume(result != null);
 

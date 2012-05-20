@@ -19,9 +19,9 @@ namespace Linq2Rest.Parser
 	/// <typeparam name="T">The <see cref="Type"/> of object to project.</typeparam>
 	public class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{
+		private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 		private readonly IMemberNameResolver _nameResolver;
 		private readonly IRuntimeTypeProvider _runtimeTypeProvider;
-		private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 		private readonly IDictionary<string, Expression<Func<T, object>>> _knownSelections;
 
 		/// <summary>

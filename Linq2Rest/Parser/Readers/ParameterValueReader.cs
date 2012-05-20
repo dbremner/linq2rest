@@ -15,12 +15,12 @@ namespace Linq2Rest.Parser.Readers
 
 	internal static class ParameterValueReader
 	{
-		private static readonly ConcurrentDictionary<Type, MethodInfo> ParseMethods = new ConcurrentDictionary<Type, MethodInfo>();
-		private static readonly IList<IValueExpressionFactory> ExpressionFactories;
+		private static readonly ConcurrentDictionary<Type, MethodInfo> _parseMethods = new ConcurrentDictionary<Type, MethodInfo>();
+		private static readonly IList<IValueExpressionFactory> _expressionFactories;
 
 		static ParameterValueReader()
 		{
-			ExpressionFactories = new List<IValueExpressionFactory>
+			_expressionFactories = new List<IValueExpressionFactory>
 			                      	{
 										new BooleanExpressionFactory(),
 										new ByteExpressionFactory(),
@@ -52,7 +52,7 @@ namespace Linq2Rest.Parser.Readers
 				return Expression.Constant(null);
 			}
 
-			var factory = ExpressionFactories.FirstOrDefault(x => x.Handles == type);
+			var factory = _expressionFactories.FirstOrDefault(x => x.Handles == type);
 
 			return factory == null
 				? GetKnownConstant(type, token, formatProvider)
@@ -79,7 +79,7 @@ namespace Linq2Rest.Parser.Readers
 				return Expression.Constant(enumValue);
 			}
 
-			var parseMethod = ParseMethods.GetOrAdd(type, ResolveParseMethod);
+			var parseMethod = _parseMethods.GetOrAdd(type, ResolveParseMethod);
 			if (parseMethod != null)
 			{
 				var parseResult = parseMethod.Invoke(null, new object[] { token, formatProvider });
