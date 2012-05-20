@@ -212,6 +212,12 @@
     <Compile Include="..\Linq2Rest.Reactive\ReflectionHelper.cs">
       <Link>ReflectionHelper.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\RequeryingRestObservable.cs">
+      <Link>RequeryingRestObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\RequeryingRestQueryableProvider.cs">
+      <Link>RequeryingRestQueryableProvider.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest.Reactive\RestObservable.cs">
       <Link>RestObservable.cs</Link>
     </Compile>
