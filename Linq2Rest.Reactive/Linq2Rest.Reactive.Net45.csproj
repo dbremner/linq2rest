@@ -135,6 +135,8 @@
     <Compile Include="RestObservable.cs" />
     <Compile Include="RestQueryableProvider.cs" />
     <Compile Include="RestQueryableProviderBase.cs" />
+    <Compile Include="TriggeredRestObservable.cs" />
+    <Compile Include="TriggeredRestQueryableProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
