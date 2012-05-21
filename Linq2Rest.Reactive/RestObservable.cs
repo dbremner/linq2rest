@@ -3,6 +3,8 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Reactive;
+
 namespace Linq2Rest.Reactive
 {
 	using System;
@@ -43,7 +45,12 @@ namespace Linq2Rest.Reactive
 		/// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
 		public IQbservable<T> Create()
 		{
-			return new InnerRestObservable<T>(_restClientFactory, _serializerFactory, null, Scheduler.CurrentThread, Scheduler.CurrentThread);
+			return new InnerRestObservable<T>(
+				_restClientFactory,
+				_serializerFactory,
+				null,
+				Scheduler.CurrentThread,
+				Scheduler.CurrentThread);
 		}
 
 		/// <summary>
@@ -53,7 +60,29 @@ namespace Linq2Rest.Reactive
 		/// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
 		public IQbservable<T> Poll(TimeSpan interval)
 		{
-			return new PollingRestObservable<T>(interval, _restClientFactory, _serializerFactory, null, Scheduler.CurrentThread, Scheduler.CurrentThread);
+			return new PollingRestObservable<T>(
+				interval,
+				_restClientFactory,
+				_serializerFactory,
+				null,
+				Scheduler.CurrentThread,
+				Scheduler.CurrentThread);
+		}
+
+		/// <summary>
+		/// Creates an observable performing calls when triggered.
+		/// </summary>
+		/// <param name="trigger">The trigger.</param>
+		/// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
+		public IQbservable<T> Triggered(IObservable<Unit> trigger)
+		{
+			return new TriggeredRestObservable<T>(
+				trigger,
+				_restClientFactory,
+				_serializerFactory,
+				null,
+				Scheduler.CurrentThread,
+				Scheduler.CurrentThread);
 		}
 
 		/// <summary>
@@ -63,7 +92,13 @@ namespace Linq2Rest.Reactive
 		/// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
 		public IQbservable<T> Requery(TimeSpan interval)
 		{
-			return new RequeryingRestObservable<T>(interval, _restClientFactory, _serializerFactory, null, Scheduler.CurrentThread, Scheduler.CurrentThread);
+			return new RequeryingRestObservable<T>(
+				interval,
+				_restClientFactory,
+				_serializerFactory,
+				null,
+				Scheduler.CurrentThread,
+				Scheduler.CurrentThread);
 		}
 	}
 }
