@@ -185,6 +185,12 @@
     <Compile Include="..\Linq2Rest.Reactive\RestQueryableProviderBase.cs">
       <Link>RestQueryableProviderBase.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\TriggeredRestObservable.cs">
+      <Link>TriggeredRestObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\TriggeredRestQueryableProvider.cs">
+      <Link>TriggeredRestQueryableProvider.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\ExpressionVisitor.cs">
       <Link>Provider\ExpressionVisitor.cs</Link>
     </Compile>
