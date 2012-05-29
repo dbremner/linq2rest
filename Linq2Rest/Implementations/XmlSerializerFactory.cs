@@ -19,7 +19,7 @@ namespace Linq2Rest.Implementations
 	/// </summary>
 	public class XmlSerializerFactory : ISerializerFactory
 	{
-		private readonly IEnumerable<Type> _knownTypes;
+		private readonly IEnumerable<Type> _knownTypes = Type.EmptyTypes;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="XmlSerializerFactory"/> class.
@@ -39,7 +39,7 @@ namespace Linq2Rest.Implementations
 		/// <returns>An instance of an <see cref="ISerializer{T}"/>.</returns>
 		public ISerializer<T> Create<T>()
 		{
-			return new XmlSerializer<T>(_knownTypes);
+			return new XmlSerializer<T>(_knownTypes.Where(x => x != null).ToArray());
 		}
 
 		[ContractInvariantMethod]

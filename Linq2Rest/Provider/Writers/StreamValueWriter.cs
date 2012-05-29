@@ -14,7 +14,7 @@ namespace Linq2Rest.Provider.Writers
 		{
 			get
 			{
-				return typeof(byte[]);
+				return typeof(Stream);
 			}
 		}
 

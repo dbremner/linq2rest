@@ -26,7 +26,9 @@ namespace Linq2Rest.Provider
 		/// <returns>A task returning the query result.</returns>
 		public static Task<IEnumerable<T>> ExecuteAsync<T>(this IQueryable<T> queryable)
 		{
+#if !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(queryable != null);
+#endif
 
 			return Task.Factory.StartNew(() => queryable.ToArray().AsEnumerable());
 		}
@@ -65,13 +67,18 @@ namespace Linq2Rest.Provider
 		/// <returns>An <see cref="IQueryable{T}"/> for continued querying.</returns>
 		public static IQueryable<TSource> Expand<TSource>(this IQueryable<TSource> source, params Expression<Func<TSource, object>>[] properties)
 		{
-			var propertyNames = string.Join(",", properties.Select(ResolvePropertyName));
+#if !WINDOWS_PHONE
+			Contract.Requires<ArgumentNullException>(source != null);
+#endif
+			var propertyNames = string.Join(",", properties.Where(x => x != null).Select(ResolvePropertyName));
 
 			return Expand(source, propertyNames);
 		}
 
 		private static string ResolvePropertyName<TSource>(Expression<Func<TSource, object>> property)
 		{
+			Contract.Requires(property != null);
+
 			var pathPrefixes = new List<string>();
 
 			var body = property.Body;
