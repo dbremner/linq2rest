@@ -21,9 +21,11 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			var number = byte.Parse(token, NumberStyles.HexNumber);
-
-			return Expression.Constant(number);
+			byte number;
+			return Expression.Constant(
+				byte.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out number)
+				? number
+				: default(byte));
 		}
 	}
 }

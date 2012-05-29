@@ -30,7 +30,7 @@ namespace Linq2Rest.Parser.Readers
 				return Expression.Constant(dateTime);
 			}
 
-			throw new InvalidOperationException("Filter is not recognized as DateTime: " + token);
+			return Expression.Constant(default(DateTime));
 		}
 	}
 }

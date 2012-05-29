@@ -6,7 +6,6 @@
 namespace Linq2Rest.Parser.Readers
 {
 	using System;
-	using System.Globalization;
 	using System.Linq.Expressions;
 
 	internal class UnsignedLongExpressionFactory : IValueExpressionFactory
@@ -21,9 +20,10 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			var number = ulong.Parse(token, NumberStyles.Integer);
-
-			return Expression.Constant(number);
+			ulong number;
+			return ulong.TryParse(token, out number)
+				? Expression.Constant(number)
+				: Expression.Constant(default(ulong));
 		}
 	}
 }

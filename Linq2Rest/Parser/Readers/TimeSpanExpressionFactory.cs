@@ -27,11 +27,18 @@ namespace Linq2Rest.Parser.Readers
 			var match = _timeSpanRegex.Match(token);
 			if (match.Success)
 			{
-				var timespan = XmlConvert.ToTimeSpan(match.Groups[1].Value);
-				return Expression.Constant(timespan);
+				try
+				{
+					var timespan = XmlConvert.ToTimeSpan(match.Groups[1].Value);
+					return Expression.Constant(timespan);
+				}
+				catch
+				{
+					return Expression.Constant(default(TimeSpan));
+				}
 			}
 
-			throw new InvalidOperationException("Filter is not recognized as DateTime: " + token);
+			return Expression.Constant(default(TimeSpan));
 		}
 	}
 }

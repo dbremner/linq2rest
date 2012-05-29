@@ -37,6 +37,7 @@ namespace Linq2Rest.Provider.Writers
 		public string Write(object value)
 		{
 			Contract.Requires(value != null);
+			Contract.Requires(Handles.IsAssignableFrom(value.GetType()));
 			throw new NotImplementedException();
 		}
 	}
