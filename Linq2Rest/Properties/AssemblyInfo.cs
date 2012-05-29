@@ -42,3 +42,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Linq2Rest.Tests")]
 [assembly: InternalsVisibleTo("Linq2Rest.Reactive")]
 [assembly: InternalsVisibleTo("Linq2Rest.Reactive.Tests")]
+[assembly: InternalsVisibleTo("Linq2Rest.Pex.Tests")]
+[assembly: InternalsVisibleTo("Linq2Rest.Explorables")]
