@@ -26,11 +26,18 @@ namespace Linq2Rest.Parser.Readers
 			var match = _byteArrayRegex.Match(token);
 			if (match.Success)
 			{
-				var buffer = System.Convert.FromBase64String(match.Groups[2].Value);
-				return Expression.Constant(buffer);
+				try
+				{
+					var buffer = System.Convert.FromBase64String(match.Groups[2].Value);
+					return Expression.Constant(buffer);
+				}
+				catch
+				{
+					return Expression.Constant(null);
+				}
 			}
 
-			throw new InvalidOperationException("Filter is not recognized as byte array: " + token);
+			return Expression.Constant(null);
 		}
 	}
 }

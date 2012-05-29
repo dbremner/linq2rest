@@ -21,8 +21,10 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			var number = decimal.Parse(token.Trim('M', 'm'), NumberStyles.Any);
-			return Expression.Constant(number);
+			decimal number;
+			return decimal.TryParse(token.Trim('M', 'm'), NumberStyles.Any, CultureInfo.InvariantCulture, out number)
+				? Expression.Constant(number)
+				: Expression.Constant(default(decimal));
 		}
 	}
 }

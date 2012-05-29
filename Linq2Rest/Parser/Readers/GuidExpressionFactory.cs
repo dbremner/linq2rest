@@ -26,11 +26,14 @@ namespace Linq2Rest.Parser.Readers
 			var match = _guidRegex.Match(token);
 			if (match.Success)
 			{
-				var guid = Guid.Parse(match.Groups[1].Value);
-				return Expression.Constant(guid);
+				Guid guid;
+				if (Guid.TryParse(match.Groups[1].Value, out guid))
+				{
+					return Expression.Constant(guid);
+				}
 			}
-			
-			throw new InvalidOperationException("Filter is not recognized as Guid: " + token);
+
+			return Expression.Constant(default(Guid));
 		}
 	}
 }

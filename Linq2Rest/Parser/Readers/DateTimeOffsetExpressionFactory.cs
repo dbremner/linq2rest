@@ -31,7 +31,7 @@ namespace Linq2Rest.Parser.Readers
 				return Expression.Constant(dateTimeOffset);
 			}
 
-			throw new InvalidOperationException("Filter is not recognized as DateTimeOffset: " + token);
+			return Expression.Constant(default(DateTimeOffset));
 		}
 	}
 }

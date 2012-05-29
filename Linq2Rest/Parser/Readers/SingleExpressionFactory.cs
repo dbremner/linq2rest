@@ -21,8 +21,10 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			var number = float.Parse(token.Trim('F', 'f'), NumberStyles.Any);
-			return Expression.Constant(number);
+			float number;
+			return float.TryParse(token.Trim('F', 'f'), NumberStyles.Any, CultureInfo.InvariantCulture, out number)
+				? Expression.Constant(number)
+				: Expression.Constant(default(float));
 		}
 	}
 }

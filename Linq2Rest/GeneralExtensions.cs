@@ -34,7 +34,7 @@ namespace Linq2Rest
 
 		public static Stream ToStream(this string input)
 		{
-			return new MemoryStream(Encoding.UTF8.GetBytes(input));
+			return new MemoryStream(Encoding.UTF8.GetBytes(input ?? string.Empty));
 		}
 	}
 }
