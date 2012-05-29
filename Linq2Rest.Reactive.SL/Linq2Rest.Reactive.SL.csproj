@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D72A609B-C351-43CF-B1B8-66AB52E25DF1}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Linq2Rest.Reactive</RootNamespace>
+    <AssemblyName>Linq2Rest.Reactive</AssemblyName>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+  </PropertyGroup>
+  <!-- This property group is only here to support building this project using the 
+       MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
+       to set the TargetFrameworkVersion to v3.5 -->
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>Bin\Debug\Linq2Rest.Reactive.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>..\Linq2Rest.ruleset</CodeAnalysisRuleSet>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>True</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>True</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>True</CodeContractsSuggestObjectInvariants>
+    <CodeContractsDisjunctiveRequires>False</CodeContractsDisjunctiveRequires>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>Bin\Debug\Linq2Rest.Reactive.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>..\Linq2Rest.ruleset</CodeAnalysisRuleSet>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>True</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>True</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestEnsures>False</CodeContractsSuggestEnsures>
+    <CodeContractsSuggestObjectInvariants>True</CodeContractsSuggestObjectInvariants>
+    <CodeContractsDisjunctiveRequires>False</CodeContractsDisjunctiveRequires>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.0.20304-beta\lib\SL5\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.0.20304-beta\lib\SL5\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.0.20304-beta\lib\SL5\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Providers">
+      <HintPath>..\packages\Rx-Providers.2.0.20304-beta\lib\SL5\System.Reactive.Providers.dll</HintPath>
+    </Reference>
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Threading.Tasks.SL5">
+      <HintPath>..\packages\System.Threading.Tasks.3.0.1\lib\sl50\System.Threading.Tasks.SL5.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Linq2Rest.Reactive\AsyncExpressionProcessor.cs">
+      <Link>AsyncExpressionProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\IAsyncExpressionProcessor.cs">
+      <Link>IAsyncExpressionProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\IAsyncRestClient.cs">
+      <Link>IAsyncRestClient.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\IAsyncRestClientFactory.cs">
+      <Link>IAsyncRestClientFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\InnerRestObservable.cs">
+      <Link>InnerRestObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\InnerRestObservableBase.cs">
+      <Link>InnerRestObservableBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\ObservableExtensions.cs">
+      <Link>ObservableExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\PollingRestObservable.cs">
+      <Link>PollingRestObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\PollingRestQueryableProvider.cs">
+      <Link>PollingRestQueryableProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\ReflectionHelper.cs">
+      <Link>ReflectionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\RequeryingRestObservable.cs">
+      <Link>RequeryingRestObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\RequeryingRestQueryableProvider.cs">
+      <Link>RequeryingRestQueryableProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\RestObservable.cs">
+      <Link>RestObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\RestQueryableProvider.cs">
+      <Link>RestQueryableProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\RestQueryableProviderBase.cs">
+      <Link>RestQueryableProviderBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\TriggeredRestObservable.cs">
+      <Link>TriggeredRestObservable.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\TriggeredRestQueryableProvider.cs">
+      <Link>TriggeredRestQueryableProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\ExpressionVisitor.cs">
+      <Link>Provider\ExpressionVisitor.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\IExpressionVisitor.cs">
+      <Link>Provider\IExpressionVisitor.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\ISerializer.cs">
+      <Link>Provider\ISerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\ISerializerFactory.cs">
+      <Link>Provider\ISerializerFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\ParameterBuilder.cs">
+      <Link>Provider\ParameterBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\BooleanValueWriter.cs">
+      <Link>Provider\Writers\BooleanValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\ByteArrayValueWriter.cs">
+      <Link>Provider\Writers\ByteArrayValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\ByteValueWriter.cs">
+      <Link>Provider\Writers\ByteValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DateTimeOffsetValueWriter.cs">
+      <Link>Provider\Writers\DateTimeOffsetValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DateTimeValueWriter.cs">
+      <Link>Provider\Writers\DateTimeValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DecimalValueWriter.cs">
+      <Link>Provider\Writers\DecimalValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DoubleValueWriter.cs">
+      <Link>Provider\Writers\DoubleValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\GuidValueWriter.cs">
+      <Link>Provider\Writers\GuidValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\IntegerValueWriter.cs">
+      <Link>Provider\Writers\IntegerValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\IntValueWriter.cs">
+      <Link>Provider\Writers\IntValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\IValueWriter.cs">
+      <Link>Provider\Writers\IValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\LongValueWriter.cs">
+      <Link>Provider\Writers\LongValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\ParameterValueWriter.cs">
+      <Link>Provider\Writers\ParameterValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\RationalValueWriter.cs">
+      <Link>Provider\Writers\RationalValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\ShortValueWriter.cs">
+      <Link>Provider\Writers\ShortValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\SingleValueWriter.cs">
+      <Link>Provider\Writers\SingleValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StreamValueWriter.cs">
+      <Link>Provider\Writers\StreamValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StringValueWriter.cs">
+      <Link>Provider\Writers\StringValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\TimeSpanValueWriter.cs">
+      <Link>Provider\Writers\TimeSpanValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\UnsignedIntValueWriter.cs">
+      <Link>Provider\Writers\UnsignedIntValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\UnsignedLongValueWriter.cs">
+      <Link>Provider\Writers\UnsignedLongValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\UnsignedShortValueWriter.cs">
+      <Link>Provider\Writers\UnsignedShortValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\StringConstants.cs">
+      <Link>StringConstants.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Settings.StyleCop" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
