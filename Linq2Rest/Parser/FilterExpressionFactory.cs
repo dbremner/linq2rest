@@ -407,10 +407,8 @@ namespace Linq2Rest.Parser
 				expression = ParameterValueReader.Read(type, filter, formatProvider);
 			}
 
-			if (expression == null)
+			if (expression == null && type != null)
 			{
-				Contract.Assume(type != null);
-
 				expression = Expression.Constant(Convert.ChangeType(filter, type, formatProvider), type);
 			}
 

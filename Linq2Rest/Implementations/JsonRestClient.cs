@@ -6,6 +6,7 @@
 namespace Linq2Rest.Implementations
 {
 	using System;
+	using System.Diagnostics.Contracts;
 
 	/// <summary>
 	/// Defines a REST client implementation for JSON requests.
@@ -19,6 +20,8 @@ namespace Linq2Rest.Implementations
 		public JsonRestClient(Uri uri)
 			: base(uri, StringConstants.JsonMimeType)
 		{
+			Contract.Requires<ArgumentNullException>(uri != null);
+			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 		}
 	}
 }

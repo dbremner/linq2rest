@@ -76,12 +76,12 @@ namespace Linq2Rest.Parser
 
 		public static bool IsStringStart(this string expression)
 		{
-			return _stringStartRx.IsMatch(expression);
+			return !string.IsNullOrWhiteSpace(expression) && _stringStartRx.IsMatch(expression);
 		}
 
 		public static bool IsStringEnd(this string expression) 
 		{
-			return _stringEndRx.IsMatch(expression);
+			return !string.IsNullOrWhiteSpace(expression) && _stringEndRx.IsMatch(expression);
 		}
 
 		private static bool IsFunction(this string expression)

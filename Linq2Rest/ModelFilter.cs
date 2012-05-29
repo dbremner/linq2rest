@@ -38,7 +38,7 @@ namespace Linq2Rest
 			if (_sortDescriptions != null && _sortDescriptions.Any())
 			{
 				var isFirst = true;
-				foreach (var sortDescription in _sortDescriptions)
+				foreach (var sortDescription in _sortDescriptions.Where(x => x != null))
 				{
 					if (isFirst)
 					{
@@ -71,8 +71,8 @@ namespace Linq2Rest
 			}
 
 			return _selectExpression == null
-			       	? result.OfType<object>()
-			       	: result.ToArray().AsQueryable().Select(_selectExpression);
+					? result.OfType<object>()
+					: result.ToArray().AsQueryable().Select(_selectExpression);
 		}
 	}
 }
