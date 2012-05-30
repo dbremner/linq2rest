@@ -170,6 +170,7 @@
     <Compile Include="Provider\IRestClient.cs" />
     <Compile Include="Provider\ISerializer.cs" />
     <Compile Include="Provider\ISerializerFactory.cs" />
+    <Compile Include="Provider\ODataExpressionConverter.cs" />
     <Compile Include="Provider\ParameterBuilder.cs" />
     <Compile Include="Implementations\JsonRestClient.cs" />
     <Compile Include="Provider\QueryableExtensions.cs" />
