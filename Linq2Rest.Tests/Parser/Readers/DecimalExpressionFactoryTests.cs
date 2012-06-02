@@ -21,13 +21,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterDecimalIsIncorrectFormatThenThrows()
+		public void WhenFilterIsIncorrectFormatThenReturnsDefaultValue()
 		{
 			const string Parameter = "blah";
 
-			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
+			Assert.AreEqual(default(decimal), _factory.Convert(Parameter).Value);
 		}
-		
+
 		[Test]
 		public void WhenFilterIncludesDecimalParameterThenReturnedExpressionContainsDecimal()
 		{

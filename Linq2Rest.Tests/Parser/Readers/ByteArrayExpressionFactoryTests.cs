@@ -22,9 +22,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterArrayIsIncorrectFormatThenThrows()
+		public void WhenFilterIsIncorrectFormatThenReturnsDefaultValue()
 		{
-			Assert.Throws<InvalidOperationException>(() => _factory.Convert("blah"));
+			const string Parameter = "blah";
+
+			Assert.AreEqual(default(byte[]), _factory.Convert(Parameter).Value);
 		}
 
 		[Test]

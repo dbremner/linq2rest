@@ -5,7 +5,6 @@
 
 namespace Linq2Rest.Tests.Parser.Readers
 {
-	using System;
 	using Linq2Rest.Parser.Readers;
 	using NUnit.Framework;
 
@@ -21,11 +20,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterBooleanIsIncorrectFormatThenThrows()
+		public void WhenFilterIsIncorrectFormatThenReturnsDefaultValue()
 		{
 			const string Parameter = "blah";
 
-			Assert.Throws<InvalidOperationException>(() => _factory.Convert(Parameter));
+			Assert.AreEqual(default(bool), _factory.Convert(Parameter).Value);
 		}
 
 		[Test]

@@ -22,11 +22,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterGuidIsIncorrectFormatThenThrows()
+		public void WhenFilterIsIncorrectFormatThenReturnsDefaultValue()
 		{
-			const string Parameter = "guid'blah'";
+			const string Parameter = "blah";
 
-			Assert.Throws<InvalidOperationException>(() => _factory.Convert(Parameter));
+			Assert.AreEqual(default(Guid), _factory.Convert(Parameter).Value);
 		}
 
 		[Test]

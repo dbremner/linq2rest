@@ -21,13 +21,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterUnsignedLongIsIncorrectFormatThenThrows()
+		public void WhenFilterIsIncorrectFormatThenReturnsDefaultValue()
 		{
 			const string Parameter = "blah";
 
-			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
+			Assert.AreEqual(default(ulong), _factory.Convert(Parameter).Value);
 		}
-		
+
 		[Test]
 		public void WhenFilterIncludesUnsignedLongParameterThenReturnedExpressionContainsUnsignedLong()
 		{
