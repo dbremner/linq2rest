@@ -25,16 +25,17 @@ namespace Linq2Rest.Reactive
 
 #if !WINDOWS_PHONE
 	[ContractClassFor(typeof(IAsyncExpressionProcessor))]
-#endif
 	internal abstract class AsyncExpressionProcessorContracts : IAsyncExpressionProcessor
 	{
 		public IObservable<T> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
-#if !WINDOWS_PHONE
-			Contract.Requires<ArgumentNullException>(resultLoader != null);
-#endif
+			Contract.Requires(methodCall != null);
+			Contract.Requires(builder != null);
+			Contract.Requires(resultLoader != null);
+			Contract.Requires(intermediateResultLoader != null);
 
 			throw new NotImplementedException();
 		}
 	}
+#endif
 }

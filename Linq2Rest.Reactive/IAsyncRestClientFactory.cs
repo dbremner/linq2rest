@@ -40,6 +40,7 @@ namespace Linq2Rest.Reactive
 			get
 			{
 				Contract.Ensures(Contract.Result<Uri>() != null);
+				Contract.Ensures(Contract.Result<Uri>().Scheme == Uri.UriSchemeHttp || Contract.Result<Uri>().Scheme == Uri.UriSchemeHttps);
 
 				throw new NotImplementedException();
 			}
@@ -48,6 +49,7 @@ namespace Linq2Rest.Reactive
 		public IAsyncRestClient Create(Uri source)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
+			Contract.Requires<ArgumentException>(source.Scheme == Uri.UriSchemeHttp || source.Scheme == Uri.UriSchemeHttps);
 
 			throw new NotImplementedException();
 		}
