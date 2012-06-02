@@ -22,11 +22,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterDateTimeOffsetIsIncorrectFormatThenThrows()
+		public void WhenFilterIsIncorrectFormatThenReturnsDefaultValue()
 		{
-			const string Parameter = "datetimeoffset'blah'";
+			const string Parameter = "blah";
 
-			Assert.Throws<InvalidOperationException>(() => _factory.Convert(Parameter));
+			Assert.AreEqual(default(DateTimeOffset), _factory.Convert(Parameter).Value);
 		}
 
 		[Test]
