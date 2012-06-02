@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 11
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest", "Linq2Rest\Linq2Rest.csproj", "{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Tests", "Linq2Rest.Tests\Linq2Rest.Tests.csproj", "{0D3564AF-F8C9-42A4-8A01-A4C95526FA28}"

@@ -22,7 +22,7 @@ namespace Linq2Rest.Tests.Provider.Writers
 		[Test]
 		public void WhenWritingUnsignedLongValueThenWritesString()
 		{
-			var result = _writer.Write(123L);
+			var result = _writer.Write((ulong)123);
 
 			Assert.AreEqual("123", result);
 		}

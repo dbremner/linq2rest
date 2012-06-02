@@ -138,6 +138,7 @@
     <Compile Include="Provider\ChildDto.cs" />
     <Compile Include="Provider\CollectionDto.cs" />
     <Compile Include="Provider\ComplexDto.cs" />
+    <Compile Include="Provider\ODataExpressionWriterTests.cs" />
     <Compile Include="Provider\QueryableExtensionsTests.cs" />
     <Compile Include="Provider\RestContextInMemoryTests.cs" />
     <Compile Include="Provider\Writers\BooleanValueWriterTests.cs" />
