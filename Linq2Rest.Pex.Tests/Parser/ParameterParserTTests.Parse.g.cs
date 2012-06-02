@@ -26,7 +26,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(ParameterParserTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ParseThrowsArgumentNullException457()
+public void ParseThrowsArgumentNullException554()
 {
     SIFilterExpressionFactory sIFilterExpressionFactory;
     SISortExpressionFactory sISortExpressionFactory;
@@ -108,78 +108,6 @@ public void Parse75901()
       PexInvariant.CheckInvariant((object)parameterParser);
       KeyValuePair<string, string>[] keyValuePairs
          = new KeyValuePair<string, string>[1];
-      nameValueCollection = PexFactories.CreateNameValueCollection(keyValuePairs);
-      iModelFilter = this.Parse<int>(parameterParser, nameValueCollection);
-      PexAssert.IsNotNull((object)iModelFilter);
-      PexAssert.IsNotNull((object)parameterParser);
-    }
-}
-[Test]
-[PexGeneratedBy(typeof(ParameterParserTTests))]
-public void Parse75902()
-{
-    using (PexChooseBehavedBehavior.Setup())
-    {
-      SIFilterExpressionFactory sIFilterExpressionFactory;
-      SISortExpressionFactory sISortExpressionFactory;
-      SISelectExpressionFactory<int> sISelectExpressionFactory;
-      ParameterParser<int> parameterParser;
-      NameValueCollection nameValueCollection;
-      IModelFilter<int> iModelFilter;
-      sIFilterExpressionFactory = new SIFilterExpressionFactory();
-      sISortExpressionFactory = new SISortExpressionFactory();
-      sISelectExpressionFactory = new SISelectExpressionFactory<int>();
-      parameterParser = PexInvariant.CreateInstance<ParameterParser<int>>();
-      PexInvariant.SetField<IFilterExpressionFactory>
-          ((object)parameterParser, "_filterExpressionFactory", 
-                                    (IFilterExpressionFactory)sIFilterExpressionFactory);
-      PexInvariant.SetField<ISortExpressionFactory>((object)parameterParser, 
-                                                    "_sortExpressionFactory", (ISortExpressionFactory)sISortExpressionFactory);
-      PexInvariant.SetField<ISelectExpressionFactory<int>>
-          ((object)parameterParser, "_selectExpressionFactory", 
-                                    (ISelectExpressionFactory<int>)sISelectExpressionFactory);
-      PexInvariant.CheckInvariant((object)parameterParser);
-      KeyValuePair<string, string>[] keyValuePairs
-         = new KeyValuePair<string, string>[1];
-      KeyValuePair<string, string> s0 = new KeyValuePair<string, string>("", "");
-      keyValuePairs[0] = s0;
-      nameValueCollection = PexFactories.CreateNameValueCollection(keyValuePairs);
-      iModelFilter = this.Parse<int>(parameterParser, nameValueCollection);
-      PexAssert.IsNotNull((object)iModelFilter);
-      PexAssert.IsNotNull((object)parameterParser);
-    }
-}
-[Test]
-[PexGeneratedBy(typeof(ParameterParserTTests))]
-public void Parse75903()
-{
-    using (PexChooseBehavedBehavior.Setup())
-    {
-      SIFilterExpressionFactory sIFilterExpressionFactory;
-      SISortExpressionFactory sISortExpressionFactory;
-      SISelectExpressionFactory<int> sISelectExpressionFactory;
-      ParameterParser<int> parameterParser;
-      NameValueCollection nameValueCollection;
-      IModelFilter<int> iModelFilter;
-      sIFilterExpressionFactory = new SIFilterExpressionFactory();
-      sISortExpressionFactory = new SISortExpressionFactory();
-      sISelectExpressionFactory = new SISelectExpressionFactory<int>();
-      parameterParser = PexInvariant.CreateInstance<ParameterParser<int>>();
-      PexInvariant.SetField<IFilterExpressionFactory>
-          ((object)parameterParser, "_filterExpressionFactory", 
-                                    (IFilterExpressionFactory)sIFilterExpressionFactory);
-      PexInvariant.SetField<ISortExpressionFactory>((object)parameterParser, 
-                                                    "_sortExpressionFactory", (ISortExpressionFactory)sISortExpressionFactory);
-      PexInvariant.SetField<ISelectExpressionFactory<int>>
-          ((object)parameterParser, "_selectExpressionFactory", 
-                                    (ISelectExpressionFactory<int>)sISelectExpressionFactory);
-      PexInvariant.CheckInvariant((object)parameterParser);
-      KeyValuePair<string, string>[] keyValuePairs
-         = new KeyValuePair<string, string>[2];
-      KeyValuePair<string, string> s0 = new KeyValuePair<string, string>("", "");
-      keyValuePairs[0] = s0;
-      KeyValuePair<string, string> s1 = new KeyValuePair<string, string>("", "");
-      keyValuePairs[1] = s1;
       nameValueCollection = PexFactories.CreateNameValueCollection(keyValuePairs);
       iModelFilter = this.Parse<int>(parameterParser, nameValueCollection);
       PexAssert.IsNotNull((object)iModelFilter);

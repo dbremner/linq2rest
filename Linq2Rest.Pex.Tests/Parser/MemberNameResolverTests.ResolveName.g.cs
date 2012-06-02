@@ -20,7 +20,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(MemberNameResolverTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ResolveNameThrowsArgumentNullException565()
+public void ResolveNameThrowsArgumentNullException358()
 {
     string s;
     MemberNameResolver s0 = new MemberNameResolver();

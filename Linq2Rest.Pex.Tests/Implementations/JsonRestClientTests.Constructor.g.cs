@@ -20,7 +20,7 @@ namespace Linq2Rest.Implementations
 [Test]
 [PexGeneratedBy(typeof(JsonRestClientTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException809()
+public void ConstructorThrowsArgumentNullException333()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -48,7 +48,7 @@ public void Constructor01()
 [Test]
 [PexGeneratedBy(typeof(JsonRestClientTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void ConstructorThrowsArgumentException412()
+public void ConstructorThrowsArgumentException835()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -63,13 +63,13 @@ public void ConstructorThrowsArgumentException412()
 [Test]
 [PexGeneratedBy(typeof(JsonRestClientTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void ConstructorThrowsArgumentException706()
+public void ConstructorThrowsArgumentException788()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
       Uri uri;
       JsonRestClient jsonRestClient;
-      uri = new Uri("  /\\-");
+      uri = new Uri("/\\0");
       jsonRestClient = this.Constructor(uri);
       disposables.Add((IDisposable)jsonRestClient);
       disposables.Dispose();
@@ -78,13 +78,13 @@ public void ConstructorThrowsArgumentException706()
 [Test]
 [PexGeneratedBy(typeof(JsonRestClientTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void ConstructorThrowsArgumentException499()
+public void ConstructorThrowsArgumentException244()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
       Uri uri;
       JsonRestClient jsonRestClient;
-      uri = new Uri("  /\\0");
+      uri = new Uri("/\\a");
       jsonRestClient = this.Constructor(uri);
       disposables.Add((IDisposable)jsonRestClient);
       disposables.Dispose();
@@ -93,13 +93,13 @@ public void ConstructorThrowsArgumentException499()
 [Test]
 [PexGeneratedBy(typeof(JsonRestClientTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void ConstructorThrowsArgumentException228()
+public void ConstructorThrowsArgumentException555()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
       Uri uri;
       JsonRestClient jsonRestClient;
-      uri = new Uri("  /\\\u0220");
+      uri = new Uri("a+:");
       jsonRestClient = this.Constructor(uri);
       disposables.Add((IDisposable)jsonRestClient);
       disposables.Dispose();
@@ -108,13 +108,58 @@ public void ConstructorThrowsArgumentException228()
 [Test]
 [PexGeneratedBy(typeof(JsonRestClientTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void ConstructorThrowsArgumentException638()
+public void ConstructorThrowsArgumentException171()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
       Uri uri;
       JsonRestClient jsonRestClient;
-      uri = new Uri("  a+:");
+      uri = new Uri("aa:");
+      jsonRestClient = this.Constructor(uri);
+      disposables.Add((IDisposable)jsonRestClient);
+      disposables.Dispose();
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(JsonRestClientTests))]
+[ExpectedException(typeof(ArgumentException))]
+public void ConstructorThrowsArgumentException944()
+{
+    using (PexDisposableContext disposables = PexDisposableContext.Create())
+    {
+      Uri uri;
+      JsonRestClient jsonRestClient;
+      uri = new Uri("/\\-");
+      jsonRestClient = this.Constructor(uri);
+      disposables.Add((IDisposable)jsonRestClient);
+      disposables.Dispose();
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(JsonRestClientTests))]
+[ExpectedException(typeof(ArgumentException))]
+public void ConstructorThrowsArgumentException844()
+{
+    using (PexDisposableContext disposables = PexDisposableContext.Create())
+    {
+      Uri uri;
+      JsonRestClient jsonRestClient;
+      uri = new Uri("a.:\\\\ ");
+      jsonRestClient = this.Constructor(uri);
+      disposables.Add((IDisposable)jsonRestClient);
+      disposables.Dispose();
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(JsonRestClientTests))]
+[ExpectedException(typeof(ArgumentException))]
+public void ConstructorThrowsArgumentException755()
+{
+    using (PexDisposableContext disposables = PexDisposableContext.Create())
+    {
+      Uri uri;
+      JsonRestClient jsonRestClient;
+      uri = new Uri("/\\\u00a1");
       jsonRestClient = this.Constructor(uri);
       disposables.Add((IDisposable)jsonRestClient);
       disposables.Dispose();

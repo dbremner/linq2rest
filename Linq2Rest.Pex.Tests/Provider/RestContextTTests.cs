@@ -36,7 +36,7 @@ namespace Linq2Rest.Provider
 
         /// <summary>Test stub for get_Query()</summary>
         [PexGenericArguments(typeof(int))]
-        [PexMethod]
+		[PexMethod(MaxConditions = 1000)]
         public IQueryable<T> QueryGet<T>([PexAssumeUnderTest]RestContext<T> target)
         {
             IQueryable<T> result = target.Query;

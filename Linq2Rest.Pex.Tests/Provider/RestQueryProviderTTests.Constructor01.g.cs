@@ -23,7 +23,7 @@ namespace Linq2Rest.Provider
 [Test]
 [PexGeneratedBy(typeof(RestQueryProviderTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void Constructor01ThrowsArgumentNullException211()
+public void Constructor01ThrowsArgumentNullException322()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -37,7 +37,7 @@ public void Constructor01ThrowsArgumentNullException211()
 [Test]
 [PexGeneratedBy(typeof(RestQueryProviderTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void Constructor01ThrowsArgumentNullException28()
+public void Constructor01ThrowsArgumentNullException678()
 {
     using (PexChooseBehavedBehavior.Setup())
     {
@@ -57,7 +57,7 @@ public void Constructor01ThrowsArgumentNullException28()
 [Test]
 [PexGeneratedBy(typeof(RestQueryProviderTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void Constructor01ThrowsArgumentNullException697()
+public void Constructor01ThrowsArgumentNullException750()
 {
     using (PexChooseBehavedBehavior.Setup())
     {
@@ -79,7 +79,7 @@ public void Constructor01ThrowsArgumentNullException697()
 [Test]
 [PexGeneratedBy(typeof(RestQueryProviderTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException478()
+public void ConstructorThrowsArgumentNullException662()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -93,7 +93,7 @@ public void ConstructorThrowsArgumentNullException478()
 [Test]
 [PexGeneratedBy(typeof(RestQueryProviderTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException274()
+public void ConstructorThrowsArgumentNullException86()
 {
     using (PexChooseBehavedBehavior.Setup())
     {
@@ -105,6 +105,66 @@ public void ConstructorThrowsArgumentNullException274()
         disposables.Add((IDisposable)sIRestClient);
         restQueryProvider =
           this.Constructor<int>((IRestClient)sIRestClient, (ISerializerFactory)null);
+        disposables.Add((IDisposable)restQueryProvider);
+        disposables.Dispose();
+      }
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(RestQueryProviderTTests))]
+[Ignore("this test requires to run under the Pex profiler in order to reproduce")]
+[PexRaisedException(typeof(PexRetryException))]
+[PexNotReproducible]
+public void ConstructorThrowsPexRetryException643()
+{
+    using (PexChooseBehavedBehavior.Setup())
+    {
+      using (PexDisposableContext disposables = PexDisposableContext.Create())
+      {
+        SIRestClient sIRestClient;
+        SISerializerFactory sISerializerFactory;
+        Uri uri;
+        RestQueryProvider<int> restQueryProvider;
+        sIRestClient = new SIRestClient();
+        disposables.Add((IDisposable)sIRestClient);
+        sISerializerFactory = new SISerializerFactory();
+        uri = new Uri("  \\/-");
+        IPexChoiceRecorder choices = PexChoose.Replay.Setup();
+        choices.NextSegment(3).DefaultSession
+            .At(0, "sIRestClient.Linq2Rest.Provider.IRestClient.get_ServiceBase", 
+                                                 (object)uri);
+        restQueryProvider = this.Constructor<int>
+                                ((IRestClient)sIRestClient, (ISerializerFactory)sISerializerFactory);
+        disposables.Add((IDisposable)restQueryProvider);
+        disposables.Dispose();
+      }
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(RestQueryProviderTTests))]
+[Ignore("this test requires to run under the Pex profiler in order to reproduce")]
+[PexRaisedException(typeof(PexRetryException))]
+[PexNotReproducible]
+public void ConstructorThrowsPexRetryException928()
+{
+    using (PexChooseBehavedBehavior.Setup())
+    {
+      using (PexDisposableContext disposables = PexDisposableContext.Create())
+      {
+        SIRestClient sIRestClient;
+        SISerializerFactory sISerializerFactory;
+        Uri uri;
+        RestQueryProvider<int> restQueryProvider;
+        sIRestClient = new SIRestClient();
+        disposables.Add((IDisposable)sIRestClient);
+        sISerializerFactory = new SISerializerFactory();
+        uri = new Uri("  /\\\u00a1");
+        IPexChoiceRecorder choices = PexChoose.Replay.Setup();
+        choices.NextSegment(3).DefaultSession
+            .At(0, "sIRestClient.Linq2Rest.Provider.IRestClient.get_ServiceBase", 
+                                                 (object)uri);
+        restQueryProvider = this.Constructor<int>
+                                ((IRestClient)sIRestClient, (ISerializerFactory)sISerializerFactory);
         disposables.Add((IDisposable)restQueryProvider);
         disposables.Dispose();
       }

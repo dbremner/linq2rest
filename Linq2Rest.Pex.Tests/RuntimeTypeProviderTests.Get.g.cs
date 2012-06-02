@@ -23,7 +23,7 @@ namespace Linq2Rest
 [Test]
 [PexGeneratedBy(typeof(RuntimeTypeProviderTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void GetThrowsArgumentNullException351()
+public void GetThrowsArgumentNullException643()
 {
     SIMemberNameResolver sIMemberNameResolver;
     RuntimeTypeProvider runtimeTypeProvider;

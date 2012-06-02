@@ -21,7 +21,7 @@ namespace Linq2Rest.Parser.Readers
 [Test]
 [PexGeneratedBy(typeof(ParameterValueReaderTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ReadThrowsContractException664()
+public void ReadThrowsContractException86()
 {
     try
     {
@@ -39,7 +39,7 @@ public void ReadThrowsContractException664()
 [Test]
 [PexGeneratedBy(typeof(ParameterValueReaderTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ReadThrowsContractException872()
+public void ReadThrowsContractException217()
 {
     try
     {

@@ -8,8 +8,8 @@ using NUnit.Framework;
 
 namespace Linq2Rest.Provider
 {
-    /// <summary>This class contains parameterized unit tests for ExpressionVisitor</summary>
-    [PexClass(typeof(ExpressionVisitor))]
+    /// <summary>This class contains parameterized unit tests for ExpressionWriter</summary>
+    [PexClass(typeof(ExpressionWriter))]
     [PexAllowedExceptionFromTypeUnderTest(typeof(InvalidOperationException))]
     [PexAllowedExceptionFromTypeUnderTest(typeof(ArgumentException), AcceptExceptionSubtypes = true)]
     [TestFixture]
@@ -18,13 +18,13 @@ namespace Linq2Rest.Provider
         /// <summary>Test stub for Visit(Expression)</summary>
         [PexMethod]
         internal string Visit(
-            [PexAssumeUnderTest]ExpressionVisitor target,
+            [PexAssumeUnderTest]ExpressionWriter target,
             Expression expression
         )
         {
             string result = target.Visit(expression);
             return result;
-            // TODO: add assertions to method ExpressionVisitorTests.Visit(ExpressionVisitor, Expression)
+            // TODO: add assertions to method ExpressionVisitorTests.Visit(ExpressionWriter, Expression)
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Linq2Rest
 [Test]
 [PexGeneratedBy(typeof(GeneralExtensionsTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void CapitalizeThrowsContractException475()
+public void CapitalizeThrowsContractException437()
 {
     try
     {

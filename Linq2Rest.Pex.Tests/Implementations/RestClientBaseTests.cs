@@ -24,7 +24,7 @@ namespace Linq2Rest.Implementations
         }
 
         /// <summary>Test stub for Get(Uri)</summary>
-        [PexMethod]
+		[PexMethod(MaxConditions = 1000)]
         public Stream Get([PexAssumeUnderTest]RestClientBase target, Uri uri)
         {
             Stream result = target.Get(uri);

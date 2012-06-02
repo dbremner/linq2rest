@@ -234,6 +234,40 @@
         <member name="P:Linq2Rest.Moles.MModelFilterExtensions.Behavior">
             <summary>Assigns the behavior for all methods of the moled type</summary>
         </member>
+        <member name="T:Linq2Rest.Provider.Moles.MODataExpressionConverter">
+            <summary>Mole type of <see cref="T:Linq2Rest.Provider.ODataExpressionConverter"/>
+            .</summary>
+        </member>
+        <member name="M:Linq2Rest.Provider.Moles.MODataExpressionConverter.#ctor">
+            <summary>Initializes a new mole</summary>
+        </member>
+        <member name="M:Linq2Rest.Provider.Moles.MODataExpressionConverter.#ctor(Linq2Rest.Provider.ODataExpressionConverter)">
+            <summary>Initializes a new mole for the given instance</summary>
+        </member>
+        <member name="M:Linq2Rest.Provider.Moles.MODataExpressionConverter.BehaveAsCurrent">
+            <summary>Assigns the &apos;Current&apos; behavior for all methods of the moled type</summary>
+        </member>
+        <member name="M:Linq2Rest.Provider.Moles.MODataExpressionConverter.BehaveAsNotImplemented">
+            <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the moled type</summary>
+        </member>
+        <member name="M:Linq2Rest.Provider.Moles.MODataExpressionConverter.ConvertExpressionOfFuncOfTBoolean``1(Microsoft.Moles.Framework.MolesDelegates.Func{System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.String})">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Provider.ODataExpressionConverter.Convert``1(System.Linq.Expressions.Expression`1{System.Func`2{``0,System.Boolean}})"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Provider.Moles.MODataExpressionConverter.Behavior">
+            <summary>Assigns the behavior for all methods of the moled type</summary>
+        </member>
+        <member name="P:Linq2Rest.Provider.Moles.MODataExpressionConverter.Constructor">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Provider.ODataExpressionConverter.#ctor"/>
+            </summary>
+        </member>
+        <member name="T:Linq2Rest.Provider.Moles.MODataExpressionConverter.AllInstances">
+            <summary>Define moles for all instances members</summary>
+        </member>
+        <member name="M:Linq2Rest.Provider.Moles.MODataExpressionConverter.AllInstances.ConvertExpressionOfFuncOfTBoolean``1(Microsoft.Moles.Framework.MolesDelegates.Func{Linq2Rest.Provider.ODataExpressionConverter,System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.String})">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Provider.ODataExpressionConverter.Convert``1(System.Linq.Expressions.Expression`1{System.Func`2{``0,System.Boolean}})"/>
+            </summary>
+        </member>
         <member name="T:Linq2Rest.Parser.Moles.MParameterParser`1">
             <summary>Mole type of <see cref="T:Linq2Rest.Parser.ParameterParser`1"/>
             .</summary>
@@ -310,6 +344,10 @@
         </member>
         <member name="M:Linq2Rest.Provider.Moles.MQueryableExtensions.ResolvePropertyNameExpressionOfFuncOfTSourceObject``1(Microsoft.Moles.Framework.MolesDelegates.Func{System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.String})">
             <summary>Sets the mole of <see cref="M:Linq2Rest.Provider.QueryableExtensions.ResolvePropertyName``1(System.Linq.Expressions.Expression`1{System.Func`2{``0,System.Object}})"/>
+            </summary>
+        </member>
+        <member name="M:Linq2Rest.Provider.Moles.MQueryableExtensions._Expandb__3ExpressionOfFuncOfTSourceObject``1(Microsoft.Moles.Framework.MolesDelegates.Func{System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Boolean})">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Provider.QueryableExtensions.&lt;Expand&gt;b__3``1(System.Linq.Expressions.Expression`1{System.Func`2{``0,System.Object}})"/>
             </summary>
         </member>
         <member name="P:Linq2Rest.Provider.Moles.MQueryableExtensions.Behavior">
@@ -817,6 +855,10 @@
             <summary>Sets the mole of <see cref="M:Linq2Rest.Implementations.XmlSerializerFactory.Create``1"/>
             </summary>
         </member>
+        <member name="M:Linq2Rest.Implementations.Moles.MXmlSerializerFactory._Createb__0Type``1(Microsoft.Moles.Framework.MolesDelegates.Func{System.Type,System.Boolean})">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Implementations.XmlSerializerFactory.&lt;Create&gt;b__0``1(System.Type)"/>
+            </summary>
+        </member>
         <member name="P:Linq2Rest.Implementations.Moles.MXmlSerializerFactory.Behavior">
             <summary>Assigns the behavior for all methods of the moled type</summary>
         </member>
@@ -855,19 +897,19 @@
         <member name="P:Linq2Rest.Parser.Moles.SFilterExpressionFactory.InstanceBehavior">
             <summary>Gets or sets the instance behavior.</summary>
         </member>
-        <member name="T:Linq2Rest.Provider.Moles.SIExpressionVisitor">
-            <summary>Stub type of <see cref="T:Linq2Rest.Provider.IExpressionVisitor"/>
+        <member name="T:Linq2Rest.Provider.Moles.SIExpressionWriter">
+            <summary>Stub type of <see cref="T:Linq2Rest.Provider.IExpressionWriter"/>
             .</summary>
         </member>
-        <member name="M:Linq2Rest.Provider.Moles.SIExpressionVisitor.#ctor">
-            <summary>Initializes a new instance of type SIExpressionVisitor</summary>
+        <member name="M:Linq2Rest.Provider.Moles.SIExpressionWriter.#ctor">
+            <summary>Initializes a new instance of type SIExpressionWriter</summary>
         </member>
-        <member name="M:Linq2Rest.Provider.Moles.SIExpressionVisitor.lr::Linq2Rest#Provider#IExpressionVisitor#Visit(System.Linq.Expressions.Expression)">
-            <summary>Sets the stub of <see cref="M:Linq2Rest.Provider.IExpressionVisitor.Visit(System.Linq.Expressions.Expression)"/>
+        <member name="M:Linq2Rest.Provider.Moles.SIExpressionWriter.lr::Linq2Rest#Provider#IExpressionWriter#Visit(System.Linq.Expressions.Expression)">
+            <summary>Sets the stub of <see cref="M:Linq2Rest.Provider.IExpressionWriter.Visit(System.Linq.Expressions.Expression)"/>
             </summary>
         </member>
-        <member name="F:Linq2Rest.Provider.Moles.SIExpressionVisitor.VisitExpression">
-            <summary>Sets the stub of <see cref="M:Linq2Rest.Provider.IExpressionVisitor.Visit(System.Linq.Expressions.Expression)"/>
+        <member name="F:Linq2Rest.Provider.Moles.SIExpressionWriter.VisitExpression">
+            <summary>Sets the stub of <see cref="M:Linq2Rest.Provider.IExpressionWriter.Visit(System.Linq.Expressions.Expression)"/>
             </summary>
         </member>
         <member name="T:Linq2Rest.Parser.Moles.SIFilterExpressionFactory">
@@ -1048,6 +1090,22 @@
             <summary>Gets or sets a value that indicates if the base method should be called instead of the fallback behavior</summary>
         </member>
         <member name="P:Linq2Rest.Implementations.Moles.SJsonRestClient.InstanceBehavior">
+            <summary>Gets or sets the instance behavior.</summary>
+        </member>
+        <member name="T:Linq2Rest.Provider.Moles.SODataExpressionConverter">
+            <summary>Stub type of <see cref="T:Linq2Rest.Provider.ODataExpressionConverter"/>
+            .</summary>
+        </member>
+        <member name="M:Linq2Rest.Provider.Moles.SODataExpressionConverter.#ctor">
+            <summary>Initializes a new instance</summary>
+        </member>
+        <member name="M:Linq2Rest.Provider.Moles.SODataExpressionConverter.InitializeStub">
+            <summary>Initializes a new instance of type SODataExpressionConverter</summary>
+        </member>
+        <member name="P:Linq2Rest.Provider.Moles.SODataExpressionConverter.CallBase">
+            <summary>Gets or sets a value that indicates if the base method should be called instead of the fallback behavior</summary>
+        </member>
+        <member name="P:Linq2Rest.Provider.Moles.SODataExpressionConverter.InstanceBehavior">
             <summary>Gets or sets the instance behavior.</summary>
         </member>
         <member name="T:Linq2Rest.Parser.Moles.SParameterParser`1">

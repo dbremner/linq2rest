@@ -20,7 +20,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(TokenOperatorExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void IsCombinationOperationThrowsArgumentNullException450()
+public void IsCombinationOperationThrowsArgumentNullException364()
 {
     bool b;
     b = this.IsCombinationOperation((string)null);

@@ -21,7 +21,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(ExpressionTokenizerTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void GetFunctionTokensThrowsContractException649()
+public void GetFunctionTokensThrowsContractException377()
 {
     try
     {

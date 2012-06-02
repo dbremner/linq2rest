@@ -22,12 +22,12 @@ namespace Linq2Rest.Provider
 [Test]
 [PexGeneratedBy(typeof(ExpressionProcessorTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ConstructorThrowsContractException710()
+public void ConstructorThrowsContractException640()
 {
     try
     {
       ExpressionProcessor expressionProcessor;
-      expressionProcessor = this.Constructor((IExpressionVisitor)null);
+      expressionProcessor = this.Constructor((IExpressionWriter)null);
       throw 
         new AssertionException("expected an exception of type ContractException");
     }
@@ -39,12 +39,12 @@ public void ConstructorThrowsContractException710()
 }
 [Test]
 [PexGeneratedBy(typeof(ExpressionProcessorTests))]
-public void Constructor499()
+public void Constructor634()
 {
-    SIExpressionVisitor sIExpressionVisitor;
+    SIExpressionWriter sIExpressionWriter;
     ExpressionProcessor expressionProcessor;
-    sIExpressionVisitor = new SIExpressionVisitor();
-    expressionProcessor = this.Constructor((IExpressionVisitor)sIExpressionVisitor);
+    sIExpressionWriter = new SIExpressionWriter();
+    expressionProcessor = this.Constructor((IExpressionWriter)sIExpressionWriter);
     PexAssert.IsNotNull((object)expressionProcessor);
 }
 	}

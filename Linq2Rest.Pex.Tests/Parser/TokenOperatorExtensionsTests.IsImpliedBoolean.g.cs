@@ -20,7 +20,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(TokenOperatorExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void IsImpliedBooleanThrowsArgumentNullException278()
+public void IsImpliedBooleanThrowsArgumentNullException687()
 {
     bool b;
     b = this.IsImpliedBoolean((string)null);
@@ -84,10 +84,11 @@ public void IsImpliedBoolean947()
 }
 [Test]
 [PexGeneratedBy(typeof(TokenOperatorExtensionsTests))]
-public void IsImpliedBoolean435()
+[Ignore("the test state was: duplicate path")]
+public void IsImpliedBoolean43()
 {
     bool b;
-    b = this.IsImpliedBoolean("\u0100\u0100\u0100");
+    b = this.IsImpliedBoolean(" \ue4d8()");
     PexAssert.AreEqual<bool>(false, b);
 }
 	}

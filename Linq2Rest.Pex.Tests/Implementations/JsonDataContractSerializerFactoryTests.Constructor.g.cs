@@ -21,7 +21,7 @@ namespace Linq2Rest.Implementations
 [Test]
 [PexGeneratedBy(typeof(JsonDataContractSerializerFactoryTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException614()
+public void ConstructorThrowsArgumentNullException621()
 {
     JsonDataContractSerializerFactory jsonDataContractSerializerFactory;
     jsonDataContractSerializerFactory = this.Constructor((IEnumerable<Type>)null);

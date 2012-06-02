@@ -28,7 +28,7 @@ namespace Linq2Rest.Implementations
 
         /// <summary>Test stub for Create()</summary>
         [PexGenericArguments(typeof(int))]
-        [PexMethod]
+		[PexMethod(MaxConditions = 1000)]
         public ISerializer<T> Create<T>([PexAssumeUnderTest]JsonDataContractSerializerFactory target)
         {
             ISerializer<T> result = target.Create<T>();

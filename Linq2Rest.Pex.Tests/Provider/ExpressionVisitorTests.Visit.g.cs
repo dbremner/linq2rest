@@ -20,10 +20,10 @@ namespace Linq2Rest.Provider
 	{
 [Test]
 [PexGeneratedBy(typeof(ExpressionVisitorTests))]
-public void Visit143()
+public void Visit290()
 {
     string s;
-    ExpressionVisitor s0 = new ExpressionVisitor();
+    ExpressionWriter s0 = new ExpressionWriter();
     s = this.Visit(s0, (Expression)null);
     PexAssert.AreEqual<string>((string)null, s);
     PexAssert.IsNotNull((object)s0);

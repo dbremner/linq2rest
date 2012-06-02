@@ -20,7 +20,7 @@ namespace Linq2Rest
 [Test]
 [PexGeneratedBy(typeof(MethodProviderTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void GetIEnumerableImplThrowsContractException2()
+public void GetIEnumerableImplThrowsContractException625()
 {
     try
     {

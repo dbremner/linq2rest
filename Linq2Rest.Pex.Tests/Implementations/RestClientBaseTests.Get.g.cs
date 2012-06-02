@@ -21,7 +21,7 @@ namespace Linq2Rest.Implementations
 [Test]
 [PexGeneratedBy(typeof(RestClientBaseTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void GetThrowsArgumentNullException18()
+public void GetThrowsArgumentNullException386()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -41,7 +41,7 @@ public void GetThrowsArgumentNullException18()
 [Test]
 [PexGeneratedBy(typeof(RestClientBaseTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void GetThrowsArgumentException980()
+public void GetThrowsArgumentException606()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -64,7 +64,30 @@ public void GetThrowsArgumentException980()
 [Test]
 [PexGeneratedBy(typeof(RestClientBaseTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void GetThrowsArgumentException649()
+public void GetThrowsArgumentException739()
+{
+    using (PexDisposableContext disposables = PexDisposableContext.Create())
+    {
+      RestClientBase restClientBase;
+      Uri uri;
+      Stream stream;
+      restClientBase = PexInvariant.CreateInstance<RestClientBase>();
+      PexInvariant.SetField<string>
+          ((object)restClientBase, "_acceptHeader", " /\\\u0220");
+      PexInvariant.SetField<Uri>
+          ((object)restClientBase, "<ServiceBase>k__BackingField", (Uri)null);
+      PexInvariant.CheckInvariant((object)restClientBase);
+      disposables.Add((IDisposable)restClientBase);
+      uri = new Uri(" /\\\u0220");
+      stream = this.Get(restClientBase, uri);
+      disposables.Add((IDisposable)stream);
+      disposables.Dispose();
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(RestClientBaseTests))]
+[ExpectedException(typeof(ArgumentException))]
+public void GetThrowsArgumentException205()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -86,7 +109,7 @@ public void GetThrowsArgumentException649()
 [Test]
 [PexGeneratedBy(typeof(RestClientBaseTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void GetThrowsArgumentException574()
+public void GetThrowsArgumentException547()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -95,12 +118,12 @@ public void GetThrowsArgumentException574()
       Stream stream;
       restClientBase = PexInvariant.CreateInstance<RestClientBase>();
       PexInvariant.SetField<string>
-          ((object)restClientBase, "_acceptHeader", " /\\\u00a0");
+          ((object)restClientBase, "_acceptHeader", " /\\x");
       PexInvariant.SetField<Uri>
           ((object)restClientBase, "<ServiceBase>k__BackingField", (Uri)null);
       PexInvariant.CheckInvariant((object)restClientBase);
       disposables.Add((IDisposable)restClientBase);
-      uri = new Uri(" /\\\u00a0");
+      uri = new Uri(" /\\x");
       stream = this.Get(restClientBase, uri);
       disposables.Add((IDisposable)stream);
       disposables.Dispose();
@@ -109,7 +132,7 @@ public void GetThrowsArgumentException574()
 [Test]
 [PexGeneratedBy(typeof(RestClientBaseTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void GetThrowsArgumentException739()
+public void GetThrowsArgumentException14()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -124,6 +147,102 @@ public void GetThrowsArgumentException739()
       PexInvariant.CheckInvariant((object)restClientBase);
       disposables.Add((IDisposable)restClientBase);
       uri = new Uri(" /\\-");
+      stream = this.Get(restClientBase, uri);
+      disposables.Add((IDisposable)stream);
+      disposables.Dispose();
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(RestClientBaseTests))]
+[Ignore("the test state was: path bounds exceeded")]
+public void Get01()
+{
+    using (PexDisposableContext disposables = PexDisposableContext.Create())
+    {
+      RestClientBase restClientBase;
+      Uri uri;
+      Stream stream;
+      restClientBase = PexInvariant.CreateInstance<RestClientBase>();
+      PexInvariant.SetField<string>((object)restClientBase, "_acceptHeader", 
+                                                            " \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7");
+      PexInvariant.SetField<Uri>
+          ((object)restClientBase, "<ServiceBase>k__BackingField", (Uri)null);
+      PexInvariant.CheckInvariant((object)restClientBase);
+      disposables.Add((IDisposable)restClientBase);
+      uri = new Uri(
+                   " \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7"
+                   );
+      stream = this.Get(restClientBase, uri);
+      disposables.Add((IDisposable)stream);
+      disposables.Dispose();
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(RestClientBaseTests))]
+[Ignore("the test state was: path bounds exceeded")]
+public void Get02()
+{
+    using (PexDisposableContext disposables = PexDisposableContext.Create())
+    {
+      RestClientBase restClientBase;
+      Uri uri;
+      Stream stream;
+      restClientBase = PexInvariant.CreateInstance<RestClientBase>();
+      PexInvariant.SetField<string>((object)restClientBase, "_acceptHeader", 
+                                                            " \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0");
+      PexInvariant.SetField<Uri>
+          ((object)restClientBase, "<ServiceBase>k__BackingField", (Uri)null);
+      PexInvariant.CheckInvariant((object)restClientBase);
+      disposables.Add((IDisposable)restClientBase);
+      uri = new Uri(
+                   " \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+                   );
+      stream = this.Get(restClientBase, uri);
+      disposables.Add((IDisposable)stream);
+      disposables.Dispose();
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(RestClientBaseTests))]
+[ExpectedException(typeof(ArgumentException))]
+public void GetThrowsArgumentException521()
+{
+    using (PexDisposableContext disposables = PexDisposableContext.Create())
+    {
+      RestClientBase restClientBase;
+      Uri uri;
+      Stream stream;
+      restClientBase = PexInvariant.CreateInstance<RestClientBase>();
+      PexInvariant.SetField<string>
+          ((object)restClientBase, "_acceptHeader", " \\/0X");
+      PexInvariant.SetField<Uri>
+          ((object)restClientBase, "<ServiceBase>k__BackingField", (Uri)null);
+      PexInvariant.CheckInvariant((object)restClientBase);
+      disposables.Add((IDisposable)restClientBase);
+      uri = new Uri(" \\/0X");
+      stream = this.Get(restClientBase, uri);
+      disposables.Add((IDisposable)stream);
+      disposables.Dispose();
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(RestClientBaseTests))]
+[ExpectedException(typeof(ArgumentException))]
+public void GetThrowsArgumentException921()
+{
+    using (PexDisposableContext disposables = PexDisposableContext.Create())
+    {
+      RestClientBase restClientBase;
+      Uri uri;
+      Stream stream;
+      restClientBase = PexInvariant.CreateInstance<RestClientBase>();
+      PexInvariant.SetField<string>
+          ((object)restClientBase, "_acceptHeader", " \\/0\\");
+      PexInvariant.SetField<Uri>
+          ((object)restClientBase, "<ServiceBase>k__BackingField", (Uri)null);
+      PexInvariant.CheckInvariant((object)restClientBase);
+      disposables.Add((IDisposable)restClientBase);
+      uri = new Uri(" \\/0\\");
       stream = this.Get(restClientBase, uri);
       disposables.Add((IDisposable)stream);
       disposables.Dispose();

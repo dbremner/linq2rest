@@ -23,7 +23,7 @@ namespace Linq2Rest
 [Test]
 [PexGeneratedBy(typeof(RuntimeTypeProviderTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ConstructorThrowsContractException938()
+public void ConstructorThrowsContractException672()
 {
     try
     {

@@ -21,7 +21,7 @@ namespace Linq2Rest.Provider.Writers
 [Test]
 [PexGeneratedBy(typeof(TimeSpanValueWriterTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void WriteThrowsContractException498()
+public void WriteThrowsContractException499()
 {
     try
     {
@@ -40,7 +40,7 @@ public void WriteThrowsContractException498()
 [Test]
 [PexGeneratedBy(typeof(TimeSpanValueWriterTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void WriteThrowsContractException59()
+public void WriteThrowsContractException408()
 {
     try
     {

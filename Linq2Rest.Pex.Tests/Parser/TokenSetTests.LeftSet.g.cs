@@ -21,7 +21,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(TokenSetTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void LeftSetThrowsArgumentNullException635()
+public void LeftSetThrowsArgumentNullException964()
 {
     TokenSet tokenSet;
     tokenSet = PexInvariant.CreateInstance<TokenSet>();

@@ -20,7 +20,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(TokenOperatorExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void IsArithmeticThrowsArgumentNullException674()
+public void IsArithmeticThrowsArgumentNullException270()
 {
     bool b;
     b = this.IsArithmetic((string)null);

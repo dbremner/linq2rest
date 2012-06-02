@@ -22,7 +22,7 @@ namespace Linq2Rest.Provider
 [Test]
 [PexGeneratedBy(typeof(QueryableExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ExecuteAsyncThrowsArgumentNullException435()
+public void ExecuteAsyncThrowsArgumentNullException697()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {

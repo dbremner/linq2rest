@@ -21,7 +21,7 @@ namespace Linq2Rest
 [Test]
 [PexGeneratedBy(typeof(MethodProviderTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void GetAnyAllMethodThrowsContractException901()
+public void GetAnyAllMethodThrowsContractException523()
 {
     try
     {

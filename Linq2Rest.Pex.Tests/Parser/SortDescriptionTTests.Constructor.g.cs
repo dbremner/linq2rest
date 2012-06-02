@@ -21,7 +21,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(SortDescriptionTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException700()
+public void ConstructorThrowsArgumentNullException63()
 {
     SortDescription<int> sortDescription;
     sortDescription =
