@@ -37,7 +37,7 @@ namespace Linq2Rest.Reactive
 #endif
 
 			Observers = new List<IObserver<T>>();
-			Processor = new AsyncExpressionProcessor(new Provider.ExpressionVisitor());
+			Processor = new AsyncExpressionProcessor(new Provider.ExpressionWriter());
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
 			SubscriberScheduler = subscriberScheduler ?? Scheduler.CurrentThread;
