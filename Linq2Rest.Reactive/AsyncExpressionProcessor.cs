@@ -18,11 +18,14 @@ namespace Linq2Rest.Reactive
 
 	internal class AsyncExpressionProcessor : IAsyncExpressionProcessor
 	{
-		private readonly IExpressionVisitor _visitor;
+		private readonly IExpressionWriter _writer;
 
-		public AsyncExpressionProcessor(IExpressionVisitor visitor)
+		public AsyncExpressionProcessor(IExpressionWriter writer)
 		{
-			_visitor = visitor;
+#if !WINDOWS_PHONE
+			Contract.Requires(writer != null);
+#endif
+			_writer = writer;
 		}
 
 		public IObservable<T> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
@@ -36,7 +39,7 @@ namespace Linq2Rest.Reactive
 		private static IObservable<object> InvokeEager<T>(MethodCallExpression methodCall, object source)
 		{
 			var parameters = ResolveInvocationParameters(source as IEnumerable, typeof(T), methodCall);
-			
+
 			return Observable.Return(methodCall.Method.Invoke(null, parameters));
 		}
 
@@ -96,7 +99,7 @@ namespace Linq2Rest.Reactive
 							return InvokeEager<T>(methodCall, result);
 						}
 
-						var newFilter = _visitor.Visit(methodCall.Arguments[1]);
+						var newFilter = _writer.Visit(methodCall.Arguments[1]);
 
 						builder.FilterParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 													? newFilter
@@ -157,7 +160,7 @@ namespace Linq2Rest.Reactive
 							return InvokeEager<T>(methodCall, result);
 						}
 
-						builder.TakeParameter = _visitor.Visit(methodCall.Arguments[1]);
+						builder.TakeParameter = _writer.Visit(methodCall.Arguments[1]);
 					}
 
 					break;
@@ -172,7 +175,7 @@ namespace Linq2Rest.Reactive
 							return InvokeEager<T>(methodCall, result);
 						}
 
-						builder.SkipParameter = _visitor.Visit(methodCall.Arguments[1]);
+						builder.SkipParameter = _writer.Visit(methodCall.Arguments[1]);
 					}
 
 					break;
@@ -192,7 +195,7 @@ namespace Linq2Rest.Reactive
 
 			ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
-			var processResult = _visitor.Visit(methodCall.Arguments[1]);
+			var processResult = _writer.Visit(methodCall.Arguments[1]);
 			var currentParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 									? processResult
 									: string.Format("({0}) and ({1})", builder.FilterParameter, processResult);

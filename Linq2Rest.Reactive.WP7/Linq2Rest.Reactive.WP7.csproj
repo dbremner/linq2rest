@@ -192,10 +192,10 @@
     <Compile Include="..\Linq2Rest.Reactive\TriggeredRestQueryableProvider.cs">
       <Link>TriggeredRestQueryableProvider.cs</Link>
     </Compile>
-    <Compile Include="..\Linq2Rest\Provider\ExpressionVisitor.cs">
+    <Compile Include="..\Linq2Rest\Provider\ExpressionWriter.cs">
       <Link>Provider\ExpressionVisitor.cs</Link>
     </Compile>
-    <Compile Include="..\Linq2Rest\Provider\IExpressionVisitor.cs">
+    <Compile Include="..\Linq2Rest\Provider\IExpressionWriter.cs">
       <Link>Provider\IExpressionVisitor.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\ISerializer.cs">

@@ -14,12 +14,12 @@ namespace Linq2Rest.Provider
 
 	internal class ExpressionProcessor : IExpressionProcessor
 	{
-		private readonly IExpressionVisitor _visitor;
+		private readonly IExpressionWriter _writer;
 
-		public ExpressionProcessor(IExpressionVisitor visitor)
+		public ExpressionProcessor(IExpressionWriter writer)
 		{
-			Contract.Requires(visitor != null);
-			_visitor = visitor;
+			Contract.Requires(writer != null);
+			_writer = writer;
 		}
 
 		public object ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IEnumerable<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
@@ -58,7 +58,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						var newFilter = _visitor.Visit(methodCall.Arguments[1]);
+						var newFilter = _writer.Visit(methodCall.Arguments[1]);
 
 						builder.FilterParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 													? newFilter
@@ -117,7 +117,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						var item = _visitor.Visit(methodCall.Arguments[1]);
+						var item = _writer.Visit(methodCall.Arguments[1]);
 						builder.OrderByParameter.Add(item);
 					}
 
@@ -132,7 +132,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						var visit = _visitor.Visit(methodCall.Arguments[1]);
+						var visit = _writer.Visit(methodCall.Arguments[1]);
 						builder.OrderByParameter.Add(visit + " desc");
 					}
 
@@ -146,7 +146,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						builder.TakeParameter = _visitor.Visit(methodCall.Arguments[1]);
+						builder.TakeParameter = _writer.Visit(methodCall.Arguments[1]);
 					}
 
 					break;
@@ -159,7 +159,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						builder.SkipParameter = _visitor.Visit(methodCall.Arguments[1]);
+						builder.SkipParameter = _writer.Visit(methodCall.Arguments[1]);
 					}
 
 					break;
@@ -240,7 +240,7 @@ namespace Linq2Rest.Provider
 
 			ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
-			var processResult = _visitor.Visit(methodCall.Arguments[1]);
+			var processResult = _writer.Visit(methodCall.Arguments[1]);
 			var currentParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 									? processResult
 									: string.Format("({0}) and ({1})", builder.FilterParameter, processResult);
@@ -324,7 +324,7 @@ namespace Linq2Rest.Provider
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
-			Contract.Invariant(_visitor != null);
+			Contract.Invariant(_writer != null);
 		}
 	}
 }
