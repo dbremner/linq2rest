@@ -22,7 +22,7 @@ namespace Linq2Rest
 [Test]
 [PexGeneratedBy(typeof(ModelFilterExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void Filter01ThrowsArgumentNullException932()
+public void Filter01ThrowsArgumentNullException18()
 {
     IEnumerable<object> iEnumerable;
     iEnumerable =
@@ -41,7 +41,7 @@ public void Filter01276()
 [Test]
 [PexGeneratedBy(typeof(ModelFilterExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void FilterThrowsArgumentNullException247()
+public void FilterThrowsArgumentNullException363()
 {
     IEnumerable<object> iEnumerable;
     iEnumerable =
@@ -50,7 +50,7 @@ public void FilterThrowsArgumentNullException247()
 [Test]
 [PexGeneratedBy(typeof(ModelFilterExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void FilterThrowsArgumentNullException193()
+public void FilterThrowsArgumentNullException150()
 {
     IEnumerable<object> iEnumerable;
     int[] ints = new int[0];

@@ -21,7 +21,7 @@ namespace Linq2Rest.Provider
 [Test]
 [PexGeneratedBy(typeof(ParameterBuilderTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ConstructorThrowsContractException159()
+public void ConstructorThrowsContractException718()
 {
     try
     {
@@ -73,16 +73,6 @@ public void Constructor85103()
     Uri uri;
     ParameterBuilder parameterBuilder;
     uri = new Uri("  aa:");
-    parameterBuilder = this.Constructor(uri);
-    PexAssert.IsNotNull((object)parameterBuilder);
-}
-[Test]
-[PexGeneratedBy(typeof(ParameterBuilderTests))]
-public void Constructor85104()
-{
-    Uri uri;
-    ParameterBuilder parameterBuilder;
-    uri = new Uri("  aA0:");
     parameterBuilder = this.Constructor(uri);
     PexAssert.IsNotNull((object)parameterBuilder);
 }

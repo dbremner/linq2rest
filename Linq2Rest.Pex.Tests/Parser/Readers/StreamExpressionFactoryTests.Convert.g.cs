@@ -22,7 +22,7 @@ namespace Linq2Rest.Parser.Readers
 [Test]
 [PexGeneratedBy(typeof(StreamExpressionFactoryTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ConvertThrowsContractException274()
+public void ConvertThrowsContractException409()
 {
     try
     {

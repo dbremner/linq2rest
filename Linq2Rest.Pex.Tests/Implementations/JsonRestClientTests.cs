@@ -15,7 +15,7 @@ namespace Linq2Rest.Implementations
     public partial class JsonRestClientTests
     {
         /// <summary>Test stub for .ctor(Uri)</summary>
-        [PexMethod]
+		[PexMethod(MaxConditions = 1000)]
         public JsonRestClient Constructor(Uri uri)
         {
             JsonRestClient target = new JsonRestClient(uri);

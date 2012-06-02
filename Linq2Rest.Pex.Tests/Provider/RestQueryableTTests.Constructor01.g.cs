@@ -24,7 +24,7 @@ namespace Linq2Rest.Provider
 [Test]
 [PexGeneratedBy(typeof(RestQueryableTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void Constructor01ThrowsArgumentNullException155()
+public void Constructor01ThrowsArgumentNullException714()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -38,7 +38,7 @@ public void Constructor01ThrowsArgumentNullException155()
 [Test]
 [PexGeneratedBy(typeof(RestQueryableTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void Constructor01ThrowsArgumentNullException154()
+public void Constructor01ThrowsArgumentNullException26()
 {
     using (PexChooseBehavedBehavior.Setup())
     {
@@ -58,7 +58,7 @@ public void Constructor01ThrowsArgumentNullException154()
 [Test]
 [PexGeneratedBy(typeof(RestQueryableTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void Constructor01ThrowsArgumentNullException951()
+public void Constructor01ThrowsArgumentNullException240()
 {
     using (PexChooseBehavedBehavior.Setup())
     {
@@ -80,7 +80,7 @@ public void Constructor01ThrowsArgumentNullException951()
 [Test]
 [PexGeneratedBy(typeof(RestQueryableTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException29()
+public void ConstructorThrowsArgumentNullException431()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -94,7 +94,7 @@ public void ConstructorThrowsArgumentNullException29()
 [Test]
 [PexGeneratedBy(typeof(RestQueryableTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException62()
+public void ConstructorThrowsArgumentNullException338()
 {
     using (PexChooseBehavedBehavior.Setup())
     {
@@ -106,36 +106,6 @@ public void ConstructorThrowsArgumentNullException62()
         disposables.Add((IDisposable)sIRestClient);
         restQueryable =
           this.Constructor<int>((IRestClient)sIRestClient, (ISerializerFactory)null);
-        disposables.Add((IDisposable)restQueryable);
-        disposables.Dispose();
-      }
-    }
-}
-[Test]
-[PexGeneratedBy(typeof(RestQueryableTTests))]
-[Ignore("this test requires to run under the Pex profiler in order to reproduce")]
-[PexRaisedException(typeof(PexRetryException))]
-[PexNotReproducible]
-public void ConstructorThrowsPexRetryException289()
-{
-    using (PexChooseBehavedBehavior.Setup())
-    {
-      using (PexDisposableContext disposables = PexDisposableContext.Create())
-      {
-        SIRestClient sIRestClient;
-        SISerializerFactory sISerializerFactory;
-        Uri uri;
-        RestQueryable<int> restQueryable;
-        sIRestClient = new SIRestClient();
-        disposables.Add((IDisposable)sIRestClient);
-        sISerializerFactory = new SISerializerFactory();
-        uri = new Uri("x:\\");
-        IPexChoiceRecorder choices = PexChoose.Replay.Setup();
-        choices.NextSegment(3).DefaultSession
-            .At(0, "sIRestClient.Linq2Rest.Provider.IRestClient.get_ServiceBase", 
-                                                 (object)uri);
-        restQueryable = this.Constructor<int>
-                            ((IRestClient)sIRestClient, (ISerializerFactory)sISerializerFactory);
         disposables.Add((IDisposable)restQueryable);
         disposables.Dispose();
       }

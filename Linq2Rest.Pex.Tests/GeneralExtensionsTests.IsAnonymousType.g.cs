@@ -19,7 +19,7 @@ namespace Linq2Rest
 [Test]
 [PexGeneratedBy(typeof(GeneralExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void IsAnonymousTypeThrowsArgumentNullException139()
+public void IsAnonymousTypeThrowsArgumentNullException106()
 {
     bool b;
     b = this.IsAnonymousType((Type)null);

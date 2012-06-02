@@ -21,7 +21,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(TokenOperatorExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void EnclosedMatchThrowsArgumentNullException254()
+public void EnclosedMatchThrowsArgumentNullException591()
 {
     Match match;
     match = this.EnclosedMatch((string)null);

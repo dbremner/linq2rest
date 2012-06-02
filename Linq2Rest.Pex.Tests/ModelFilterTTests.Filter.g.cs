@@ -25,7 +25,7 @@ namespace Linq2Rest
 [Test]
 [PexGeneratedBy(typeof(ModelFilterTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void FilterThrowsArgumentNullException894()
+public void FilterThrowsArgumentNullException53()
 {
     ModelFilter<int> modelFilter;
     IEnumerable<object> iEnumerable;

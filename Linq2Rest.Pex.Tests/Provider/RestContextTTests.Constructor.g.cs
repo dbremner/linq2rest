@@ -22,7 +22,7 @@ namespace Linq2Rest.Provider
 [Test]
 [PexGeneratedBy(typeof(RestContextTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException890()
+public void ConstructorThrowsArgumentNullException476()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -36,7 +36,7 @@ public void ConstructorThrowsArgumentNullException890()
 [Test]
 [PexGeneratedBy(typeof(RestContextTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException291()
+public void ConstructorThrowsArgumentNullException927()
 {
     using (PexChooseBehavedBehavior.Setup())
     {

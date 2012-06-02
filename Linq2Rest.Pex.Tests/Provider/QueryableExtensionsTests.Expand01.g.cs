@@ -21,7 +21,7 @@ namespace Linq2Rest.Provider
 [Test]
 [PexGeneratedBy(typeof(QueryableExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void Expand01ThrowsArgumentNullException873()
+public void Expand01ThrowsArgumentNullException307()
 {
     IQueryable<int> iQueryable;
     iQueryable = this.Expand01<int>
@@ -30,7 +30,7 @@ public void Expand01ThrowsArgumentNullException873()
 [Test]
 [PexGeneratedBy(typeof(QueryableExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ExpandThrowsArgumentNullException576()
+public void ExpandThrowsArgumentNullException790()
 {
     IQueryable<int> iQueryable;
     iQueryable = this.Expand<int>((IQueryable<int>)null, (string)null);

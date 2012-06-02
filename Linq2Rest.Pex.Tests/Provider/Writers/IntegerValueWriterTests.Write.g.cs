@@ -21,7 +21,7 @@ namespace Linq2Rest.Provider.Writers
 [Test]
 [PexGeneratedBy(typeof(IntegerValueWriterTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void WriteThrowsContractException747()
+public void WriteThrowsContractException66()
 {
     try
     {
@@ -40,7 +40,7 @@ public void WriteThrowsContractException747()
 [Test]
 [PexGeneratedBy(typeof(IntegerValueWriterTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void WriteThrowsContractException608()
+public void WriteThrowsContractException16()
 {
     try
     {
@@ -60,7 +60,7 @@ public void WriteThrowsContractException608()
 [Test]
 [PexGeneratedBy(typeof(IntegerValueWriterTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void WriteThrowsContractException512()
+public void WriteThrowsContractException420()
 {
     try
     {
@@ -80,7 +80,7 @@ public void WriteThrowsContractException512()
 [Test]
 [PexGeneratedBy(typeof(IntegerValueWriterTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void WriteThrowsContractException882()
+public void WriteThrowsContractException257()
 {
     try
     {
@@ -100,7 +100,7 @@ public void WriteThrowsContractException882()
 [Test]
 [PexGeneratedBy(typeof(IntegerValueWriterTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void WriteThrowsContractException933()
+public void WriteThrowsContractException82()
 {
     try
     {
@@ -120,7 +120,7 @@ public void WriteThrowsContractException933()
 [Test]
 [PexGeneratedBy(typeof(IntegerValueWriterTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void WriteThrowsContractException667()
+public void WriteThrowsContractException519()
 {
     try
     {
@@ -140,7 +140,7 @@ public void WriteThrowsContractException667()
 [Test]
 [PexGeneratedBy(typeof(IntegerValueWriterTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void WriteThrowsContractException448()
+public void WriteThrowsContractException96()
 {
     try
     {

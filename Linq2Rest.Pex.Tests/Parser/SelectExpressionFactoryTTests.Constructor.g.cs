@@ -23,7 +23,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(SelectExpressionFactoryTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException754()
+public void ConstructorThrowsArgumentNullException187()
 {
     SelectExpressionFactory<int> selectExpressionFactory;
     selectExpressionFactory =
@@ -32,7 +32,7 @@ public void ConstructorThrowsArgumentNullException754()
 [Test]
 [PexGeneratedBy(typeof(SelectExpressionFactoryTTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException59()
+public void ConstructorThrowsArgumentNullException157()
 {
     SIMemberNameResolver sIMemberNameResolver;
     SelectExpressionFactory<int> selectExpressionFactory;

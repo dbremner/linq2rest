@@ -22,7 +22,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(ExpressionTokenizerTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void GetTokensThrowsContractException205()
+public void GetTokensThrowsContractException522()
 {
     try
     {

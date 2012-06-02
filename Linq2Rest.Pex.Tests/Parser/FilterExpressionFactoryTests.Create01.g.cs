@@ -190,79 +190,28 @@ public void Create235()
 }
 [Test]
 [PexGeneratedBy(typeof(FilterExpressionFactoryTests))]
+public void Create994()
+{
+    Expression<Func<int, bool>> expression;
+    FilterExpressionFactory s0 = new FilterExpressionFactory();
+    expression = this.Create<int>(s0, "\u0100\0\0\0");
+    PexAssert.IsNotNull((object)expression);
+    PexAssert.IsNotNull(((LambdaExpression)expression).Type);
+    PexAssert.AreEqual<ExpressionType>
+        (ExpressionType.Lambda, ((LambdaExpression)expression).NodeType);
+    PexAssert.IsNotNull(((LambdaExpression)expression).Parameters);
+    PexAssert.AreEqual<string>((string)null, ((LambdaExpression)expression).Name);
+    PexAssert.IsNotNull(((LambdaExpression)expression).Body);
+    PexAssert.AreEqual<bool>(false, ((LambdaExpression)expression).TailCall);
+    PexAssert.IsNotNull((object)s0);
+}
+[Test]
+[PexGeneratedBy(typeof(FilterExpressionFactoryTests))]
 public void Create58()
 {
     Expression<Func<int, bool>> expression;
     FilterExpressionFactory s0 = new FilterExpressionFactory();
     expression = this.Create<int>(s0, "\0\0\0\0");
-    PexAssert.IsNotNull((object)expression);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Type);
-    PexAssert.AreEqual<ExpressionType>
-        (ExpressionType.Lambda, ((LambdaExpression)expression).NodeType);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Parameters);
-    PexAssert.AreEqual<string>((string)null, ((LambdaExpression)expression).Name);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Body);
-    PexAssert.AreEqual<bool>(false, ((LambdaExpression)expression).TailCall);
-    PexAssert.IsNotNull((object)s0);
-}
-[Test]
-[PexGeneratedBy(typeof(FilterExpressionFactoryTests))]
-public void Create770()
-{
-    Expression<Func<int, bool>> expression;
-    FilterExpressionFactory s0 = new FilterExpressionFactory();
-    expression = this.Create<int>(s0, "()");
-    PexAssert.IsNotNull((object)expression);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Type);
-    PexAssert.AreEqual<ExpressionType>
-        (ExpressionType.Lambda, ((LambdaExpression)expression).NodeType);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Parameters);
-    PexAssert.AreEqual<string>((string)null, ((LambdaExpression)expression).Name);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Body);
-    PexAssert.AreEqual<bool>(false, ((LambdaExpression)expression).TailCall);
-    PexAssert.IsNotNull((object)s0);
-}
-[Test]
-[PexGeneratedBy(typeof(FilterExpressionFactoryTests))]
-public void Create722()
-{
-    Expression<Func<int, bool>> expression;
-    FilterExpressionFactory s0 = new FilterExpressionFactory();
-    expression = this.Create<int>(s0, " \0");
-    PexAssert.IsNotNull((object)expression);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Type);
-    PexAssert.AreEqual<ExpressionType>
-        (ExpressionType.Lambda, ((LambdaExpression)expression).NodeType);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Parameters);
-    PexAssert.AreEqual<string>((string)null, ((LambdaExpression)expression).Name);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Body);
-    PexAssert.AreEqual<bool>(false, ((LambdaExpression)expression).TailCall);
-    PexAssert.IsNotNull((object)s0);
-}
-[Test]
-[PexGeneratedBy(typeof(FilterExpressionFactoryTests))]
-public void Create17()
-{
-    Expression<Func<int, bool>> expression;
-    FilterExpressionFactory s0 = new FilterExpressionFactory();
-    expression = this.Create<int>(s0, " /");
-    PexAssert.IsNotNull((object)expression);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Type);
-    PexAssert.AreEqual<ExpressionType>
-        (ExpressionType.Lambda, ((LambdaExpression)expression).NodeType);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Parameters);
-    PexAssert.AreEqual<string>((string)null, ((LambdaExpression)expression).Name);
-    PexAssert.IsNotNull(((LambdaExpression)expression).Body);
-    PexAssert.AreEqual<bool>(false, ((LambdaExpression)expression).TailCall);
-    PexAssert.IsNotNull((object)s0);
-}
-[Test]
-[PexGeneratedBy(typeof(FilterExpressionFactoryTests))]
-public void Create449()
-{
-    Expression<Func<int, bool>> expression;
-    FilterExpressionFactory s0 = new FilterExpressionFactory();
-    expression = this.Create<int>(s0, "and");
     PexAssert.IsNotNull((object)expression);
     PexAssert.IsNotNull(((LambdaExpression)expression).Type);
     PexAssert.AreEqual<ExpressionType>

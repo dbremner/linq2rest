@@ -20,7 +20,7 @@ namespace Linq2Rest.Implementations
 [Test]
 [PexGeneratedBy(typeof(XmlRestClientTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException753()
+public void ConstructorThrowsArgumentNullException520()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -33,7 +33,7 @@ public void ConstructorThrowsArgumentNullException753()
 [Test]
 [PexGeneratedBy(typeof(XmlRestClientTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void ConstructorThrowsArgumentException95()
+public void ConstructorThrowsArgumentException331()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -48,7 +48,7 @@ public void ConstructorThrowsArgumentException95()
 [Test]
 [PexGeneratedBy(typeof(XmlRestClientTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void ConstructorThrowsArgumentException862()
+public void ConstructorThrowsArgumentException244()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -63,7 +63,7 @@ public void ConstructorThrowsArgumentException862()
 [Test]
 [PexGeneratedBy(typeof(XmlRestClientTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void ConstructorThrowsArgumentException524()
+public void ConstructorThrowsArgumentException471()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -78,7 +78,7 @@ public void ConstructorThrowsArgumentException524()
 [Test]
 [PexGeneratedBy(typeof(XmlRestClientTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void ConstructorThrowsArgumentException104()
+public void ConstructorThrowsArgumentException690()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
@@ -93,13 +93,45 @@ public void ConstructorThrowsArgumentException104()
 [Test]
 [PexGeneratedBy(typeof(XmlRestClientTests))]
 [ExpectedException(typeof(ArgumentException))]
-public void ConstructorThrowsArgumentException428()
+public void ConstructorThrowsArgumentException470()
 {
     using (PexDisposableContext disposables = PexDisposableContext.Create())
     {
       Uri uri;
       XmlRestClient xmlRestClient;
-      uri = new Uri("  a00:");
+      uri = new Uri("  a0a:");
+      xmlRestClient = this.Constructor(uri);
+      disposables.Add((IDisposable)xmlRestClient);
+      disposables.Dispose();
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(XmlRestClientTests))]
+[ExpectedException(typeof(ArgumentException))]
+public void ConstructorThrowsArgumentException855()
+{
+    using (PexDisposableContext disposables = PexDisposableContext.Create())
+    {
+      Uri uri;
+      XmlRestClient xmlRestClient;
+      uri = new Uri("  x0x:\\/");
+      xmlRestClient = this.Constructor(uri);
+      disposables.Add((IDisposable)xmlRestClient);
+      disposables.Dispose();
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(XmlRestClientTests))]
+[Ignore("the test state was: path bounds exceeded")]
+public void Constructor01()
+{
+    using (PexDisposableContext disposables = PexDisposableContext.Create())
+    {
+      Uri uri;
+      XmlRestClient xmlRestClient;
+      uri = new Uri(
+                   "  a0x:x\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0:::::::::::::::::::::"
+                   );
       xmlRestClient = this.Constructor(uri);
       disposables.Add((IDisposable)xmlRestClient);
       disposables.Dispose();

@@ -22,5 +22,82 @@ namespace Linq2Rest.Provider
 {
 	public partial class RestContextTTests
 	{
+[Test]
+[PexGeneratedBy(typeof(RestContextTTests))]
+[Ignore("the test state was: path bounds exceeded")]
+public void QueryGet01()
+{
+    using (PexChooseBehavedBehavior.Setup())
+    {
+      using (PexDisposableContext disposables = PexDisposableContext.Create())
+      {
+        SIRestClient sIRestClient;
+        SISerializerFactory sISerializerFactory;
+        SIExpressionWriter sIExpressionWriter;
+        ExpressionProcessor expressionProcessor;
+        Uri uri;
+        ParameterBuilder parameterBuilder;
+        RestQueryProvider<int> restQueryProvider;
+        RestQueryable<int> restQueryable;
+        RestContext<int> restContext;
+        IQueryable<int> iQueryable;
+        sIRestClient = new SIRestClient();
+        disposables.Add((IDisposable)sIRestClient);
+        sISerializerFactory = new SISerializerFactory();
+        sIExpressionWriter = new SIExpressionWriter();
+        expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
+        PexInvariant.SetField<IExpressionWriter>((object)expressionProcessor, 
+                                                 "_writer", (IExpressionWriter)sIExpressionWriter);
+        PexInvariant.CheckInvariant((object)expressionProcessor);
+        uri = new Uri(
+                     ":xxn\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
+                     );
+        parameterBuilder = PexInvariant.CreateInstance<ParameterBuilder>();
+        PexInvariant.SetField<Uri>((object)parameterBuilder, "_serviceBase", uri);
+        PexInvariant.SetField<string>((object)parameterBuilder, 
+                                      "<FilterParameter>k__BackingField", (string)null);
+        PexInvariant.SetField<IList<string>>((object)parameterBuilder, 
+                                             "<OrderByParameter>k__BackingField", (IList<string>)null);
+        PexInvariant.SetField<string>((object)parameterBuilder, 
+                                      "<SelectParameter>k__BackingField", (string)null);
+        PexInvariant.SetField<string>((object)parameterBuilder, 
+                                      "<SkipParameter>k__BackingField", (string)null);
+        PexInvariant.SetField<string>((object)parameterBuilder, 
+                                      "<TakeParameter>k__BackingField", (string)null);
+        PexInvariant.SetField<string>((object)parameterBuilder, 
+                                      "<ExpandParameter>k__BackingField", (string)null);
+        PexInvariant.CheckInvariant((object)parameterBuilder);
+        restQueryProvider = PexInvariant.CreateInstance<RestQueryProvider<int>>();
+        PexInvariant.SetField<IRestClient>
+            ((object)restQueryProvider, "_client", (IRestClient)sIRestClient);
+        PexInvariant.SetField<ISerializerFactory>((object)restQueryProvider, 
+                                                  "_serializerFactory", (ISerializerFactory)sISerializerFactory);
+        PexInvariant.SetField<IExpressionProcessor>((object)restQueryProvider, 
+                                                    "_expressionProcessor", (IExpressionProcessor)expressionProcessor);
+        PexInvariant.SetField<ParameterBuilder>
+            ((object)restQueryProvider, "_parameterBuilder", parameterBuilder);
+        PexInvariant.CheckInvariant((object)restQueryProvider);
+        disposables.Add((IDisposable)restQueryProvider);
+        restQueryable = PexInvariant.CreateInstance<RestQueryable<int>>();
+        PexInvariant.SetField<IRestClient>
+            ((object)restQueryable, "_client", (IRestClient)sIRestClient);
+        PexInvariant.SetField<RestQueryProvider<int>>
+            ((object)restQueryable, "_restQueryProvider", restQueryProvider);
+        PexInvariant.SetField<Expression>
+            ((object)restQueryable, "<Expression>k__BackingField", (Expression)null);
+        PexInvariant.SetField<IQueryProvider>((object)restQueryable, 
+                                              "<Provider>k__BackingField", (IQueryProvider)null);
+        PexInvariant.CheckInvariant((object)restQueryable);
+        disposables.Add((IDisposable)restQueryable);
+        restContext = PexInvariant.CreateInstance<RestContext<int>>();
+        PexInvariant.SetField<RestQueryable<int>>
+            ((object)restContext, "_queryable", restQueryable);
+        PexInvariant.CheckInvariant((object)restContext);
+        disposables.Add((IDisposable)restContext);
+        iQueryable = this.QueryGet<int>(restContext);
+        disposables.Dispose();
+      }
+    }
+}
 	}
 }

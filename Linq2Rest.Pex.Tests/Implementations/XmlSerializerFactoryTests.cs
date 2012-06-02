@@ -27,7 +27,7 @@ namespace Linq2Rest.Implementations
 
         /// <summary>Test stub for Create()</summary>
         [PexGenericArguments(typeof(int))]
-		[PexMethod, PexAllowedException(typeof(ArgumentNullException))]
+		[PexMethod(MaxBranches = 20000), PexAllowedException(typeof(ArgumentNullException))]
         public ISerializer<T> Create<T>([PexAssumeUnderTest]XmlSerializerFactory target)
         {
             ISerializer<T> result = target.Create<T>();

@@ -15,7 +15,7 @@ namespace Linq2Rest.Implementations
     public partial class XmlRestClientTests
     {
         /// <summary>Test stub for .ctor(Uri)</summary>
-        [PexMethod]
+		[PexMethod(MaxConditions = 1000)]
         public XmlRestClient Constructor(Uri uri)
         {
             XmlRestClient target = new XmlRestClient(uri);

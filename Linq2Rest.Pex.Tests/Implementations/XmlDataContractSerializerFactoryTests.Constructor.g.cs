@@ -21,7 +21,7 @@ namespace Linq2Rest.Implementations
 [Test]
 [PexGeneratedBy(typeof(XmlDataContractSerializerFactoryTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void ConstructorThrowsArgumentNullException658()
+public void ConstructorThrowsArgumentNullException807()
 {
     XmlDataContractSerializerFactory xmlDataContractSerializerFactory;
     xmlDataContractSerializerFactory = this.Constructor((IEnumerable<Type>)null);

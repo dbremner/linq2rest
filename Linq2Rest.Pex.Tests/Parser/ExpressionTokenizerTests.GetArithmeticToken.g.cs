@@ -20,7 +20,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(ExpressionTokenizerTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void GetArithmeticTokenThrowsArgumentNullException131()
+public void GetArithmeticTokenThrowsArgumentNullException404()
 {
     TokenSet tokenSet;
     tokenSet = this.GetArithmeticToken((string)null);

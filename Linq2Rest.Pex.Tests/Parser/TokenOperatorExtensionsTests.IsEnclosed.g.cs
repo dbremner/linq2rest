@@ -20,7 +20,7 @@ namespace Linq2Rest.Parser
 [Test]
 [PexGeneratedBy(typeof(TokenOperatorExtensionsTests))]
 [ExpectedException(typeof(ArgumentNullException))]
-public void IsEnclosedThrowsArgumentNullException476()
+public void IsEnclosedThrowsArgumentNullException238()
 {
     bool b;
     b = this.IsEnclosed((string)null);

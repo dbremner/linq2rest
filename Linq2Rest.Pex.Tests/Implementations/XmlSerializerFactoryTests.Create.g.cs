@@ -19,34 +19,33 @@ namespace Linq2Rest.Implementations
 {
 	public partial class XmlSerializerFactoryTests
 	{
-		[Test]
-		[PexGeneratedBy(typeof(XmlSerializerFactoryTests))]
-		[Ignore("the test state was: path bounds exceeded")]
-		public void Create770()
-		{
-			XmlSerializerFactory xmlSerializerFactory;
-			ISerializer<int> iSerializer;
-			Type[] types = new Type[0];
-			xmlSerializerFactory = PexInvariant.CreateInstance<XmlSerializerFactory>();
-			PexInvariant.SetField<IEnumerable<Type>>
-				((object)xmlSerializerFactory, "_knownTypes", (IEnumerable<Type>)types);
-			PexInvariant.CheckInvariant((object)xmlSerializerFactory);
-			iSerializer = this.Create<int>(xmlSerializerFactory);
-		}
-
-		[Test]
-		[PexGeneratedBy(typeof(XmlSerializerFactoryTests))]
-		[PexRaisedException(typeof(ArgumentNullException))]
-		public void CreateThrowsArgumentNullException94()
-		{
-			XmlSerializerFactory xmlSerializerFactory;
-			ISerializer<int> iSerializer;
-			Type[] types = new Type[1];
-			xmlSerializerFactory = PexInvariant.CreateInstance<XmlSerializerFactory>();
-			PexInvariant.SetField<IEnumerable<Type>>
-				((object)xmlSerializerFactory, "_knownTypes", (IEnumerable<Type>)types);
-			PexInvariant.CheckInvariant((object)xmlSerializerFactory);
-			iSerializer = this.Create<int>(xmlSerializerFactory);
-		}
+[Test]
+[PexGeneratedBy(typeof(XmlSerializerFactoryTests))]
+[Ignore("the test state was: path bounds exceeded")]
+public void Create770()
+{
+    XmlSerializerFactory xmlSerializerFactory;
+    ISerializer<int> iSerializer;
+    Type[] types = new Type[0];
+    xmlSerializerFactory = PexInvariant.CreateInstance<XmlSerializerFactory>();
+    PexInvariant.SetField<IEnumerable<Type>>
+        ((object)xmlSerializerFactory, "_knownTypes", (IEnumerable<Type>)types);
+    PexInvariant.CheckInvariant((object)xmlSerializerFactory);
+    iSerializer = this.Create<int>(xmlSerializerFactory);
+}
+[Test]
+[PexGeneratedBy(typeof(XmlSerializerFactoryTests))]
+[Ignore("the test state was: path bounds exceeded")]
+public void Create77001()
+{
+    XmlSerializerFactory xmlSerializerFactory;
+    ISerializer<int> iSerializer;
+    Type[] types = new Type[1];
+    xmlSerializerFactory = PexInvariant.CreateInstance<XmlSerializerFactory>();
+    PexInvariant.SetField<IEnumerable<Type>>
+        ((object)xmlSerializerFactory, "_knownTypes", (IEnumerable<Type>)types);
+    PexInvariant.CheckInvariant((object)xmlSerializerFactory);
+    iSerializer = this.Create<int>(xmlSerializerFactory);
+}
 	}
 }

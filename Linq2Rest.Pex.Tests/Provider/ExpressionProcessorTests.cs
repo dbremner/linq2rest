@@ -17,13 +17,13 @@ namespace Linq2Rest.Provider
     [TestFixture]
     public partial class ExpressionProcessorTests
     {
-        /// <summary>Test stub for .ctor(IExpressionVisitor)</summary>
+        /// <summary>Test stub for .ctor(IExpressionWriter)</summary>
         [PexMethod]
-        internal ExpressionProcessor Constructor(IExpressionVisitor visitor)
+        internal ExpressionProcessor Constructor(IExpressionWriter writer)
         {
-            ExpressionProcessor target = new ExpressionProcessor(visitor);
+            ExpressionProcessor target = new ExpressionProcessor(writer);
             return target;
-            // TODO: add assertions to method ExpressionProcessorTests.Constructor(IExpressionVisitor)
+            // TODO: add assertions to method ExpressionProcessorTests.Constructor(IExpressionWriter)
         }
 
         /// <summary>Test stub for ProcessMethodCall(MethodCallExpression, ParameterBuilder, Func`2&lt;ParameterBuilder,IEnumerable`1&lt;!!0&gt;&gt;, Func`3&lt;Type,ParameterBuilder,IEnumerable&gt;)</summary>

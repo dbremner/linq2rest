@@ -26,17 +26,17 @@ namespace Linq2Rest.Provider
 [Test]
 [PexGeneratedBy(typeof(ExpressionProcessorTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ProcessMethodCallThrowsContractException508()
+public void ProcessMethodCallThrowsContractException614()
 {
     try
     {
-      SIExpressionVisitor sIExpressionVisitor;
+      SIExpressionWriter sIExpressionWriter;
       ExpressionProcessor expressionProcessor;
       object o;
-      sIExpressionVisitor = new SIExpressionVisitor();
+      sIExpressionWriter = new SIExpressionWriter();
       expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
-      PexInvariant.SetField<IExpressionVisitor>((object)expressionProcessor, 
-                                                "_visitor", (IExpressionVisitor)sIExpressionVisitor);
+      PexInvariant.SetField<IExpressionWriter>((object)expressionProcessor, 
+                                               "_writer", (IExpressionWriter)sIExpressionWriter);
       PexInvariant.CheckInvariant((object)expressionProcessor);
       o = this.ProcessMethodCall<int>
               (expressionProcessor, (MethodCallExpression)null, 
@@ -55,19 +55,19 @@ public void ProcessMethodCallThrowsContractException508()
 [Test]
 [PexGeneratedBy(typeof(ExpressionProcessorTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ProcessMethodCallThrowsContractException716()
+public void ProcessMethodCallThrowsContractException186()
 {
     try
     {
-      SIExpressionVisitor sIExpressionVisitor;
+      SIExpressionWriter sIExpressionWriter;
       ExpressionProcessor expressionProcessor;
       Uri uri;
       ParameterBuilder parameterBuilder;
       object o;
-      sIExpressionVisitor = new SIExpressionVisitor();
+      sIExpressionWriter = new SIExpressionWriter();
       expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
-      PexInvariant.SetField<IExpressionVisitor>((object)expressionProcessor, 
-                                                "_visitor", (IExpressionVisitor)sIExpressionVisitor);
+      PexInvariant.SetField<IExpressionWriter>((object)expressionProcessor, 
+                                               "_writer", (IExpressionWriter)sIExpressionWriter);
       PexInvariant.CheckInvariant((object)expressionProcessor);
       uri = new Uri(" /\\0");
       string[] ss = new string[0];
@@ -102,21 +102,21 @@ public void ProcessMethodCallThrowsContractException716()
 [Test]
 [PexGeneratedBy(typeof(ExpressionProcessorTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ProcessMethodCallThrowsContractException683()
+public void ProcessMethodCallThrowsContractException664()
 {
     try
     {
-      SIExpressionVisitor sIExpressionVisitor;
+      SIExpressionWriter sIExpressionWriter;
       ExpressionProcessor expressionProcessor;
       Uri uri;
       ParameterBuilder parameterBuilder;
       object o;
-      sIExpressionVisitor = new SIExpressionVisitor();
+      sIExpressionWriter = new SIExpressionWriter();
       expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
-      PexInvariant.SetField<IExpressionVisitor>((object)expressionProcessor, 
-                                                "_visitor", (IExpressionVisitor)sIExpressionVisitor);
+      PexInvariant.SetField<IExpressionWriter>((object)expressionProcessor, 
+                                               "_writer", (IExpressionWriter)sIExpressionWriter);
       PexInvariant.CheckInvariant((object)expressionProcessor);
-      uri = new Uri(" /\\x");
+      uri = new Uri(" a-:");
       string[] ss = new string[0];
       parameterBuilder = PexInvariant.CreateInstance<ParameterBuilder>();
       PexInvariant.SetField<Uri>((object)parameterBuilder, "_serviceBase", uri);
@@ -149,21 +149,21 @@ public void ProcessMethodCallThrowsContractException683()
 [Test]
 [PexGeneratedBy(typeof(ExpressionProcessorTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ProcessMethodCallThrowsContractException877()
+public void ProcessMethodCallThrowsContractException377()
 {
     try
     {
-      SIExpressionVisitor sIExpressionVisitor;
+      SIExpressionWriter sIExpressionWriter;
       ExpressionProcessor expressionProcessor;
       Uri uri;
       ParameterBuilder parameterBuilder;
       object o;
-      sIExpressionVisitor = new SIExpressionVisitor();
+      sIExpressionWriter = new SIExpressionWriter();
       expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
-      PexInvariant.SetField<IExpressionVisitor>((object)expressionProcessor, 
-                                                "_visitor", (IExpressionVisitor)sIExpressionVisitor);
+      PexInvariant.SetField<IExpressionWriter>((object)expressionProcessor, 
+                                               "_writer", (IExpressionWriter)sIExpressionWriter);
       PexInvariant.CheckInvariant((object)expressionProcessor);
-      uri = new Uri(" /\\0");
+      uri = new Uri(" aa:");
       string[] ss = new string[0];
       parameterBuilder = PexInvariant.CreateInstance<ParameterBuilder>();
       PexInvariant.SetField<Uri>((object)parameterBuilder, "_serviceBase", uri);
@@ -195,105 +195,20 @@ public void ProcessMethodCallThrowsContractException877()
 }
 [Test]
 [PexGeneratedBy(typeof(ExpressionProcessorTests))]
-public void ProcessMethodCall79()
-{
-    SIExpressionVisitor sIExpressionVisitor;
-    ExpressionProcessor expressionProcessor;
-    Uri uri;
-    ParameterBuilder parameterBuilder;
-    object o;
-    sIExpressionVisitor = new SIExpressionVisitor();
-    expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
-    PexInvariant.SetField<IExpressionVisitor>((object)expressionProcessor, 
-                                              "_visitor", (IExpressionVisitor)sIExpressionVisitor);
-    PexInvariant.CheckInvariant((object)expressionProcessor);
-    uri = new Uri(" /\\0");
-    string[] ss = new string[0];
-    parameterBuilder = PexInvariant.CreateInstance<ParameterBuilder>();
-    PexInvariant.SetField<Uri>((object)parameterBuilder, "_serviceBase", uri);
-    PexInvariant.SetField<string>
-        ((object)parameterBuilder, "<FilterParameter>k__BackingField", (string)null);
-    PexInvariant.SetField<IList<string>>((object)parameterBuilder, 
-                                         "<OrderByParameter>k__BackingField", (IList<string>)ss);
-    PexInvariant.SetField<string>
-        ((object)parameterBuilder, "<SelectParameter>k__BackingField", (string)null);
-    PexInvariant.SetField<string>
-        ((object)parameterBuilder, "<SkipParameter>k__BackingField", (string)null);
-    PexInvariant.SetField<string>
-        ((object)parameterBuilder, "<TakeParameter>k__BackingField", (string)null);
-    PexInvariant.SetField<string>
-        ((object)parameterBuilder, "<ExpandParameter>k__BackingField", (string)null);
-    PexInvariant.CheckInvariant((object)parameterBuilder);
-    o = this.ProcessMethodCall<int>
-            (expressionProcessor, (MethodCallExpression)null, parameterBuilder, 
-                                                              PexChoose.CreateDelegate<Func<ParameterBuilder, IEnumerable<int>>>(), 
-                                                              PexChoose.CreateDelegate<Func<Type, ParameterBuilder, IEnumerable>>());
-    PexAssert.IsNull(o);
-    PexAssert.IsNotNull((object)expressionProcessor);
-}
-[Test]
-[PexGeneratedBy(typeof(ExpressionProcessorTests))]
 [PexRaisedContractException(PexExceptionState.Expected)]
-public void ProcessMethodCallThrowsContractException283()
+public void ProcessMethodCallThrowsContractException89()
 {
     try
     {
-      SIExpressionVisitor sIExpressionVisitor;
+      SIExpressionWriter sIExpressionWriter;
       ExpressionProcessor expressionProcessor;
       Uri uri;
       ParameterBuilder parameterBuilder;
       object o;
-      sIExpressionVisitor = new SIExpressionVisitor();
+      sIExpressionWriter = new SIExpressionWriter();
       expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
-      PexInvariant.SetField<IExpressionVisitor>((object)expressionProcessor, 
-                                                "_visitor", (IExpressionVisitor)sIExpressionVisitor);
-      PexInvariant.CheckInvariant((object)expressionProcessor);
-      uri = new Uri(" aa:");
-      string[] ss = new string[0];
-      parameterBuilder = PexInvariant.CreateInstance<ParameterBuilder>();
-      PexInvariant.SetField<Uri>((object)parameterBuilder, "_serviceBase", uri);
-      PexInvariant.SetField<string>((object)parameterBuilder, 
-                                    "<FilterParameter>k__BackingField", (string)null);
-      PexInvariant.SetField<IList<string>>((object)parameterBuilder, 
-                                           "<OrderByParameter>k__BackingField", (IList<string>)ss);
-      PexInvariant.SetField<string>((object)parameterBuilder, 
-                                    "<SelectParameter>k__BackingField", (string)null);
-      PexInvariant.SetField<string>
-          ((object)parameterBuilder, "<SkipParameter>k__BackingField", (string)null);
-      PexInvariant.SetField<string>
-          ((object)parameterBuilder, "<TakeParameter>k__BackingField", (string)null);
-      PexInvariant.SetField<string>((object)parameterBuilder, 
-                                    "<ExpandParameter>k__BackingField", (string)null);
-      PexInvariant.CheckInvariant((object)parameterBuilder);
-      o = this.ProcessMethodCall<int>
-              (expressionProcessor, (MethodCallExpression)null, 
-               parameterBuilder, (Func<ParameterBuilder, IEnumerable<int>>)null, 
-                                 (Func<Type, ParameterBuilder, IEnumerable>)null);
-      throw 
-        new AssertionException("expected an exception of type ContractException");
-    }
-    catch(Exception ex)
-    {
-      if (!PexContract.IsContractException(ex))
-        throw ex;
-    }
-}
-[Test]
-[PexGeneratedBy(typeof(ExpressionProcessorTests))]
-[PexRaisedContractException(PexExceptionState.Expected)]
-public void ProcessMethodCallThrowsContractException702()
-{
-    try
-    {
-      SIExpressionVisitor sIExpressionVisitor;
-      ExpressionProcessor expressionProcessor;
-      Uri uri;
-      ParameterBuilder parameterBuilder;
-      object o;
-      sIExpressionVisitor = new SIExpressionVisitor();
-      expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
-      PexInvariant.SetField<IExpressionVisitor>((object)expressionProcessor, 
-                                                "_visitor", (IExpressionVisitor)sIExpressionVisitor);
+      PexInvariant.SetField<IExpressionWriter>((object)expressionProcessor, 
+                                               "_writer", (IExpressionWriter)sIExpressionWriter);
       PexInvariant.CheckInvariant((object)expressionProcessor);
       uri = new Uri(" /\\-");
       string[] ss = new string[0];
@@ -324,6 +239,128 @@ public void ProcessMethodCallThrowsContractException702()
       if (!PexContract.IsContractException(ex))
         throw ex;
     }
+}
+[Test]
+[PexGeneratedBy(typeof(ExpressionProcessorTests))]
+[PexRaisedContractException(PexExceptionState.Expected)]
+public void ProcessMethodCallThrowsContractException374()
+{
+    try
+    {
+      SIExpressionWriter sIExpressionWriter;
+      ExpressionProcessor expressionProcessor;
+      Uri uri;
+      ParameterBuilder parameterBuilder;
+      object o;
+      sIExpressionWriter = new SIExpressionWriter();
+      expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
+      PexInvariant.SetField<IExpressionWriter>((object)expressionProcessor, 
+                                               "_writer", (IExpressionWriter)sIExpressionWriter);
+      PexInvariant.CheckInvariant((object)expressionProcessor);
+      uri = new Uri(" /\\\u8020");
+      string[] ss = new string[0];
+      parameterBuilder = PexInvariant.CreateInstance<ParameterBuilder>();
+      PexInvariant.SetField<Uri>((object)parameterBuilder, "_serviceBase", uri);
+      PexInvariant.SetField<string>((object)parameterBuilder, 
+                                    "<FilterParameter>k__BackingField", (string)null);
+      PexInvariant.SetField<IList<string>>((object)parameterBuilder, 
+                                           "<OrderByParameter>k__BackingField", (IList<string>)ss);
+      PexInvariant.SetField<string>((object)parameterBuilder, 
+                                    "<SelectParameter>k__BackingField", (string)null);
+      PexInvariant.SetField<string>
+          ((object)parameterBuilder, "<SkipParameter>k__BackingField", (string)null);
+      PexInvariant.SetField<string>
+          ((object)parameterBuilder, "<TakeParameter>k__BackingField", (string)null);
+      PexInvariant.SetField<string>((object)parameterBuilder, 
+                                    "<ExpandParameter>k__BackingField", (string)null);
+      PexInvariant.CheckInvariant((object)parameterBuilder);
+      o = this.ProcessMethodCall<int>
+              (expressionProcessor, (MethodCallExpression)null, 
+               parameterBuilder, (Func<ParameterBuilder, IEnumerable<int>>)null, 
+                                 (Func<Type, ParameterBuilder, IEnumerable>)null);
+      throw 
+        new AssertionException("expected an exception of type ContractException");
+    }
+    catch(Exception ex)
+    {
+      if (!PexContract.IsContractException(ex))
+        throw ex;
+    }
+}
+[Test]
+[PexGeneratedBy(typeof(ExpressionProcessorTests))]
+public void ProcessMethodCall79()
+{
+    SIExpressionWriter sIExpressionWriter;
+    ExpressionProcessor expressionProcessor;
+    Uri uri;
+    ParameterBuilder parameterBuilder;
+    object o;
+    sIExpressionWriter = new SIExpressionWriter();
+    expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
+    PexInvariant.SetField<IExpressionWriter>((object)expressionProcessor, 
+                                             "_writer", (IExpressionWriter)sIExpressionWriter);
+    PexInvariant.CheckInvariant((object)expressionProcessor);
+    uri = new Uri(" /\\0");
+    string[] ss = new string[0];
+    parameterBuilder = PexInvariant.CreateInstance<ParameterBuilder>();
+    PexInvariant.SetField<Uri>((object)parameterBuilder, "_serviceBase", uri);
+    PexInvariant.SetField<string>
+        ((object)parameterBuilder, "<FilterParameter>k__BackingField", (string)null);
+    PexInvariant.SetField<IList<string>>((object)parameterBuilder, 
+                                         "<OrderByParameter>k__BackingField", (IList<string>)ss);
+    PexInvariant.SetField<string>
+        ((object)parameterBuilder, "<SelectParameter>k__BackingField", (string)null);
+    PexInvariant.SetField<string>
+        ((object)parameterBuilder, "<SkipParameter>k__BackingField", (string)null);
+    PexInvariant.SetField<string>
+        ((object)parameterBuilder, "<TakeParameter>k__BackingField", (string)null);
+    PexInvariant.SetField<string>
+        ((object)parameterBuilder, "<ExpandParameter>k__BackingField", (string)null);
+    PexInvariant.CheckInvariant((object)parameterBuilder);
+    o = this.ProcessMethodCall<int>
+            (expressionProcessor, (MethodCallExpression)null, parameterBuilder, 
+                                                              PexChoose.CreateDelegate<Func<ParameterBuilder, IEnumerable<int>>>(), 
+                                                              PexChoose.CreateDelegate<Func<Type, ParameterBuilder, IEnumerable>>());
+    PexAssert.IsNull(o);
+    PexAssert.IsNotNull((object)expressionProcessor);
+}
+[Test]
+[PexGeneratedBy(typeof(ExpressionProcessorTests))]
+[Ignore("the test state was: duplicate path")]
+public void ProcessMethodCallThrowsTermDestructionException359()
+{
+    SIExpressionWriter sIExpressionWriter;
+    ExpressionProcessor expressionProcessor;
+    Uri uri;
+    ParameterBuilder parameterBuilder;
+    object o;
+    sIExpressionWriter = new SIExpressionWriter();
+    expressionProcessor = PexInvariant.CreateInstance<ExpressionProcessor>();
+    PexInvariant.SetField<IExpressionWriter>((object)expressionProcessor, 
+                                             "_writer", (IExpressionWriter)sIExpressionWriter);
+    PexInvariant.CheckInvariant((object)expressionProcessor);
+    uri = new Uri(" /\\8");
+    string[] ss = new string[0];
+    parameterBuilder = PexInvariant.CreateInstance<ParameterBuilder>();
+    PexInvariant.SetField<Uri>((object)parameterBuilder, "_serviceBase", uri);
+    PexInvariant.SetField<string>
+        ((object)parameterBuilder, "<FilterParameter>k__BackingField", (string)null);
+    PexInvariant.SetField<IList<string>>((object)parameterBuilder, 
+                                         "<OrderByParameter>k__BackingField", (IList<string>)ss);
+    PexInvariant.SetField<string>
+        ((object)parameterBuilder, "<SelectParameter>k__BackingField", (string)null);
+    PexInvariant.SetField<string>
+        ((object)parameterBuilder, "<SkipParameter>k__BackingField", (string)null);
+    PexInvariant.SetField<string>
+        ((object)parameterBuilder, "<TakeParameter>k__BackingField", (string)null);
+    PexInvariant.SetField<string>
+        ((object)parameterBuilder, "<ExpandParameter>k__BackingField", (string)null);
+    PexInvariant.CheckInvariant((object)parameterBuilder);
+    o = this.ProcessMethodCall<int>
+            (expressionProcessor, (MethodCallExpression)null, parameterBuilder, 
+                                                              PexChoose.CreateDelegate<Func<ParameterBuilder, IEnumerable<int>>>(), 
+                                                              PexChoose.CreateDelegate<Func<Type, ParameterBuilder, IEnumerable>>());
 }
 	}
 }
