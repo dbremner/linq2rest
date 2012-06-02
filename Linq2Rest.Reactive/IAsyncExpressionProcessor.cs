@@ -29,7 +29,6 @@ namespace Linq2Rest.Reactive
 	{
 		public IObservable<T> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
-			Contract.Requires(methodCall != null);
 			Contract.Requires(builder != null);
 			Contract.Requires(resultLoader != null);
 			Contract.Requires(intermediateResultLoader != null);
