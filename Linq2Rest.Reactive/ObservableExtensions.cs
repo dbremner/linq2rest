@@ -42,6 +42,11 @@ namespace Linq2Rest.Reactive
 
 		public static object ToQbservable(this IEnumerable enumerable, Type type)
 		{
+#if !WINDOWS_PHONE
+			Contract.Requires(enumerable != null);
+			Contract.Requires(type != null);
+#endif
+
 			var genericObservableMethod = _innerToObservableMethod.MakeGenericMethod(type);
 			var genericQbservableMethod = _innerToQbservableMethod.MakeGenericMethod(type);
 

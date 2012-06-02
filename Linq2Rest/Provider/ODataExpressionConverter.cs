@@ -13,14 +13,14 @@ namespace Linq2Rest.Provider
 	/// </summary>
 	public class ODataExpressionConverter
 	{
-		private readonly IExpressionVisitor _visitor;
+		private readonly IExpressionWriter _writer;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ODataExpressionConverter"/> class.
 		/// </summary>
 		public ODataExpressionConverter()
 		{
-			_visitor = new ExpressionVisitor();
+			_writer = new ExpressionWriter();
 		}
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace Linq2Rest.Provider
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Restriction is intended.")]
 		public string Convert<T>(Expression<Func<T, bool>> expression)
 		{
-			return _visitor.Visit(expression);
+			return _writer.Visit(expression);
 		}
 	}
 }
