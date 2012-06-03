@@ -13,3 +13,4 @@ packages
 Bin
 *.xap
 TestResult.xml
+*.Moles.dll
