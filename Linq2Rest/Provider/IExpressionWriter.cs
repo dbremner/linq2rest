@@ -17,6 +17,6 @@ namespace Linq2Rest.Provider
 		/// </summary>
 		/// <param name="expression">The <see cref="Expression"/> to visit.</param>
 		/// <returns>A string value.</returns>
-		string Visit(Expression expression);
+		string Write(Expression expression);
 	}
 }

@@ -31,7 +31,7 @@ namespace Linq2Rest.Provider
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Restriction is intended.")]
 		public string Convert<T>(Expression<Func<T, bool>> expression)
 		{
-			return _writer.Visit(expression);
+			return _writer.Write(expression);
 		}
 	}
 }
