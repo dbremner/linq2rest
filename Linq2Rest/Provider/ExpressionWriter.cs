@@ -543,6 +543,11 @@ namespace Linq2Rest.Provider
 #if !SILVERLIGHT
 						Contract.Assume(memberExpression != null);
 #endif
+						if (memberExpression.Expression == null)
+						{
+							var memberValue = GetValue(memberExpression);
+							return ParameterValueWriter.Write(memberValue);
+						}
 
 						var pathPrefixes = new List<string>();
 
