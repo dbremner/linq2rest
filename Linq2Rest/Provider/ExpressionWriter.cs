@@ -19,7 +19,7 @@ namespace Linq2Rest.Provider
 	internal class ExpressionWriter : IExpressionWriter
 	{
 		private static readonly ExpressionType[] _compositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
-		
+
 		public string Write(Expression expression)
 		{
 			return expression == null ? null : Write(expression, expression.Type, GetRootParameterName(expression));
@@ -451,7 +451,7 @@ namespace Linq2Rest.Provider
 
 						if (binaryExpression.Left.NodeType == ExpressionType.Call)
 						{
-							var compareResult = ResolveCompareToOperation(rootParameterName, (MethodCallExpression)binaryExpression.Left, operation, (int)GetValue(binaryExpression.Right));
+							var compareResult = ResolveCompareToOperation(rootParameterName, (MethodCallExpression)binaryExpression.Left, operation, binaryExpression.Right as ConstantExpression);
 							if (compareResult != null)
 							{
 								return compareResult;
@@ -460,7 +460,7 @@ namespace Linq2Rest.Provider
 
 						if (binaryExpression.Right.NodeType == ExpressionType.Call)
 						{
-							var compareResult = ResolveCompareToOperation(rootParameterName, (MethodCallExpression)binaryExpression.Right, operation, (int)GetValue(binaryExpression.Right));
+							var compareResult = ResolveCompareToOperation(rootParameterName, (MethodCallExpression)binaryExpression.Right, operation, binaryExpression.Left as ConstantExpression);
 							if (compareResult != null)
 							{
 								return compareResult;
@@ -623,11 +623,12 @@ namespace Linq2Rest.Provider
 			string rootParameterName,
 			MethodCallExpression methodCallExpression,
 			string operation,
-			int comparison)
+			ConstantExpression comparisonExpression)
 		{
-			if (comparison == 0
-				&& methodCallExpression.Method.Name == "CompareTo"
-				&& methodCallExpression.Method.ReturnType == typeof(int))
+			if (methodCallExpression.Method.Name == "CompareTo"
+				&& methodCallExpression.Method.ReturnType == typeof(int)
+				&& comparisonExpression != null
+				&& Equals(comparisonExpression.Value, 0))
 			{
 				return string.Format(
 					"{0} {1} {2}",

@@ -69,7 +69,7 @@ namespace Linq2Rest.Reactive.Tests
 			mockRestClient.Setup(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>()))
 				.Callback<AsyncCallback, object>((a, o) => a.Invoke(mockResult.Object))
 				.Returns(mockResult.Object);
-			mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[]".ToStream());
+			mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns(() => "[]".ToStream());
 
 			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
 			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
