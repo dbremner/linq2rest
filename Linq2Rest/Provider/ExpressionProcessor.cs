@@ -58,7 +58,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						var newFilter = _writer.Visit(methodCall.Arguments[1]);
+						var newFilter = _writer.Write(methodCall.Arguments[1]);
 
 						builder.FilterParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 													? newFilter
@@ -117,7 +117,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						var item = _writer.Visit(methodCall.Arguments[1]);
+						var item = _writer.Write(methodCall.Arguments[1]);
 						builder.OrderByParameter.Add(item);
 					}
 
@@ -132,7 +132,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						var visit = _writer.Visit(methodCall.Arguments[1]);
+						var visit = _writer.Write(methodCall.Arguments[1]);
 						builder.OrderByParameter.Add(visit + " desc");
 					}
 
@@ -146,7 +146,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						builder.TakeParameter = _writer.Visit(methodCall.Arguments[1]);
+						builder.TakeParameter = _writer.Write(methodCall.Arguments[1]);
 					}
 
 					break;
@@ -159,7 +159,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						builder.SkipParameter = _writer.Visit(methodCall.Arguments[1]);
+						builder.SkipParameter = _writer.Write(methodCall.Arguments[1]);
 					}
 
 					break;
@@ -240,7 +240,7 @@ namespace Linq2Rest.Provider
 
 			ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
-			var processResult = _writer.Visit(methodCall.Arguments[1]);
+			var processResult = _writer.Write(methodCall.Arguments[1]);
 			var currentParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 									? processResult
 									: string.Format("({0}) and ({1})", builder.FilterParameter, processResult);

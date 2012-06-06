@@ -6,6 +6,7 @@
 namespace Linq2Rest.Tests.Provider
 {
 	using System;
+	using System.Diagnostics;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using Linq2Rest.Provider;
@@ -453,6 +454,18 @@ namespace Linq2Rest.Tests.Provider
 		public void WhenApplyingNotExpressionThenCallRestServiceWithFilterParameter()
 		{
 			VerifyCall(x => !(x.Value <= 3), "http://localhost/?$filter=not(Value+le+3)");
+		}
+
+		[Test]
+		public void WhenApplyingCompareGreaterExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Content.CompareTo("text") > 0, "http://localhost/?$filter=Content+gt+'text'");
+		}
+
+		[Test]
+		public void WhenApplyingCompareLesserExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Content.CompareTo("text") <= 0, "http://localhost/?$filter=Content+le+'text'");
 		}
 
 		[Test]
