@@ -5,7 +5,9 @@
 
 namespace Linq2Rest.Tests.Parser
 {
+	using System;
 	using System.Globalization;
+	using System.Linq.Expressions;
 	using System.Threading;
 
 	using Linq2Rest.Parser;
@@ -128,18 +130,18 @@ namespace Linq2Rest.Tests.Parser
 		[TestCase("(startswith(tolower(StringValue),'foo') eq true and endswith(tolower(StringValue),'1') eq true) and (tolower(StringValue) eq 'bar03')", "x => (((x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) == True) AndAlso (x.StringValue.ToLowerInvariant().EndsWith(\"1\", OrdinalIgnoreCase) == True)) AndAlso (x.StringValue.ToLowerInvariant() == \"bar03\"))")]
 		[TestCase("(startswith(tolower(StringValue),'foo') and endswith(tolower(StringValue),'1')) and (tolower(StringValue) eq 'bar03')", "x => ((x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) AndAlso x.StringValue.ToLowerInvariant().EndsWith(\"1\", OrdinalIgnoreCase)) AndAlso (x.StringValue.ToLowerInvariant() == \"bar03\"))")]
 		[TestCase("startswith(tolower(StringValue),'foo')", "x => x.StringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase)")]
-        [TestCase("Children/any(a: a/ChildStringValue eq 'foo')", "x => x.Children.Any(a => (a.ChildStringValue == \"foo\"))")]
+		[TestCase("Children/any(a: a/ChildStringValue eq 'foo')", "x => x.Children.Any(a => (a.ChildStringValue == \"foo\"))")]
 		[TestCase("Children/all(y: y/Children/all(z: z/GrandChildStringValue eq 'foo'))", "x => x.Children.All(y => y.Children.All(z => (z.GrandChildStringValue == \"foo\")))")]
 		[TestCase("Children/all(y: y/Children/any(z: z/GrandChildStringValue eq 'foo'))", "x => x.Children.All(y => y.Children.Any(z => (z.GrandChildStringValue == \"foo\")))")]
 		[TestCase("Children/any(y: y/Children/all(z: z/GrandChildStringValue eq 'foo'))", "x => x.Children.Any(y => y.Children.All(z => (z.GrandChildStringValue == \"foo\")))")]
-        [TestCase("Children/any(a: startswith(tolower(a/ChildStringValue), 'foo'))", "x => x.Children.Any(a => a.ChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase))")]
-        [TestCase("Children/all(a: startswith(tolower(a/ChildStringValue), 'foo'))", "x => x.Children.All(a => a.ChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase))")]
-        [TestCase("Children/all(a: startswith(tolower(a/ChildStringValue), 'foo') and endswith(tolower(a/ChildStringValue), 'foo'))", "x => x.Children.All(a => (a.ChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) AndAlso a.ChildStringValue.ToLowerInvariant().EndsWith(\"foo\", OrdinalIgnoreCase)))")]
-        [TestCase("Children/any(a: a/Children/any(b: startswith(tolower(b/GrandChildStringValue), 'foo')))", "x => x.Children.Any(a => a.Children.Any(b => b.GrandChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase)))")]
-        [TestCase("Children/any(a: startswith(tolower(a/ChildStringValue), StringValue))", "x => x.Children.Any(a => a.ChildStringValue.ToLowerInvariant().StartsWith(x.StringValue, OrdinalIgnoreCase))")]
-        [TestCase("Children/all(y: y/ID eq 2 add ID)", "x => x.Children.All(y => (y.ID == (2 + x.ID)))")]
-		[TestCase("DateValue eq datetime'2012-05-06T16:11:00Z'", "x => (x.DateValue == 5/6/2012 5:11:00 PM)")]
-		[TestCase("DateValue eq datetime'2012-05-06T16:11:00Z'", "x => (x.DateValue == 5/6/2012 5:11:00 PM)")]
+		[TestCase("Children/any(a: startswith(tolower(a/ChildStringValue), 'foo'))", "x => x.Children.Any(a => a.ChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase))")]
+		[TestCase("Children/all(a: startswith(tolower(a/ChildStringValue), 'foo'))", "x => x.Children.All(a => a.ChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase))")]
+		[TestCase("Children/all(a: startswith(tolower(a/ChildStringValue), 'foo') and endswith(tolower(a/ChildStringValue), 'foo'))", "x => x.Children.All(a => (a.ChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase) AndAlso a.ChildStringValue.ToLowerInvariant().EndsWith(\"foo\", OrdinalIgnoreCase)))")]
+		[TestCase("Children/any(a: a/Children/any(b: startswith(tolower(b/GrandChildStringValue), 'foo')))", "x => x.Children.Any(a => a.Children.Any(b => b.GrandChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase)))")]
+		[TestCase("Children/any(a: startswith(tolower(a/ChildStringValue), StringValue))", "x => x.Children.Any(a => a.ChildStringValue.ToLowerInvariant().StartsWith(x.StringValue, OrdinalIgnoreCase))")]
+		[TestCase("Children/all(y: y/ID eq 2 add ID)", "x => x.Children.All(y => (y.ID == (2 + x.ID)))")]
+		[TestCase("DateValue eq datetime'2012-05-06T16:11:00Z'", "x => (x.DateValue == 5/6/2012 4:11:00 PM)")]
+		[TestCase("DateValue eq datetime'2012-05-06T16:11:00Z'", "x => (x.DateValue == 5/6/2012 4:11:00 PM)")]
 		[TestCase("Duration eq time'PT2H15M'", "x => (x.Duration == 02:15:00)")]
 		[TestCase("PointInTime eq datetimeoffset'2012-05-06T18:10:00+02:00'", "x => (x.PointInTime == 5/6/2012 6:10:00 PM +02:00)")]
 		public void WhenProvidingValidInputThenGetsExpectedExpression(string filter, string expression)
@@ -147,6 +149,71 @@ namespace Linq2Rest.Tests.Parser
 			var result = _factory.Create<FakeItem>(filter);
 
 			Assert.AreEqual(expression, result.ToString(), "Failed for " + filter);
+		}
+
+		[Test]
+		public void CanHandleParsedValues()
+		{
+			var result = _factory.Create<ParseParent>("Item eq 1 and Number le 2");
+
+			Assert.AreEqual("x => ((x.Item == Parse(\"1\")) AndAlso (x.Number <= 2))", result.ToString());
+		}
+
+		[Test]
+		public void CanHandleEqualComparisonWithEmptyGuid()
+		{
+			var result = _factory.Create<FakeItem>("GlobalID eq guid'00000000-0000-0000-0000-000000000000'");
+
+			Assert.AreEqual("x => (x.GlobalID == 00000000-0000-0000-0000-000000000000)", result.ToString());
+		}
+
+		[Test]
+		public void CanHandleNotEqualComparisonWithEmptyGuid()
+		{
+			var result = _factory.Create<FakeItem>("GlobalID ne guid'00000000-0000-0000-0000-000000000000'");
+
+			Assert.AreEqual("x => (x.GlobalID != 00000000-0000-0000-0000-000000000000)", result.ToString());
+		}
+
+		[TestCase("blah")]
+		[TestCase("StringValue not foo")]
+		[TestCase("'StringValue' not foo")]
+		[TestCase("StringValue gt foo")]
+		[TestCase("-StringValue eq 'blah'")]
+		[TestCase(("not DateValue"))]
+		[TestCase(("not DoubleValue"))]
+		[TestCase(("Not DoubleValue"))]
+		[TestCase(("Duration eq time'PT2H15M' and Not DoubleValue"))]
+		[TestCase(("\0\0"))]
+		public void WhenParsingInvalidExpressionThenReturnsFalseFunction(string filter)
+		{
+			Expression<Func<FakeItem, bool>> falseExpression = x => false;
+			var result = _factory.Create<FakeItem>(filter);
+
+			Assert.AreEqual(falseExpression.ToString(), result.ToString());
+		}
+	}
+
+	public class ParseParent
+	{
+		public ParseObject Item { get; set; }
+
+		public int Number { get; set; }
+	}
+
+	public class ParseObject
+	{
+		public int Value { get; set; }
+
+		public static ParseObject Parse(string input)
+		{
+			var value = int.Parse(input);
+			return new ParseObject { Value = value };
+		}
+
+		public override string ToString()
+		{
+			return Value.ToString();
 		}
 	}
 }

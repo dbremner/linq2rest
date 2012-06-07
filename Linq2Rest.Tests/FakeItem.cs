@@ -20,6 +20,8 @@ namespace Linq2Rest.Tests
 
 		public int ID { get; set; }
 
+		public Guid GlobalID { get; set; }
+
 		[XmlElement(ElementName = "Number")]
 		public int IntValue { get; set; }
 

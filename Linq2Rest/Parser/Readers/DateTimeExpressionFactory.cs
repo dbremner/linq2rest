@@ -8,6 +8,7 @@ namespace Linq2Rest.Parser.Readers
 	using System;
 	using System.Linq.Expressions;
 	using System.Text.RegularExpressions;
+	using System.Xml;
 
 	internal class DateTimeExpressionFactory : IValueExpressionFactory
 	{
@@ -26,7 +27,7 @@ namespace Linq2Rest.Parser.Readers
 			var match = _dateTimeRegex.Match(token);
 			if (match.Success)
 			{
-				var dateTime = DateTime.Parse(match.Groups[1].Value);
+				var dateTime = XmlConvert.ToDateTime(match.Groups[1].Value, XmlDateTimeSerializationMode.Utc); // DateTime.Parse(match.Groups[1].Value).ToUniversalTime();
 				return Expression.Constant(dateTime);
 			}
 

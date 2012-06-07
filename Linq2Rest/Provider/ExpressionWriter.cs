@@ -87,35 +87,65 @@ namespace Linq2Rest.Provider
 				return input;
 			}
 
-			if (input.Expression is MemberExpression)
+			switch (input.Expression.NodeType)
 			{
-				var value = GetValue(input);
-				return Expression.Constant(value);
+				case ExpressionType.New:
+				case ExpressionType.MemberAccess:
+					var value = GetValue(input);
+					return Expression.Constant(value);
+				case ExpressionType.Constant:
+					var obj = ((ConstantExpression)input.Expression).Value;
+					if (obj == null)
+					{
+						return input;
+					}
+
+					var fieldInfo = input.Member as FieldInfo;
+					if (fieldInfo != null)
+					{
+						var result = fieldInfo.GetValue(obj);
+						return result is Expression ? (Expression)result : Expression.Constant(result);
+					}
+
+					var propertyInfo = input.Member as PropertyInfo;
+					if (propertyInfo != null)
+					{
+						var result = propertyInfo.GetValue(obj, null);
+						return result is Expression ? (Expression)result : Expression.Constant(result);
+					}
+
+					break;
 			}
 
-			var constantExpression = input.Expression as ConstantExpression;
-			if (constantExpression != null)
-			{
-				var obj = constantExpression.Value;
-				if (obj == null)
-				{
-					return input;
-				}
+			////if (input.Expression is MemberExpression)
+			////{
+			////    var value = GetValue(input);
+			////    return Expression.Constant(value);
+			////}
 
-				var fieldInfo = input.Member as FieldInfo;
-				if (fieldInfo != null)
-				{
-					var result = fieldInfo.GetValue(obj);
-					return result is Expression ? (Expression)result : Expression.Constant(result);
-				}
+			////var constantExpression = input.Expression as ConstantExpression;
+			////if (constantExpression != null)
+			////{
+			////    var obj = constantExpression.Value;
+			////    if (obj == null)
+			////    {
+			////        return input;
+			////    }
 
-				var propertyInfo = input.Member as PropertyInfo;
-				if (propertyInfo != null)
-				{
-					var result = propertyInfo.GetValue(obj, null);
-					return result is Expression ? (Expression)result : Expression.Constant(result);
-				}
-			}
+			////    var fieldInfo = input.Member as FieldInfo;
+			////    if (fieldInfo != null)
+			////    {
+			////        var result = fieldInfo.GetValue(obj);
+			////        return result is Expression ? (Expression)result : Expression.Constant(result);
+			////    }
+
+			////    var propertyInfo = input.Member as PropertyInfo;
+			////    if (propertyInfo != null)
+			////    {
+			////        var result = propertyInfo.GetValue(obj, null);
+			////        return result is Expression ? (Expression)result : Expression.Constant(result);
+			////    }
+			////}
 
 			return input;
 		}

@@ -55,7 +55,7 @@ namespace Linq2Rest.Parser
 
 			var expression = CreateExpression<T>(filter, parameter, new List<ParameterExpression>(), null, formatProvider);
 
-			return expression == null ? x => true : Expression.Lambda<Func<T, bool>>(expression, parameter);
+			return expression == null ? x => false : Expression.Lambda<Func<T, bool>>(expression, parameter);
 		}
 
 		private static string[] GetConstructorTokens(string filter)
@@ -167,16 +167,7 @@ namespace Linq2Rest.Parser
 			Contract.Requires(token != null);
 			Contract.Requires(right != null);
 
-			token = token.ToLowerInvariant();
-
-			if (string.Equals("not", token, StringComparison.OrdinalIgnoreCase))
-			{
-				return GetRightOperation(token, right);
-			}
-
-			Contract.Assume(left != null);
-
-			return GetLeftRightOperation(token, left, right);
+			return left == null ? GetRightOperation(token, right) : GetLeftRightOperation(token, left, right);
 		}
 
 		private static Expression GetLeftRightOperation(string token, Expression left, Expression right)
@@ -184,47 +175,53 @@ namespace Linq2Rest.Parser
 			Contract.Requires(token != null);
 			Contract.Requires(left != null);
 			Contract.Requires(right != null);
-
-			switch (token.ToLowerInvariant())
+			try
 			{
-				case "eq":
-					if (left.Type.IsEnum && left.Type.GetCustomAttributes(typeof(FlagsAttribute), true).Any())
-					{
-						var underlyingType = Enum.GetUnderlyingType(left.Type);
-						var leftValue = Expression.Convert(left, underlyingType);
-						var rightValue = Expression.Convert(right, underlyingType);
-						var andExpression = Expression.And(leftValue, rightValue);
-						return Expression.Equal(andExpression, rightValue);
-					}
+				switch (token.ToLowerInvariant())
+				{
+					case "eq":
+						if (left.Type.IsEnum && left.Type.GetCustomAttributes(typeof(FlagsAttribute), true).Any())
+						{
+							var underlyingType = Enum.GetUnderlyingType(left.Type);
+							var leftValue = Expression.Convert(left, underlyingType);
+							var rightValue = Expression.Convert(right, underlyingType);
+							var andExpression = Expression.And(leftValue, rightValue);
+							return Expression.Equal(andExpression, rightValue);
+						}
 
-					return Expression.Equal(left, right);
-				case "ne":
-					return Expression.NotEqual(left, right);
-				case "gt":
-					return Expression.GreaterThan(left, right);
-				case "ge":
-					return Expression.GreaterThanOrEqual(left, right);
-				case "lt":
-					return Expression.LessThan(left, right);
-				case "le":
-					return Expression.LessThanOrEqual(left, right);
-				case "and":
-					return Expression.AndAlso(left, right);
-				case "or":
-					return Expression.OrElse(left, right);
-				case "add":
-					return Expression.Add(left, right);
-				case "sub":
-					return Expression.Subtract(left, right);
-				case "mul":
-					return Expression.Multiply(left, right);
-				case "div":
-					return Expression.Divide(left, right);
-				case "mod":
-					return Expression.Modulo(left, right);
+						return Expression.Equal(left, right);
+					case "ne":
+						return Expression.NotEqual(left, right);
+					case "gt":
+						return Expression.GreaterThan(left, right);
+					case "ge":
+						return Expression.GreaterThanOrEqual(left, right);
+					case "lt":
+						return Expression.LessThan(left, right);
+					case "le":
+						return Expression.LessThanOrEqual(left, right);
+					case "and":
+						return Expression.AndAlso(left, right);
+					case "or":
+						return Expression.OrElse(left, right);
+					case "add":
+						return Expression.Add(left, right);
+					case "sub":
+						return Expression.Subtract(left, right);
+					case "mul":
+						return Expression.Multiply(left, right);
+					case "div":
+						return Expression.Divide(left, right);
+					case "mod":
+						return Expression.Modulo(left, right);
+				}
+
+				return null;
 			}
-
-			throw new InvalidOperationException("Unsupported operation");
+			catch
+			{
+				return null;
+			}
 		}
 
 		private static Expression GetRightOperation(string token, Expression right)
@@ -235,10 +232,10 @@ namespace Linq2Rest.Parser
 			switch (token.ToLowerInvariant())
 			{
 				case "not":
-					return Expression.Not(right);
+					return right.Type == typeof(bool) ? Expression.Not(right) : null;
 			}
 
-			throw new InvalidOperationException("Unsupported operation");
+			return null;
 		}
 
 		private static Expression GetFunction(string function, Expression left, Expression right, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters)
@@ -337,6 +334,32 @@ namespace Linq2Rest.Parser
 								   Expression.Lambda(genericFunc, right, lambdaParameters));
 		}
 
+		private static Type GetNonNullableType(Type type)
+		{
+			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)
+					? type.GetGenericArguments()[0]
+					: type;
+		}
+
+		private static bool SupportsNegate(Type type)
+		{
+			type = GetNonNullableType(type);
+			if (!type.IsEnum)
+			{
+				switch (Type.GetTypeCode(type))
+				{
+					case TypeCode.Int16:
+					case TypeCode.Int32:
+					case TypeCode.Int64:
+					case TypeCode.Double:
+					case TypeCode.Single:
+						return true;
+				}
+			}
+
+			return false;
+		}
+
 		private Expression CreateExpression<T>(string filter, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
 		{
 			Contract.Requires(filter != null);
@@ -374,7 +397,7 @@ namespace Linq2Rest.Parser
 
 				Contract.Assume(negateExpression != null);
 
-				expression = Expression.Negate(negateExpression);
+				expression = SupportsNegate(negateExpression.Type) ? Expression.Negate(negateExpression) : null;
 			}
 
 			if (expression == null)
@@ -409,7 +432,9 @@ namespace Linq2Rest.Parser
 
 			if (expression == null && type != null)
 			{
-				expression = Expression.Constant(Convert.ChangeType(filter, type, formatProvider), type);
+				expression = typeof(IConvertible).IsAssignableFrom(type)
+								? Expression.Constant(Convert.ChangeType(filter, type, formatProvider), type)
+								: GetParseExpression(filter, formatProvider, type);
 			}
 
 			return expression;
@@ -451,6 +476,11 @@ namespace Linq2Rest.Parser
 												   lambdaParameters,
 												   type ?? GetExpressionType<T>(tokenSet, parameter, lambdaParameters),
 												   formatProvider);
+					if (left == null)
+					{
+						return null;
+					}
+
 					var right = CreateExpression<T>(tokenSet.Right, parameter, lambdaParameters, left.Type, formatProvider);
 
 					if (existing != null && !string.IsNullOrWhiteSpace(combiner))
@@ -493,6 +523,11 @@ namespace Linq2Rest.Parser
 		{
 			Contract.Requires(filter != null);
 
+			if (resultType == null)
+			{
+				return null;
+			}
+
 			var newMatch = _newRx.Match(filter);
 			if (newMatch.Success)
 			{
@@ -523,15 +558,11 @@ namespace Linq2Rest.Parser
 							.Select((p, i) => CreateExpression<T>(constructorTokens[i], parameter, lambdaParameters, p.ParameterType, formatProvider))
 							.ToArray();
 
-						if (resultType == null)
-						{
-							throw new ArgumentNullException("resultType");
-						}
-
 						return Expression.Convert(Expression.New(constructorInfo, parameterExpressions), resultType);
 					}
 					catch
 					{
+						return null;
 					}
 				}
 			}
@@ -603,12 +634,49 @@ namespace Linq2Rest.Parser
 				: GetFunction(functionTokens.Operation, left, right, sourceParameter, lambdaParameters);
 		}
 
+		private Expression GetParseExpression(string filter, IFormatProvider formatProvider, Type type)
+		{
+			var parseMethods = type.GetMethods(BindingFlags.Static | BindingFlags.Public).Where(x => x.Name == "Parse").ToArray();
+			if (parseMethods.Length > 0)
+			{
+				var withFormatProvider =
+					parseMethods.FirstOrDefault(
+						x =>
+						{
+							var parameters = x.GetParameters();
+							return parameters.Length == 2
+								&& typeof(string).IsAssignableFrom(parameters[0].ParameterType)
+								&& typeof(IFormatProvider).IsAssignableFrom(parameters[1].ParameterType);
+						});
+				if (withFormatProvider != null)
+				{
+					return Expression.Call(withFormatProvider, Expression.Constant(filter), Expression.Constant(formatProvider));
+				}
+
+				var withoutFormatProvider = parseMethods.FirstOrDefault(
+						x =>
+						{
+							var parameters = x.GetParameters();
+							return parameters.Length == 1
+								&& typeof(string).IsAssignableFrom(parameters[0].ParameterType);
+						});
+
+				if (withoutFormatProvider != null)
+				{
+					return Expression.Call(withoutFormatProvider, Expression.Constant(filter));
+				}
+			}
+
+			return null;
+		}
+
 		/// <summary>
 		/// Used to get the ParameterExpressions used in an Expression so that Expression.Call will have the correct number of parameters supplied.
 		/// </summary>
 		private class ParameterVisitor : ExpressionVisitor
 		{
-			List<ParameterExpression> _parameters;
+			private static readonly string[] _anyAllMethodNames = new[] { "Any", "All" };
+			private List<ParameterExpression> _parameters;
 
 			public IEnumerable<ParameterExpression> GetParameters(Expression expr)
 			{
@@ -622,7 +690,7 @@ namespace Linq2Rest.Parser
 
 			public override Expression Visit(Expression node)
 			{
-				if (node is MethodCallExpression && new[] { "Any", "All" }.Contains(((MethodCallExpression)node).Method.Name))
+				if (node.NodeType == ExpressionType.Call && _anyAllMethodNames.Contains(((MethodCallExpression)node).Method.Name))
 				{
 					// Skip the second parameter of the Any/All as this has already been covered
 					return base.Visit(((MethodCallExpression)node).Arguments.First());
