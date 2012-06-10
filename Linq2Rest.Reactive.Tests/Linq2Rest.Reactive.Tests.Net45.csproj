@@ -142,6 +142,7 @@
     <Compile Include="RestObservableTests.cs" />
     <Compile Include="Fakes\TestSerializer.cs" />
     <Compile Include="Fakes\TestSerializerFactory.cs" />
+    <Compile Include="TriggeredRestObservableTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

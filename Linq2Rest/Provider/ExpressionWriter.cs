@@ -18,7 +18,7 @@ namespace Linq2Rest.Provider
 
 	internal class ExpressionWriter : IExpressionWriter
 	{
-		private static readonly ExpressionType[] _compositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
+		private static readonly ExpressionType[] CompositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
 
 		public string Write(Expression expression)
 		{
@@ -497,8 +497,8 @@ namespace Linq2Rest.Provider
 							}
 						}
 
-						var isLeftComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
-						var isRightComposite = _compositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
+						var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
+						var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
 
 						var leftType = GetUnconvertedType(binaryExpression.Left);
 						var leftString = Write(binaryExpression.Left, rootParameterName);
@@ -666,6 +666,7 @@ namespace Linq2Rest.Provider
 					operation,
 					Write(methodCallExpression.Arguments[0], rootParameterName));
 			}
+
 			return null;
 		}
 	}

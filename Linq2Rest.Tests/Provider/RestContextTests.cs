@@ -150,6 +150,7 @@ namespace Linq2Rest.Tests.Provider
 			var uri = new Uri("http://localhost/?$expand=Value");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
+
 		[Test]
 		public void WhenApplyingExpandsUsingMultipleExpressionQueryThenCallsRestServiceWithFilter()
 		{

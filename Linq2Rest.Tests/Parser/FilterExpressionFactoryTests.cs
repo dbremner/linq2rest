@@ -193,27 +193,4 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(falseExpression.ToString(), result.ToString());
 		}
 	}
-
-	public class ParseParent
-	{
-		public ParseObject Item { get; set; }
-
-		public int Number { get; set; }
-	}
-
-	public class ParseObject
-	{
-		public int Value { get; set; }
-
-		public static ParseObject Parse(string input)
-		{
-			var value = int.Parse(input);
-			return new ParseObject { Value = value };
-		}
-
-		public override string ToString()
-		{
-			return Value.ToString();
-		}
-	}
 }

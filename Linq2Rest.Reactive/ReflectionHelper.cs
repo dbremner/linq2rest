@@ -14,7 +14,7 @@ namespace Linq2Rest.Reactive
 	internal static class ReflectionHelper
 	{
 #if !NETFX_CORE
-		private static readonly MethodInfo _innerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
+		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
 #else
 	    private static readonly MethodInfo InnerCreateMethod =
 	        typeof (ISerializerFactory)
@@ -30,7 +30,7 @@ namespace Linq2Rest.Reactive
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 #endif
 
-				return _innerCreateMethod;
+				return InnerCreateMethod;
 			}
 		}
 	}

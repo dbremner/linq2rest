@@ -6,6 +6,8 @@
 namespace Linq2Rest.Reactive.Tests
 {
 	using System;
+	using System.Reactive;
+	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using System.Threading;
 	using System.Threading.Tasks;
@@ -14,7 +16,7 @@ namespace Linq2Rest.Reactive.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class RequeryRestObservableTests
+	public class TriggeredRestObservableTests
 	{
 		[Test]
 		public void WhenObservablePollsThenDoesNotComplete()
@@ -23,7 +25,8 @@ namespace Linq2Rest.Reactive.Tests
 			var factory = new FakeAsyncRestClientFactory("[{\"Text\":\"blah\", \"Number\":1}]");
 			var observable = new RestObservable<FakeItem>(factory, new TestSerializerFactory());
 			var subscription = observable
-				.Requery(TimeSpan.FromSeconds(0.5))
+				.Triggered(Observable.Interval(TimeSpan.FromSeconds(0.5)).Select(x => Unit.Default))
+				.ObserveOn(Scheduler.TaskPool)
 				.Where(x => x.StringValue == "blah")
 				.Subscribe(x => { }, () => waitHandle.Set());
 
@@ -39,18 +42,18 @@ namespace Linq2Rest.Reactive.Tests
 			var factory = new FakeAsyncRestClientFactory("[{\"Text\":\"blah\", \"Number\":1}]");
 			var observable = new RestObservable<FakeItem>(factory, new TestSerializerFactory());
 			var subscription = observable
-				.Requery(TimeSpan.FromSeconds(0.5))
+				.Triggered(Observable.Interval(TimeSpan.FromSeconds(0.5)).Select(x => Unit.Default))
 				.Where(x => x.StringValue == "blah")
 				.Subscribe(x => { }, () => waitHandle.Set());
 
 			Task.Factory.StartNew(
 				() =>
-				{
-					Thread.Sleep(1000);
-					subscription.Dispose();
-				});
+					{
+						Thread.Sleep(1000);
+						subscription.Dispose();
+					});
 
-			var result = waitHandle.WaitOne();
+			var result = waitHandle.WaitOne(2000);
 
 			Assert.True(result);
 		}
@@ -75,15 +78,13 @@ namespace Linq2Rest.Reactive.Tests
 				.Returns(mockRestClient.Object);
 
 			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
-				.Requery(TimeSpan.FromSeconds(1))
-				.Where(x => x.IntValue == Interlocked.Increment(ref i))
-				.Subscribe(x => { });
+				.Triggered(Observable.Repeat(Unit.Default, 2))
+				.Where(x => x.IntValue == 2)
+				.Subscribe(x => { }, () => waitHandle.Set());
 
-			waitHandle.WaitOne(5000);
+			waitHandle.WaitOne(2000);
 
-			mockClientFactory.Verify(x => x.Create(It.IsAny<Uri>()), Times.AtLeast(2));
-			mockClientFactory.Verify(x => x.Create(It.Is<Uri>(y => y.ToString() == "http://localhost/?$filter=IntValue+eq+2")));
-			mockClientFactory.Verify(x => x.Create(It.Is<Uri>(y => y.ToString() == "http://localhost/?$filter=IntValue+eq+3")));
+			mockClientFactory.Verify(x => x.Create(It.IsAny<Uri>()), Times.Exactly(2));
 		}
 	}
 }

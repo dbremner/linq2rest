@@ -12,13 +12,13 @@ namespace Linq2Rest.Provider
 
 	internal abstract class RestQueryProviderBase : IQueryProvider, IDisposable
 	{
-		private static readonly MethodInfo _innerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
+		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
 
 		protected static MethodInfo CreateMethod
 		{
 			get
 			{
-				return _innerCreateMethod;
+				return InnerCreateMethod;
 			}
 		}
 
