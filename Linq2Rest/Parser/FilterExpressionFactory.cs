@@ -21,10 +21,9 @@ namespace Linq2Rest.Parser
 	/// </summary>
 	public class FilterExpressionFactory : IFilterExpressionFactory
 	{
-		private static readonly CultureInfo _defaultCulture = CultureInfo.GetCultureInfo("en-US");
-		private static readonly Regex _stringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
-		private static readonly Regex _negateRx = new Regex(@"^-[^\d]*", RegexOptions.Compiled);
-		private static readonly Regex _newRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex StringRx = new Regex(@"^[""']([^""']*?)[""']$", RegexOptions.Compiled);
+		private static readonly Regex NegateRx = new Regex(@"^-[^\d]*", RegexOptions.Compiled);
+		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		/// <summary>
 		/// Creates a filter expression from its string representation.
@@ -34,7 +33,7 @@ namespace Linq2Rest.Parser
 		/// <returns>An <see cref="Expression{TDelegate}"/> if the passed filter is valid, otherwise null.</returns>
 		public Expression<Func<T, bool>> Create<T>(string filter)
 		{
-			return Create<T>(filter, _defaultCulture);
+			return Create<T>(filter, CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>
@@ -62,7 +61,7 @@ namespace Linq2Rest.Parser
 		{
 			Contract.Requires(filter != null);
 
-			var constructorMatch = _newRx.Match(filter);
+			var constructorMatch = NewRx.Match(filter);
 			if (!constructorMatch.Success)
 			{
 				return null;
@@ -379,14 +378,14 @@ namespace Linq2Rest.Parser
 			}
 
 			Expression expression = null;
-			var stringMatch = _stringRx.Match(filter);
+			var stringMatch = StringRx.Match(filter);
 
 			if (stringMatch.Success)
 			{
 				expression = Expression.Constant(stringMatch.Groups[1].Value, typeof(string));
 			}
 
-			if (_negateRx.IsMatch(filter))
+			if (NegateRx.IsMatch(filter))
 			{
 				var negateExpression = CreateExpression<T>(
 					filter.Substring(1),
@@ -528,7 +527,7 @@ namespace Linq2Rest.Parser
 				return null;
 			}
 
-			var newMatch = _newRx.Match(filter);
+			var newMatch = NewRx.Match(filter);
 			if (newMatch.Success)
 			{
 				var matchGroup = newMatch.Groups["type"];
@@ -675,7 +674,7 @@ namespace Linq2Rest.Parser
 		/// </summary>
 		private class ParameterVisitor : ExpressionVisitor
 		{
-			private static readonly string[] _anyAllMethodNames = new[] { "Any", "All" };
+			private static readonly string[] AnyAllMethodNames = new[] { "Any", "All" };
 			private List<ParameterExpression> _parameters;
 
 			public IEnumerable<ParameterExpression> GetParameters(Expression expr)
@@ -690,7 +689,7 @@ namespace Linq2Rest.Parser
 
 			public override Expression Visit(Expression node)
 			{
-				if (node.NodeType == ExpressionType.Call && _anyAllMethodNames.Contains(((MethodCallExpression)node).Method.Name))
+				if (node.NodeType == ExpressionType.Call && AnyAllMethodNames.Contains(((MethodCallExpression)node).Method.Name))
 				{
 					// Skip the second parameter of the Any/All as this has already been covered
 					return base.Visit(((MethodCallExpression)node).Arguments.First());

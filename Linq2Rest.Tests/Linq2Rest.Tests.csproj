@@ -119,6 +119,7 @@
     <Compile Include="Parser\ExpressionTokenizerTests.cs" />
     <Compile Include="FakeItem.cs" />
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
+    <Compile Include="Parser\ParseParent.cs" />
     <Compile Include="Parser\Readers\BooleanExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\ByteExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\DateTimeOffsetExpressionFactoryTests.cs" />
