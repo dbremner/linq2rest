@@ -58,8 +58,8 @@ namespace Linq2Rest.Reactive.Tests
 		[Test]
 		public void WhenInvokingThenCallsRestClient()
 		{
+			int i = 0;
 			var waitHandle = new ManualResetEvent(false);
-			int i = 1;
 			var mockResult = new Mock<IAsyncResult>();
 			mockResult.SetupGet(x => x.CompletedSynchronously).Returns(true);
 			var mockRestClient = new Mock<IAsyncRestClient>();

@@ -20,27 +20,33 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterIsIncorrectFormatThenReturnsDefaultValue()
+		public void WhenFilterIsIncorrectFormatThenReturnsNullValue()
 		{
 			const string Parameter = "blah";
 
-			Assert.AreEqual(default(bool), _factory.Convert(Parameter).Value);
+			Assert.AreEqual(null, _factory.Convert(Parameter).Value);
 		}
 
-		[Test]
-		public void WhenFilterIncludesBooleanParameterAsNumberThenReturnedExpressionContainsBoolean()
+		[TestCase("1", true)]
+		[TestCase("0", false)]
+		[TestCase("2", null)]
+		public void WhenFilterIncludesBooleanParameterAsNumberThenReturnedExpressionContainsBoolean(string parameter, object value)
 		{
-			var expression = _factory.Convert("1");
+			var expression = _factory.Convert(parameter);
 
-			Assert.IsAssignableFrom<bool>(expression.Value);
+			Assert.AreEqual(value, expression.Value);
 		}
 
-		[Test]
-		public void WhenFilterIncludesBooleanParameterAsWordThenReturnedExpressionContainsBoolean()
+		[TestCase("true", true)]
+		[TestCase("True", true)]
+		[TestCase("false", false)]
+		[TestCase("False", false)]
+		[TestCase("blah", null)]
+		public void WhenFilterIncludesBooleanParameterAsWordThenReturnedExpressionContainsBoolean(string parameter, object value)
 		{
-			var expression = _factory.Convert("true");
+			var expression = _factory.Convert(parameter);
 
-			Assert.IsAssignableFrom<bool>(expression.Value);
+			Assert.AreEqual(value, expression.Value);
 		}
 	}
 }

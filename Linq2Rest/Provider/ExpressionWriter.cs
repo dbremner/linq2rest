@@ -117,36 +117,6 @@ namespace Linq2Rest.Provider
 					break;
 			}
 
-			////if (input.Expression is MemberExpression)
-			////{
-			////    var value = GetValue(input);
-			////    return Expression.Constant(value);
-			////}
-
-			////var constantExpression = input.Expression as ConstantExpression;
-			////if (constantExpression != null)
-			////{
-			////    var obj = constantExpression.Value;
-			////    if (obj == null)
-			////    {
-			////        return input;
-			////    }
-
-			////    var fieldInfo = input.Member as FieldInfo;
-			////    if (fieldInfo != null)
-			////    {
-			////        var result = fieldInfo.GetValue(obj);
-			////        return result is Expression ? (Expression)result : Expression.Constant(result);
-			////    }
-
-			////    var propertyInfo = input.Member as PropertyInfo;
-			////    if (propertyInfo != null)
-			////    {
-			////        var result = propertyInfo.GetValue(obj, null);
-			////        return result is Expression ? (Expression)result : Expression.Constant(result);
-			////    }
-			////}
-
 			return input;
 		}
 
@@ -164,11 +134,7 @@ namespace Linq2Rest.Provider
 
 		private static bool IsMemberOfParameter(MemberExpression input)
 		{
-#if !WINDOWS_PHONE
-			Contract.Requires(input != null);
-#endif
-
-			if (input.Expression == null)
+			if (input == null || input.Expression == null)
 			{
 				return false;
 			}
@@ -177,9 +143,10 @@ namespace Linq2Rest.Provider
 			var tempExpression = input.Expression as MemberExpression;
 			while (nodeType == ExpressionType.MemberAccess)
 			{
-#if !WINDOWS_PHONE
-				Contract.Assume(tempExpression != null, "It's a member access");
-#endif
+				if (tempExpression == null || tempExpression.Expression == null)
+				{
+					return false;
+				}
 
 				nodeType = tempExpression.Expression.NodeType;
 				tempExpression = tempExpression.Expression as MemberExpression;
@@ -473,7 +440,7 @@ namespace Linq2Rest.Provider
 					{
 						var binaryExpression = expression as BinaryExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(binaryExpression != null);
 #endif
 
@@ -570,7 +537,7 @@ namespace Linq2Rest.Provider
 					{
 						var memberExpression = expression as MemberExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 						Contract.Assume(memberExpression != null);
 #endif
 						if (memberExpression.Expression == null)
@@ -627,7 +594,7 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Call:
 					var methodCallExpression = expression as MethodCallExpression;
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
 					Contract.Assume(methodCallExpression != null);
 #endif
 

@@ -23,6 +23,7 @@ namespace Linq2Rest.Provider
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(serviceBase != null);
+			Contract.Requires(serviceBase.Scheme == Uri.UriSchemeHttp || serviceBase.Scheme == Uri.UriSchemeHttps);
 #endif
 			_serviceBase = serviceBase;
 			OrderByParameter = new List<string>();
@@ -44,6 +45,7 @@ namespace Linq2Rest.Provider
 		{
 #if !WINDOWS_PHONE
 			Contract.Ensures(Contract.Result<Uri>() != null);
+			Contract.Ensures(Contract.Result<Uri>().Scheme == Uri.UriSchemeHttp || Contract.Result<Uri>().Scheme == Uri.UriSchemeHttps);
 #endif
 			var parameters = new List<string>();
 			if (!string.IsNullOrWhiteSpace(FilterParameter))
@@ -83,7 +85,11 @@ namespace Linq2Rest.Provider
 			var builder = new UriBuilder(_serviceBase);
 			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
 
-			return builder.Uri;
+			var resultUri = builder.Uri;
+
+			Contract.Assume(resultUri.Scheme == Uri.UriSchemeHttp || resultUri.Scheme == Uri.UriSchemeHttps);
+
+			return resultUri;
 		}
 
 		private static string BuildParameter(string name, string value)
@@ -96,6 +102,7 @@ namespace Linq2Rest.Provider
 		private void Invariants()
 		{
 			Contract.Invariant(_serviceBase != null);
+			Contract.Invariant(_serviceBase.Scheme == Uri.UriSchemeHttp || _serviceBase.Scheme == Uri.UriSchemeHttps);
 			Contract.Invariant(OrderByParameter != null);
 		}
 #endif
