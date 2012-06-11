@@ -359,6 +359,42 @@ namespace Linq2Rest.Parser
 			return false;
 		}
 
+		private static Expression GetParseExpression(string filter, IFormatProvider formatProvider, Type type)
+		{
+			var parseMethods = type.GetMethods(BindingFlags.Static | BindingFlags.Public).Where(x => x.Name == "Parse").ToArray();
+			if (parseMethods.Length > 0)
+			{
+				var withFormatProvider =
+					parseMethods.FirstOrDefault(
+						x =>
+						{
+							var parameters = x.GetParameters();
+							return parameters.Length == 2
+								&& typeof(string).IsAssignableFrom(parameters[0].ParameterType)
+								&& typeof(IFormatProvider).IsAssignableFrom(parameters[1].ParameterType);
+						});
+				if (withFormatProvider != null)
+				{
+					return Expression.Call(withFormatProvider, Expression.Constant(filter), Expression.Constant(formatProvider));
+				}
+
+				var withoutFormatProvider = parseMethods.FirstOrDefault(
+						x =>
+						{
+							var parameters = x.GetParameters();
+							return parameters.Length == 1
+								&& typeof(string).IsAssignableFrom(parameters[0].ParameterType);
+						});
+
+				if (withoutFormatProvider != null)
+				{
+					return Expression.Call(withoutFormatProvider, Expression.Constant(filter));
+				}
+			}
+
+			return null;
+		}
+
 		private Expression CreateExpression<T>(string filter, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
 		{
 			Contract.Requires(filter != null);
@@ -406,7 +442,7 @@ namespace Linq2Rest.Parser
 
 			if (expression == null)
 			{
-				expression = GetConstructorExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider);
+				expression = GetPropertyExpression<T>(filter, sourceParameter, lambdaParameters);
 			}
 
 			if (expression == null)
@@ -421,12 +457,18 @@ namespace Linq2Rest.Parser
 
 			if (expression == null)
 			{
-				expression = GetPropertyExpression<T>(filter, sourceParameter, lambdaParameters);
-			}
-
-			if (expression == null && type != null)
-			{
-				expression = ParameterValueReader.Read(type, filter, formatProvider);
+				if (type != null)
+				{
+					expression = ParameterValueReader.Read(type, filter, formatProvider);
+				}
+				else
+				{
+					var booleanExpression = (ConstantExpression)ParameterValueReader.Read(typeof(bool), filter, formatProvider);
+					if (booleanExpression.Value != null)
+					{
+						expression = booleanExpression;
+					}
+				}
 			}
 
 			if (expression == null && type != null)
@@ -434,6 +476,11 @@ namespace Linq2Rest.Parser
 				expression = typeof(IConvertible).IsAssignableFrom(type)
 								? Expression.Constant(Convert.ChangeType(filter, type, formatProvider), type)
 								: GetParseExpression(filter, formatProvider, type);
+			}
+
+			if (expression == null)
+			{
+				expression = GetConstructorExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider);
 			}
 
 			return expression;
@@ -485,6 +532,9 @@ namespace Linq2Rest.Parser
 					if (existing != null && !string.IsNullOrWhiteSpace(combiner))
 					{
 						var current = right == null ? null : GetOperation(tokenSet.Operation, left, right);
+						
+						Contract.Assume(combiner != null, "Checked above.");
+
 						existing = GetOperation(combiner, existing, current ?? left);
 					}
 					else if (right != null)
@@ -631,42 +681,6 @@ namespace Linq2Rest.Parser
 			return left == null
 				? null
 				: GetFunction(functionTokens.Operation, left, right, sourceParameter, lambdaParameters);
-		}
-
-		private Expression GetParseExpression(string filter, IFormatProvider formatProvider, Type type)
-		{
-			var parseMethods = type.GetMethods(BindingFlags.Static | BindingFlags.Public).Where(x => x.Name == "Parse").ToArray();
-			if (parseMethods.Length > 0)
-			{
-				var withFormatProvider =
-					parseMethods.FirstOrDefault(
-						x =>
-						{
-							var parameters = x.GetParameters();
-							return parameters.Length == 2
-								&& typeof(string).IsAssignableFrom(parameters[0].ParameterType)
-								&& typeof(IFormatProvider).IsAssignableFrom(parameters[1].ParameterType);
-						});
-				if (withFormatProvider != null)
-				{
-					return Expression.Call(withFormatProvider, Expression.Constant(filter), Expression.Constant(formatProvider));
-				}
-
-				var withoutFormatProvider = parseMethods.FirstOrDefault(
-						x =>
-						{
-							var parameters = x.GetParameters();
-							return parameters.Length == 1
-								&& typeof(string).IsAssignableFrom(parameters[0].ParameterType);
-						});
-
-				if (withoutFormatProvider != null)
-				{
-					return Expression.Call(withoutFormatProvider, Expression.Constant(filter));
-				}
-			}
-
-			return null;
 		}
 
 		/// <summary>
