@@ -335,6 +335,8 @@ namespace Linq2Rest.Parser
 
 		private static Type GetNonNullableType(Type type)
 		{
+			Contract.Requires(type != null);
+
 			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)
 					? type.GetGenericArguments()[0]
 					: type;
@@ -342,6 +344,8 @@ namespace Linq2Rest.Parser
 
 		private static bool SupportsNegate(Type type)
 		{
+			Contract.Requires(type != null);
+
 			type = GetNonNullableType(type);
 			if (!type.IsEnum)
 			{
@@ -361,6 +365,8 @@ namespace Linq2Rest.Parser
 
 		private static Expression GetParseExpression(string filter, IFormatProvider formatProvider, Type type)
 		{
+			Contract.Requires(type != null);
+
 			var parseMethods = type.GetMethods(BindingFlags.Static | BindingFlags.Public).Where(x => x.Name == "Parse").ToArray();
 			if (parseMethods.Length > 0)
 			{
@@ -431,7 +437,7 @@ namespace Linq2Rest.Parser
 					formatProvider);
 
 				Contract.Assume(negateExpression != null);
-
+				
 				expression = SupportsNegate(negateExpression.Type) ? Expression.Negate(negateExpression) : null;
 			}
 
@@ -527,14 +533,12 @@ namespace Linq2Rest.Parser
 						return null;
 					}
 
-					var right = CreateExpression<T>(tokenSet.Right, parameter, lambdaParameters, left.Type, formatProvider);
+					var rightExpressionType = tokenSet.Operation == "and" ? null : left.Type;
+					var right = CreateExpression<T>(tokenSet.Right, parameter, lambdaParameters, rightExpressionType, formatProvider);
 
 					if (existing != null && !string.IsNullOrWhiteSpace(combiner))
 					{
 						var current = right == null ? null : GetOperation(tokenSet.Operation, left, right);
-						
-						Contract.Assume(combiner != null, "Checked above.");
-
 						existing = GetOperation(combiner, existing, current ?? left);
 					}
 					else if (right != null)

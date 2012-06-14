@@ -6,6 +6,7 @@
 namespace Linq2Rest.Provider
 {
 	using System;
+	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 
 	/// <summary>
@@ -32,6 +33,12 @@ namespace Linq2Rest.Provider
 		public string Convert<T>(Expression<Func<T, bool>> expression)
 		{
 			return _writer.Write(expression);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(this._writer != null);
 		}
 	}
 }

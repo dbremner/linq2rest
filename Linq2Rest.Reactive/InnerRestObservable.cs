@@ -47,5 +47,13 @@ namespace Linq2Rest.Reactive
 		{
 			get { return _provider; }
 		}
+
+#if !WINDOWS_PHONE
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_provider != null);
+		}
+#endif
 	}
 }

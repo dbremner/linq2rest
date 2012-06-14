@@ -414,11 +414,6 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Constant:
 					{
 						var value = GetValue(Expression.Convert(expression, type));
-
-#if !WINDOWS_PHONE
-						Contract.Assume(type != null);
-#endif
-
 						return ParameterValueWriter.Write(value);
 					}
 
@@ -514,8 +509,6 @@ namespace Linq2Rest.Provider
 						Contract.Assume(unaryExpression != null);
 
 						var operand = unaryExpression.Operand;
-
-						Contract.Assume(operand != null);
 
 						return Write(operand, rootParameterName);
 					}
@@ -622,7 +615,8 @@ namespace Linq2Rest.Provider
 			string operation,
 			ConstantExpression comparisonExpression)
 		{
-			if (methodCallExpression.Method.Name == "CompareTo"
+			if (methodCallExpression != null
+				&& methodCallExpression.Method.Name == "CompareTo"
 				&& methodCallExpression.Method.ReturnType == typeof(int)
 				&& comparisonExpression != null
 				&& Equals(comparisonExpression.Value, 0))
