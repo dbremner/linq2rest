@@ -38,13 +38,25 @@ namespace Linq2Rest.Reactive
 
 		private static IObservable<object> InvokeEager<T>(MethodCallExpression methodCall, object source)
 		{
-			var parameters = ResolveInvocationParameters(source as IEnumerable, typeof(T), methodCall);
+#if !WINDOWS_PHONE
+			Contract.Requires(methodCall != null);
+#endif
 
+			var enumerableSource = source as IEnumerable;
+
+			Contract.Assume(enumerableSource != null);
+
+			var parameters = ResolveInvocationParameters(enumerableSource, typeof(T), methodCall);
 			return Observable.Return(methodCall.Method.Invoke(null, parameters));
 		}
 
 		private static object[] ResolveInvocationParameters(IEnumerable results, Type type, MethodCallExpression methodCall)
 		{
+#if !WINDOWS_PHONE
+			Contract.Requires(results != null);
+			Contract.Requires(type != null);
+			Contract.Requires(methodCall != null);
+#endif
 			var parameters = new[] { results.ToQbservable(type) }
 				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue))
 				.Where(x => x != null)
@@ -189,7 +201,9 @@ namespace Linq2Rest.Reactive
 		private IObservable<object> GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
 #if !WINDOWS_PHONE
+			Contract.Requires(methodCall != null);
 			Contract.Requires(builder != null);
+			Contract.Requires(resultLoader != null);
 			Contract.Assume(methodCall.Arguments.Count >= 2);
 #endif
 
@@ -232,6 +246,8 @@ namespace Linq2Rest.Reactive
 		private IObservable<object> GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
 #if !WINDOWS_PHONE
+			Contract.Requires(methodCall != null);
+			Contract.Requires(builder != null);
 			Contract.Requires(resultLoader != null);
 			Contract.Assume(methodCall.Arguments.Count >= 1);
 #endif
@@ -254,6 +270,7 @@ namespace Linq2Rest.Reactive
 		private IObservable<object> ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
 #if !WINDOWS_PHONE
+			Contract.Requires(methodCall != null);
 			Contract.Requires(resultLoader != null);
 			Contract.Requires(intermediateResultLoader != null);
 			Contract.Requires(builder != null);
@@ -302,5 +319,13 @@ namespace Linq2Rest.Reactive
 
 			return observable;
 		}
+
+#if !WINDOWS_PHONE
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_writer != null);
+		}
+#endif
 	}
 }
