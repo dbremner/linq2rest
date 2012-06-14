@@ -100,5 +100,14 @@ namespace Linq2Rest.Reactive
 				Scheduler.CurrentThread,
 				Scheduler.CurrentThread);
 		}
+
+#if !WINDOWS_PHONE
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_restClientFactory != null);
+			Contract.Invariant(_serializerFactory != null);
+		}
+#endif
 	}
 }

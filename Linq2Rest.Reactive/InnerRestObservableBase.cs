@@ -37,7 +37,7 @@ namespace Linq2Rest.Reactive
 #endif
 
 			Observers = new List<IObserver<T>>();
-			Processor = new AsyncExpressionProcessor(new Provider.ExpressionWriter());
+			Processor = new AsyncExpressionProcessor(new ExpressionWriter());
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
 			SubscriberScheduler = subscriberScheduler ?? Scheduler.CurrentThread;
@@ -121,6 +121,9 @@ namespace Linq2Rest.Reactive
 
 		protected virtual IObservable<IEnumerable<T>> GetResults(ParameterBuilder builder)
 		{
+#if !WINDOWS_PHONE
+			Contract.Requires(builder != null);
+#endif
 			var fullUri = builder.GetFullUri();
 			var client = RestClient.Create(fullUri);
 
@@ -174,13 +177,28 @@ namespace Linq2Rest.Reactive
 			}
 		}
 
-		protected class RestSubscription : IDisposable
+#if !WINDOWS_PHONE
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_restClient != null);
+			Contract.Invariant(_serializerFactory != null);
+			Contract.Invariant(Observers != null);
+		}
+#endif
+
+		internal class RestSubscription : IDisposable
 		{
 			private readonly IObserver<T> _observer;
 			private readonly Action<IObserver<T>> _unsubscription;
 
 			public RestSubscription(IObserver<T> observer, Action<IObserver<T>> unsubscription)
 			{
+#if !WINDOWS_PHONE
+				Contract.Requires(observer != null);
+				Contract.Requires(unsubscription != null);
+#endif
+
 				_observer = observer;
 				_unsubscription = unsubscription;
 			}
@@ -189,15 +207,28 @@ namespace Linq2Rest.Reactive
 			{
 				_unsubscription(_observer);
 			}
+
+#if !WINDOWS_PHONE
+			[ContractInvariantMethod]
+			private void Invariants()
+			{
+				Contract.Invariant(_observer != null);
+				Contract.Invariant(_unsubscription != null);
+			}
+#endif
 		}
 
-		protected class ObserverPublisher : IObserver<T>
+		internal class ObserverPublisher : IObserver<T>
 		{
 			private readonly IEnumerable<IObserver<T>> _observers;
 			private readonly IScheduler _observerScheduler;
 
 			public ObserverPublisher(IEnumerable<IObserver<T>> observers, IScheduler observerScheduler)
 			{
+#if !WINDOWS_PHONE
+				Contract.Requires(observers != null);
+				Contract.Requires(observerScheduler != null);
+#endif
 				_observers = observers;
 				_observerScheduler = observerScheduler;
 			}
@@ -228,6 +259,15 @@ namespace Linq2Rest.Reactive
 					_observerScheduler.Schedule(observer1.OnCompleted);
 				}
 			}
+
+#if !WINDOWS_PHONE
+			[ContractInvariantMethod]
+			private void Invariants()
+			{
+				Contract.Invariant(_observers != null);
+				Contract.Invariant(_observerScheduler != null);
+			}
+#endif
 		}
 	}
 }
