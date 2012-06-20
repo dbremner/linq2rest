@@ -33,6 +33,46 @@ namespace Linq2Rest.Tests.Parser
 		}
 
 		[Test]
+		public void WhenParsingStringWithSingleQuotesThenCreatesOneToken()
+		{
+			const string Expression = "Name eq ''single quote' test'";
+
+			var tokens = Expression.GetTokens().ToArray();
+
+			Assert.AreEqual(1, tokens.Count());
+		}
+
+		[Test]
+		public void WhenParsingStringWithSingleQuotesAndWithSubGroupThenCreatesOneToken()
+		{
+			const string Expression = "(Name eq ''single quote' test') eq true";
+
+			var tokens = Expression.GetTokens().ToArray();
+
+			Assert.AreEqual(1, tokens.Count());
+		}
+
+		[Test]
+		public void WhenParsingStringWithDoubleQuotesThenCreatesOneToken()
+		{
+			const string Expression = "Name eq '\"double quote\" test'";
+
+			var tokens = Expression.GetTokens().ToArray();
+
+			Assert.AreEqual(1, tokens.Count());
+		}
+
+		[Test]
+		public void WhenParsingStringWithDoubleQuotesAndWithSubGroupThenCreatesOneToken()
+		{
+			const string Expression = "(Name eq '\"double quote\" test') eq true";
+
+			var tokens = Expression.GetTokens().ToArray();
+
+			Assert.AreEqual(1, tokens.Count());
+		}
+
+		[Test]
 		public void WhenParsingStringWithCombinerThenCreatesSeparateTokenSetForCombiner()
 		{
 			const string Expression = "Value eq 1 and Name eq 'test'";
