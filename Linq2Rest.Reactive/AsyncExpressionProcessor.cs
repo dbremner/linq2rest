@@ -43,8 +43,10 @@ namespace Linq2Rest.Reactive
 #endif
 
 			var enumerableSource = source as IEnumerable;
-
+			
+#if !WINDOWS_PHONE
 			Contract.Assume(enumerableSource != null);
+#endif
 
 			var parameters = ResolveInvocationParameters(enumerableSource, typeof(T), methodCall);
 			return Observable.Return(methodCall.Method.Invoke(null, parameters));
