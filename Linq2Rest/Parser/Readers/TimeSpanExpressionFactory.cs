@@ -12,7 +12,7 @@ namespace Linq2Rest.Parser.Readers
 
 	internal class TimeSpanExpressionFactory : IValueExpressionFactory
 	{
-		private static readonly Regex _timeSpanRegex = new Regex(@"^time['\""](P.+)['\""]$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex TimeSpanRegex = new Regex(@"^time['\""](P.+)['\""]$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		public Type Handles
 		{
@@ -24,7 +24,7 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			var match = _timeSpanRegex.Match(token);
+			var match = TimeSpanRegex.Match(token);
 			if (match.Success)
 			{
 				try

@@ -23,5 +23,27 @@ namespace Linq2Rest.Tests.Provider
 
 			Assert.AreEqual("Name eq 'blah'", serialized);
 		}
+
+		[Test]
+		public void ConvertsExpressionToString2()
+		{
+			var converter = new ODataExpressionConverter();
+			Expression<Func<ChildDto, bool>> expression = x => x.Name.Length + (1 + 1) == 7;
+
+			var serialized = converter.Convert(expression);
+
+			Assert.AreEqual("length(Name) add 2 eq 7", serialized);
+		}
+
+		[Test]
+		public void CanSerializeEmptyGuid()
+		{
+			var converter = new ODataExpressionConverter();
+			Expression<Func<ChildDto, bool>> expression = x => x.GlobalID != Guid.Empty;
+
+			var serialized = converter.Convert(expression);
+
+			Assert.AreEqual("GlobalID ne guid'00000000-0000-0000-0000-000000000000'", serialized);
+		}
 	}
 }

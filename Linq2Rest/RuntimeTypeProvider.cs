@@ -21,19 +21,19 @@ namespace Linq2Rest
 	public class RuntimeTypeProvider : IRuntimeTypeProvider
 	{
 		private const MethodAttributes GetSetAttr = MethodAttributes.Final | MethodAttributes.Public;
-		private static readonly AssemblyName _assemblyName = new AssemblyName { Name = "Linq2RestTypes" };
-		private static readonly ModuleBuilder _moduleBuilder;
-		private static readonly Dictionary<string, Type> _builtTypes = new Dictionary<string, Type>();
-		private static readonly ConcurrentDictionary<Type, CustomAttributeBuilder[]> _typeAttributeBuilders = new ConcurrentDictionary<Type, CustomAttributeBuilder[]>();
-		private static readonly ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]> _propertyAttributeBuilders = new ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]>();
+		private static readonly AssemblyName AssemblyName = new AssemblyName { Name = "Linq2RestTypes" };
+		private static readonly ModuleBuilder ModuleBuilder;
+		private static readonly Dictionary<string, Type> BuiltTypes = new Dictionary<string, Type>();
+		private static readonly ConcurrentDictionary<Type, CustomAttributeBuilder[]> TypeAttributeBuilders = new ConcurrentDictionary<Type, CustomAttributeBuilder[]>();
+		private static readonly ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]> PropertyAttributeBuilders = new ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]>();
 		private readonly IMemberNameResolver _nameResolver;
 
 		static RuntimeTypeProvider()
 		{
-			_moduleBuilder = Thread
+			ModuleBuilder = Thread
 				.GetDomain()
-				.DefineDynamicAssembly(_assemblyName, AssemblyBuilderAccess.Run)
-				.DefineDynamicModule(_assemblyName.Name);
+				.DefineDynamicAssembly(AssemblyName, AssemblyBuilderAccess.Run)
+				.DefineDynamicModule(AssemblyName.Name);
 		}
 
 		/// <summary>
@@ -63,15 +63,15 @@ namespace Linq2Rest
 
 			var dictionary = properties.ToDictionary(f => _nameResolver.ResolveName(f), f => f);
 
-			Monitor.Enter(_builtTypes);
+			Monitor.Enter(BuiltTypes);
 
 			var className = GetTypeKey(sourceType, dictionary);
-			if (_builtTypes.ContainsKey(className))
+			if (BuiltTypes.ContainsKey(className))
 			{
-				return _builtTypes[className];
+				return BuiltTypes[className];
 			}
 
-			var typeBuilder = _moduleBuilder.DefineType(className, TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable);
+			var typeBuilder = ModuleBuilder.DefineType(className, TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable);
 
 			Contract.Assume(typeBuilder != null);
 
@@ -82,11 +82,11 @@ namespace Linq2Rest
 				CreateProperty(typeBuilder, field);
 			}
 
-			_builtTypes[className] = typeBuilder.CreateType();
+			BuiltTypes[className] = typeBuilder.CreateType();
 
-			Monitor.Exit(_builtTypes);
+			Monitor.Exit(BuiltTypes);
 
-			return _builtTypes[className];
+			return BuiltTypes[className];
 		}
 
 		private static void CreateProperty(TypeBuilder typeBuilder, KeyValuePair<string, MemberInfo> field)
@@ -135,7 +135,7 @@ namespace Linq2Rest
 		{
 			Contract.Requires(typeBuilder != null);
 
-			var attributeBuilders = _typeAttributeBuilders
+			var attributeBuilders = TypeAttributeBuilders
 				.GetOrAdd(
 						  type,
 						  t =>
@@ -157,7 +157,7 @@ namespace Linq2Rest
 			Contract.Requires(propertyBuilder != null);
 			Contract.Requires(memberInfo != null);
 
-			var customAttributeBuilders = _propertyAttributeBuilders
+			var customAttributeBuilders = PropertyAttributeBuilders
 				.GetOrAdd(
 						  memberInfo,
 						  p =>

@@ -104,6 +104,8 @@ namespace Linq2Rest.Provider
 
 		private IEnumerable GetIntermediateResults(Type type, ParameterBuilder builder)
 		{
+			Contract.Requires(builder != null);
+
 			var fullUri = builder.GetFullUri();
 			var response = _client.Get(fullUri);
 			var genericMethod = CreateMethod.MakeGenericMethod(type);

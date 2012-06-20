@@ -35,41 +35,41 @@ namespace Linq2Rest.Tests.Parser
 				};
 
 			_nestedItems = new[]
-			               	{
-			               		new FakeItem
-			               			{
-			               				IntValue = 2,
-			               				DoubleValue = 2,
-			               				Children =
-			               					{
-			               						new FakeChildItem { ChildStringValue = "1" },
-			               						new FakeChildItem { ChildStringValue = "2" },
-			               						new FakeChildItem { ChildStringValue = "3" }
-			               					}
-			               			},
-			               		new FakeItem
-			               			{
-			               				IntValue = 1,
-			               				DoubleValue = 1,
-			               				Children =
-			               					{
-			               						new FakeChildItem { ChildStringValue = "2" },
-			               						new FakeChildItem { ChildStringValue = "3" },
-			               						new FakeChildItem { ChildStringValue = "4" }
-			               					}
-			               			},
-			               		new FakeItem
-			               			{
-			               				IntValue = 3,
-			               				DoubleValue = 3,
-			               				Children =
-			               					{
-			               						new FakeChildItem { ChildStringValue = "3" },
-			               						new FakeChildItem { ChildStringValue = "4" },
-			               						new FakeChildItem { ChildStringValue = "5" }
-			               					}
-			               			},
-			               	};
+				{
+					new FakeItem
+						{
+							IntValue = 2,
+							DoubleValue = 2,
+							Children =
+								{
+									new FakeChildItem { ChildStringValue = "1" },
+									new FakeChildItem { ChildStringValue = "2" },
+									new FakeChildItem { ChildStringValue = "3" }
+								}
+						},
+					new FakeItem
+						{
+							IntValue = 1,
+							DoubleValue = 1,
+							Children =
+								{
+									new FakeChildItem { ChildStringValue = "2" },
+									new FakeChildItem { ChildStringValue = "3" },
+									new FakeChildItem { ChildStringValue = "4" }
+								}
+						},
+					new FakeItem
+						{
+							IntValue = 3,
+							DoubleValue = 3,
+							Children =
+								{
+									new FakeChildItem { ChildStringValue = "3" },
+									new FakeChildItem { ChildStringValue = "4" },
+									new FakeChildItem { ChildStringValue = "5" }
+								}
+						},
+				};
 		}
 
 		[Test]

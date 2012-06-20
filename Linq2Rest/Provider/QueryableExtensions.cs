@@ -69,6 +69,7 @@ namespace Linq2Rest.Provider
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(source != null);
+			Contract.Assume(properties != null);
 #endif
 			var propertyNames = string.Join(",", properties.Where(x => x != null).Select(ResolvePropertyName));
 

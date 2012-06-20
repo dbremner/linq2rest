@@ -28,6 +28,7 @@ namespace Linq2Rest
 		public static IEnumerable<object> Filter<T>(this IEnumerable<T> source, NameValueCollection query)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
+			Contract.Requires<ArgumentNullException>(query != null);
 
 			var parser = new ParameterParser<T>();
 

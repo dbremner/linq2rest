@@ -73,5 +73,13 @@ namespace Linq2Rest.Reactive
 				.Select(x => x.Select(serializer.DeserializeList))
 				.SelectMany(x => x);
 		}
+
+#if !WINDOWS_PHONE
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_provider != null);
+		}
+#endif
 	}
 }

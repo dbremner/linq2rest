@@ -27,6 +27,7 @@ namespace Linq2Rest.Reactive
 			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)
 		{
 #if !WINDOWS_PHONE
+			Contract.Requires(trigger != null);
 			Contract.Requires(asyncRestClient != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(subscriberScheduler != null);
@@ -40,5 +41,13 @@ namespace Linq2Rest.Reactive
 		{
 			return new TriggeredRestObservable<TResult>(_trigger, AsyncRestClient, SerializerFactory, expression, subscriberScheduler, observerScheduler);
 		}
+
+#if !WINDOWS_PHONE
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_trigger != null);
+		}
+#endif
 	}
 }

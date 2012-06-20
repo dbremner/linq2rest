@@ -33,6 +33,7 @@ namespace Linq2Rest.Reactive
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(restClient != null);
+			Contract.Requires(trigger != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
@@ -106,5 +107,14 @@ namespace Linq2Rest.Reactive
 				}
 			}
 		}
+
+#if !WINDOWS_PHONE
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_trigger != null);
+			Contract.Invariant(_provider != null);
+		}
+#endif
 	}
 }
