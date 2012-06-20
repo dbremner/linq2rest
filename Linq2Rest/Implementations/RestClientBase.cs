@@ -25,6 +25,10 @@ namespace Linq2Rest.Implementations
 		/// <param name="acceptHeader">The accept header to use in web requests.</param>
 		protected RestClientBase(Uri uri, string acceptHeader)
 		{
+			Contract.Requires<ArgumentNullException>(uri != null);
+			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+			Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(acceptHeader));
+
 			_acceptHeader = acceptHeader;
 			ServiceBase = uri;
 		}

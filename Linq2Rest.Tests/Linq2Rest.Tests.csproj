@@ -20,7 +20,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\v4.0\Debug\</OutputPath>
+    <BaseIntermediateOutputPath>obj\v4.0</BaseIntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -53,7 +54,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\v4.0\Release\</OutputPath>
+    <BaseIntermediateOutputPath>obj\v4.0</BaseIntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -117,6 +119,7 @@
     <Compile Include="Parser\ExpressionTokenizerTests.cs" />
     <Compile Include="FakeItem.cs" />
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
+    <Compile Include="Parser\ParseParent.cs" />
     <Compile Include="Parser\Readers\BooleanExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\ByteExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\DateTimeOffsetExpressionFactoryTests.cs" />
@@ -138,6 +141,7 @@
     <Compile Include="Provider\ChildDto.cs" />
     <Compile Include="Provider\CollectionDto.cs" />
     <Compile Include="Provider\ComplexDto.cs" />
+    <Compile Include="Provider\ODataExpressionWriterTests.cs" />
     <Compile Include="Provider\QueryableExtensionsTests.cs" />
     <Compile Include="Provider\RestContextInMemoryTests.cs" />
     <Compile Include="Provider\Writers\BooleanValueWriterTests.cs" />

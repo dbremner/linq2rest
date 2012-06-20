@@ -23,10 +23,14 @@ namespace Linq2Rest.Parser.Readers
 		public override ConstantExpression Convert(string token)
 		{
 			var baseResult = base.Convert(token);
+			if (baseResult.Value != null)
+			{
+				var stream = new MemoryStream((byte[])baseResult.Value);
 
-			var stream = new MemoryStream((byte[])baseResult.Value);
+				return Expression.Constant(stream);
+			}
 
-			return Expression.Constant(stream);
+			return baseResult;
 		}
 	}
 }

@@ -16,8 +16,8 @@ namespace Linq2Rest.Reactive
 
 	internal static class InteralObservableExtensions
 	{
-		private static readonly MethodInfo _innerToObservableMethod;
-		private static readonly MethodInfo _innerToQbservableMethod;
+		private static readonly MethodInfo InnerToObservableMethod;
+		private static readonly MethodInfo InnerToQbservableMethod;
 
 		static InteralObservableExtensions()
 		{
@@ -34,16 +34,21 @@ namespace Linq2Rest.Reactive
 			Contract.Assume(observableMethods.Length > 0);
 #endif
 
-			_innerToObservableMethod = observableMethods
+			InnerToObservableMethod = observableMethods
 					.First(x => x.Name == "ToObservable" && x.GetParameters().Length == 1);
-			_innerToQbservableMethod = qbservableMethods
+			InnerToQbservableMethod = qbservableMethods
 					.First(x => x.Name == "AsQbservable" && x.GetParameters().Length == 1);
 		}
 
 		public static object ToQbservable(this IEnumerable enumerable, Type type)
 		{
-			var genericObservableMethod = _innerToObservableMethod.MakeGenericMethod(type);
-			var genericQbservableMethod = _innerToQbservableMethod.MakeGenericMethod(type);
+#if !WINDOWS_PHONE
+			Contract.Requires(enumerable != null);
+			Contract.Requires(type != null);
+#endif
+
+			var genericObservableMethod = InnerToObservableMethod.MakeGenericMethod(type);
+			var genericQbservableMethod = InnerToQbservableMethod.MakeGenericMethod(type);
 
 			var observable = genericObservableMethod.Invoke(null, new object[] { enumerable });
 			var qbservable = genericQbservableMethod.Invoke(null, new[] { observable });

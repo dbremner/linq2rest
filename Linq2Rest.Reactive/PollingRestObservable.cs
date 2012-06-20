@@ -8,6 +8,9 @@ namespace Linq2Rest.Reactive
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+#if !WINDOWS_PHONE
+	using System.Diagnostics.Contracts;
+#endif
 	using System.IO;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
@@ -27,6 +30,13 @@ namespace Linq2Rest.Reactive
 			IScheduler observerScheduler)
 			: base(restClient, serializerFactory, expression, subscriberScheduler, observerScheduler)
 		{
+#if !WINDOWS_PHONE
+			Contract.Requires(restClient != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(subscriberScheduler != null);
+			Contract.Requires(observerScheduler != null);
+#endif
+
 			Frequency = frequency;
 			_provider = new PollingRestQueryableProvider(frequency, restClient, serializerFactory, subscriberScheduler, observerScheduler);
 		}
@@ -63,5 +73,13 @@ namespace Linq2Rest.Reactive
 				.Select(x => x.Select(serializer.DeserializeList))
 				.SelectMany(x => x);
 		}
+
+#if !WINDOWS_PHONE
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_provider != null);
+		}
+#endif
 	}
 }

@@ -32,6 +32,7 @@ namespace Linq2Rest.Parser.Readers
 		public ConstantExpression Convert(string token)
 		{
 			Contract.Requires(token != null);
+			Contract.Ensures(Contract.Result<ConstantExpression>() != null);
 			throw new NotImplementedException();
 		}
 	}

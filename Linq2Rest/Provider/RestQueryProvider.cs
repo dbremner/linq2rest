@@ -21,7 +21,7 @@ namespace Linq2Rest.Provider
 		private readonly ParameterBuilder _parameterBuilder;
 
 		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory)
-			: this(client, serializerFactory, new ExpressionProcessor(new ExpressionVisitor()))
+			: this(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter()))
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
@@ -104,6 +104,8 @@ namespace Linq2Rest.Provider
 
 		private IEnumerable GetIntermediateResults(Type type, ParameterBuilder builder)
 		{
+			Contract.Requires(builder != null);
+
 			var fullUri = builder.GetFullUri();
 			var response = _client.Get(fullUri);
 			var genericMethod = CreateMethod.MakeGenericMethod(type);

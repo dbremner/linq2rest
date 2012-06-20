@@ -22,11 +22,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterTimeSpanIsIncorrectFormatThenThrows()
+		public void WhenFilterIsIncorrectFormatThenReturnsDefaultValue()
 		{
-			const string Parameter = "time'blah'";
+			const string Parameter = "blah";
 
-			Assert.Throws<InvalidOperationException>(() => _factory.Convert(Parameter));
+			Assert.AreEqual(default(TimeSpan), _factory.Convert(Parameter).Value);
 		}
 
 		[Test]

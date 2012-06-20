@@ -13,11 +13,11 @@ namespace Linq2Rest.Provider.Writers
 
 	internal static class ParameterValueWriter
 	{
-		private static readonly IList<IValueWriter> _valueWriters;
+		private static readonly IList<IValueWriter> ValueWriters;
 
 		static ParameterValueWriter()
 		{
-			_valueWriters = new List<IValueWriter>
+			ValueWriters = new List<IValueWriter>
 							{
 								new StringValueWriter(),
 								new BooleanValueWriter(),
@@ -61,7 +61,7 @@ namespace Linq2Rest.Provider.Writers
 				return value.ToString();
 			}
 #endif
-			var writer = _valueWriters.FirstOrDefault(x => x.Handles == type);
+			var writer = ValueWriters.FirstOrDefault(x => x.Handles == type);
 
 			if (writer != null)
 			{

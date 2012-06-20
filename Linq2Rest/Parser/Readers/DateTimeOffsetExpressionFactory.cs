@@ -12,7 +12,7 @@ namespace Linq2Rest.Parser.Readers
 
 	internal class DateTimeOffsetExpressionFactory : IValueExpressionFactory
 	{
-		private static readonly Regex _dateTimeOffsetRegex = new Regex(@"datetimeoffset['\""](\d{4}\-\d{2}\-\d{2}(T\d{2}\:\d{2}\:\d{2})?[\-\+]\d{2}:\d{2})['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex DateTimeOffsetRegex = new Regex(@"datetimeoffset['\""](\d{4}\-\d{2}\-\d{2}(T\d{2}\:\d{2}\:\d{2})?[\-\+]\d{2}:\d{2})['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		public Type Handles
 		{
@@ -24,14 +24,14 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			var match = _dateTimeOffsetRegex.Match(token);
+			var match = DateTimeOffsetRegex.Match(token);
 			if (match.Success)
 			{
 				var dateTimeOffset = XmlConvert.ToDateTimeOffset(match.Groups[1].Value);
 				return Expression.Constant(dateTimeOffset);
 			}
 
-			throw new InvalidOperationException("Filter is not recognized as DateTimeOffset: " + token);
+			return Expression.Constant(default(DateTimeOffset));
 		}
 	}
 }

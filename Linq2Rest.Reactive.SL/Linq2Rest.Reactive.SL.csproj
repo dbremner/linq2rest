@@ -83,7 +83,7 @@
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>Bin\Debug\Linq2Rest.Reactive.XML</DocumentationFile>
+    <DocumentationFile>Bin\Debug\Linq2Rest.Reactive.xml</DocumentationFile>
     <CodeAnalysisRuleSet>..\Linq2Rest.ruleset</CodeAnalysisRuleSet>
     <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
@@ -119,6 +119,7 @@
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -193,10 +194,10 @@
     <Compile Include="..\Linq2Rest.Reactive\TriggeredRestQueryableProvider.cs">
       <Link>TriggeredRestQueryableProvider.cs</Link>
     </Compile>
-    <Compile Include="..\Linq2Rest\Provider\ExpressionVisitor.cs">
+    <Compile Include="..\Linq2Rest\Provider\ExpressionWriter.cs">
       <Link>Provider\ExpressionVisitor.cs</Link>
     </Compile>
-    <Compile Include="..\Linq2Rest\Provider\IExpressionVisitor.cs">
+    <Compile Include="..\Linq2Rest\Provider\IExpressionWriter.cs">
       <Link>Provider\IExpressionVisitor.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\ISerializer.cs">

@@ -22,7 +22,7 @@ namespace Linq2Rest.Tests.Provider.Writers
 		[Test]
 		public void WhenWritingUnsignedShortValueThenWritesString()
 		{
-			var result = _writer.Write(123);
+			var result = _writer.Write((ushort)123);
 
 			Assert.AreEqual("123", result);
 		}

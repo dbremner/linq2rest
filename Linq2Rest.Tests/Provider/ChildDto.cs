@@ -6,10 +6,14 @@
 
 namespace Linq2Rest.Tests.Provider
 {
+	using System;
+
 	public class ChildDto
 	{
 		public int ID { get; set; }
 
 		public string Name { get; set; }
+
+		public Guid GlobalID { get; set; }
 	}
 }

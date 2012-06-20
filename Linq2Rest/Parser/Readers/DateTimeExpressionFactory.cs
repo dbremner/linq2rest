@@ -8,10 +8,11 @@ namespace Linq2Rest.Parser.Readers
 	using System;
 	using System.Linq.Expressions;
 	using System.Text.RegularExpressions;
+	using System.Xml;
 
 	internal class DateTimeExpressionFactory : IValueExpressionFactory
 	{
-		private static readonly Regex _dateTimeRegex = new Regex(@"datetime['\""](\d{4}\-\d{2}\-\d{2}(T\d{2}\:\d{2}\:\d{2})?Z)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex DateTimeRegex = new Regex(@"datetime['\""](\d{4}\-\d{2}\-\d{2}(T\d{2}\:\d{2}\:\d{2})?Z)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		public Type Handles
 		{
@@ -23,14 +24,14 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			var match = _dateTimeRegex.Match(token);
+			var match = DateTimeRegex.Match(token);
 			if (match.Success)
 			{
-				var dateTime = DateTime.Parse(match.Groups[1].Value);
+				var dateTime = XmlConvert.ToDateTime(match.Groups[1].Value, XmlDateTimeSerializationMode.Utc); // DateTime.Parse(match.Groups[1].Value).ToUniversalTime();
 				return Expression.Constant(dateTime);
 			}
 
-			throw new InvalidOperationException("Filter is not recognized as DateTime: " + token);
+			return Expression.Constant(default(DateTime));
 		}
 	}
 }

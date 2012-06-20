@@ -22,6 +22,7 @@ namespace Linq2Rest.Reactive.Implementations
 		public AsyncJsonRestClientFactory(Uri serviceBase)
 		{
 			Contract.Requires<ArgumentNullException>(serviceBase != null);
+			Contract.Requires<ArgumentException>(serviceBase.Scheme == Uri.UriSchemeHttp || serviceBase.Scheme == Uri.UriSchemeHttps);
 
 			ServiceBase = serviceBase;
 		}
@@ -48,6 +49,7 @@ namespace Linq2Rest.Reactive.Implementations
 			public AsyncJsonRestClient(Uri uri)
 			{
 				Contract.Requires(uri != null);
+				Contract.Requires(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 
 				_request = (HttpWebRequest)WebRequest.Create(uri);
 				_request.Accept = "application/json";

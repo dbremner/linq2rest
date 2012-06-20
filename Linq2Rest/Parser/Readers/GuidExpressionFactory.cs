@@ -11,7 +11,7 @@ namespace Linq2Rest.Parser.Readers
 
 	internal class GuidExpressionFactory : IValueExpressionFactory
 	{
-		private static readonly Regex _guidRegex = new Regex(@"guid['\""]([a-f0-9\-]+)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex GuidRegex = new Regex(@"guid['\""]([a-f0-9\-]+)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		public Type Handles
 		{
@@ -23,14 +23,17 @@ namespace Linq2Rest.Parser.Readers
 
 		public ConstantExpression Convert(string token)
 		{
-			var match = _guidRegex.Match(token);
+			var match = GuidRegex.Match(token);
 			if (match.Success)
 			{
-				var guid = Guid.Parse(match.Groups[1].Value);
-				return Expression.Constant(guid);
+				Guid guid;
+				if (Guid.TryParse(match.Groups[1].Value, out guid))
+				{
+					return Expression.Constant(guid);
+				}
 			}
-			
-			throw new InvalidOperationException("Filter is not recognized as Guid: " + token);
+
+			return Expression.Constant(default(Guid));
 		}
 	}
 }

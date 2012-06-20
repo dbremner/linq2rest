@@ -24,15 +24,30 @@ namespace Linq2Rest.Tests.Parser
 				{
 					new FakeItem
 						{
-							ChoiceValue = Choice.This, DateValue = new DateTime(2011, 12, 24), DecimalValue = 2m, DoubleValue = 3d, IntValue = 4, StringValue = "test"
+							ChoiceValue = Choice.This,
+							DateValue = new DateTime(2011, 12, 24),
+							DecimalValue = 2m,
+							DoubleValue = 3d,
+							IntValue = 4,
+							StringValue = "test"
 						},
 					new FakeItem
 						{
-							ChoiceValue = Choice.That, DateValue = new DateTime(2011, 01, 24), DecimalValue = 1m, DoubleValue = 2d, IntValue = 3, StringValue = "blah"
+							ChoiceValue = Choice.That,
+							DateValue = new DateTime(2011, 01, 24),
+							DecimalValue = 1m,
+							DoubleValue = 2d,
+							IntValue = 3,
+							StringValue = "blah"
 						},
 					new FakeItem
 						{
-							ChoiceValue = Choice.Either, DateValue = new DateTime(2012, 01, 01), DecimalValue = 3m, DoubleValue = 4d, IntValue = 5, StringValue = "something"
+							ChoiceValue = Choice.Either,
+							DateValue = new DateTime(2012, 01, 01),
+							DecimalValue = 3m,
+							DoubleValue = 4d,
+							IntValue = 5,
+							StringValue = "something"
 						}
 				};
 		}

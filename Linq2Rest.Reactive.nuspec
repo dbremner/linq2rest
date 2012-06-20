@@ -15,16 +15,22 @@
 			<reference file="Linq2Rest.Reactive.xml" />
 		</references>
 		<dependencies>
-			<dependency id="Linq2Rest"
-						version="2.2.0.0-beta" />
-			<dependency id="Rx-Providers"
-						version="1.0.11226" />
-			<!-- Waiting for Rx Team to add .NET 4 support to package
-			<dependency id="Rx-Providers"
-						version="2.0.20304-beta" />
-			-->
-			<dependency id="System.Threading.Tasks"
-						version="3.0.1" />
+			<group>
+				<dependency id="Linq2Rest"
+							version="2.3.0.0" />
+				<dependency id="Rx-Providers"
+							version="2.0.20304-beta" />
+				<dependency id="System.Threading.Tasks"
+							version="3.0.1" />
+			</group>
+			<group targetFramework="net40">
+				<dependency id="Linq2Rest"
+							version="2.3.0.0" />
+				<dependency id="Rx-Providers"
+							version="1.0.11226" />
+				<dependency id="System.Threading.Tasks"
+							version="3.0.1" />
+			</group>
 		</dependencies>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System"

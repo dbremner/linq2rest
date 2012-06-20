@@ -33,6 +33,8 @@ namespace Linq2Rest.Reactive
 #if !WINDOWS_PHONE
 			Contract.Requires(restClient != null);
 			Contract.Requires(serializerFactory != null);
+			Contract.Requires(subscriberScheduler != null);
+			Contract.Requires(observerScheduler != null);
 #endif
 
 			_frequency = frequency;

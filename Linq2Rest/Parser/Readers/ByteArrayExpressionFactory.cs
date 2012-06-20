@@ -11,7 +11,7 @@ namespace Linq2Rest.Parser.Readers
 
 	internal class ByteArrayExpressionFactory : IValueExpressionFactory
 	{
-		private static readonly Regex _byteArrayRegex = new Regex(@"(X|binary)['\""]([A-Za-z0-9=\+\/]+)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex ByteArrayRegex = new Regex(@"(X|binary)['\""]([A-Za-z0-9=\+\/]+)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		public virtual Type Handles
 		{
@@ -23,14 +23,21 @@ namespace Linq2Rest.Parser.Readers
 
 		public virtual ConstantExpression Convert(string token)
 		{
-			var match = _byteArrayRegex.Match(token);
+			var match = ByteArrayRegex.Match(token);
 			if (match.Success)
 			{
-				var buffer = System.Convert.FromBase64String(match.Groups[2].Value);
-				return Expression.Constant(buffer);
+				try
+				{
+					var buffer = System.Convert.FromBase64String(match.Groups[2].Value);
+					return Expression.Constant(buffer);
+				}
+				catch
+				{
+					return Expression.Constant(null);
+				}
 			}
 
-			throw new InvalidOperationException("Filter is not recognized as byte array: " + token);
+			return Expression.Constant(null);
 		}
 	}
 }
