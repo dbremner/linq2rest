@@ -27,10 +27,13 @@ namespace Linq2Rest.Tests.Parser
 		}
 
 		[Test]
+		[TestCase("StringValue eq 'a \"quote\"'", "x => (x.StringValue == \"a \"quote\"\")")]
+		[TestCase("StringValue eq 'a \"quote\" within the text'", "x => (x.StringValue == \"a \"quote\" within the text\")")]
+		[TestCase("StringValue eq 'a 'single quote' within the text'", "x => (x.StringValue == \"a 'single quote' within the text\")")]
 		[TestCase("true", "x => True")]
 		[TestCase("ChoiceValue eq This", "x => ((Convert(x.ChoiceValue) & Convert(This)) == Convert(This))")]
 		[TestCase("IntValue eq 1", "x => (x.IntValue == 1)")]
-		[TestCase("(IntValue eq 1) and DoubleValue lt 2", "x => (x.IntValue == 1)")]
+		[TestCase("(IntValue eq 1) and DoubleValue lt 2", "x => ((x.IntValue == 1) AndAlso (x.DoubleValue < 2))")]
 		[TestCase("IntValue eq (10 mod 2)", "x => (x.IntValue == (10 % 2))")]
 		[TestCase("(10 mod 2) eq IntValue", "x => ((10 % 2) == x.IntValue)")]
 		[TestCase("IntValue ne 1", "x => (x.IntValue != 1)")]
