@@ -1,0 +1,266 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Linq2Rest.Reactive.Moles</name>
+    </assembly>
+    <members>
+        <member name="T:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory">
+            <summary>Mole type of <see cref="T:Linq2Rest.Reactive.Implementations.AsyncJsonRestClientFactory"/>
+            .</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.#ctor">
+            <summary>Initializes a new mole</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.#ctor(Linq2Rest.Reactive.Implementations.AsyncJsonRestClientFactory)">
+            <summary>Initializes a new mole for the given instance</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.BehaveAsCurrent">
+            <summary>Assigns the &apos;Current&apos; behavior for all methods of the moled type</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.BehaveAsNotImplemented">
+            <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the moled type</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.Bind(Linq2Rest.Reactive.IAsyncRestClientFactory)">
+            <summary>Binds the members of the interface to the mole.</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.Behavior">
+            <summary>Assigns the behavior for all methods of the moled type</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.ConstructorUri">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.Implementations.AsyncJsonRestClientFactory.#ctor(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.CreateUri">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.Implementations.AsyncJsonRestClientFactory.Create(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.ServiceBaseGet">
+            <summary>Sets the mole of <see cref="P:Linq2Rest.Reactive.Implementations.AsyncJsonRestClientFactory.ServiceBase"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.ServiceBaseSetUri">
+            <summary>Sets the mole of <see cref="P:Linq2Rest.Reactive.Implementations.AsyncJsonRestClientFactory.ServiceBase"/>
+            </summary>
+        </member>
+        <member name="T:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.AllInstances">
+            <summary>Define moles for all instances members</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.AllInstances.CreateUri">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.Implementations.AsyncJsonRestClientFactory.Create(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.AllInstances.ServiceBaseGet">
+            <summary>Sets the mole of <see cref="P:Linq2Rest.Reactive.Implementations.AsyncJsonRestClientFactory.ServiceBase"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncJsonRestClientFactory.AllInstances.ServiceBaseSetUri">
+            <summary>Sets the mole of <see cref="P:Linq2Rest.Reactive.Implementations.AsyncJsonRestClientFactory.ServiceBase"/>
+            </summary>
+        </member>
+        <member name="T:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory">
+            <summary>Mole type of <see cref="T:Linq2Rest.Reactive.Implementations.AsyncXmlRestClientFactory"/>
+            .</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.#ctor">
+            <summary>Initializes a new mole</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.#ctor(Linq2Rest.Reactive.Implementations.AsyncXmlRestClientFactory)">
+            <summary>Initializes a new mole for the given instance</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.BehaveAsCurrent">
+            <summary>Assigns the &apos;Current&apos; behavior for all methods of the moled type</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.BehaveAsNotImplemented">
+            <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the moled type</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.Bind(Linq2Rest.Reactive.IAsyncRestClientFactory)">
+            <summary>Binds the members of the interface to the mole.</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.Behavior">
+            <summary>Assigns the behavior for all methods of the moled type</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.ConstructorUri">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.Implementations.AsyncXmlRestClientFactory.#ctor(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.CreateUri">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.Implementations.AsyncXmlRestClientFactory.Create(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.ServiceBaseGet">
+            <summary>Sets the mole of <see cref="P:Linq2Rest.Reactive.Implementations.AsyncXmlRestClientFactory.ServiceBase"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.ServiceBaseSetUri">
+            <summary>Sets the mole of <see cref="P:Linq2Rest.Reactive.Implementations.AsyncXmlRestClientFactory.ServiceBase"/>
+            </summary>
+        </member>
+        <member name="T:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.AllInstances">
+            <summary>Define moles for all instances members</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.AllInstances.CreateUri">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.Implementations.AsyncXmlRestClientFactory.Create(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.AllInstances.ServiceBaseGet">
+            <summary>Sets the mole of <see cref="P:Linq2Rest.Reactive.Implementations.AsyncXmlRestClientFactory.ServiceBase"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.MAsyncXmlRestClientFactory.AllInstances.ServiceBaseSetUri">
+            <summary>Sets the mole of <see cref="P:Linq2Rest.Reactive.Implementations.AsyncXmlRestClientFactory.ServiceBase"/>
+            </summary>
+        </member>
+        <member name="T:Linq2Rest.Reactive.Moles.MRestObservable`1">
+            <summary>Mole type of <see cref="T:Linq2Rest.Reactive.RestObservable`1"/>
+            .</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.MRestObservable`1.#ctor">
+            <summary>Initializes a new mole</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.MRestObservable`1.#ctor(Linq2Rest.Reactive.RestObservable{`0})">
+            <summary>Initializes a new mole for the given instance</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.MRestObservable`1.BehaveAsCurrent">
+            <summary>Assigns the &apos;Current&apos; behavior for all methods of the moled type</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.MRestObservable`1.BehaveAsNotImplemented">
+            <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the moled type</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.MRestObservable`1.Behavior">
+            <summary>Assigns the behavior for all methods of the moled type</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.MRestObservable`1.ConstructorIAsyncRestClientFactoryISerializerFactory">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.RestObservable`1.#ctor(Linq2Rest.Reactive.IAsyncRestClientFactory,Linq2Rest.Provider.ISerializerFactory)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.MRestObservable`1.Create">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.RestObservable`1.Create"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.MRestObservable`1.PollTimeSpan">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.RestObservable`1.Poll(System.TimeSpan)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.MRestObservable`1.RequeryTimeSpan">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.RestObservable`1.Requery(System.TimeSpan)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.MRestObservable`1.TriggeredIObservableOfUnit">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.RestObservable`1.Triggered(System.IObservable`1{System.Reactive.Unit})"/>
+            </summary>
+        </member>
+        <member name="T:Linq2Rest.Reactive.Moles.MRestObservable`1.AllInstances">
+            <summary>Define moles for all instances members</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.MRestObservable`1.AllInstances.Create">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.RestObservable`1.Create"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.MRestObservable`1.AllInstances.PollTimeSpan">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.RestObservable`1.Poll(System.TimeSpan)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.MRestObservable`1.AllInstances.RequeryTimeSpan">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.RestObservable`1.Requery(System.TimeSpan)"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.MRestObservable`1.AllInstances.TriggeredIObservableOfUnit">
+            <summary>Sets the mole of <see cref="M:Linq2Rest.Reactive.RestObservable`1.Triggered(System.IObservable`1{System.Reactive.Unit})"/>
+            </summary>
+        </member>
+        <member name="T:Linq2Rest.Reactive.Implementations.Moles.SAsyncJsonRestClientFactory">
+            <summary>Stub type of <see cref="T:Linq2Rest.Reactive.Implementations.AsyncJsonRestClientFactory"/>
+            .</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.SAsyncJsonRestClientFactory.#ctor(System.Uri)">
+            <summary>Initializes a new instance</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.SAsyncJsonRestClientFactory.InitializeStub">
+            <summary>Initializes a new instance of type SAsyncJsonRestClientFactory</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.SAsyncJsonRestClientFactory.CallBase">
+            <summary>Gets or sets a value that indicates if the base method should be called instead of the fallback behavior</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.SAsyncJsonRestClientFactory.InstanceBehavior">
+            <summary>Gets or sets the instance behavior.</summary>
+        </member>
+        <member name="T:Linq2Rest.Reactive.Implementations.Moles.SAsyncXmlRestClientFactory">
+            <summary>Stub type of <see cref="T:Linq2Rest.Reactive.Implementations.AsyncXmlRestClientFactory"/>
+            .</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.SAsyncXmlRestClientFactory.#ctor(System.Uri)">
+            <summary>Initializes a new instance</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Implementations.Moles.SAsyncXmlRestClientFactory.InitializeStub">
+            <summary>Initializes a new instance of type SAsyncXmlRestClientFactory</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.SAsyncXmlRestClientFactory.CallBase">
+            <summary>Gets or sets a value that indicates if the base method should be called instead of the fallback behavior</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Implementations.Moles.SAsyncXmlRestClientFactory.InstanceBehavior">
+            <summary>Gets or sets the instance behavior.</summary>
+        </member>
+        <member name="T:Linq2Rest.Reactive.Moles.SIAsyncRestClient">
+            <summary>Stub type of <see cref="T:Linq2Rest.Reactive.IAsyncRestClient"/>
+            .</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.SIAsyncRestClient.#ctor">
+            <summary>Initializes a new instance of type SIAsyncRestClient</summary>
+        </member>
+        <member name="F:Linq2Rest.Reactive.Moles.SIAsyncRestClient.BeginGetResultAsyncCallbackObject">
+            <summary>Sets the stub of <see cref="M:Linq2Rest.Reactive.IAsyncRestClient.BeginGetResult(System.AsyncCallback,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:Linq2Rest.Reactive.Moles.SIAsyncRestClient.EndGetResultIAsyncResult">
+            <summary>Sets the stub of <see cref="M:Linq2Rest.Reactive.IAsyncRestClient.EndGetResult(System.IAsyncResult)"/>
+            </summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.SIAsyncRestClient.lrr::Linq2Rest#Reactive#IAsyncRestClient#BeginGetResult(System.AsyncCallback,System.Object)">
+            <summary>Sets the stub of <see cref="M:Linq2Rest.Reactive.IAsyncRestClient.BeginGetResult(System.AsyncCallback,System.Object)"/>
+            </summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.SIAsyncRestClient.lrr::Linq2Rest#Reactive#IAsyncRestClient#EndGetResult(System.IAsyncResult)">
+            <summary>Sets the stub of <see cref="M:Linq2Rest.Reactive.IAsyncRestClient.EndGetResult(System.IAsyncResult)"/>
+            </summary>
+        </member>
+        <member name="T:Linq2Rest.Reactive.Moles.SIAsyncRestClientFactory">
+            <summary>Stub type of <see cref="T:Linq2Rest.Reactive.IAsyncRestClientFactory"/>
+            .</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.SIAsyncRestClientFactory.#ctor">
+            <summary>Initializes a new instance of type SIAsyncRestClientFactory</summary>
+        </member>
+        <member name="F:Linq2Rest.Reactive.Moles.SIAsyncRestClientFactory.CreateUri">
+            <summary>Sets the stub of <see cref="M:Linq2Rest.Reactive.IAsyncRestClientFactory.Create(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.SIAsyncRestClientFactory.lrr::Linq2Rest#Reactive#IAsyncRestClientFactory#Create(System.Uri)">
+            <summary>Sets the stub of <see cref="M:Linq2Rest.Reactive.IAsyncRestClientFactory.Create(System.Uri)"/>
+            </summary>
+        </member>
+        <member name="F:Linq2Rest.Reactive.Moles.SIAsyncRestClientFactory.ServiceBaseGet">
+            <summary>Sets the stub of <see cref="P:Linq2Rest.Reactive.IAsyncRestClientFactory.ServiceBase"/>
+            </summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.SIAsyncRestClientFactory.lrr::Linq2Rest#Reactive#IAsyncRestClientFactory#ServiceBase">
+            <summary>Sets the stub of <see cref="P:Linq2Rest.Reactive.IAsyncRestClientFactory.ServiceBase"/>
+            </summary>
+        </member>
+        <member name="T:Linq2Rest.Reactive.Moles.SRestObservable`1">
+            <summary>Stub type of <see cref="T:Linq2Rest.Reactive.RestObservable`1"/>
+            .</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.SRestObservable`1.#ctor(Linq2Rest.Reactive.IAsyncRestClientFactory,Linq2Rest.Provider.ISerializerFactory)">
+            <summary>Initializes a new instance</summary>
+        </member>
+        <member name="M:Linq2Rest.Reactive.Moles.SRestObservable`1.InitializeStub">
+            <summary>Initializes a new instance of type SRestObservable</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.SRestObservable`1.CallBase">
+            <summary>Gets or sets a value that indicates if the base method should be called instead of the fallback behavior</summary>
+        </member>
+        <member name="P:Linq2Rest.Reactive.Moles.SRestObservable`1.InstanceBehavior">
+            <summary>Gets or sets the instance behavior.</summary>
+        </member>
+    </members>
+</doc>

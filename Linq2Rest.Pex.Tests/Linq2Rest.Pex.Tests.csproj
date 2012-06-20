@@ -1,0 +1,597 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{26494336-3946-4866-B312-C145D187A7A2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Linq2Rest.Pex.Tests</RootNamespace>
+    <AssemblyName>Linq2Rest.Pex.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Linq2Rest.Moles, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.ExtendedReflection, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Moles.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Pex.Framework, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Pex.Linq, Version=0.94.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Linq2Rest\Linq2Rest.csproj">
+      <Project>{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}</Project>
+      <Name>Linq2Rest</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GeneralExtensionsTests.Capitalize.g.cs">
+      <DependentUpon>GeneralExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GeneralExtensionsTests.cs" />
+    <Compile Include="GeneralExtensionsTests.IsAnonymousType.g.cs">
+      <DependentUpon>GeneralExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GeneralExtensionsTests.ToStream.g.cs">
+      <DependentUpon>GeneralExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\JsonDataContractSerializerFactoryTests.Constructor.g.cs">
+      <DependentUpon>JsonDataContractSerializerFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\JsonDataContractSerializerFactoryTests.Create.g.cs">
+      <DependentUpon>JsonDataContractSerializerFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\JsonDataContractSerializerFactoryTests.cs" />
+    <Compile Include="Implementations\JsonRestClientTests.Constructor.g.cs">
+      <DependentUpon>JsonRestClientTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\JsonRestClientTests.cs" />
+    <Compile Include="Implementations\RestClientBaseTests.cs" />
+    <Compile Include="Implementations\RestClientBaseTests.Dispose.g.cs">
+      <DependentUpon>RestClientBaseTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\RestClientBaseTests.Get.g.cs">
+      <DependentUpon>RestClientBaseTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\XmlDataContractSerializerFactoryTests.Constructor.g.cs">
+      <DependentUpon>XmlDataContractSerializerFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\XmlDataContractSerializerFactoryTests.Create.g.cs">
+      <DependentUpon>XmlDataContractSerializerFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\XmlDataContractSerializerFactoryTests.cs" />
+    <Compile Include="Implementations\XmlRestClientTests.Constructor.g.cs">
+      <DependentUpon>XmlRestClientTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\XmlRestClientTests.cs" />
+    <Compile Include="Implementations\XmlSerializerFactoryTests.Constructor.g.cs">
+      <DependentUpon>XmlSerializerFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\XmlSerializerFactoryTests.Create.g.cs">
+      <DependentUpon>XmlSerializerFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Implementations\XmlSerializerFactoryTests.cs" />
+    <Compile Include="MethodProviderTests.ContainsMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.cs" />
+    <Compile Include="MethodProviderTests.DayPropertyGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.DecimalCeilingMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.DecimalFloorMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.DecimalRoundMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.DoubleCeilingMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.DoubleFloorMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.DoubleRoundMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.EndsWithMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.GetAnyAllMethod.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.GetIEnumerableImpl.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.HourPropertyGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.IgnoreCaseExpressionGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.IndexOfMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.LengthPropertyGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.MinutePropertyGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.MonthPropertyGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.SecondPropertyGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.StartsWithMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.SubstringMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.ToLowerMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.ToUpperMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.TrimMethodGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MethodProviderTests.YearPropertyGet.g.cs">
+      <DependentUpon>MethodProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModelFilterExtensionsTests.cs" />
+    <Compile Include="ModelFilterExtensionsTests.Filter01.g.cs">
+      <DependentUpon>ModelFilterExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModelFilterTTests.Constructor.g.cs">
+      <DependentUpon>ModelFilterTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModelFilterTTests.cs" />
+    <Compile Include="ModelFilterTTests.Filter.g.cs">
+      <DependentUpon>ModelFilterTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\ExpressionTokenizerTests.cs" />
+    <Compile Include="Parser\ExpressionTokenizerTests.GetAnyAllFunctionTokens.g.cs">
+      <DependentUpon>ExpressionTokenizerTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\ExpressionTokenizerTests.GetArithmeticToken.g.cs">
+      <DependentUpon>ExpressionTokenizerTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\ExpressionTokenizerTests.GetFunctionTokens.g.cs">
+      <DependentUpon>ExpressionTokenizerTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\ExpressionTokenizerTests.GetTokens.g.cs">
+      <DependentUpon>ExpressionTokenizerTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\FilterExpressionFactoryTests.Create01.g.cs">
+      <DependentUpon>FilterExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
+    <Compile Include="Parser\FunctionTokenSetTests.Constructor.g.cs">
+      <DependentUpon>FunctionTokenSetTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\FunctionTokenSetTests.cs" />
+    <Compile Include="Parser\FunctionTokenSetTests.ToString01.g.cs">
+      <DependentUpon>FunctionTokenSetTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\MemberNameResolverTests.cs" />
+    <Compile Include="Parser\MemberNameResolverTests.ResolveName.g.cs">
+      <DependentUpon>MemberNameResolverTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\ParameterParserTTests.Constructor01.g.cs">
+      <DependentUpon>ParameterParserTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\ParameterParserTTests.cs" />
+    <Compile Include="Parser\ParameterParserTTests.Parse.g.cs">
+      <DependentUpon>ParameterParserTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\BooleanExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>BooleanExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\BooleanExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\BooleanExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>BooleanExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\ByteArrayExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>ByteArrayExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\ByteArrayExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\ByteArrayExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>ByteArrayExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\ByteExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>ByteExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\ByteExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\ByteExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>ByteExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\DateTimeExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>DateTimeExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\DateTimeExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\DateTimeExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>DateTimeExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\DateTimeOffsetExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>DateTimeOffsetExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\DateTimeOffsetExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\DateTimeOffsetExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>DateTimeOffsetExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\DecimalExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>DecimalExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\DecimalExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\DecimalExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>DecimalExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\DoubleExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>DoubleExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\DoubleExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\DoubleExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>DoubleExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\GuidExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>GuidExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\GuidExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\GuidExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>GuidExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\IntExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>IntExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\IntExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\IntExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>IntExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\LongExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>LongExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\LongExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\LongExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>LongExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\ParameterValueReaderTests.cs" />
+    <Compile Include="Parser\Readers\ParameterValueReaderTests.Read.g.cs">
+      <DependentUpon>ParameterValueReaderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\ShortExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>ShortExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\ShortExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\ShortExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>ShortExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\SingleExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>SingleExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\SingleExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\SingleExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>SingleExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\StreamExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>StreamExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\StreamExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\StreamExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>StreamExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\TimeSpanExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>TimeSpanExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\TimeSpanExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\TimeSpanExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>TimeSpanExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\UnsignedIntExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>UnsignedIntExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\UnsignedIntExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\UnsignedIntExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>UnsignedIntExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\UnsignedLongExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>UnsignedLongExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\UnsignedLongExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\UnsignedLongExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>UnsignedLongExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\UnsignedShortExpressionFactoryTests.Convert.g.cs">
+      <DependentUpon>UnsignedShortExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\Readers\UnsignedShortExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\UnsignedShortExpressionFactoryTests.HandlesGet.g.cs">
+      <DependentUpon>UnsignedShortExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\SelectExpressionFactoryTTests.Constructor.g.cs">
+      <DependentUpon>SelectExpressionFactoryTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\SelectExpressionFactoryTTests.cs" />
+    <Compile Include="Parser\SortDescriptionTTests.Constructor.g.cs">
+      <DependentUpon>SortDescriptionTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\SortDescriptionTTests.cs" />
+    <Compile Include="Parser\SortDescriptionTTests.DirectionGet.g.cs">
+      <DependentUpon>SortDescriptionTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\SortDescriptionTTests.KeySelectorGet.g.cs">
+      <DependentUpon>SortDescriptionTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\SortExpressionFactoryTests.Create.g.cs">
+      <DependentUpon>SortExpressionFactoryTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\SortExpressionFactoryTests.cs" />
+    <Compile Include="Parser\TokenOperatorExtensionsTests.cs" />
+    <Compile Include="Parser\TokenOperatorExtensionsTests.EnclosedMatch.g.cs">
+      <DependentUpon>TokenOperatorExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenOperatorExtensionsTests.IsArithmetic.g.cs">
+      <DependentUpon>TokenOperatorExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenOperatorExtensionsTests.IsCombinationOperation.g.cs">
+      <DependentUpon>TokenOperatorExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenOperatorExtensionsTests.IsEnclosed.g.cs">
+      <DependentUpon>TokenOperatorExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenOperatorExtensionsTests.IsImpliedBoolean.g.cs">
+      <DependentUpon>TokenOperatorExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenOperatorExtensionsTests.IsOperation.g.cs">
+      <DependentUpon>TokenOperatorExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenOperatorExtensionsTests.IsStringEnd.g.cs">
+      <DependentUpon>TokenOperatorExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenOperatorExtensionsTests.IsStringStart.g.cs">
+      <DependentUpon>TokenOperatorExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenSetTests.Constructor.g.cs">
+      <DependentUpon>TokenSetTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenSetTests.cs" />
+    <Compile Include="Parser\TokenSetTests.LeftGet.g.cs">
+      <DependentUpon>TokenSetTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenSetTests.LeftSet.g.cs">
+      <DependentUpon>TokenSetTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenSetTests.OperationGet.g.cs">
+      <DependentUpon>TokenSetTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenSetTests.OperationSet.g.cs">
+      <DependentUpon>TokenSetTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenSetTests.RightGet.g.cs">
+      <DependentUpon>TokenSetTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenSetTests.RightSet.g.cs">
+      <DependentUpon>TokenSetTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\TokenSetTests.ToString01.g.cs">
+      <DependentUpon>TokenSetTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\PexAssemblyInfo.cs" />
+    <Compile Include="Provider\ExpressionProcessorTests.Constructor.g.cs">
+      <DependentUpon>ExpressionProcessorTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\ExpressionProcessorTests.cs" />
+    <Compile Include="Provider\ExpressionProcessorTests.ProcessMethodCall.g.cs">
+      <DependentUpon>ExpressionProcessorTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\ExpressionVisitorTests.cs" />
+    <Compile Include="Provider\ExpressionVisitorTests.Visit.g.cs">
+      <DependentUpon>ExpressionVisitorTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\ParameterBuilderTests.Constructor.g.cs">
+      <DependentUpon>ParameterBuilderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\ParameterBuilderTests.cs" />
+    <Compile Include="Provider\QueryableExtensionsTests.cs" />
+    <Compile Include="Provider\QueryableExtensionsTests.ExecuteAsync.g.cs">
+      <DependentUpon>QueryableExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\QueryableExtensionsTests.Expand01.g.cs">
+      <DependentUpon>QueryableExtensionsTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\RestContextTTests.Constructor.g.cs">
+      <DependentUpon>RestContextTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\RestContextTTests.cs" />
+    <Compile Include="Provider\RestContextTTests.Dispose.g.cs">
+      <DependentUpon>RestContextTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\RestContextTTests.QueryGet.g.cs">
+      <DependentUpon>RestContextTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\RestQueryableTTests.Constructor01.g.cs">
+      <DependentUpon>RestQueryableTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\RestQueryableTTests.cs" />
+    <Compile Include="Provider\RestQueryProviderBaseTests.cs" />
+    <Compile Include="Provider\RestQueryProviderTTests.Constructor01.g.cs">
+      <DependentUpon>RestQueryProviderTTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\RestQueryProviderTTests.cs" />
+    <Compile Include="Provider\Writers\BooleanValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\BooleanValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>BooleanValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\BooleanValueWriterTests.Write.g.cs">
+      <DependentUpon>BooleanValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\ByteArrayValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\ByteArrayValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>ByteArrayValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\ByteArrayValueWriterTests.Write.g.cs">
+      <DependentUpon>ByteArrayValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\ByteValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\ByteValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>ByteValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\ByteValueWriterTests.Write.g.cs">
+      <DependentUpon>ByteValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\DateTimeOffsetValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\DateTimeOffsetValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>DateTimeOffsetValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\DateTimeOffsetValueWriterTests.Write.g.cs">
+      <DependentUpon>DateTimeOffsetValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\DateTimeValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\DateTimeValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>DateTimeValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\DateTimeValueWriterTests.Write.g.cs">
+      <DependentUpon>DateTimeValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\DecimalValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\DecimalValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>DecimalValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\DoubleValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\DoubleValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>DoubleValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\GuidValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\GuidValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>GuidValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\GuidValueWriterTests.Write.g.cs">
+      <DependentUpon>GuidValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\IntegerValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\IntegerValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>IntegerValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\IntegerValueWriterTests.Write.g.cs">
+      <DependentUpon>IntegerValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\IntValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\IntValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>IntValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\LongValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\LongValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>LongValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\ParameterValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\ParameterValueWriterTests.Write.g.cs">
+      <DependentUpon>ParameterValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\RationalValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\RationalValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>RationalValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\RationalValueWriterTests.Write.g.cs">
+      <DependentUpon>RationalValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\ShortValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\ShortValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>ShortValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\SingleValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\SingleValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>SingleValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\StreamValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\StreamValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>StreamValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\StreamValueWriterTests.Write.g.cs">
+      <DependentUpon>StreamValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\StringValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\StringValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>StringValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\StringValueWriterTests.Write.g.cs">
+      <DependentUpon>StringValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\TimeSpanValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\TimeSpanValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>TimeSpanValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\TimeSpanValueWriterTests.Write.g.cs">
+      <DependentUpon>TimeSpanValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\UnsignedIntValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\UnsignedIntValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>UnsignedIntValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\UnsignedLongValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\UnsignedLongValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>UnsignedLongValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Provider\Writers\UnsignedShortValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\UnsignedShortValueWriterTests.HandlesGet.g.cs">
+      <DependentUpon>UnsignedShortValueWriterTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RuntimeTypeProviderTests.Constructor.g.cs">
+      <DependentUpon>RuntimeTypeProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RuntimeTypeProviderTests.cs" />
+    <Compile Include="RuntimeTypeProviderTests.Get.g.cs">
+      <DependentUpon>RuntimeTypeProviderTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StringConstantsTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Moles Include="Linq2Rest.moles" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
