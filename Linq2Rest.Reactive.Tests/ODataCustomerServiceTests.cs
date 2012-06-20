@@ -68,7 +68,7 @@ namespace Linq2Rest.Reactive.Tests
 				.Where(x => x.CompanyName.EndsWith("Futterkiste"))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
-			var result = waitHandle.WaitOne(2000);
+			var result = waitHandle.WaitOne(5000);
 
 			Assert.True(result);
 		}
