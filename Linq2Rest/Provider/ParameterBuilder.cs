@@ -86,8 +86,10 @@ namespace Linq2Rest.Provider
 			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
 
 			var resultUri = builder.Uri;
-
+			
+#if !WINDOWS_PHONE
 			Contract.Assume(resultUri.Scheme == Uri.UriSchemeHttp || resultUri.Scheme == Uri.UriSchemeHttps);
+#endif
 
 			return resultUri;
 		}
