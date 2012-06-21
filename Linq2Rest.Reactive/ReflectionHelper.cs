@@ -16,7 +16,7 @@ namespace Linq2Rest.Reactive
 #if !NETFX_CORE
 		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
 #else
-		private static readonly MethodInfo _innerCreateMethod =
+		private static readonly MethodInfo InnerCreateMethod =
 	        typeof (ISerializerFactory)
             .GetTypeInfo()
             .GetDeclaredMethod("Create");
@@ -30,7 +30,7 @@ namespace Linq2Rest.Reactive
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 #endif
 
-                return _innerCreateMethod;
+                return InnerCreateMethod;
 			}
 		}
 	}
