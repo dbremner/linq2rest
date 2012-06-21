@@ -233,11 +233,11 @@
     <Compile Include="..\Linq2Rest.Reactive\TriggeredRestQueryableProvider.cs">
       <Link>TriggeredRestQueryableProvider.cs</Link>
     </Compile>
-    <Compile Include="..\Linq2Rest\Provider\ExpressionVisitor.cs">
-      <Link>Provider\ExpressionVisitor.cs</Link>
+    <Compile Include="..\Linq2Rest\Provider\ExpressionWriter.cs">
+      <Link>Provider\ExpressionWriter.cs</Link>
     </Compile>
-    <Compile Include="..\Linq2Rest\Provider\IExpressionVisitor.cs">
-      <Link>Provider\IExpressionVisitor.cs</Link>
+    <Compile Include="..\Linq2Rest\Provider\IExpressionWriter.cs">
+      <Link>Provider\IExpressionWriter.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\ISerializer.cs">
       <Link>Provider\ISerializer.cs</Link>
