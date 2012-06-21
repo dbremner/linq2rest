@@ -25,12 +25,12 @@ namespace Linq2Rest.Reactive
 		public static MethodInfo CreateMethod
 		{
 			get
-			{
-#if !WINDOWS_PHONE
+            {
+#if !WINDOWS_PHONE && !NETFX_CORE
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 #endif
 
-				return InnerCreateMethod;
+                return _innerCreateMethod;
 			}
 		}
 	}

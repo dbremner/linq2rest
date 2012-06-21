@@ -6,17 +6,17 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETFX_CORE
 	using System.Diagnostics.Contracts;
 #endif
 
-	/// <summary>
+    /// <summary>
 	/// Defines the public interface for the async REST client factory.
-	/// </summary>
-#if !WINDOWS_PHONE
+    /// </summary>
+#if !WINDOWS_PHONE && !NETFX_CORE
 	[ContractClass(typeof(AsyncRestClientFactoryContracts))]
 #endif
-	public interface IAsyncRestClientFactory
+    public interface IAsyncRestClientFactory
 	{
 		/// <summary>
 		/// Gets the base service address.
@@ -29,9 +29,9 @@ namespace Linq2Rest.Reactive
 		/// <param name="source">The <see cref="Uri"/> to download from.</param>
 		/// <returns>An <see cref="IAsyncRestClient"/> instance.</returns>
 		IAsyncRestClient Create(Uri source);
-	}
+    }
 
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !NETFX_CORE
 	[ContractClassFor(typeof(IAsyncRestClientFactory))]
 	internal abstract class AsyncRestClientFactoryContracts : IAsyncRestClientFactory
 	{
