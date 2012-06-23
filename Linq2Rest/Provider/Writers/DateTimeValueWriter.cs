@@ -22,7 +22,11 @@ namespace Linq2Rest.Provider.Writers
 		{
 			var dateTimeValue = (DateTime)value;
 
+#if !NETFX_CORE
 			return string.Format("datetime'{0}'", XmlConvert.ToString(dateTimeValue, XmlDateTimeSerializationMode.Utc));
+#else
+			return string.Format("datetime'{0}'", XmlConvert.ToString(dateTimeValue.ToUniversalTime()));
+#endif
 		}
 	}
 }
