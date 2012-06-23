@@ -21,8 +21,10 @@ namespace Linq2Rest.Reactive.Implementations
 		/// <param name="serviceBase">The base <see cref="Uri"/> for the REST service.</param>
 		public AsyncXmlRestClientFactory(Uri serviceBase)
 		{
+#if !NETFX_CORE
 			Contract.Requires<ArgumentNullException>(serviceBase != null);
 			Contract.Requires<ArgumentException>(serviceBase.Scheme == Uri.UriSchemeHttp || serviceBase.Scheme == Uri.UriSchemeHttps);
+#endif
 
 			ServiceBase = serviceBase;
 		}
@@ -48,8 +50,10 @@ namespace Linq2Rest.Reactive.Implementations
 
 			public AsyncXmlRestClient(Uri uri)
 			{
+#if !NETFX_CORE
 				Contract.Requires(uri != null);
 				Contract.Requires(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+#endif
 
 				_request = (HttpWebRequest)WebRequest.Create(uri);
 				_request.Accept = "application/Xml";
@@ -68,11 +72,13 @@ namespace Linq2Rest.Reactive.Implementations
 				return stream;
 			}
 
+#if !NETFX_CORE
 			[ContractInvariantMethod]
 			private void Invariants()
 			{
 				Contract.Invariant(_request != null);
 			}
+#endif
 		}
 	}
 }

@@ -54,13 +54,11 @@
 			  target="lib\SL4-WindowsPhone71" />
 		<file src="Linq2Rest.Reactive.WP7\bin\Release\Linq2Rest.Reactive.xml"
 			  target="lib\SL4-WindowsPhone71" />
-		<!-- Don't use WinRT output
 		<file src="Linq2Rest.Reactive.WinRT\bin\Release\Linq2Rest.Reactive.dll"
 			  target="lib\WinRT45" />
 		<file src="Linq2Rest.Reactive.WinRT\bin\Release\Linq2Rest.Reactive.xml"
 			  target="lib\WinRT45" />
 		<file src="Linq2Rest.Reactive.WinRT\bin\Release\CodeContracts\Linq2Rest.Reactive.Contracts.dll"
 			  target="lib\WinRT45\CodeContracts" />
-		-->
 	</files>
 </package>
