@@ -149,19 +149,19 @@
       <HintPath>..\packages\Silverlight.UnitTest.4.0.40413.2011\lib\SL4\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Core">
-      <HintPath>..\packages\Rx-Core.2.0.20612-rc\lib\SL5\System.Reactive.Core.dll</HintPath>
+      <HintPath>..\packages\Rx-Core.2.0.20622-rc\lib\SL5\System.Reactive.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\packages\Rx-Interfaces.2.0.20612-rc\lib\SL5\System.Reactive.Interfaces.dll</HintPath>
+      <HintPath>..\packages\Rx-Interfaces.2.0.20622-rc\lib\SL5\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Linq">
-      <HintPath>..\packages\Rx-Linq.2.0.20612-rc\lib\SL5\System.Reactive.Linq.dll</HintPath>
+      <HintPath>..\packages\Rx-Linq.2.0.20622-rc\lib\SL5\System.Reactive.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.PlatformServices">
-      <HintPath>..\packages\Rx-PlatformServices.2.0.20612-rc\lib\SL5\System.Reactive.PlatformServices.dll</HintPath>
+      <HintPath>..\packages\Rx-PlatformServices.2.0.20622-rc\lib\SL5\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Providers">
-      <HintPath>..\packages\Rx-Providers.2.0.20612-rc\lib\SL5\System.Reactive.Providers.dll</HintPath>
+      <HintPath>..\packages\Rx-Providers.2.0.20622-rc\lib\SL5\System.Reactive.Providers.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest.Reactive</id>
-		<version>1.0.0.0</version>
+		<version>1.0.0.0-rc</version>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
 		<licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
@@ -15,22 +15,12 @@
 			<reference file="Linq2Rest.Reactive.xml" />
 		</references>
 		<dependencies>
-			<group>
 				<dependency id="Linq2Rest"
 							version="2.3.0.0" />
 				<dependency id="Rx-Providers"
-							version="2.0.20304-beta" />
+							version="2.0.20622-rc" />
 				<dependency id="System.Threading.Tasks"
 							version="3.0.1" />
-			</group>
-			<group targetFramework="net40">
-				<dependency id="Linq2Rest"
-							version="2.3.0.0" />
-				<dependency id="Rx-Providers"
-							version="1.0.11226" />
-				<dependency id="System.Threading.Tasks"
-							version="3.0.1" />
-			</group>
 		</dependencies>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System"
