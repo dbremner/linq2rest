@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata>
+		<id>Linq2Rest.Mvc</id>
+		<version>2.3.0.0</version>
+		<authors>Jacob Reimers</authors>
+		<owners>Jacob Reimers</owners>
+		<licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
+		<projectUrl>https://bitbucket.org/jjrdk/linq2rest</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>ASP.NET MVC extensions for Linq2Rest to support binding a Linq2Rest ModelFilter using a ModelBinder. Use ModelFilterBinder as default model binder for IModelFilter{T}.</description>
+		<tags>OData LINQ REST ASP.NET MVC</tags>
+		<references>
+			<reference file="Linq2Rest.Mvc.dll" />
+			<reference file="Linq2Rest.Mvc.xml" />
+		</references>
+		<dependencies>
+			<dependency id="Linq2Rest"
+						version="2.3.0.0" />
+		</dependencies>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Web"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Web.Extensions"
+							   targetFramework="net40" />
+			<frameworkAssembly assemblyName="System.Web.Mvc"
+							   targetFramework="net40" />
+		</frameworkAssemblies>
+	</metadata>
+	<files>
+		<file src="Linq2Rest.Mvc\bin\v4.0\Release\Linq2Rest.Mvc.dll"
+			  target="lib\Net40" />
+		<file src="Linq2Rest.Mvc\bin\v4.0\Release\Linq2Rest.Mvc.xml"
+			  target="lib\Net40" />
+		<file src="Linq2Rest.Mvc\bin\v4.0\Release\CodeContracts\Linq2Rest.Mvc.Contracts.dll"
+			  target="lib\Net40\CodeContracts" />
+		<file src="Linq2Rest.Mvc\bin\v4.5\Release\Linq2Rest.Mvc.dll"
+			  target="lib\Net45" />
+		<file src="Linq2Rest.Mvc\bin\v4.5\Release\Linq2Rest.Mvc.xml"
+			  target="lib\Net45" />
+		<file src="Linq2Rest.Mvc\bin\v4.5\Release\CodeContracts\Linq2Rest.Mvc.Contracts.dll"
+			  target="lib\Net45\CodeContracts" />
+	</files>
+</package>
