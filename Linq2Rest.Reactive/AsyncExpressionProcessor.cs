@@ -14,6 +14,7 @@ namespace Linq2Rest.Reactive
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Linq;
+	using System.Reflection;
 	using Linq2Rest.Provider;
 
 	internal class AsyncExpressionProcessor : IAsyncExpressionProcessor
@@ -43,8 +44,10 @@ namespace Linq2Rest.Reactive
 #endif
 
 			var enumerableSource = source as IEnumerable;
-
+			
+#if !WINDOWS_PHONE
 			Contract.Assume(enumerableSource != null);
+#endif
 
 			var parameters = ResolveInvocationParameters(enumerableSource, typeof(T), methodCall);
 			return Observable.Return(methodCall.Method.Invoke(null, parameters));
@@ -229,7 +232,7 @@ namespace Linq2Rest.Reactive
 #endif
 
 			return resultLoader(builder)
-				.Select(
+				.Select<IEnumerable<T>,object>(
 							  list =>
 							  {
 #if !WINDOWS_PHONE
