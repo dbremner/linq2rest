@@ -12,7 +12,7 @@ namespace Linq2Rest.Parser.Readers
 
 	internal class DateTimeExpressionFactory : IValueExpressionFactory
 	{
-		private static readonly Regex DateTimeRegex = new Regex(@"datetime['\""](\d{4}\-\d{2}\-\d{2}(T\d{2}\:\d{2}\:\d{2})?Z)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex DateTimeRegex = new Regex(@"datetime['\""](\d{4}\-\d{2}\-\d{2}(T\d{2}\:\d{2}\:\d{2})?(?<z>Z)?)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		public Type Handles
 		{
@@ -27,7 +27,9 @@ namespace Linq2Rest.Parser.Readers
 			var match = DateTimeRegex.Match(token);
 			if (match.Success)
 			{
-				var dateTime = XmlConvert.ToDateTime(match.Groups[1].Value, XmlDateTimeSerializationMode.Utc); // DateTime.Parse(match.Groups[1].Value).ToUniversalTime();
+				var dateTime = (match.Groups["z"].Success) ? 
+					XmlConvert.ToDateTime(match.Groups[1].Value, XmlDateTimeSerializationMode.Utc) :
+					DateTime.Parse(match.Groups[1].Value);
 				return Expression.Constant(dateTime);
 			}
 
