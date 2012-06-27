@@ -28,8 +28,8 @@ namespace Linq2Rest.Parser.Readers
 			if (match.Success)
 			{
 				var dateTime = (match.Groups["z"].Success) ? 
-                    XmlConvert.ToDateTime(match.Groups[1].Value, XmlDateTimeSerializationMode.Utc) :
-                    DateTime.Parse(match.Groups[1].Value);
+					XmlConvert.ToDateTime(match.Groups[1].Value, XmlDateTimeSerializationMode.Utc) :
+					DateTime.Parse(match.Groups[1].Value);
 				return Expression.Constant(dateTime);
 			}
 

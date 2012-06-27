@@ -14,13 +14,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	public class DateTimeExpressionFactoryTests
 	{
 		private DateTimeExpressionFactory _factory;
-        private DateTime _dateTime;
+		private DateTime _dateTime;
 
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new DateTimeExpressionFactory();
-            _dateTime = new DateTime(2012, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
+			_dateTime = new DateTime(2012, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 		}
 
 		[Test]
@@ -32,45 +32,45 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-        public void WhenFilterIncludesDateTimeParameterWithZuluThenReturnedExpressionContainsUtcDateTime()
+		public void WhenFilterIncludesDateTimeParameterWithZuluThenReturnedExpressionContainsUtcDateTime()
 		{
-            var utcTime = _dateTime.ToUniversalTime();
+			var utcTime = _dateTime.ToUniversalTime();
 			var parameter = string.Format("datetime'{0}'", utcTime.ToString("yyyy-MM-ddTHH:mm:ssZ"));
 
 			var expression = _factory.Convert(parameter);
 
-            Assert.AreEqual(utcTime, expression.Value);
+			Assert.AreEqual(utcTime, expression.Value);
 		}
 
 		[Test]
-        public void WhenFilterIncludesDateTimeParameterWithZuluInDoubleQuotesThenReturnedExpressionContainsUtcDateTime()
+		public void WhenFilterIncludesDateTimeParameterWithZuluInDoubleQuotesThenReturnedExpressionContainsUtcDateTime()
 		{
-            var utcTime = _dateTime.ToUniversalTime();
+			var utcTime = _dateTime.ToUniversalTime();
 			var parameter = string.Format("datetime\"{0}\"", utcTime.ToString("yyyy-MM-ddTHH:mm:ssZ"));
 
 			var expression = _factory.Convert(parameter);
-            
-            Assert.AreEqual(utcTime, expression.Value);
+			
+			Assert.AreEqual(utcTime, expression.Value);
 		}
 
-        [Test]
-        public void WhenFilterIncludesDateTimeParameterThenReturnedExpressionContainsDateTime()
-        {
-            var parameter = string.Format("datetime'{0}'", _dateTime.ToString("yyyy-MM-ddThh:mm:ss"));
+		[Test]
+		public void WhenFilterIncludesDateTimeParameterThenReturnedExpressionContainsDateTime()
+		{
+			var parameter = string.Format("datetime'{0}'", _dateTime.ToString("yyyy-MM-ddThh:mm:ss"));
 
-            var expression = _factory.Convert(parameter);
+			var expression = _factory.Convert(parameter);
 
-            Assert.AreEqual(_dateTime, expression.Value);
-        }
+			Assert.AreEqual(_dateTime, expression.Value);
+		}
 
-        [Test]
-        public void WhenFilterIncludesDateTimeParameterInDoubleQuotesThenReturnedExpressionContainsDateTime()
-        {
-            var parameter = string.Format("datetime\"{0}\"", _dateTime.ToString("yyyy-MM-ddThh:mm:ss"));
+		[Test]
+		public void WhenFilterIncludesDateTimeParameterInDoubleQuotesThenReturnedExpressionContainsDateTime()
+		{
+			var parameter = string.Format("datetime\"{0}\"", _dateTime.ToString("yyyy-MM-ddThh:mm:ss"));
 
-            var expression = _factory.Convert(parameter);
+			var expression = _factory.Convert(parameter);
 
-            Assert.AreEqual(_dateTime, expression.Value);
-        }
+			Assert.AreEqual(_dateTime, expression.Value);
+		}
 	}
 }
