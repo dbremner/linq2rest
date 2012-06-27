@@ -19,8 +19,10 @@ namespace Linq2Rest.Parser
 
 		public static IEnumerable<TokenSet> GetTokens(this string expression)
 		{
-			Contract.Requires(expression != null);
-			Contract.Ensures(Contract.Result<IEnumerable<TokenSet>>() != null);
+			if (string.IsNullOrWhiteSpace(expression))
+			{
+				yield break;
+			}
 
 			var cleanMatch = expression.EnclosedMatch();
 

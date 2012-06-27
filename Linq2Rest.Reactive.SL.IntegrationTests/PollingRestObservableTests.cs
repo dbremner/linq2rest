@@ -24,7 +24,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 			var subscription = observable
 				.Poll(TimeSpan.FromSeconds(0.5))
 				.Where(x => x.StringValue == "blah")
-				.Subscribe(x => { }, () => waitHandle.Set());
+				.Subscribe<FakeItem>(x => { }, () => waitHandle.Set());
 
 			var result = waitHandle.WaitOne(2000);
 
