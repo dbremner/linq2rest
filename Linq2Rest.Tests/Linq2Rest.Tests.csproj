@@ -147,6 +147,7 @@
     <Compile Include="Provider\Writers\BooleanValueWriterTests.cs" />
     <Compile Include="Provider\Writers\ByteArrayValueWriterTests.cs" />
     <Compile Include="Provider\Writers\ByteValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\DateTimeOffsetValueWriterTests.cs" />
     <Compile Include="Provider\Writers\DateTimeValueWriterTests.cs" />
     <Compile Include="Provider\Writers\DecimalValueWriterTests.cs" />
     <Compile Include="Provider\Writers\DoubleValueWriterTests.cs" />
