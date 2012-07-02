@@ -40,10 +40,10 @@ namespace Linq2Rest.Parser
 					   let property = GetPropertyExpression<T>(sort.First(), parameterExpression)
 					   let direction = sort.ElementAtOrDefault(1) == "desc" ? SortDirection.Descending : SortDirection.Ascending
 					   where property != null
-					   select new SortDescription<T>(property.Compile(), direction);
+					   select new SortDescription<T>(property, direction);
 		}
 
-		private static Expression<Func<T, object>> GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
+		private static Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
 		{
 			Contract.Requires(propertyToken != null);
 
@@ -57,12 +57,14 @@ namespace Linq2Rest.Parser
 				{
 					parentType = property.PropertyType;
 					propertyExpression = propertyExpression == null
-											? Expression.Convert(Expression.Property(parameter, property), typeof(object))
-											: Expression.Convert(Expression.Property(propertyExpression, property), typeof(object));
+											? Expression.Property(parameter, property)
+											: Expression.Property(propertyExpression, property);
 				}
 			}
 
-			return propertyExpression == null ? null : Expression.Lambda<Func<T, object>>(propertyExpression, parameter);
+			var funcType = typeof(Func<,>).MakeGenericType(typeof(T), parentType);
+			var lambda = Expression.Lambda(funcType, propertyExpression, parameter);
+			return propertyExpression == null ? null : lambda;
 		}
 	}
 }

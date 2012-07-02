@@ -46,7 +46,7 @@ namespace Linq2Rest
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 
-			return filter == null ? source.Cast<object>() : filter.Filter(source);
+			return filter == null ? source.OfType<object>() : filter.Filter(source);
 		}
 	}
 }

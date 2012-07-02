@@ -7,6 +7,7 @@ namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Diagnostics.Contracts;
+	using System.Linq.Expressions;
 	using System.Web.UI.WebControls;
 
 	/// <summary>
@@ -15,7 +16,7 @@ namespace Linq2Rest.Parser
 	/// <typeparam name="T">The <see cref="Type"/> to sort.</typeparam>
 	public class SortDescription<T>
 	{
-		private readonly Func<T, object> _keySelector;
+		private readonly Expression _keySelector;
 		private readonly SortDirection _direction;
 
 		/// <summary>
@@ -23,7 +24,7 @@ namespace Linq2Rest.Parser
 		/// </summary>
 		/// <param name="keySelector">The function to select the sort key.</param>
 		/// <param name="direction">The sort direction.</param>
-		public SortDescription(Func<T, object> keySelector, SortDirection direction)
+		public SortDescription(Expression keySelector, SortDirection direction)
 		{
 			Contract.Requires<ArgumentNullException>(keySelector != null);
 
@@ -42,7 +43,7 @@ namespace Linq2Rest.Parser
 		/// <summary>
 		/// Gets the key to sort by.
 		/// </summary>
-		public Func<T, object> KeySelector
+		public Expression KeySelector
 		{
 			get { return _keySelector; }
 		}
