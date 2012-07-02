@@ -38,14 +38,17 @@ namespace Linq2Rest.Parser
 				   select sortToken.Split(' ')
 					   into sort
 					   let property = GetPropertyExpression<T>(sort.First(), parameterExpression)
-					   let direction = sort.ElementAtOrDefault(1) == "desc" ? SortDirection.Descending : SortDirection.Ascending
 					   where property != null
+					   let direction = sort.ElementAtOrDefault(1) == "desc" ? SortDirection.Descending : SortDirection.Ascending
 					   select new SortDescription<T>(property, direction);
 		}
 
 		private static Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
 		{
-			Contract.Requires(propertyToken != null);
+			if(string.IsNullOrWhiteSpace(propertyToken))
+			{
+				return null;
+			}
 
 			var parentType = typeof(T);
 			Expression propertyExpression = null;
@@ -63,6 +66,9 @@ namespace Linq2Rest.Parser
 			}
 
 			var funcType = typeof(Func<,>).MakeGenericType(typeof(T), parentType);
+
+			Contract.Assume(propertyExpression != null);
+
 			var lambda = Expression.Lambda(funcType, propertyExpression, parameter);
 			return propertyExpression == null ? null : lambda;
 		}
