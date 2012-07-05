@@ -21,9 +21,12 @@ namespace Linq2Rest.Parser.Readers
 		public ConstantExpression Convert(string token)
 		{
 			ulong number;
-			return ulong.TryParse(token, out number)
-				? Expression.Constant(number)
-				: Expression.Constant(default(ulong));
+			if( ulong.TryParse(token, out number))
+			{
+				return Expression.Constant(number);
+			}
+
+			throw new FormatException("Could not read " + token + "as Unsigned Long.");
 		}
 	}
 }

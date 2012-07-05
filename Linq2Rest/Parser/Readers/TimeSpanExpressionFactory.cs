@@ -34,11 +34,11 @@ namespace Linq2Rest.Parser.Readers
 				}
 				catch
 				{
-					return Expression.Constant(default(TimeSpan));
+					throw new FormatException("Could not read " + token + "as TimeSpan.");
 				}
 			}
 
-			return Expression.Constant(default(TimeSpan));
+			throw new FormatException("Could not read " + token + "as TimeSpan.");
 		}
 	}
 }

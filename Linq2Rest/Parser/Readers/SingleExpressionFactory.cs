@@ -22,9 +22,12 @@ namespace Linq2Rest.Parser.Readers
 		public ConstantExpression Convert(string token)
 		{
 			float number;
-			return float.TryParse(token.Trim('F', 'f'), NumberStyles.Any, CultureInfo.InvariantCulture, out number)
-				? Expression.Constant(number)
-				: Expression.Constant(default(float));
+			if( float.TryParse(token.Trim('F', 'f'), NumberStyles.Any, CultureInfo.InvariantCulture, out number))
+			{
+				return Expression.Constant(number);
+			}
+
+			throw new FormatException("Could not read " + token + "as short.");
 		}
 	}
 }

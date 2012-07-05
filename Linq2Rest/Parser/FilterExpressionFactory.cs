@@ -23,8 +23,7 @@ namespace Linq2Rest.Parser
 	{
 		private static readonly Regex StringRx = new Regex(@"^[""'](.*?)[""']$", RegexOptions.Compiled);
 		private static readonly Regex NegateRx = new Regex(@"^-[^\d]*", RegexOptions.Compiled);
-		private static readonly Regex NewRx = new Regex(@"^new (?<type>[^\(\)]+)\((?<parameters>.*)\)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
+		
 		/// <summary>
 		/// Creates a filter expression from its string representation.
 		/// </summary>
@@ -55,24 +54,6 @@ namespace Linq2Rest.Parser
 			var expression = CreateExpression<T>(filter, parameter, new List<ParameterExpression>(), null, formatProvider);
 
 			return expression == null ? x => false : Expression.Lambda<Func<T, bool>>(expression, parameter);
-		}
-
-		private static string[] GetConstructorTokens(string filter)
-		{
-			Contract.Requires(filter != null);
-
-			var constructorMatch = NewRx.Match(filter);
-			if (!constructorMatch.Success)
-			{
-				return null;
-			}
-
-			var matchGroup = constructorMatch.Groups["parameters"];
-
-			Contract.Assume(matchGroup != null, "Otherwise match is not success.");
-
-			var constructorContent = matchGroup.Value;
-			return constructorContent.Split(',').Select(x => x.Trim().Trim(')', '(')).ToArray();
 		}
 
 		private static Type GetFunctionParameterType(string operation)
@@ -419,6 +400,11 @@ namespace Linq2Rest.Parser
 				return GetTokenExpression<T>(sourceParameter, lambdaParameters, type, formatProvider, tokens);
 			}
 
+			if (string.Equals(filter, "null", StringComparison.OrdinalIgnoreCase))
+			{
+				return Expression.Constant(null);
+			}
+
 			Expression expression = null;
 			var stringMatch = StringRx.Match(filter);
 
@@ -437,7 +423,7 @@ namespace Linq2Rest.Parser
 					formatProvider);
 
 				Contract.Assume(negateExpression != null);
-				
+
 				expression = SupportsNegate(negateExpression.Type) ? Expression.Negate(negateExpression) : null;
 			}
 
@@ -469,24 +455,12 @@ namespace Linq2Rest.Parser
 				}
 				else
 				{
-					var booleanExpression = (ConstantExpression)ParameterValueReader.Read(typeof(bool), filter, formatProvider);
-					if (booleanExpression.Value != null)
+					var booleanExpression = ParameterValueReader.Read(typeof(bool), filter, formatProvider) as ConstantExpression;
+					if (booleanExpression != null && booleanExpression.Value != null)
 					{
 						expression = booleanExpression;
 					}
 				}
-			}
-
-			if (expression == null && type != null)
-			{
-				expression = typeof(IConvertible).IsAssignableFrom(type)
-								? Expression.Constant(Convert.ChangeType(filter, type, formatProvider), type)
-								: GetParseExpression(filter, formatProvider, type);
-			}
-
-			if (expression == null)
-			{
-				expression = GetConstructorExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider);
 			}
 
 			return expression;
@@ -570,57 +544,6 @@ namespace Linq2Rest.Parser
 			return leftExpression == null || rightExpression == null
 					? null
 					: GetLeftRightOperation(arithmeticToken.Operation, leftExpression, rightExpression);
-		}
-
-		private Expression GetConstructorExpression<T>(string filter, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type resultType, IFormatProvider formatProvider)
-		{
-			Contract.Requires(filter != null);
-
-			if (resultType == null)
-			{
-				return null;
-			}
-
-			var newMatch = NewRx.Match(filter);
-			if (newMatch.Success)
-			{
-				var matchGroup = newMatch.Groups["type"];
-
-				Contract.Assume(matchGroup != null, "Otherwise match is not success.");
-
-				var typeName = matchGroup.Value;
-				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				var type = assemblies
-					.SelectMany(x => x.GetTypes().Where(t => t.Name == typeName))
-					.FirstOrDefault();
-
-				if (type == null)
-				{
-					return null;
-				}
-
-				var constructorTokens = GetConstructorTokens(filter);
-
-				var constructorInfos = type.GetConstructors().Where(x => x.GetParameters().Length == constructorTokens.Length);
-				foreach (var constructorInfo in constructorInfos)
-				{
-					try
-					{
-						var parameterExpressions = constructorInfo
-							.GetParameters()
-							.Select((p, i) => CreateExpression<T>(constructorTokens[i], parameter, lambdaParameters, p.ParameterType, formatProvider))
-							.ToArray();
-
-						return Expression.Convert(Expression.New(constructorInfo, parameterExpressions), resultType);
-					}
-					catch
-					{
-						return null;
-					}
-				}
-			}
-
-			return null;
 		}
 
 		private Expression GetAnyAllFunctionExpression<T>(string filter, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters, IFormatProvider formatProvider)
