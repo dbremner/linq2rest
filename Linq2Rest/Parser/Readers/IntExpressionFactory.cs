@@ -6,7 +6,6 @@
 namespace Linq2Rest.Parser.Readers
 {
 	using System;
-	using System.Globalization;
 	using System.Linq.Expressions;
 
 	internal class IntExpressionFactory : IValueExpressionFactory
@@ -22,9 +21,12 @@ namespace Linq2Rest.Parser.Readers
 		public ConstantExpression Convert(string token)
 		{
 			int number;
-			return int.TryParse(token, out number)
-				? Expression.Constant(number)
-				: Expression.Constant(default(int));
+			if (int.TryParse(token, out number))
+			{
+				return Expression.Constant(number);
+			}
+
+			throw new FormatException("Could not read " + token + "as integer.");
 		}
 	}
 }

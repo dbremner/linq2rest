@@ -6,16 +6,13 @@
 namespace Linq2Rest.Parser.Readers
 {
 	using System;
-	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Reflection;
 
 	internal static class ParameterValueReader
 	{
-		private static readonly ConcurrentDictionary<Type, MethodInfo> ParseMethods = new ConcurrentDictionary<Type, MethodInfo>();
 		private static readonly IList<IValueExpressionFactory> ExpressionFactories;
 
 		static ParameterValueReader()
@@ -47,25 +44,11 @@ namespace Linq2Rest.Parser.Readers
 			Contract.Requires(token != null);
 			Contract.Requires(type != null);
 
-			if (string.Equals(token, "null", StringComparison.OrdinalIgnoreCase))
-			{
-				return Expression.Constant(null);
-			}
-
 			var factory = ExpressionFactories.FirstOrDefault(x => x.Handles == type);
 
 			return factory == null
 				? GetKnownConstant(type, token, formatProvider)
 				: factory.Convert(token);
-		}
-
-		private static MethodInfo ResolveParseMethod(Type type)
-		{
-			Contract.Requires(type != null);
-
-			return type.GetMethods(BindingFlags.Static | BindingFlags.Public)
-				.Where(x => x.Name == "Parse" && x.GetParameters().Length == 2)
-				.FirstOrDefault(x => x.GetParameters().First().ParameterType == typeof(string) && x.GetParameters().ElementAt(1).ParameterType == typeof(IFormatProvider));
 		}
 
 		private static Expression GetKnownConstant(Type type, string token, IFormatProvider formatProvider)
@@ -79,11 +62,9 @@ namespace Linq2Rest.Parser.Readers
 				return Expression.Constant(enumValue);
 			}
 
-			var parseMethod = ParseMethods.GetOrAdd(type, ResolveParseMethod);
-			if (parseMethod != null)
+			if(typeof(IConvertible).IsAssignableFrom(type))
 			{
-				var parseResult = parseMethod.Invoke(null, new object[] { token, formatProvider });
-				return Expression.Constant(parseResult);
+				return Expression.Constant(Convert.ChangeType(token, type, formatProvider), type);
 			}
 
 			if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
