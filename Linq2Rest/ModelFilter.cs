@@ -11,7 +11,6 @@ namespace Linq2Rest
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Web.UI.WebControls;
-
 	using Linq2Rest.Parser;
 
 	internal class ModelFilter<T> : IModelFilter<T>
@@ -33,7 +32,7 @@ namespace Linq2Rest
 
 		public IEnumerable<object> Filter(IEnumerable<T> model)
 		{
-			var result = _filterExpression != null ? model.AsQueryable().Where(_filterExpression) : model;
+			var result = _filterExpression != null ? model.AsQueryable().Where(_filterExpression) : model.AsQueryable();
 
 			if (_sortDescriptions != null && _sortDescriptions.Any())
 			{
@@ -49,7 +48,7 @@ namespace Linq2Rest
 					}
 					else
 					{
-						var orderedEnumerable = result as IOrderedEnumerable<T>;
+						var orderedEnumerable = result as IOrderedQueryable<T>;
 
 						Contract.Assume(orderedEnumerable != null);
 
@@ -71,8 +70,8 @@ namespace Linq2Rest
 			}
 
 			return _selectExpression == null
-					? result.OfType<object>()
-					: result.ToArray().AsQueryable().Select(_selectExpression);
+					? result.ToArray().OfType<object>()
+					: result.AsQueryable().Select(_selectExpression).ToArray();
 		}
 	}
 }

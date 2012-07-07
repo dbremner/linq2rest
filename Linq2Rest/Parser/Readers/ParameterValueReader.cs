@@ -3,24 +3,23 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Reflection;
+
 namespace Linq2Rest.Parser.Readers
 {
-	using System;
-	using System.Collections.Concurrent;
-	using System.Collections.Generic;
-	using System.Diagnostics.Contracts;
-	using System.Linq;
-	using System.Linq.Expressions;
-	using System.Reflection;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
+    using System.Linq;
+    using System.Linq.Expressions;
 
-	internal static class ParameterValueReader
-	{
-		private static readonly ConcurrentDictionary<Type, MethodInfo> ParseMethods = new ConcurrentDictionary<Type, MethodInfo>();
-		private static readonly IList<IValueExpressionFactory> ExpressionFactories;
+    internal static class ParameterValueReader
+    {
+        private static readonly IList<IValueExpressionFactory> ExpressionFactories;
 
-		static ParameterValueReader()
-		{
-			ExpressionFactories = new List<IValueExpressionFactory>
+        static ParameterValueReader()
+        {
+            ExpressionFactories = new List<IValueExpressionFactory>
 			                      	{
 										new BooleanExpressionFactory(),
 										new ByteExpressionFactory(),
@@ -40,63 +39,85 @@ namespace Linq2Rest.Parser.Readers
 										new UnsignedLongExpressionFactory(),
 										new UnsignedShortExpressionFactory()
 			                      	};
-		}
+        }
 
-		public static Expression Read(Type type, string token, IFormatProvider formatProvider)
-		{
-			Contract.Requires(token != null);
-			Contract.Requires(type != null);
+        public static Expression Read(Type type, string token, IFormatProvider formatProvider)
+        {
+            Contract.Requires(token != null);
+            Contract.Requires(type != null);
 
-			if (string.Equals(token, "null", StringComparison.OrdinalIgnoreCase))
-			{
-				return Expression.Constant(null);
-			}
+            var factory = ExpressionFactories.FirstOrDefault(x => x.Handles == type);
 
-			var factory = ExpressionFactories.FirstOrDefault(x => x.Handles == type);
+            return factory == null
+                ? GetKnownConstant(type, token, formatProvider)
+                : factory.Convert(token);
+        }
 
-			return factory == null
-				? GetKnownConstant(type, token, formatProvider)
-				: factory.Convert(token);
-		}
+        private static Expression GetKnownConstant(Type type, string token, IFormatProvider formatProvider)
+        {
+            Contract.Requires(token != null);
+            Contract.Requires(type != null);
 
-		private static MethodInfo ResolveParseMethod(Type type)
-		{
-			Contract.Requires(type != null);
+            if (type.IsEnum)
+            {
+                var enumValue = Enum.Parse(type, token, true);
+                return Expression.Constant(enumValue);
+            }
 
-			return type.GetMethods(BindingFlags.Static | BindingFlags.Public)
-				.Where(x => x.Name == "Parse" && x.GetParameters().Length == 2)
-				.FirstOrDefault(x => x.GetParameters().First().ParameterType == typeof(string) && x.GetParameters().ElementAt(1).ParameterType == typeof(IFormatProvider));
-		}
+            if (typeof(IConvertible).IsAssignableFrom(type))
+            {
+                return Expression.Constant(Convert.ChangeType(token, type, formatProvider), type);
+            }
 
-		private static Expression GetKnownConstant(Type type, string token, IFormatProvider formatProvider)
-		{
-			Contract.Requires(token != null);
-			Contract.Requires(type != null);
+            if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
+            {
+                var genericTypeArgument = type.GetGenericArguments()[0];
+                var value = Read(genericTypeArgument, token, formatProvider);
+                if (value != null)
+                {
+                    return Expression.Convert(value, type);
+                }
+            }
 
-			if (type.IsEnum)
-			{
-				var enumValue = Enum.Parse(type, token, true);
-				return Expression.Constant(enumValue);
-			}
+            return GetParseExpression(token, formatProvider, type);
+        }
 
-			var parseMethod = ParseMethods.GetOrAdd(type, ResolveParseMethod);
-			if (parseMethod != null)
-			{
-				var parseResult = parseMethod.Invoke(null, new object[] { token, formatProvider });
-				return Expression.Constant(parseResult);
-			}
+        private static Expression GetParseExpression(string filter, IFormatProvider formatProvider, Type type)
+        {
+            Contract.Requires(type != null);
 
-			if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
-			{
-				var genericTypeArgument = type.GetGenericArguments()[0];
-				var value = Read(genericTypeArgument, token, formatProvider);
-				if (value != null)
-				{
-					return Expression.Convert(value, type);
-				}
-			}
+            var parseMethods = type.GetMethods(BindingFlags.Static | BindingFlags.Public).Where(x => x.Name == "Parse").ToArray();
+            if (parseMethods.Length > 0)
+            {
+                var withFormatProvider =
+                    parseMethods.FirstOrDefault(
+                        x =>
+                        {
+                            var parameters = x.GetParameters();
+                            return parameters.Length == 2
+                                && typeof(string).IsAssignableFrom(parameters[0].ParameterType)
+                                && typeof(IFormatProvider).IsAssignableFrom(parameters[1].ParameterType);
+                        });
+                if (withFormatProvider != null)
+                {
+                    return Expression.Call(withFormatProvider, Expression.Constant(filter), Expression.Constant(formatProvider));
+                }
 
-			return null;
-		}
-	}
+                var withoutFormatProvider = parseMethods.FirstOrDefault(
+                        x =>
+                        {
+                            var parameters = x.GetParameters();
+                            return parameters.Length == 1
+                                && typeof(string).IsAssignableFrom(parameters[0].ParameterType);
+                        });
+
+                if (withoutFormatProvider != null)
+                {
+                    return Expression.Call(withoutFormatProvider, Expression.Constant(filter));
+                }
+            }
+
+            return null;
+        }
+    }
 }

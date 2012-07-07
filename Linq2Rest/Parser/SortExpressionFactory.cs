@@ -7,8 +7,6 @@ namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Diagnostics.Contracts;
-	using System.Globalization;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Web.UI.WebControls;
@@ -38,14 +36,17 @@ namespace Linq2Rest.Parser
 				   select sortToken.Split(' ')
 					   into sort
 					   let property = GetPropertyExpression<T>(sort.First(), parameterExpression)
-					   let direction = sort.ElementAtOrDefault(1) == "desc" ? SortDirection.Descending : SortDirection.Ascending
 					   where property != null
-					   select new SortDescription<T>(property.Compile(), direction);
+					   let direction = sort.ElementAtOrDefault(1) == "desc" ? SortDirection.Descending : SortDirection.Ascending
+					   select new SortDescription<T>(property, direction);
 		}
 
-		private static Expression<Func<T, object>> GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
+		private static Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
 		{
-			Contract.Requires(propertyToken != null);
+			if (string.IsNullOrWhiteSpace(propertyToken))
+			{
+				return null;
+			}
 
 			var parentType = typeof(T);
 			Expression propertyExpression = null;
@@ -57,12 +58,19 @@ namespace Linq2Rest.Parser
 				{
 					parentType = property.PropertyType;
 					propertyExpression = propertyExpression == null
-											? Expression.Convert(Expression.Property(parameter, property), typeof(object))
-											: Expression.Convert(Expression.Property(propertyExpression, property), typeof(object));
+											? Expression.Property(parameter, property)
+											: Expression.Property(propertyExpression, property);
 				}
 			}
 
-			return propertyExpression == null ? null : Expression.Lambda<Func<T, object>>(propertyExpression, parameter);
+			if (propertyExpression == null)
+			{
+				throw new FormatException(propertyToken + " is not recognized as a valid property");
+			}
+
+			var funcType = typeof(Func<,>).MakeGenericType(typeof(T), parentType);
+
+			return Expression.Lambda(funcType, propertyExpression, parameter);
 		}
 	}
 }

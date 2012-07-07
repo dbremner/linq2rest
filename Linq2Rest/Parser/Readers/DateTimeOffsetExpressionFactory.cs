@@ -31,7 +31,7 @@ namespace Linq2Rest.Parser.Readers
 				return Expression.Constant(dateTimeOffset);
 			}
 
-			return Expression.Constant(default(DateTimeOffset));
+			throw new FormatException("Could not read " + token + " as DateTimeOffset.");
 		}
 	}
 }

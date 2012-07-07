@@ -22,10 +22,12 @@ namespace Linq2Rest.Parser.Readers
 		public ConstantExpression Convert(string token)
 		{
 			byte number;
-			return Expression.Constant(
-				byte.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out number)
-				? number
-				: default(byte));
+			if (byte.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out number))
+			{
+				return Expression.Constant(number);
+			}
+
+			throw new FormatException("Could not read " + token + " as byte.");
 		}
 	}
 }

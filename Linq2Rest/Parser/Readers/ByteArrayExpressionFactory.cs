@@ -37,7 +37,7 @@ namespace Linq2Rest.Parser.Readers
 				}
 			}
 
-			return Expression.Constant(null);
+			throw new FormatException("Could not read " + token + " as byte array.");
 		}
 	}
 }
