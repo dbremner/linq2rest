@@ -7,8 +7,6 @@ namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Diagnostics.Contracts;
-	using System.Globalization;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Web.UI.WebControls;
@@ -45,7 +43,7 @@ namespace Linq2Rest.Parser
 
 		private static Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
 		{
-			if(string.IsNullOrWhiteSpace(propertyToken))
+			if (string.IsNullOrWhiteSpace(propertyToken))
 			{
 				return null;
 			}
@@ -65,12 +63,14 @@ namespace Linq2Rest.Parser
 				}
 			}
 
+			if (propertyExpression == null)
+			{
+				throw new FormatException(propertyToken + " is not recognized as a valid property");
+			}
+
 			var funcType = typeof(Func<,>).MakeGenericType(typeof(T), parentType);
 
-			Contract.Assume(propertyExpression != null);
-
-			var lambda = Expression.Lambda(funcType, propertyExpression, parameter);
-			return propertyExpression == null ? null : lambda;
+			return Expression.Lambda(funcType, propertyExpression, parameter);
 		}
 	}
 }

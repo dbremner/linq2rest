@@ -11,7 +11,6 @@ namespace Linq2Rest
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Web.UI.WebControls;
-
 	using Linq2Rest.Parser;
 
 	internal class ModelFilter<T> : IModelFilter<T>

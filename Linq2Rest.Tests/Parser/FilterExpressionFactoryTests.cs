@@ -180,6 +180,12 @@ namespace Linq2Rest.Tests.Parser
             Assert.AreEqual("x => (x.GlobalID != 00000000-0000-0000-0000-000000000000)", result.ToString());
         }
 
+		[TestCase("DateValue eq 123", typeof(FormatException))]
+		[TestCase("DateValue eq datetime'123'", typeof(FormatException))]
+		[TestCase("PointInTime eq 'nothing'", typeof(InvalidOperationException))]
+		[TestCase("DoubleValue ge 'nothing'", typeof(InvalidOperationException))]
+		[TestCase("IntValue lt 'nothing'", typeof(InvalidOperationException))]
+		[TestCase("IntValue lt ('nothing' add 1)", typeof(InvalidOperationException))]
         [TestCase("blah", typeof(InvalidOperationException))]
         [TestCase("StringValue not foo", typeof(InvalidOperationException))]
         [TestCase("'StringValue' not foo", typeof(InvalidOperationException))]
@@ -192,8 +198,6 @@ namespace Linq2Rest.Tests.Parser
         [TestCase("\0\0", typeof(InvalidOperationException))]
         public void WhenParsingInvalidExpressionThenThrows(string filter, Type exceptionType)
         {
-            Expression<Func<FakeItem, bool>> falseExpression = x => false;
-            
             Assert.Throws(exceptionType, () => _factory.Create<FakeItem>(filter));
         }
     }

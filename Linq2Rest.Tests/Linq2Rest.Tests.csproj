@@ -111,6 +111,7 @@
     <Compile Include="Implementations\SimpleContractItem.cs" />
     <Compile Include="Implementations\XmlDataContractSerializerFactoryTests.cs" />
     <Compile Include="Implementations\XmlSerializerFactoryTests.cs" />
+    <Compile Include="ModelFilterExtensionsTests.cs" />
     <Compile Include="Mvc\RuntimeAnonymousTypeSerializerTests.cs" />
     <Compile Include="Fakes\NorthwindCustomer.cs" />
     <Compile Include="ODataCustomerServiceTests.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Fakes\TestODataSerializerFactory.cs" />
     <Compile Include="Fakes\TestSerializer.cs" />
     <Compile Include="Fakes\TestSerializerFactory.cs" />
+    <Compile Include="SelectExpressionFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
