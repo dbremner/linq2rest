@@ -27,7 +27,7 @@ namespace Linq2Rest.Parser.Readers
 				return Expression.Constant(number);
 			}
 
-			throw new FormatException("Could not read " + token + "as decimal.");
+			throw new FormatException("Could not read " + token + " as decimal.");
 		}
 	}
 }
