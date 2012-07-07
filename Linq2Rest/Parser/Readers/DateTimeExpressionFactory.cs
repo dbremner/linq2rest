@@ -33,7 +33,7 @@ namespace Linq2Rest.Parser.Readers
 				return Expression.Constant(dateTime);
 			}
 
-			return Expression.Constant(default(DateTime));
+			throw new FormatException("Could not read " + token + " as DateTime.");
 		}
 	}
 }
