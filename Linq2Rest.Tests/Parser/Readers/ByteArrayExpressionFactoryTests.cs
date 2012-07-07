@@ -22,11 +22,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterIsIncorrectFormatThenReturnsDefaultValue()
+		public void WhenFilterIsIncorrectFormatThenThrows()
 		{
 			const string Parameter = "blah";
 
-			Assert.AreEqual(default(byte[]), _factory.Convert(Parameter).Value);
+			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
 		}
 
 		[Test]

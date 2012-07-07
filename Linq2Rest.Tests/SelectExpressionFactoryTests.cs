@@ -1,7 +1,10 @@
 namespace UrlQueryParser.Tests
 {
+	using System;
 	using System.Linq;
-
+	using Linq2Rest;
+	using Linq2Rest.Parser;
+	using Linq2Rest.Tests;
 	using NUnit.Framework;
 
 	public class SelectExpressionFactoryTests
@@ -12,7 +15,8 @@ namespace UrlQueryParser.Tests
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
-			_factory = new SelectExpressionFactory<FakeItem>();
+			var memberNameResolver = new MemberNameResolver();
+			_factory = new SelectExpressionFactory<FakeItem>(memberNameResolver, new RuntimeTypeProvider(memberNameResolver));
 
 			_items = new[]
 				{
@@ -25,11 +29,11 @@ namespace UrlQueryParser.Tests
 		[Test]
 		public void WhenApplyingSelectionThenReturnsObjectWithOnlySelectedPropertiesAsFields()
 		{
-			var expression = _factory.Create("IntValue");
+			var expression = _factory.Create("Number").Compile();
 
 			var selection = _items.Select(expression);
 
-			Assert.True(selection.All(x => x.GetType().GetField("IntValue") != null));
+			Assert.True(selection.All(x => x.GetType().GetProperty("Number") != null));
 		}
 	}
 }
