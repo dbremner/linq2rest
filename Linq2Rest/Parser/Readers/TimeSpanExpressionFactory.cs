@@ -34,11 +34,11 @@ namespace Linq2Rest.Parser.Readers
 				}
 				catch
 				{
-					throw new FormatException("Could not read " + token + "as TimeSpan.");
+					throw new FormatException("Could not read " + token + " as TimeSpan.");
 				}
 			}
 
-			throw new FormatException("Could not read " + token + "as TimeSpan.");
+			throw new FormatException("Could not read " + token + " as TimeSpan.");
 		}
 	}
 }

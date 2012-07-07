@@ -26,7 +26,7 @@ namespace Linq2Rest.Parser.Readers
 				return Expression.Constant(number);
 			}
 
-			throw new FormatException("Could not read " + token + "as Unsigned Long.");
+			throw new FormatException("Could not read " + token + " as Unsigned Long.");
 		}
 	}
 }

@@ -33,7 +33,7 @@ namespace Linq2Rest.Parser.Readers
 				}
 			}
 
-			throw new FormatException("Could not read " + token + "as Guid.");
+			throw new FormatException("Could not read " + token + " as Guid.");
 		}
 	}
 }
