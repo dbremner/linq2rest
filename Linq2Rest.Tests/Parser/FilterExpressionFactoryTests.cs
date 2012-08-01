@@ -7,7 +7,6 @@ namespace Linq2Rest.Tests.Parser
 {
     using System;
     using System.Globalization;
-    using System.Linq.Expressions;
     using System.Threading;
 
     using Linq2Rest.Parser;
@@ -27,6 +26,7 @@ namespace Linq2Rest.Tests.Parser
         }
 
         [Test]
+		[TestCase("substringof('123456789(ext:1234))', StringValue)", "x => x.StringValue.Contains(\"123456789(ext:1234))\")")]
         [TestCase("StringValue eq 'a \"quote\"'", "x => (x.StringValue == \"a \"quote\"\")")]
         [TestCase("StringValue eq 'a \"quote\" within the text'", "x => (x.StringValue == \"a \"quote\" within the text\")")]
         [TestCase("StringValue eq 'a 'single quote' within the text'", "x => (x.StringValue == \"a 'single quote' within the text\")")]
