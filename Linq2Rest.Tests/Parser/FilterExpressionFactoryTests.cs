@@ -6,6 +6,7 @@
 namespace Linq2Rest.Tests.Parser
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Threading;
 
@@ -145,6 +146,7 @@ namespace Linq2Rest.Tests.Parser
         [TestCase("Children/any(a: a/Children/any(b: startswith(tolower(b/GrandChildStringValue), 'foo')))", "x => x.Children.Any(a => a.Children.Any(b => b.GrandChildStringValue.ToLowerInvariant().StartsWith(\"foo\", OrdinalIgnoreCase)))")]
         [TestCase("Children/any(a: startswith(tolower(a/ChildStringValue), StringValue))", "x => x.Children.Any(a => a.ChildStringValue.ToLowerInvariant().StartsWith(x.StringValue, OrdinalIgnoreCase))")]
         [TestCase("Children/all(y: y/ID eq 2 add ID)", "x => x.Children.All(y => (y.ID == (2 + x.ID)))")]
+        [TestCase("Child/Attributes/all(y: y eq 'blah')", "x => x.Child.Attributes.All(y => (y == \"blah\"))")]
         [TestCase("DateValue eq datetime'2012-05-06T16:11:00Z'", "x => (x.DateValue == 5/6/2012 4:11:00 PM)")]
         [TestCase("DateValue eq datetime'2012-05-06T16:11:00Z'", "x => (x.DateValue == 5/6/2012 4:11:00 PM)")]
         [TestCase("Duration eq time'PT2H15M'", "x => (x.Duration == 02:15:00)")]
