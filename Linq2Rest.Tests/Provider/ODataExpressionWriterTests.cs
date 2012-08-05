@@ -6,6 +6,7 @@
 namespace Linq2Rest.Tests.Provider
 {
 	using System;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using Linq2Rest.Provider;
 	using NUnit.Framework;
@@ -44,6 +45,17 @@ namespace Linq2Rest.Tests.Provider
 			var serialized = converter.Convert(expression);
 
 			Assert.AreEqual("GlobalID ne guid'00000000-0000-0000-0000-000000000000'", serialized);
+		}
+
+		[Test]
+		public void CanFilterOnSubCollection()
+		{
+			var converter = new ODataExpressionConverter();
+			Expression<Func<FakeItem, bool>> expression = x => x.Child.Attributes.Any(y => y == "blah");
+
+			var serialized = converter.Convert(expression);
+
+			Assert.AreEqual("Child/Attributes/any(y: y eq 'blah')", serialized);
 		}
 	}
 }
