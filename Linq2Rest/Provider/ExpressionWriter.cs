@@ -397,7 +397,12 @@ namespace Linq2Rest.Provider
 				Contract.Assume(expression.Arguments.Count > 1);
 #endif
 
-				return string.Format("{0}/{1}({2}: {3})", Write(expression.Arguments[0], rootParameterName), expression.Method.Name.ToLowerInvariant(), expression.Arguments[1] is LambdaExpression ? (expression.Arguments[1] as LambdaExpression).Parameters.First().Name : null, Write(expression.Arguments[1], rootParameterName));
+				var firstArg = Write(expression.Arguments[0], rootParameterName);
+				var method = expression.Method.Name.ToLowerInvariant();
+				var parameter = expression.Arguments[1] is LambdaExpression ? (expression.Arguments[1] as LambdaExpression).Parameters.First().Name : null;
+				var predicate = Write(expression.Arguments[1], rootParameterName);
+
+				return string.Format("{0}/{1}({2}: {3})", firstArg, method, parameter, predicate);
 			}
 
 			return ParameterValueWriter.Write(GetValue(expression));
@@ -411,6 +416,14 @@ namespace Linq2Rest.Provider
 #endif
 			switch (expression.NodeType)
 			{
+				case ExpressionType.Parameter:
+					var parameterExpression = expression as ParameterExpression;
+
+#if !WINDOWS_PHONE
+					Contract.Assume(parameterExpression != null);
+#endif
+
+					return parameterExpression.Name;
 				case ExpressionType.Constant:
 					{
 						var value = GetValue(Expression.Convert(expression, type));

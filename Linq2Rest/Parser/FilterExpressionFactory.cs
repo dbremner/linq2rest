@@ -520,7 +520,8 @@ namespace Linq2Rest.Parser
 				return null;
 			}
 
-			var leftType = GetPropertyExpression<T>(functionTokens.Left, sourceParameter, lambdaParameters).Type;
+			var propertyExpression = GetPropertyExpression<T>(functionTokens.Left, sourceParameter, lambdaParameters);
+			var leftType = propertyExpression.Type;
 			var left = CreateExpression<T>(
 				functionTokens.Left,
 				sourceParameter,

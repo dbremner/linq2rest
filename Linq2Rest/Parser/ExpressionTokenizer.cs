@@ -15,7 +15,7 @@ namespace Linq2Rest.Parser
 	{
 		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$", RegexOptions.Compiled);
 		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
-		private static readonly Regex AnyAllFunctionRx = new Regex(@"^([0-9a-zA-Z]+/)?(([0-9a-zA-Z_]+/)+)(any|all)\((.*)\)$", RegexOptions.Compiled);
+		private static readonly Regex AnyAllFunctionRx = new Regex(@"^(([0-9a-zA-Z_/]+/)+)(any|all)\((.*)\)$", RegexOptions.Compiled);
 
 		public static IEnumerable<TokenSet> GetTokens(this string expression)
 		{
@@ -161,9 +161,9 @@ namespace Linq2Rest.Parser
 				return null;
 			}
 
-			var functionCollection = functionMatch.Groups[2].Value.Trim('/');
-			var functionName = functionMatch.Groups[4].Value;
-			var functionContent = functionMatch.Groups[5].Value;
+			var functionCollection = functionMatch.Groups[1].Value.Trim('/');
+			var functionName = functionMatch.Groups[3].Value;
+			var functionContent = functionMatch.Groups[4].Value;
 
 			return new FunctionTokenSet
 			{

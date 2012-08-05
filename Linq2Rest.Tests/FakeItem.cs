@@ -51,9 +51,16 @@ namespace Linq2Rest.Tests
 		[DataMember(Name = "Choice")]
 		public Choice ChoiceValue { get; set; }
 
+		public ChildFakeItem Child { get; set; }
+
 		public ICollection<FakeChildItem> Children
 		{
 			get { return _children; }
 		}
+	}
+
+	public class ChildFakeItem
+	{
+		public IEnumerable<string> Attributes { get; set; } 
 	}
 }
