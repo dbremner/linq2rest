@@ -3,10 +3,11 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Reactive.Linq;
+
 namespace Linq2Rest.Reactive.Tests
 {
 	using System;
-	using System.Reactive.Linq;
 	using System.Threading;
 	using System.Threading.Tasks;
 	using Linq2Rest.Reactive.Tests.Fakes;
