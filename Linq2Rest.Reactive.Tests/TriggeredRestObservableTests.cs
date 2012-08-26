@@ -33,6 +33,8 @@ namespace Linq2Rest.Reactive.Tests
 			var result = waitHandle.WaitOne(2000);
 
 			Assert.False(result);
+
+            subscription.Dispose();
 		}
 
 		[Test]
@@ -55,7 +57,9 @@ namespace Linq2Rest.Reactive.Tests
 
 			var result = waitHandle.WaitOne(2000);
 
-			Assert.True(result);
+            Assert.True(result);
+
+            subscription.Dispose();
 		}
 
 		[Test]
@@ -77,14 +81,16 @@ namespace Linq2Rest.Reactive.Tests
 				.Callback<Uri>(Console.WriteLine)
 				.Returns(mockRestClient.Object);
 
-			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
+			var subscription = new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
 				.Triggered(Observable.Repeat(Unit.Default, 2))
 				.Where(x => x.IntValue == 2)
 				.Subscribe(x => { }, () => waitHandle.Set());
 
 			waitHandle.WaitOne(2000);
 
-			mockClientFactory.Verify(x => x.Create(It.IsAny<Uri>()), Times.Exactly(2));
+            mockClientFactory.Verify(x => x.Create(It.IsAny<Uri>()), Times.Exactly(2));
+
+            subscription.Dispose();
 		}
 	}
 }
