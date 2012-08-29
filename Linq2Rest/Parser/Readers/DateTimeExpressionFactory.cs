@@ -27,7 +27,7 @@ namespace Linq2Rest.Parser.Readers
 			var match = DateTimeRegex.Match(token);
 			if (match.Success)
 			{
-				var dateTime = (match.Groups["z"].Success) ?
+				var dateTime = match.Groups["z"].Success ?
 					XmlConvert.ToDateTime(match.Groups[1].Value, XmlDateTimeSerializationMode.Utc) :
 					DateTime.SpecifyKind(DateTime.Parse(match.Groups[1].Value), DateTimeKind.Unspecified);
 				return Expression.Constant(dateTime);

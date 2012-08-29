@@ -21,7 +21,7 @@ namespace Linq2Rest.Parser.Readers
 		public ConstantExpression Convert(string token)
 		{
 			long number;
-			if( long.TryParse(token, out number))
+			if (long.TryParse(token, out number))
 			{
 				return Expression.Constant(number);
 			}

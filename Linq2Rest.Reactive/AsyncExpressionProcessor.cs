@@ -44,7 +44,7 @@ namespace Linq2Rest.Reactive
 #endif
 
 			var enumerableSource = source as IEnumerable;
-			
+
 #if !WINDOWS_PHONE
 			Contract.Assume(enumerableSource != null);
 #endif
@@ -232,7 +232,7 @@ namespace Linq2Rest.Reactive
 #endif
 
 			return resultLoader(builder)
-				.Select<IEnumerable<T>,object>(
+				.Select<IEnumerable<T>, object>(
 							  list =>
 							  {
 #if !WINDOWS_PHONE
