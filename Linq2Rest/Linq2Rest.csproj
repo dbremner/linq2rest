@@ -119,8 +119,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IModelFilter.cs" />
+    <Compile Include="Implementations\JsonContext.cs" />
     <Compile Include="Implementations\JsonDataContractSerializerFactory.cs" />
     <Compile Include="Implementations\RestClientBase.cs" />
+    <Compile Include="Implementations\XmlContext.cs" />
     <Compile Include="Implementations\XmlDataContractSerializerFactory.cs" />
     <Compile Include="Implementations\XmlRestClient.cs" />
     <Compile Include="Implementations\XmlSerializerFactory.cs" />

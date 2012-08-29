@@ -58,9 +58,4 @@ namespace Linq2Rest.Tests
 			get { return _children; }
 		}
 	}
-
-	public class ChildFakeItem
-	{
-		public IEnumerable<string> Attributes { get; set; } 
-	}
 }

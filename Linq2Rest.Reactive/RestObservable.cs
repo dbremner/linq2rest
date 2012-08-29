@@ -6,10 +6,10 @@
 namespace Linq2Rest.Reactive
 {
     using System;
-    using System.Reactive;
 #if !WINDOWS_PHONE
     using System.Diagnostics.Contracts;
 #endif
+    using System.Reactive;
     using System.Reactive.Concurrency;
     using System.Reactive.Linq;
     using Linq2Rest.Provider;
