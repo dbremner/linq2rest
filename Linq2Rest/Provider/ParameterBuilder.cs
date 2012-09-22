@@ -88,6 +88,7 @@ namespace Linq2Rest.Provider
 			var resultUri = builder.Uri;
 
 #if !WINDOWS_PHONE && !NETFX_CORE
+			Contract.Assume(_serviceBase.Scheme == Uri.UriSchemeHttp || _serviceBase.Scheme == Uri.UriSchemeHttps);
 			Contract.Assume(resultUri.Scheme == Uri.UriSchemeHttp || resultUri.Scheme == Uri.UriSchemeHttps);
 #endif
 

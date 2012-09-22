@@ -23,7 +23,7 @@ namespace Linq2Rest
 		private const MethodAttributes GetSetAttr = MethodAttributes.Final | MethodAttributes.Public;
 		private static readonly AssemblyName AssemblyName = new AssemblyName { Name = "Linq2RestTypes" };
 		private static readonly ModuleBuilder ModuleBuilder;
-		private static readonly Dictionary<string, Type> BuiltTypes = new Dictionary<string, Type>();
+		private static readonly ConcurrentDictionary<string, Type> BuiltTypes = new ConcurrentDictionary<string, Type>();
 		private static readonly ConcurrentDictionary<Type, CustomAttributeBuilder[]> TypeAttributeBuilders = new ConcurrentDictionary<Type, CustomAttributeBuilder[]>();
 		private static readonly ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]> PropertyAttributeBuilders = new ConcurrentDictionary<MemberInfo, CustomAttributeBuilder[]>();
 		private readonly IMemberNameResolver _nameResolver;
@@ -61,32 +61,27 @@ namespace Linq2Rest
 				throw new ArgumentOutOfRangeException("properties", "properties must have at least 1 property definition");
 			}
 
-			var dictionary = properties.ToDictionary(f => _nameResolver.ResolveName(f), f => f);
-
-			Monitor.Enter(BuiltTypes);
+			var dictionary = properties.ToDictionary(f => _nameResolver.ResolveName(f), memberInfo => memberInfo);
 
 			var className = GetTypeKey(sourceType, dictionary);
-			if (BuiltTypes.ContainsKey(className))
-			{
-				return BuiltTypes[className];
-			}
+			return BuiltTypes.GetOrAdd(
+				className,
+				s =>
+				{
+					var typeBuilder = ModuleBuilder.DefineType(
+						className,
+						TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable);
 
-			var typeBuilder = ModuleBuilder.DefineType(className, TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable);
+					Contract.Assume(typeBuilder != null);
 
-			Contract.Assume(typeBuilder != null);
+					SetAttributes(typeBuilder, sourceType);
 
-			SetAttributes(typeBuilder, sourceType);
-
-			foreach (var field in dictionary)
-			{
-				CreateProperty(typeBuilder, field);
-			}
-
-			BuiltTypes[className] = typeBuilder.CreateType();
-
-			Monitor.Exit(BuiltTypes);
-
-			return BuiltTypes[className];
+					foreach (var field in dictionary)
+					{
+						CreateProperty(typeBuilder, field);
+					}
+					return typeBuilder.CreateType();
+				});
 		}
 
 		private static void CreateProperty(TypeBuilder typeBuilder, KeyValuePair<string, MemberInfo> field)

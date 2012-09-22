@@ -15,7 +15,7 @@ namespace Linq2Rest.Provider
 	/// <typeparam name="T">The <see cref="Type"/> of object to query.</typeparam>
 	public class RestContext<T> : IDisposable
 	{
-		private readonly RestQueryable<T> _queryable;
+		private readonly RestGetQueryable<T> _getQueryable;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RestContext{T}"/> class.
@@ -27,7 +27,7 @@ namespace Linq2Rest.Provider
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 
-			_queryable = new RestQueryable<T>(client, serializerFactory);
+			_getQueryable = new RestGetQueryable<T>(client, serializerFactory);
 		}
 
 		/// <summary>
@@ -39,7 +39,7 @@ namespace Linq2Rest.Provider
 			{
 				Contract.Ensures(Contract.Result<IQueryable<T>>() != null);
 
-				return _queryable;
+				return _getQueryable;
 			}
 		}
 
@@ -57,14 +57,14 @@ namespace Linq2Rest.Provider
 		{
 			if (disposing)
 			{
-				_queryable.Dispose();
+				_getQueryable.Dispose();
 			}
 		}
 
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
-			Contract.Invariant(_queryable != null);
+			Contract.Invariant(_getQueryable != null);
 		}
 	}
 }

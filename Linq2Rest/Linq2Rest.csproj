@@ -178,7 +178,15 @@
     <Compile Include="Implementations\JsonRestClient.cs" />
     <Compile Include="Provider\QueryableExtensions.cs" />
     <Compile Include="Provider\RestContext.cs" />
-    <Compile Include="Provider\RestQueryable.cs" />
+    <Compile Include="Provider\RestDeleteQueryable.cs" />
+    <Compile Include="Provider\RestDeleteQueryProvider.cs" />
+    <Compile Include="Provider\RestGetQueryable.cs" />
+    <Compile Include="Provider\RestPostQueryable.cs" />
+    <Compile Include="Provider\RestPostQueryProvider.cs" />
+    <Compile Include="Provider\RestPutQueryable.cs" />
+    <Compile Include="Provider\RestPutQueryProvider.cs" />
+    <Compile Include="Provider\RestQueryableBase.cs" />
+    <Compile Include="Provider\RestGetQueryProvider.cs" />
     <Compile Include="Provider\RestQueryProvider.cs" />
     <Compile Include="Provider\RestQueryProviderBase.cs" />
     <Compile Include="Provider\Writers\BooleanValueWriter.cs" />

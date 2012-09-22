@@ -16,6 +16,10 @@ namespace Linq2Rest.Implementations
 	/// </summary>
 	public class RestClientBase : IRestClient
 	{
+		private const string PostMethod = "POST";
+		private const string GetMethod = "GET";
+		private const string PutMethod = "PUT";
+		private const string DeleteMethod = "DELETE";
 		private readonly string _acceptHeader;
 
 		/// <summary>
@@ -45,13 +49,80 @@ namespace Linq2Rest.Implementations
 		/// <returns>A string representation of the resource.</returns>
 		public Stream Get(Uri uri)
 		{
-			var request = (HttpWebRequest)WebRequest.Create(uri);
-			request.Accept = _acceptHeader;
-			var response = request.GetResponse();
-			var stream = response.GetResponseStream();
+			var stream = this.GetResponseStream(uri, GetMethod, null);
 
 			Contract.Assume(stream != null);
 
+			return stream;
+		}
+
+		/// <summary>
+		/// Posts the passed data to the service.
+		/// </summary>
+		/// <param name="uri">The <see cref="Uri"/> to load the resource from.</param>
+		/// <param name="input">The <see cref="Stream"/> representation to post.</param>
+		/// <returns>The service response as a <see cref="Stream"/>.</returns>
+		public Stream Post(Uri uri, Stream input)
+		{
+			var stream = GetResponseStream(uri, PostMethod, input);
+
+			Contract.Assume(stream != null);
+
+			return stream;
+		}
+
+		/// <summary>
+		/// Puts the passed data to the service.
+		/// </summary>
+		/// <param name="input">The <see cref="Stream"/> representation to put.</param>
+		/// <param name="uri">The <see cref="Uri"/> to load the resource from.</param>
+		/// <returns>The service response as a <see cref="Stream"/>.</returns>
+		public Stream Put(Uri uri, Stream input)
+		{
+			var stream = GetResponseStream(uri, PutMethod, input);
+
+			Contract.Assume(stream != null);
+
+			return stream;
+		}
+
+		/// <summary>
+		/// Deletes the resource at the service.
+		/// </summary>
+		/// <param name="uri">The <see cref="Uri"/> to load the resource from.</param>
+		/// <returns>The service response as a <see cref="Stream"/>.</returns>
+		public Stream Delete(Uri uri)
+		{
+			var stream = GetResponseStream(uri, DeleteMethod, null);
+
+			Contract.Assume(stream != null);
+
+			return stream;
+		}
+
+		private Stream GetResponseStream(Uri uri, string method, Stream inputStream)
+		{
+			var request = (HttpWebRequest)WebRequest.Create(uri);
+			request.Method = method;
+			if (method == PostMethod || method == PutMethod)
+			{
+				request.ContentType = _acceptHeader;
+			}
+
+			if (inputStream != null)
+			{
+				var requestStream = request.GetRequestStream();
+				int nextByte;
+				while ((nextByte = inputStream.ReadByte()) > -1)
+				{
+					requestStream.WriteByte((byte)nextByte);
+				}
+				requestStream.Flush();
+			}
+
+			request.Accept = _acceptHeader;
+			var response = request.GetResponse();
+			var stream = response.GetResponseStream();
 			return stream;
 		}
 

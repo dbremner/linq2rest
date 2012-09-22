@@ -27,5 +27,15 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 			var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
 			return response.Result.Results;
 		}
+
+		public Stream Serialize(T item)
+		{
+			var stream = new MemoryStream();
+			_innerSerializer.WriteObject(stream, item);
+			stream.Flush();
+			stream.Position = 0;
+
+			return stream;
+		}
 	}
 }

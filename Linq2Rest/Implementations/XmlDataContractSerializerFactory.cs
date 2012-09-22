@@ -76,6 +76,16 @@ namespace Linq2Rest.Implementations
 				return result;
 			}
 
+			public Stream Serialize(T item)
+			{
+				var stream = new MemoryStream();
+				_serializer.WriteObject(stream, item);
+				stream.Flush();
+				stream.Position = 0;
+
+				return stream;
+			}
+
 			[ContractInvariantMethod]
 			private void Invariants()
 			{

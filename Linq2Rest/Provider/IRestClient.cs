@@ -26,6 +26,29 @@ namespace Linq2Rest.Provider
 		/// <param name="uri">The <see cref="Uri"/> to load the resource from.</param>
 		/// <returns>A string representation of the resource.</returns>
 		Stream Get(Uri uri);
+
+		/// <summary>
+		/// Posts the passed data to the service.
+		/// </summary>
+		/// <param name="uri">The <see cref="Uri"/> to load the resource from.</param>
+		/// <param name="input">The <see cref="Stream"/> representation to post.</param>
+		/// <returns>The service response as a <see cref="Stream"/>.</returns>
+		Stream Post(Uri uri, Stream input);
+
+		/// <summary>
+		/// Puts the passed data to the service.
+		/// </summary>
+		/// <param name="input">The <see cref="Stream"/> representation to put.</param>
+		/// <param name="uri">The <see cref="Uri"/> to load the resource from.</param>
+		/// <returns>The service response as a <see cref="Stream"/>.</returns>
+		Stream Put(Uri uri, Stream input);
+
+		/// <summary>
+		/// Deletes the resource at the service.
+		/// </summary>
+		/// <param name="uri">The <see cref="Uri"/> to load the resource from.</param>
+		/// <returns>The service response as a <see cref="Stream"/>.</returns>
+		Stream Delete(Uri uri);
 	}
 
 	[ContractClassFor(typeof(IRestClient))]
@@ -43,6 +66,35 @@ namespace Linq2Rest.Provider
 		}
 
 		public Stream Get(Uri uri)
+		{
+			Contract.Requires<ArgumentNullException>(uri != null);
+			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+			Contract.Ensures(Contract.Result<Stream>() != null);
+
+			throw new NotImplementedException();
+		}
+
+		public Stream Post(Uri uri, Stream input)
+		{
+			Contract.Requires<ArgumentNullException>(uri != null);
+			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+			Contract.Requires<ArgumentNullException>(input != null);
+			Contract.Ensures(Contract.Result<Stream>() != null);
+
+			throw new NotImplementedException();
+		}
+
+		public Stream Put(Uri uri, Stream input)
+		{
+			Contract.Requires<ArgumentNullException>(uri != null);
+			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+			Contract.Requires<ArgumentNullException>(input != null);
+			Contract.Ensures(Contract.Result<Stream>() != null);
+
+			throw new NotImplementedException();
+		}
+
+		public Stream Delete(Uri uri)
 		{
 			Contract.Requires<ArgumentNullException>(uri != null);
 			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);

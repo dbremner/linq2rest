@@ -50,7 +50,17 @@ namespace Linq2Rest.Mvc.Provider
 			return ReadToAnonymousType(content);
 		}
 
-		private IList<T> ReadToAnonymousType(string response)
+		/// <summary>
+		/// Serializes the passed item into a <see cref="Stream"/>.
+		/// </summary>
+		/// <param name="item">The item to serialize.</param>
+		/// <returns>A <see cref="Stream"/> representation of the item.</returns>
+		public Stream Serialize(T item)
+		{
+			throw new NotImplementedException();
+		}
+
+		private IEnumerable<T> ReadToAnonymousType(string response)
 		{
 			var deserializeObject = _innerSerializer.DeserializeObject(response);
 			var enumerable = deserializeObject as IEnumerable;
@@ -83,22 +93,22 @@ namespace Linq2Rest.Mvc.Provider
 
 			var bindings = fields
 				.Select(
-				        p =>
-				        	{
-				        		var arguments = new[] { Expression.Constant(p.Name) };
+						p =>
+						{
+							var arguments = new[] { Expression.Constant(p.Name) };
 
-				        		var indexExpression = Expression.MakeIndex(
-				        			           Expression.Convert(objectParameter, deserializedType),
-				        			           deserializedType.GetProperty("Item"),
-				        			           arguments);
+							var indexExpression = Expression.MakeIndex(
+										   Expression.Convert(objectParameter, deserializedType),
+										   deserializedType.GetProperty("Item"),
+										   arguments);
 
-				        		return Expression.Convert(
-				        			         Expression.Call(
-				        			                         AnonymousTypeSerializerHelper.InnerChangeTypeMethod,
-				        			                         indexExpression,
-				        			                         Expression.Constant(p.PropertyType)),
-				        			         p.PropertyType);
-				        	})
+							return Expression.Convert(
+										 Expression.Call(
+														 AnonymousTypeSerializerHelper.InnerChangeTypeMethod,
+														 indexExpression,
+														 Expression.Constant(p.PropertyType)),
+										 p.PropertyType);
+						})
 				.ToArray();
 
 			var constructorInfos = _elementType.GetConstructors().ToArray();

@@ -32,7 +32,9 @@ namespace Linq2Rest
 
 		public IEnumerable<object> Filter(IEnumerable<T> model)
 		{
-			var result = _filterExpression != null ? model.AsQueryable().Where(_filterExpression) : model.AsQueryable();
+			var result = _filterExpression != null 
+				? model.AsQueryable().Where(_filterExpression)
+				: model.AsQueryable();
 
 			if (_sortDescriptions != null && _sortDescriptions.Any())
 			{
