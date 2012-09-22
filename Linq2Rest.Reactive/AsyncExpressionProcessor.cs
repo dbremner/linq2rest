@@ -1,7 +1,14 @@
-// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AsyncExpressionProcessor.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   The default async expression processor implementation.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.Reactive
 {
@@ -14,9 +21,11 @@ namespace Linq2Rest.Reactive
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Linq;
-	using System.Reflection;
 	using Linq2Rest.Provider;
 
+	/// <summary>
+	/// The default async expression processor implementation.
+	/// </summary>
 	internal class AsyncExpressionProcessor : IAsyncExpressionProcessor
 	{
 		private readonly IExpressionWriter _writer;
@@ -33,7 +42,7 @@ namespace Linq2Rest.Reactive
 		{
 			var task = ProcessMethodCallInternal(methodCall, builder, resultLoader, intermediateResultLoader);
 			return task == null
-					? (IObservable<T>)resultLoader(builder).SelectMany(x => x)
+					? resultLoader(builder).SelectMany(x => x)
 					: task.Select(o => (IQbservable<T>)o).SelectMany(x => x);
 		}
 
@@ -307,7 +316,7 @@ namespace Linq2Rest.Reactive
 							.Select(
 										  resultList =>
 										  {
-											  var arguments = ResolveInvocationParameters(resultList as IEnumerable, genericArgument, methodCall);
+											  var arguments = ResolveInvocationParameters(resultList, genericArgument, methodCall);
 											  var methodResult = methodInfo.Invoke(null, arguments);
 
 											  return methodResult;
@@ -316,7 +325,7 @@ namespace Linq2Rest.Reactive
 							.Select(
 										  resultList =>
 										  {
-											  var arguments = ResolveInvocationParameters(resultList as IEnumerable, genericArgument, methodCall);
+											  var arguments = ResolveInvocationParameters(resultList, genericArgument, methodCall);
 											  return methodInfo.Invoke(null, arguments);
 										  });
 

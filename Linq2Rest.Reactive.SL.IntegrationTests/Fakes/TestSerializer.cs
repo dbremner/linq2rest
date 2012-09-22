@@ -34,6 +34,5 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests.Fakes
 
 			return stream;
 		}
-
 	}
 }

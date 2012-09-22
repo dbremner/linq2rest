@@ -47,7 +47,6 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 
 				return stream;
 			}
-
 		}
 	}
 }

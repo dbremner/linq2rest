@@ -15,6 +15,8 @@ namespace Linq2Rest.Reactive
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
+	using System.Reactive.Threading.Tasks;
+	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
 	internal abstract class InnerRestObservableBase<T> : IQbservable<T>
@@ -113,9 +115,9 @@ namespace Linq2Rest.Reactive
 		{
 			var client = RestClient.Create(builder.GetFullUri());
 
-			return Observable
-				.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)
-				.Invoke()
+			return Task<Stream>.Factory
+				.FromAsync(client.BeginGetResult, client.EndGetResult, null)
+				.ToObservable()
 				.Select(x => ReadIntermediateResponse(type, x));
 		}
 
@@ -127,9 +129,9 @@ namespace Linq2Rest.Reactive
 			var fullUri = builder.GetFullUri();
 			var client = RestClient.Create(fullUri);
 
-			return Observable
-				.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)
-				.Invoke()
+			return Task<Stream>.Factory
+				.FromAsync(client.BeginGetResult, client.EndGetResult, null)
+				.ToObservable()
 				.Select(ReadResponse);
 		}
 

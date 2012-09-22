@@ -23,7 +23,7 @@ namespace Linq2Rest.Tests.Provider
 	[TestFixture]
 	public class RestDeleteQueryableTests
 	{
-		private RestDeleteQueryable<FakeItem> _DeleteQueryable;
+		private RestDeleteQueryable<FakeItem> _deleteQueryable;
 		private Mock<IRestClient> _mockClient;
 
 		[TestFixtureSetUp]
@@ -33,25 +33,25 @@ namespace Linq2Rest.Tests.Provider
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
 			_mockClient.Setup(x => x.Delete(It.IsAny<Uri>())).Returns("[]".ToStream());
-			_DeleteQueryable = new RestDeleteQueryable<FakeItem>(_mockClient.Object, new TestSerializerFactory(), expression);
+			_deleteQueryable = new RestDeleteQueryable<FakeItem>(_mockClient.Object, new TestSerializerFactory(), expression);
 		}
 
 		[Test]
 		public void ElementTypeIsSameAsGenericParameter()
 		{
-			Assert.AreEqual(typeof(FakeItem), _DeleteQueryable.ElementType);
+			Assert.AreEqual(typeof(FakeItem), _deleteQueryable.ElementType);
 		}
 
 		[Test]
 		public void WhenDeletetingNonGenericEnumeratorThenDoesNotReturnNull()
 		{
-			Assert.NotNull((_DeleteQueryable as IEnumerable).GetEnumerator());
+			Assert.NotNull((_deleteQueryable as IEnumerable).GetEnumerator());
 		}
 
 		[Test]
 		public void WhenDisposingThenDisposesClient()
 		{
-			_DeleteQueryable.Dispose();
+			_deleteQueryable.Dispose();
 
 			_mockClient.Verify(x => x.Dispose());
 		}

@@ -15,6 +15,8 @@ namespace Linq2Rest.Reactive
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
+	using System.Reactive.Threading.Tasks;
+	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
 	internal class PollingRestObservable<T> : InnerRestObservableBase<T>
@@ -54,9 +56,9 @@ namespace Linq2Rest.Reactive
 		protected override IObservable<IEnumerable> GetIntermediateResults(Type type, ParameterBuilder builder)
 		{
 			var client = RestClient.Create(builder.GetFullUri());
-
+			;
 			return Observable.Interval(Frequency)
-				.Select(x => Observable.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult).Invoke())
+				.Select(x => Task<Stream>.Factory.FromAsync(client.BeginGetResult, client.EndGetResult, null).ToObservable())
 				.Select(x => x.Select(s => ReadIntermediateResponse(type, s)))
 				.SelectMany(x => x);
 		}
@@ -69,7 +71,7 @@ namespace Linq2Rest.Reactive
 			var client = RestClient.Create(fullUri);
 
 			return Observable.Interval(Frequency)
-				.Select(x => Observable.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)())
+				.Select(x => Task<Stream>.Factory.FromAsync(client.BeginGetResult, client.EndGetResult, null).ToObservable())
 				.Select(x => x.Select(serializer.DeserializeList))
 				.SelectMany(x => x);
 		}
