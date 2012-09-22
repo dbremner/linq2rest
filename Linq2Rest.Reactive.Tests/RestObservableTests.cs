@@ -34,9 +34,9 @@ namespace Linq2Rest.Reactive.Tests
 
 			observable
 				.Create()
-				.SubscribeOn(Scheduler.NewThread)
+				.SubscribeOn(NewThreadScheduler.Default)
 				.Where(x => x.StringValue == "blah")
-				.ObserveOn(Scheduler.ThreadPool)
+				.ObserveOn(Scheduler.Default)
 				.Subscribe(
 						   x =>
 						   {
@@ -64,7 +64,7 @@ namespace Linq2Rest.Reactive.Tests
 			observable
 				.Create()
 				.Where(x => x.StringValue == "blah")
-				.ObserveOn(Scheduler.ThreadPool)
+				.ObserveOn(Scheduler.Default)
 				.Subscribe(
 					x =>
 					{

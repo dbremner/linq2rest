@@ -17,7 +17,7 @@ namespace Linq2Rest.Reactive
 		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
 #else
 		private static readonly MethodInfo InnerCreateMethod =
-	        typeof (ISerializerFactory)
+	        typeof(ISerializerFactory)
             .GetTypeInfo()
             .GetDeclaredMethod("Create");
 #endif

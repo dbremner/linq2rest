@@ -1,3 +1,15 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RestDeleteQueryProvider.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the RestDeleteQueryProvider type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace Linq2Rest.Provider
 {
 	using System;
@@ -14,9 +26,6 @@ namespace Linq2Rest.Provider
 
 		protected override IEnumerable<T> GetResults(ParameterBuilder builder)
 		{
-			Contract.Requires(builder != null);
-			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
-
 			var fullUri = builder.GetFullUri();
 			var response = Client.Delete(fullUri);
 			var serializer = SerializerFactory.Create<T>();
@@ -29,8 +38,6 @@ namespace Linq2Rest.Provider
 
 		protected override IEnumerable GetIntermediateResults(Type type, ParameterBuilder builder)
 		{
-			Contract.Requires(builder != null);
-
 			var fullUri = builder.GetFullUri();
 			var response = Client.Delete(fullUri);
 			var genericMethod = CreateMethod.MakeGenericMethod(type);

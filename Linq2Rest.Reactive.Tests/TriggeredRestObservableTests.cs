@@ -26,7 +26,7 @@ namespace Linq2Rest.Reactive.Tests
 			var observable = new RestObservable<FakeItem>(factory, new TestSerializerFactory());
 			var subscription = observable
 				.Triggered(Observable.Interval(TimeSpan.FromSeconds(0.5)).Select(x => Unit.Default))
-				.ObserveOn(Scheduler.TaskPool)
+				.ObserveOn(TaskPoolScheduler.Default)
 				.Where(x => x.StringValue == "blah")
 				.Subscribe(x => { }, () => waitHandle.Set());
 
@@ -66,7 +66,6 @@ namespace Linq2Rest.Reactive.Tests
 		public void WhenInvokingThenCallsRestClient()
 		{
 			var waitHandle = new ManualResetEvent(false);
-			int i = 1;
 			var mockResult = new Mock<IAsyncResult>();
 			mockResult.SetupGet(x => x.CompletedSynchronously).Returns(true);
 			var mockRestClient = new Mock<IAsyncRestClient>();

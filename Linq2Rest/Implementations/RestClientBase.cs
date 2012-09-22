@@ -49,7 +49,7 @@ namespace Linq2Rest.Implementations
 		/// <returns>A string representation of the resource.</returns>
 		public Stream Get(Uri uri)
 		{
-			var stream = this.GetResponseStream(uri, GetMethod, null);
+			var stream = GetResponseStream(uri, GetMethod, null);
 
 			Contract.Assume(stream != null);
 
@@ -100,32 +100,6 @@ namespace Linq2Rest.Implementations
 			return stream;
 		}
 
-		private Stream GetResponseStream(Uri uri, string method, Stream inputStream)
-		{
-			var request = (HttpWebRequest)WebRequest.Create(uri);
-			request.Method = method;
-			if (method == PostMethod || method == PutMethod)
-			{
-				request.ContentType = _acceptHeader;
-			}
-
-			if (inputStream != null)
-			{
-				var requestStream = request.GetRequestStream();
-				int nextByte;
-				while ((nextByte = inputStream.ReadByte()) > -1)
-				{
-					requestStream.WriteByte((byte)nextByte);
-				}
-				requestStream.Flush();
-			}
-
-			request.Accept = _acceptHeader;
-			var response = request.GetResponse();
-			var stream = response.GetResponseStream();
-			return stream;
-		}
-
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
@@ -145,6 +119,33 @@ namespace Linq2Rest.Implementations
 			if (disposing)
 			{
 			}
+		}
+
+		private Stream GetResponseStream(Uri uri, string method, Stream inputStream)
+		{
+			var request = (HttpWebRequest)WebRequest.Create(uri);
+			request.Method = method;
+			if (method == PostMethod || method == PutMethod)
+			{
+				request.ContentType = _acceptHeader;
+			}
+
+			if (inputStream != null)
+			{
+				var requestStream = request.GetRequestStream();
+				int nextByte;
+				while ((nextByte = inputStream.ReadByte()) > -1)
+				{
+					requestStream.WriteByte((byte)nextByte);
+				}
+
+				requestStream.Flush();
+			}
+
+			request.Accept = _acceptHeader;
+			var response = request.GetResponse();
+			var stream = response.GetResponseStream();
+			return stream;
 		}
 
 		[ContractInvariantMethod]

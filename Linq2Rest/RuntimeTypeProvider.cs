@@ -80,6 +80,7 @@ namespace Linq2Rest
 					{
 						CreateProperty(typeBuilder, field);
 					}
+
 					return typeBuilder.CreateType();
 				});
 		}
