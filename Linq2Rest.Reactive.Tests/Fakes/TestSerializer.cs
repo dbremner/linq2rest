@@ -24,5 +24,15 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 		{
 			return (List<T>)_innerListSerializer.ReadObject(input);
 		}
+
+		public Stream Serialize(T item)
+		{
+			var stream = new MemoryStream();
+			_innerSerializer.WriteObject(stream, item);
+			stream.Flush();
+			stream.Position = 0;
+
+			return stream;
+		}
 	}
 }

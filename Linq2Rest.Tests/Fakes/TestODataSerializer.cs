@@ -26,5 +26,10 @@ namespace Linq2Rest.Tests.Fakes
 			var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
 			return response.Result.Results;
 		}
+
+		public Stream Serialize(T item)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

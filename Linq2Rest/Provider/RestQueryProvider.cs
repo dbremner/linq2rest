@@ -1,7 +1,14 @@
-// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RestQueryProvider.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   	This source is subject to the Microsoft Public License (Ms-PL).
+//   	Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   	All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the RestQueryProvider type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.Provider
 {
@@ -13,19 +20,11 @@ namespace Linq2Rest.Provider
 	using System.Linq;
 	using System.Linq.Expressions;
 
-	internal class RestQueryProvider<T> : RestQueryProviderBase
+	[ContractClass(typeof(RestQueryProviderContracts<>))]
+	internal abstract class RestQueryProvider<T> : RestQueryProviderBase
 	{
-		private readonly IRestClient _client;
-		private readonly ISerializerFactory _serializerFactory;
 		private readonly IExpressionProcessor _expressionProcessor;
 		private readonly ParameterBuilder _parameterBuilder;
-
-		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory)
-			: this(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter()))
-		{
-			Contract.Requires<ArgumentNullException>(client != null);
-			Contract.Requires<ArgumentNullException>(serializerFactory != null);
-		}
 
 		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor)
 		{
@@ -33,11 +32,15 @@ namespace Linq2Rest.Provider
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 			Contract.Requires<ArgumentNullException>(expressionProcessor != null);
 
-			_client = client;
-			_serializerFactory = serializerFactory;
+			Client = client;
+			SerializerFactory = serializerFactory;
 			_expressionProcessor = expressionProcessor;
 			_parameterBuilder = new ParameterBuilder(client.ServiceBase);
 		}
+
+		protected IRestClient Client { get; private set; }
+		
+		protected ISerializerFactory SerializerFactory { get; private set; }
 
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Cannot dispose here.")]
 		public override IQueryable CreateQuery(Expression expression)
@@ -47,7 +50,7 @@ namespace Linq2Rest.Provider
 				throw new ArgumentNullException("expression");
 			}
 
-			return new RestQueryable<T>(_client, _serializerFactory, expression);
+			return new RestGetQueryable<T>(Client, SerializerFactory, expression);
 		}
 
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Cannot dispose here.")]
@@ -58,7 +61,7 @@ namespace Linq2Rest.Provider
 				throw new ArgumentNullException("expression");
 			}
 
-			return new RestQueryable<TResult>(_client, _serializerFactory, expression);
+			return new RestGetQueryable<TResult>(Client, SerializerFactory, expression);
 		}
 
 		public override object Execute(Expression expression)
@@ -68,9 +71,9 @@ namespace Linq2Rest.Provider
 			var methodCallExpression = expression as MethodCallExpression;
 
 			return (methodCallExpression != null
-					? _expressionProcessor.ProcessMethodCall(methodCallExpression, _parameterBuilder, GetResults, GetIntermediateResults)
-					: GetResults(_parameterBuilder))
-					?? GetResults(_parameterBuilder);
+						? _expressionProcessor.ProcessMethodCall(methodCallExpression, _parameterBuilder, GetResults, GetIntermediateResults)
+						: GetResults(_parameterBuilder))
+				   ?? GetResults(_parameterBuilder);
 		}
 
 		public override TResult Execute<TResult>(Expression expression)
@@ -83,45 +86,46 @@ namespace Linq2Rest.Provider
 		{
 			if (disposing)
 			{
-				_client.Dispose();
+				Client.Dispose();
 			}
 		}
 
-		private IEnumerable<T> GetResults(ParameterBuilder builder)
-		{
-			Contract.Requires(builder != null);
-			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
+		protected abstract IEnumerable<T> GetResults(ParameterBuilder builder);
 
-			var fullUri = builder.GetFullUri();
-			var response = _client.Get(fullUri);
-			var serializer = _serializerFactory.Create<T>();
-			var resultSet = serializer.DeserializeList(response);
-
-			Contract.Assume(resultSet != null);
-
-			return resultSet;
-		}
-
-		private IEnumerable GetIntermediateResults(Type type, ParameterBuilder builder)
-		{
-			Contract.Requires(builder != null);
-
-			var fullUri = builder.GetFullUri();
-			var response = _client.Get(fullUri);
-			var genericMethod = CreateMethod.MakeGenericMethod(type);
-			dynamic serializer = genericMethod.Invoke(_serializerFactory, null);
-			var resultSet = serializer.DeserializeList(response);
-
-			return resultSet;
-		}
+		protected abstract IEnumerable GetIntermediateResults(Type type, ParameterBuilder builder);
 
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
-			Contract.Invariant(_client != null);
-			Contract.Invariant(_serializerFactory != null);
+			Contract.Invariant(Client != null);
+			Contract.Invariant(SerializerFactory != null);
 			Contract.Invariant(_expressionProcessor != null);
 			Contract.Invariant(_parameterBuilder != null);
+		}
+	}
+
+	[SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Keeping contracts with class.")]
+	[ContractClassFor(typeof(RestQueryProvider<>))]
+	internal abstract class RestQueryProviderContracts<T> : RestQueryProvider<T>
+	{
+		protected RestQueryProviderContracts(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor)
+			: base(client, serializerFactory, expressionProcessor)
+		{
+		}
+
+		protected override IEnumerable<T> GetResults(ParameterBuilder builder)
+		{
+			Contract.Requires(builder != null);
+			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
+
+			throw new NotImplementedException();
+		}
+
+		protected override IEnumerable GetIntermediateResults(Type type, ParameterBuilder builder)
+		{
+			Contract.Requires(builder != null);
+
+			throw new NotImplementedException();
 		}
 	}
 }

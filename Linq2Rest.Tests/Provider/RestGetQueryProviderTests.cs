@@ -13,9 +13,9 @@ namespace Linq2Rest.Tests.Provider
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class RestQueryProviderTests
+	public class RestGetQueryProviderTests
 	{
-		private RestQueryProvider<FakeItem> _provider;
+		private RestGetQueryProvider<FakeItem> _provider;
 		private Mock<IRestClient> _mockClient;
 
 		[TestFixtureSetUp]
@@ -23,7 +23,7 @@ namespace Linq2Rest.Tests.Provider
 		{
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
-			_provider = new RestQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory());
+			_provider = new RestGetQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory(), new ExpressionProcessor(new ExpressionWriter()));
 		}
 
 		[Test]

@@ -25,5 +25,10 @@ namespace Linq2Rest.Tests.Fakes
 		{
 			return (List<ComplexDto>)_innerListSerializer.ReadObject(input);
 		}
+
+		public Stream Serialize(ComplexDto item)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

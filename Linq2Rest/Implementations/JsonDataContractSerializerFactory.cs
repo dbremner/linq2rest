@@ -63,9 +63,9 @@ namespace Linq2Rest.Implementations
 
 			public T Deserialize(Stream input)
 			{
-					var result = (T)_serializer.ReadObject(input);
+				var result = (T)_serializer.ReadObject(input);
 
-					return result;
+				return result;
 			}
 
 			public IEnumerable<T> DeserializeList(Stream input)
@@ -73,6 +73,16 @@ namespace Linq2Rest.Implementations
 				var result = (List<T>)_listSerializer.ReadObject(input);
 
 				return result;
+			}
+
+			public Stream Serialize(T item)
+			{
+				var stream = new MemoryStream();
+				_serializer.WriteObject(stream, item);
+				stream.Flush();
+				stream.Position = 0;
+
+				return stream;
 			}
 
 			[ContractInvariantMethod]

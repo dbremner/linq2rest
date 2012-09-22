@@ -24,5 +24,10 @@ namespace Linq2Rest.Tests.Fakes
 		{
 			return (IEnumerable<T>)_innerListSerializer.ReadObject(input);
 		}
+
+		public Stream Serialize(T item)
+		{
+			return "[]".ToStream();
+		}
 	}
 }

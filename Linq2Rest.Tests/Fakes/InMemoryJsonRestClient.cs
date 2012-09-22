@@ -41,5 +41,20 @@ namespace Linq2Rest.Tests.Fakes
 			stream.Seek(0, SeekOrigin.Begin);
 			return stream;
 		}
+
+		public Stream Post(Uri uri, Stream input)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Stream Put(Uri uri, Stream input)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Stream Delete(Uri uri)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

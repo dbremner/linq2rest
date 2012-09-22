@@ -13,9 +13,9 @@ namespace Linq2Rest.Tests.Provider
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class RestQueryableTests
+	public class RestGetQueryableTests
 	{
-		private RestQueryable<FakeItem> _queryable;
+		private RestGetQueryable<FakeItem> _getQueryable;
 		private Mock<IRestClient> _mockClient;
 
 		[TestFixtureSetUp]
@@ -24,25 +24,25 @@ namespace Linq2Rest.Tests.Provider
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
 			_mockClient.Setup(x => x.Get(It.IsAny<Uri>())).Returns("[]".ToStream());
-			_queryable = new RestQueryable<FakeItem>(_mockClient.Object, new TestSerializerFactory());
+			_getQueryable = new RestGetQueryable<FakeItem>(_mockClient.Object, new TestSerializerFactory());
 		}
 
 		[Test]
 		public void ElementTypeIsSameAsGenericParameter()
 		{
-			Assert.AreEqual(typeof(FakeItem), _queryable.ElementType);
+			Assert.AreEqual(typeof(FakeItem), _getQueryable.ElementType);
 		}
 
 		[Test]
 		public void WhenGettingNonGenericEnumeratorThenDoesNotReturnNull()
 		{
-			Assert.NotNull((_queryable as IEnumerable).GetEnumerator());
+			Assert.NotNull((_getQueryable as IEnumerable).GetEnumerator());
 		}
 
 		[Test]
 		public void WhenDisposingThenDisposesClient()
 		{
-			_queryable.Dispose();
+			_getQueryable.Dispose();
 
 			_mockClient.Verify(x => x.Dispose());
 		}

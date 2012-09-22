@@ -46,7 +46,7 @@ namespace Linq2Rest.Provider
 			Contract.Requires<ArgumentNullException>(source != null);
 #endif
 
-			if (!(source is RestQueryable<TSource>))
+			if (!(source is RestGetQueryable<TSource>))
 			{
 				return source;
 			}
@@ -76,6 +76,65 @@ namespace Linq2Rest.Provider
 			return Expand(source, propertyNames);
 		}
 
+		/// <summary>
+		/// Creates a queryable source where the passed input will be posted to the REST service to create the result.
+		/// </summary>
+		/// <param name="source">The source <see cref="IQueryable{T}"/></param>
+		/// <param name="input">The data to post to the server.</param>
+		/// <typeparam name="TResult">The response <see cref="Type"/>.</typeparam>
+		/// <typeparam name="TInput">The <see cref="Type"/> of the input data.</typeparam>
+		/// <returns></returns>
+		public static IQueryable<TResult> Post<TResult, TInput>(this IQueryable<TResult> source, TInput input)
+		{
+			var restQueryable = source as RestQueryableBase<TResult>;
+			if (restQueryable != null)
+			{
+				var serializer = restQueryable.SerializerFactory.Create<TInput>();
+				var stream = serializer.Serialize(input);
+				return new RestPostQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, source.Expression, stream);
+			}
+
+			return source;
+		}
+		
+		/// <summary>
+		/// Creates a queryable source where the passed input will be put to the REST service to create the result.
+		/// </summary>
+		/// <param name="source">The source <see cref="IQueryable{T}"/></param>
+		/// <param name="input">The data to put to the server.</param>
+		/// <typeparam name="TResult">The response <see cref="Type"/>.</typeparam>
+		/// <typeparam name="TInput">The <see cref="Type"/> of the input data.</typeparam>
+		/// <returns></returns>
+		public static IQueryable<TResult> Put<TResult, TInput>(this IQueryable<TResult> source, TInput input)
+		{
+			var restQueryable = source as RestQueryableBase<TResult>;
+			if (restQueryable != null)
+			{
+				var serializer = restQueryable.SerializerFactory.Create<TInput>();
+				var stream = serializer.Serialize(input);
+				return new RestPutQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, source.Expression, stream);
+			}
+
+			return source;
+		}
+		
+		/// <summary>
+		/// Creates a queryable source where the passed input will be put to the REST service to create the result.
+		/// </summary>
+		/// <param name="source">The source <see cref="IQueryable{T}"/></param>
+		/// <typeparam name="TResult">The response <see cref="Type"/>.</typeparam>
+		/// <returns></returns>
+		public static IQueryable<TResult> Delete<TResult>(this IQueryable<TResult> source)
+		{
+			var restQueryable = source as RestQueryableBase<TResult>;
+			if (restQueryable != null)
+			{
+				return new RestDeleteQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, source.Expression);
+			}
+
+			return source;
+		}
+		
 		private static string ResolvePropertyName<TSource>(Expression<Func<TSource, object>> property)
 		{
 			Contract.Requires(property != null);
