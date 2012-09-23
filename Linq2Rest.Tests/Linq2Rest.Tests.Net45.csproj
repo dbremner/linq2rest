@@ -197,13 +197,13 @@
     <None Include="Settings.StyleCop" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Linq2Rest.Mvc\Linq2Rest.Mvc.csproj">
-      <Project>{B4462F0E-AF9E-4955-81D7-5E487D9178A8}</Project>
-      <Name>Linq2Rest.Mvc</Name>
+    <ProjectReference Include="..\Linq2Rest.Mvc\Linq2Rest.Mvc.Net45.csproj">
+      <Project>{f45894f0-5d96-4d16-ad20-8c9941a022a1}</Project>
+      <Name>Linq2Rest.Mvc.Net45</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Linq2Rest\Linq2Rest.csproj">
-      <Project>{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}</Project>
-      <Name>Linq2Rest</Name>
+    <ProjectReference Include="..\Linq2Rest\Linq2Rest.Net45.csproj">
+      <Project>{f7d2a74e-5a11-4fc9-8aa4-d0d3431bbf40}</Project>
+      <Name>Linq2Rest.Net45</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
