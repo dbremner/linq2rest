@@ -37,6 +37,15 @@ namespace Linq2Rest.Reactive.WP7Sample
 			{
 					return (IEnumerable<T>)_innerListSerializer.ReadObject(input);
 			}
+
+            public Stream Serialize(T item)
+            {
+                var ms = new MemoryStream();
+                _innerSerializer.WriteObject(ms, item);
+                ms.Flush();
+                ms.Position = 0;
+                return ms;
+            }
 		}
 	}
 }

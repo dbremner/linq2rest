@@ -5,26 +5,36 @@
 
 namespace Linq2Rest.Reactive.WP7Sample.Support
 {
-	using System.Collections.Generic;
-	using System.IO;
-	using System.Linq;
-	using System.Runtime.Serialization.Json;
-	using Linq2Rest.Provider;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.Serialization.Json;
+    using Linq2Rest.Provider;
 
-	public class ODataSerializer<T> : ISerializer<T>
-	{
-		private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(ODataResponse<T>));
+    public class ODataSerializer<T> : ISerializer<T>
+    {
+        private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(ODataResponse<T>));
 
-		public T Deserialize(Stream input)
-		{
-			var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
-			return response.Result.Results.FirstOrDefault();
-		}
+        public T Deserialize(Stream input)
+        {
+            var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
+            return response.Result.Results.FirstOrDefault();
+        }
 
-		public IEnumerable<T> DeserializeList(Stream input)
-		{
-			var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
-			return response.Result.Results;
-		}
-	}
+        public IEnumerable<T> DeserializeList(Stream input)
+        {
+            var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
+            return response.Result.Results;
+        }
+
+        public Stream Serialize(T item)
+        {
+            var response = new ODataResponse<T> { Result = new ODataResult<T> { Results = new List<T> { item } } };
+            var ms = new MemoryStream();
+            _innerSerializer.WriteObject(ms, response);
+            ms.Flush();
+            ms.Position = 0;
+            return ms;
+        }
+    }
 }

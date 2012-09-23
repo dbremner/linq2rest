@@ -115,9 +115,8 @@ namespace Linq2Rest.Reactive
 		{
 			var client = RestClient.Create(builder.GetFullUri());
 
-			return Task<Stream>.Factory
-				.FromAsync(client.BeginGetResult, client.EndGetResult, null)
-				.ToObservable()
+			return Observable.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)
+				.Invoke()
 				.Select(x => ReadIntermediateResponse(type, x));
 		}
 
@@ -129,9 +128,8 @@ namespace Linq2Rest.Reactive
 			var fullUri = builder.GetFullUri();
 			var client = RestClient.Create(fullUri);
 
-			return Task<Stream>.Factory
-				.FromAsync(client.BeginGetResult, client.EndGetResult, null)
-				.ToObservable()
+			return Observable.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)
+                .Invoke()
 				.Select(ReadResponse);
 		}
 
