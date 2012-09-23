@@ -49,7 +49,7 @@ namespace Linq2Rest.Reactive.Tests
 			var trueExpression =
 				Expression.IsTrue(
 				Expression.LessThanOrEqual(Expression.Property(parameter, "IntValue"), Expression.Constant(3)));
-
+			
 			_observable
 				.Create()
 				.Where(Expression.Lambda<Func<FakeItem, bool>>(trueExpression, parameter))

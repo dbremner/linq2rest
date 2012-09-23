@@ -42,8 +42,8 @@ namespace Linq2Rest.Reactive
 			Processor = new AsyncExpressionProcessor(new ExpressionWriter());
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
-			SubscriberScheduler = subscriberScheduler ?? Scheduler.CurrentThread;
-			ObserverScheduler = observerScheduler ?? Scheduler.CurrentThread;
+			SubscriberScheduler = subscriberScheduler ?? CurrentThreadScheduler.Instance;
+			ObserverScheduler = observerScheduler ?? CurrentThreadScheduler.Instance;
 			Expression = expression ?? Expression.Constant(this);
 		}
 

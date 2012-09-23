@@ -48,8 +48,8 @@ namespace Linq2Rest.Reactive
                 _restClientFactory,
                 _serializerFactory,
                 null,
-                Scheduler.CurrentThread,
-                Scheduler.CurrentThread);
+                CurrentThreadScheduler.Instance,
+				CurrentThreadScheduler.Instance);
         }
 
         /// <summary>
@@ -80,8 +80,8 @@ namespace Linq2Rest.Reactive
                 _restClientFactory,
                 _serializerFactory,
                 null,
-                Scheduler.CurrentThread,
-                Scheduler.CurrentThread);
+				CurrentThreadScheduler.Instance,
+				CurrentThreadScheduler.Instance);
         }
 
         /// <summary>

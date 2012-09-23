@@ -21,6 +21,7 @@ namespace Linq2Rest.Reactive
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Linq;
+	using System.Reflection;
 	using Linq2Rest.Provider;
 
 	/// <summary>
@@ -271,7 +272,7 @@ namespace Linq2Rest.Reactive
 							  list =>
 							  {
 #if !WINDOWS_PHONE
-								  Contract.Assume(list != null);
+								  Contract.Assume(!ReferenceEquals(list, null));
 #endif
 
 								  var parameters = ResolveInvocationParameters(list, typeof(T), methodCall);

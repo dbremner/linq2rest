@@ -115,19 +115,19 @@
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Reactive.Core">
-      <HintPath>..\packages\Rx-Core.2.0.20814\lib\Net45\System.Reactive.Core.dll</HintPath>
+      <HintPath>..\packages\Rx-Core.2.0.20823\lib\Net45\System.Reactive.Core.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\packages\Rx-Interfaces.2.0.20814\lib\Net45\System.Reactive.Interfaces.dll</HintPath>
+      <HintPath>..\packages\Rx-Interfaces.2.0.20823\lib\Net45\System.Reactive.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Linq">
-      <HintPath>..\packages\Rx-Linq.2.0.20814\lib\Net45\System.Reactive.Linq.dll</HintPath>
+      <HintPath>..\packages\Rx-Linq.2.0.20823\lib\Net45\System.Reactive.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.PlatformServices">
-      <HintPath>..\packages\Rx-PlatformServices.2.0.20814\lib\Net45\System.Reactive.PlatformServices.dll</HintPath>
+      <HintPath>..\packages\Rx-PlatformServices.2.0.20823\lib\Net45\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
     <Reference Include="System.Reactive.Providers">
-      <HintPath>..\packages\Rx-Providers.2.0.20814\lib\Net45\System.Reactive.Providers.dll</HintPath>
+      <HintPath>..\packages\Rx-Providers.2.0.20823\lib\Net45\System.Reactive.Providers.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Extensions" />
@@ -161,13 +161,13 @@
     <None Include="Settings.StyleCop" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Linq2Rest.Reactive\Linq2Rest.Reactive.csproj">
-      <Project>{B0AF1230-AF6C-4305-B4D1-7172A3BE9715}</Project>
-      <Name>Linq2Rest.Reactive</Name>
+    <ProjectReference Include="..\Linq2Rest.Reactive\Linq2Rest.Reactive.Net45.csproj">
+      <Project>{fdaba87c-6810-411f-a176-22c1acbd269d}</Project>
+      <Name>Linq2Rest.Reactive.Net45</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Linq2Rest\Linq2Rest.csproj">
-      <Project>{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}</Project>
-      <Name>Linq2Rest</Name>
+    <ProjectReference Include="..\Linq2Rest\Linq2Rest.Net45.csproj">
+      <Project>{f7d2a74e-5a11-4fc9-8aa4-d0d3431bbf40}</Project>
+      <Name>Linq2Rest.Net45</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
