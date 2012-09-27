@@ -33,7 +33,7 @@ namespace Linq2Rest.Parser
 
 			var sortTokens = filter.Split(',');
 			return from sortToken in sortTokens
-				   select sortToken.Split(' ')
+				   select sortToken.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries)
 					   into sort
 					   let property = GetPropertyExpression<T>(sort.First(), parameterExpression)
 					   where property != null

@@ -91,6 +91,21 @@ namespace Linq2Rest.Tests.Parser
 		}
 
 		[Test]
+		public void WhenFilterContainsSortMultipleDescriptionsWithSpaceBetweenThenSortsByAll()
+		{
+			const string Orderstring = "DoubleValue, IntValue desc";
+
+			var descriptions = _factory.Create<FakeItem>(Orderstring);
+			var filter = new ModelFilter<FakeItem>(x => true, null, descriptions, 0, -1);
+
+			var sortedItems = filter.Filter(_items).ToArray();
+
+			Assert.AreEqual(3, sortedItems.OfType<FakeItem>().ElementAt(0).IntValue);
+			Assert.AreEqual(1, sortedItems.OfType<FakeItem>().ElementAt(1).IntValue);
+			Assert.AreEqual(2, sortedItems.OfType<FakeItem>().ElementAt(2).IntValue);
+		}
+
+		[Test]
 		public void WhenOrderingByChildPropertyThenUsesChildProperty()
 		{
 			const string Orderstring = "StringValue/Length desc";
