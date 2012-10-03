@@ -72,7 +72,7 @@ namespace Linq2Rest
 			}
 
 			return _selectExpression == null
-					? result.ToArray().OfType<object>()
+					? result.OfType<object>()
 					: result.AsQueryable().Select(_selectExpression);
 		}
 	}
