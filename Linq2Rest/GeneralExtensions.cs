@@ -7,7 +7,6 @@
 namespace Linq2Rest
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.IO;
 	using System.Linq;
@@ -37,13 +36,21 @@ namespace Linq2Rest
 
 		public static Stream ToStream(this string input)
 		{
+			Contract.Requires(input != null);
+
 			return new MemoryStream(Encoding.UTF8.GetBytes(input ?? string.Empty));
 		}
 
 		public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, Expression keySelector)
 		{
+			Contract.Requires(source != null);
+			Contract.Requires(keySelector != null);
+
 			var propertyType = keySelector.GetType().GetGenericArguments()[0].GetGenericArguments()[1];
 			var orderbyMethod = typeof(Queryable).GetMethods(BindingFlags.Public | BindingFlags.Static).FirstOrDefault(x => x.Name == "OrderBy" && x.GetParameters().Length == 2);
+
+			Contract.Assume(orderbyMethod != null);
+			
 			orderbyMethod = orderbyMethod.MakeGenericMethod(typeof(T), propertyType);
 
 			return (IOrderedQueryable<T>)orderbyMethod.Invoke(null, new object[] { source, keySelector });
@@ -51,8 +58,14 @@ namespace Linq2Rest
 
 		public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> source, Expression keySelector)
 		{
+			Contract.Requires(source != null);
+			Contract.Requires(keySelector != null);
+
 			var propertyType = keySelector.GetType().GetGenericArguments()[0].GetGenericArguments()[1];
 			var orderbyMethod = typeof(Queryable).GetMethods(BindingFlags.Public | BindingFlags.Static).FirstOrDefault(x => x.Name == "OrderByDescending" && x.GetParameters().Length == 2);
+			
+			Contract.Assume(orderbyMethod != null);
+			
 			orderbyMethod = orderbyMethod.MakeGenericMethod(typeof(T), propertyType);
 
 			return (IOrderedQueryable<T>)orderbyMethod.Invoke(null, new object[] { source, keySelector });
@@ -60,8 +73,14 @@ namespace Linq2Rest
 
 		public static IOrderedQueryable<T> ThenBy<T>(this IOrderedQueryable<T> source, Expression keySelector)
 		{
+			Contract.Requires(source != null);
+			Contract.Requires(keySelector != null);
+
 			var propertyType = keySelector.GetType().GetGenericArguments()[0].GetGenericArguments()[1];
 			var orderbyMethod = typeof(Queryable).GetMethods(BindingFlags.Public | BindingFlags.Static).FirstOrDefault(x => x.Name == "ThenBy" && x.GetParameters().Length == 2);
+
+			Contract.Assume(orderbyMethod != null);
+			
 			orderbyMethod = orderbyMethod.MakeGenericMethod(typeof(T), propertyType);
 
 			return (IOrderedQueryable<T>)orderbyMethod.Invoke(null, new object[] { source, keySelector });
@@ -69,8 +88,14 @@ namespace Linq2Rest
 
 		public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> source, Expression keySelector)
 		{
+			Contract.Requires(source != null);
+			Contract.Requires(keySelector != null);
+
 			var propertyType = keySelector.GetType().GetGenericArguments()[0].GetGenericArguments()[1];
 			var orderbyMethod = typeof(Queryable).GetMethods(BindingFlags.Public | BindingFlags.Static).FirstOrDefault(x => x.Name == "ThenByDescending" && x.GetParameters().Length == 2);
+
+			Contract.Assume(orderbyMethod != null);
+			
 			orderbyMethod = orderbyMethod.MakeGenericMethod(typeof(T), propertyType);
 
 			return (IOrderedQueryable<T>)orderbyMethod.Invoke(null, new object[] { source, keySelector });
