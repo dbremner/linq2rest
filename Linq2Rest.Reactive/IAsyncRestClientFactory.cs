@@ -10,6 +10,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.IO;
+
 namespace Linq2Rest.Reactive
 {
 	using System;
@@ -17,13 +19,21 @@ namespace Linq2Rest.Reactive
 	using System.Diagnostics.Contracts;
 #endif
 
-    /// <summary>
+	public enum HttpMethod
+	{
+		Get,
+		Put,
+		Post,
+		Delete
+	}
+
+	/// <summary>
 	/// Defines the public interface for the async REST client factory.
-    /// </summary>
+	/// </summary>
 #if !WINDOWS_PHONE && !NETFX_CORE
 	[ContractClass(typeof(AsyncRestClientFactoryContracts))]
 #endif
-    public interface IAsyncRestClientFactory
+	public interface IAsyncRestClientFactory
 	{
 		/// <summary>
 		/// Gets the base service address.
@@ -36,7 +46,19 @@ namespace Linq2Rest.Reactive
 		/// <param name="source">The <see cref="Uri"/> to download from.</param>
 		/// <returns>An <see cref="IAsyncRestClient"/> instance.</returns>
 		IAsyncRestClient Create(Uri source);
-    }
+
+		/// <summary>
+		/// Sets the HTTP method for the request.
+		/// </summary>
+		/// <param name="method">The <see cref="HttpMethod"/> to set.</param>
+		void SetMethod(HttpMethod method);
+
+		/// <summary>
+		/// Sets the input data to send to the server.
+		/// </summary>
+		/// <param name="input">The input as a <see cref="Stream"/>.</param>
+		void SetInput(Stream input);
+	}
 
 #if !WINDOWS_PHONE && !NETFX_CORE
 	[ContractClassFor(typeof(IAsyncRestClientFactory))]
@@ -57,6 +79,15 @@ namespace Linq2Rest.Reactive
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 			Contract.Requires<ArgumentException>(source.Scheme == Uri.UriSchemeHttp || source.Scheme == Uri.UriSchemeHttps);
+
+			throw new NotImplementedException();
+		}
+
+		public abstract void SetMethod(HttpMethod method);
+
+		public void SetInput(Stream input)
+		{
+			Contract.Requires<ArgumentNullException>(input != null);
 
 			throw new NotImplementedException();
 		}

@@ -45,6 +45,14 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 			return new FakeAsyncResultClient(_responseDelay, _response);
 		}
 
+		public void SetMethod(HttpMethod method)
+		{
+		}
+
+		public void SetInput(Stream input)
+		{
+		}
+
 		private class FakeAsyncResultClient : IAsyncRestClient
 		{
 			private readonly int _responseDelay;
@@ -56,37 +64,17 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 				_response = response;
 			}
 
-			public Task<Stream> Get()
-			{
-				return CreateTask();
-			}
-
-			public Task<Stream> Post(Stream input)
-			{
-				return CreateTask();
-			}
-
-			public Task<Stream> Put(Stream input)
-			{
-				return CreateTask();
-			}
-
-			public Task<Stream> Delete()
-			{
-				return CreateTask();
-			}
-
-			private Task<Stream> CreateTask()
+			public Task<Stream> Download()
 			{
 				return Task.Factory.StartNew(() =>
-					                             {
-						                             if (_responseDelay > 0)
-						                             {
-							                             Thread.Sleep(_responseDelay);
-						                             }
+													{
+														if (_responseDelay > 0)
+														{
+															Thread.Sleep(_responseDelay);
+														}
 
-						                             return _response.ToStream();
-					                             });
+														return _response.ToStream();
+													});
 			}
 		}
 	}

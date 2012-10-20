@@ -70,14 +70,14 @@ namespace Linq2Rest.Reactive
 		/// </summary>
 		public abstract IQbservableProvider Provider { get; }
 
+		public ISerializerFactory SerializerFactory
+		{
+			get { return _serializerFactory; }
+		}
+
 		protected IAsyncRestClientFactory RestClient
 		{
 			get { return _restClient; }
-		}
-
-		protected ISerializerFactory SerializerFactory
-		{
-			get { return _serializerFactory; }
 		}
 
 		protected IAsyncExpressionProcessor Processor { get; private set; }
@@ -116,15 +116,27 @@ namespace Linq2Rest.Reactive
 			return new RestSubscription(observer, Unsubscribe);
 		}
 
-		protected virtual IObservable<IEnumerable> GetIntermediateResults(Type type, ParameterBuilder builder)
+		internal void ChangeMethod(HttpMethod method)
+		{
+			RestClient.SetMethod(method);
+		}
+
+		internal void SetInput(Stream stream)
+		{
+			Contract.Requires(stream != null);
+
+			RestClient.SetInput(stream);
+		}
+
+		protected IObservable<IEnumerable> GetIntermediateResults(Type type, ParameterBuilder builder)
 		{
 			var client = RestClient.Create(builder.GetFullUri());
 
-			return Observable.FromAsync<Stream>(client.Get)
+			return Observable.FromAsync(client.Download)
 				.Select(x => ReadIntermediateResponse(type, x));
 		}
 
-		protected virtual IObservable<IEnumerable<T>> GetResults(ParameterBuilder builder)
+		protected IObservable<IEnumerable<T>> GetResults(ParameterBuilder builder)
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(builder != null);
@@ -132,7 +144,7 @@ namespace Linq2Rest.Reactive
 			var fullUri = builder.GetFullUri();
 			var client = RestClient.Create(fullUri);
 
-			return Observable.FromAsync<Stream>(client.Get)
+			return Observable.FromAsync(client.Download)
 				.Select(ReadResponse);
 		}
 

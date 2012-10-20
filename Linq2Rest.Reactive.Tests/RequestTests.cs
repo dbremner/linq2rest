@@ -29,7 +29,7 @@ namespace Linq2Rest.Reactive.Tests
 		public void Setup()
 		{
 			_mockRestClient = new Mock<IAsyncRestClient>();
-			_mockRestClient.Setup(x => x.Get())
+			_mockRestClient.Setup(x => x.Download())
 				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
 
 			_mockClientFactory = new Mock<IAsyncRestClientFactory>();
@@ -210,7 +210,7 @@ namespace Linq2Rest.Reactive.Tests
 		[Test]
 		public void WhenQueryIncludesSideEffectsThenInvokesSideEffect()
 		{
-			_mockRestClient.Setup(x => x.Get())
+			_mockRestClient.Setup(x => x.Download())
 				.Returns(() => Task<Stream>.Factory.StartNew(() => "[{\"DoubleValue\":1.2}]".ToStream()));
 			var waitHandle = new ManualResetEvent(false);
 			var action = new Action<FakeItem>(x => waitHandle.Set());
@@ -230,7 +230,7 @@ namespace Linq2Rest.Reactive.Tests
 		[Test]
 		public void WhenQueryIncludesFinalEffectsThenInvokesSideEffect()
 		{
-			_mockRestClient.Setup(x => x.Get())
+			_mockRestClient.Setup(x => x.Download())
 				.Returns(() => Task<Stream>.Factory.StartNew(() => "[{\"DoubleValue\":1.2}]".ToStream()));
 			var waitHandle = new ManualResetEvent(false);
 			var action = new Action(() => waitHandle.Set());
