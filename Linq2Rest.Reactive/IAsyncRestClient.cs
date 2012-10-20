@@ -3,6 +3,8 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Threading.Tasks;
+
 namespace Linq2Rest.Reactive
 {
 	using System;
@@ -20,35 +22,59 @@ namespace Linq2Rest.Reactive
 	public interface IAsyncRestClient
 	{
 		/// <summary>
-		/// Begins the REST request.
+		/// Gets a service response.
 		/// </summary>
-		/// <param name="callback">The <see cref="AsyncCallback"/> to invoke when response is received.</param>
-		/// <param name="state">The asynchronous state object.</param>
-		/// <returns>An <see cref="IAsyncResult"/> instance.</returns>
-		IAsyncResult BeginGetResult(AsyncCallback callback, object state);
+		/// <returns>The service response as a <see cref="Task{Stream}"/>.</returns>
+		Task<Stream> Get();
 
 		/// <summary>
-		/// Gets the result from the passed <see cref="IAsyncResult"/>.
+		/// Posts the passed data to the service.
 		/// </summary>
-		/// <param name="result">The async operation result.</param>
-		/// <returns>The downloaded resource as a <see cref="string"/>.</returns>
-		Stream EndGetResult(IAsyncResult result);
+		/// <param name="input">The <see cref="Stream"/> representation to post.</param>
+		/// <returns>The service response as a <see cref="Task{Stream}"/>.</returns>
+		Task<Stream> Post(Stream input);
+
+		/// <summary>
+		/// Puts the passed data to the service.
+		/// </summary>
+		/// <param name="input">The <see cref="Stream"/> representation to put.</param>
+		/// <returns>The service response as a <see cref="Task{Stream}"/>.</returns>
+		Task<Stream> Put(Stream input);
+
+		/// <summary>
+		/// Deletes the resource at the service.
+		/// </summary>
+		/// <returns>The service response as a <see cref="Task{Stream}"/>.</returns>
+		Task<Stream> Delete();
 	}
 
 #if !WINDOWS_PHONE
 	[ContractClassFor(typeof(IAsyncRestClient))]
 	internal abstract class AsyncRestClientContracts : IAsyncRestClient
 	{
-		public IAsyncResult BeginGetResult(AsyncCallback callback, object state)
+		public Task<Stream> Get()
 		{
-			Contract.Requires<ArgumentNullException>(callback != null);
+			Contract.Ensures(Contract.Result<Task<Stream>>() != null);
 			throw new NotImplementedException();
 		}
 
-		public Stream EndGetResult(IAsyncResult result)
+		public Task<Stream> Post(Stream input)
 		{
-			Contract.Requires<ArgumentNullException>(result != null);
-			Contract.Ensures(Contract.Result<Stream>() != null);
+			Contract.Requires<ArgumentNullException>(input != null);
+			Contract.Ensures(Contract.Result<Task<Stream>>() != null);
+			throw new NotImplementedException();
+		}
+
+		public Task<Stream> Put(Stream input)
+		{
+			Contract.Requires<ArgumentNullException>(input != null);
+			Contract.Ensures(Contract.Result<Task<Stream>>() != null);
+			throw new NotImplementedException();
+		}
+
+		public Task<Stream> Delete()
+		{
+			Contract.Ensures(Contract.Result<Task<Stream>>() != null);
 			throw new NotImplementedException();
 		}
 	}

@@ -3,6 +3,9 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.IO;
+using System.Threading.Tasks;
+
 namespace Linq2Rest.Reactive.Tests
 {
 	using System;
@@ -154,14 +157,10 @@ namespace Linq2Rest.Reactive.Tests
 		{
 			var waitHandle = new ManualResetEvent(false);
 
-			var mockResult = new Mock<IAsyncResult>();
-			mockResult.SetupGet(x => x.CompletedSynchronously).Returns(true);
 			var mockRestClient = new Mock<IAsyncRestClient>();
-			mockRestClient.Setup(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>()))
-				.Callback<AsyncCallback, object>((a, o) => a.Invoke(mockResult.Object))
-				.Returns(mockResult.Object);
-			mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[]".ToStream());
-
+			mockRestClient.Setup(x => x.Get())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
+			
 			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
 			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
 			mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(mockRestClient.Object);
@@ -173,8 +172,7 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne(5000);
 
-			mockRestClient.Verify(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>()));
-			mockRestClient.Verify(x => x.EndGetResult(It.IsAny<IAsyncResult>()));
+			mockRestClient.Verify(x => x.Get());
 		}
 	}
 }

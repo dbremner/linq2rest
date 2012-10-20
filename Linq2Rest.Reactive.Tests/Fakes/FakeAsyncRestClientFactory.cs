@@ -7,7 +7,6 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 {
 	using System;
 	using System.IO;
-	using System.Text;
 	using System.Threading;
 	using System.Threading.Tasks;
 	using Linq2Rest.Reactive;
@@ -57,59 +56,37 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 				_response = response;
 			}
 
-			public IAsyncResult BeginGetResult(AsyncCallback callback, object state)
+			public Task<Stream> Get()
 			{
-				return new FakeAsyncResult(callback);
+				return CreateTask();
 			}
 
-			public Stream EndGetResult(IAsyncResult result)
+			public Task<Stream> Post(Stream input)
 			{
-				if (_responseDelay > 0)
-				{
-					Thread.Sleep(_responseDelay);
-				}
-
-				return _response.ToStream();
+				return CreateTask();
 			}
 
-			private class FakeAsyncResult : IAsyncResult
+			public Task<Stream> Put(Stream input)
 			{
-				public FakeAsyncResult(AsyncCallback callback)
-				{
-					Task.Factory.StartNew(() => callback(this));
-				}
+				return CreateTask();
+			}
 
-				public bool IsCompleted
-				{
-					get
-					{
-						return true;
-					}
-				}
+			public Task<Stream> Delete()
+			{
+				return CreateTask();
+			}
 
-				public WaitHandle AsyncWaitHandle
-				{
-					get
-					{
-						return new ManualResetEvent(true);
-					}
-				}
+			private Task<Stream> CreateTask()
+			{
+				return Task.Factory.StartNew(() =>
+					                             {
+						                             if (_responseDelay > 0)
+						                             {
+							                             Thread.Sleep(_responseDelay);
+						                             }
 
-				public object AsyncState
-				{
-					get
-					{
-						return null;
-					}
-				}
-
-				public bool CompletedSynchronously
-				{
-					get
-					{
-						return true;
-					}
-				}
+						                             return _response.ToStream();
+					                             });
 			}
 		}
 	}

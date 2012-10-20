@@ -1,7 +1,14 @@
-// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="InnerRestObservableBase.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the InnerRestObservableBase type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.Reactive
 {
@@ -15,8 +22,6 @@ namespace Linq2Rest.Reactive
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using System.Reactive.Threading.Tasks;
-	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
 	internal abstract class InnerRestObservableBase<T> : IQbservable<T>
@@ -115,8 +120,7 @@ namespace Linq2Rest.Reactive
 		{
 			var client = RestClient.Create(builder.GetFullUri());
 
-			return Observable.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)
-				.Invoke()
+			return Observable.FromAsync<Stream>(client.Get)
 				.Select(x => ReadIntermediateResponse(type, x));
 		}
 
@@ -128,8 +132,7 @@ namespace Linq2Rest.Reactive
 			var fullUri = builder.GetFullUri();
 			var client = RestClient.Create(fullUri);
 
-			return Observable.FromAsyncPattern<Stream>(client.BeginGetResult, client.EndGetResult)
-                .Invoke()
+			return Observable.FromAsync<Stream>(client.Get)
 				.Select(ReadResponse);
 		}
 
