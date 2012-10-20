@@ -3,6 +3,8 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Threading.Tasks;
+
 namespace Linq2Rest.Reactive.Implementations
 {
 	using System;
@@ -59,17 +61,35 @@ namespace Linq2Rest.Reactive.Implementations
 				_request.Accept = "application/json";
 			}
 
-			public IAsyncResult BeginGetResult(AsyncCallback callback, object state)
+			public Task<Stream> Get()
 			{
-				return _request.BeginGetResponse(callback, state);
+				_request.Method = "GET";
+				return CreateRequestTask(_request);
 			}
 
-			public Stream EndGetResult(IAsyncResult result)
+			public Task<Stream> Post(Stream input)
 			{
-				var response = _request.EndGetResponse(result);
-				var stream = response.GetResponseStream();
+				_request.Method = "POST";
+				return CreateRequestTask(_request);
+			}
 
-				return stream;
+			public Task<Stream> Put(Stream input)
+			{
+				_request.Method = "PUT";
+				return CreateRequestTask(_request);
+			}
+
+			public Task<Stream> Delete()
+			{
+				_request.Method = "DELETE";
+				return CreateRequestTask(_request);
+			}
+
+			private Task<Stream> CreateRequestTask(WebRequest request)
+			{
+				return Task<WebResponse>.Factory
+					.FromAsync(request.BeginGetResponse, request.EndGetResponse, null)
+					.ContinueWith(x => x.Result.GetResponseStream());
 			}
 
 #if !NETFX_CORE

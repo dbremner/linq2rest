@@ -182,7 +182,6 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Fakes\ChildItem.cs" />
-    <Compile Include="Fakes\FakeAsyncRestClientFactory.cs" />
     <Compile Include="Fakes\FakeItem.cs" />
     <Compile Include="Fakes\TestComplexSerializer.cs" />
     <Compile Include="Fakes\TestSerializer.cs" />

@@ -3,6 +3,9 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.IO;
+using System.Threading.Tasks;
+
 namespace Linq2Rest.Reactive.Tests
 {
 	using System;
@@ -25,13 +28,9 @@ namespace Linq2Rest.Reactive.Tests
 		[SetUp]
 		public void Setup()
 		{
-			var mockResult = new Mock<IAsyncResult>();
-			mockResult.SetupGet(x => x.CompletedSynchronously).Returns(true);
 			_mockRestClient = new Mock<IAsyncRestClient>();
-			_mockRestClient.Setup(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>()))
-				.Callback<AsyncCallback, object>((a, o) => a.Invoke(mockResult.Object))
-				.Returns(mockResult.Object);
-			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[]".ToStream());
+			_mockRestClient.Setup(x => x.Get())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
 
 			_mockClientFactory = new Mock<IAsyncRestClientFactory>();
 			_mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
@@ -49,7 +48,7 @@ namespace Linq2Rest.Reactive.Tests
 			var trueExpression =
 				Expression.IsTrue(
 				Expression.LessThanOrEqual(Expression.Property(parameter, "IntValue"), Expression.Constant(3)));
-			
+
 			_observable
 				.Create()
 				.Where(Expression.Lambda<Func<FakeItem, bool>>(trueExpression, parameter))
@@ -211,7 +210,8 @@ namespace Linq2Rest.Reactive.Tests
 		[Test]
 		public void WhenQueryIncludesSideEffectsThenInvokesSideEffect()
 		{
-			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[{\"DoubleValue\":1.2}]".ToStream());
+			_mockRestClient.Setup(x => x.Get())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[{\"DoubleValue\":1.2}]".ToStream()));
 			var waitHandle = new ManualResetEvent(false);
 			var action = new Action<FakeItem>(x => waitHandle.Set());
 			var mockObserver = new Mock<IObserver<FakeItem>>();
@@ -230,7 +230,8 @@ namespace Linq2Rest.Reactive.Tests
 		[Test]
 		public void WhenQueryIncludesFinalEffectsThenInvokesSideEffect()
 		{
-			_mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns("[{\"DoubleValue\":1.2}]".ToStream());
+			_mockRestClient.Setup(x => x.Get())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[{\"DoubleValue\":1.2}]".ToStream()));
 			var waitHandle = new ManualResetEvent(false);
 			var action = new Action(() => waitHandle.Set());
 			var mockObserver = new Mock<IObserver<FakeItem>>();

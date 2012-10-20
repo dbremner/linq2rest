@@ -3,11 +3,10 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
-using System.Linq;
-
 namespace Linq2Rest.Reactive.Tests
 {
 	using System;
+	using System.IO;
 	using System.Reactive;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
@@ -36,7 +35,7 @@ namespace Linq2Rest.Reactive.Tests
 
 			Assert.False(result);
 
-            subscription.Dispose();
+			subscription.Dispose();
 		}
 
 		[Test]
@@ -52,29 +51,25 @@ namespace Linq2Rest.Reactive.Tests
 
 			Task.Factory.StartNew(
 				() =>
-					{
-						Thread.Sleep(1000);
-						subscription.Dispose();
-					});
+				{
+					Thread.Sleep(1000);
+					subscription.Dispose();
+				});
 
 			var result = waitHandle.WaitOne(2000);
 
-            Assert.True(result);
+			Assert.True(result);
 
-            subscription.Dispose();
+			subscription.Dispose();
 		}
 
 		[Test]
 		public void WhenInvokingThenCallsRestClient()
 		{
 			var waitHandle = new ManualResetEvent(false);
-			var mockResult = new Mock<IAsyncResult>();
-			mockResult.SetupGet(x => x.CompletedSynchronously).Returns(true);
 			var mockRestClient = new Mock<IAsyncRestClient>();
-			mockRestClient.Setup(x => x.BeginGetResult(It.IsAny<AsyncCallback>(), It.IsAny<object>()))
-				.Callback<AsyncCallback, object>((a, o) => a.Invoke(mockResult.Object))
-				.Returns(mockResult.Object);
-			mockRestClient.Setup(x => x.EndGetResult(It.IsAny<IAsyncResult>())).Returns(() => "[]".ToStream());
+			mockRestClient.Setup(x => x.Get())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
 
 			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
 			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
@@ -89,9 +84,9 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne(2000);
 
-            mockClientFactory.Verify(x => x.Create(It.IsAny<Uri>()), Times.Exactly(2));
+			mockClientFactory.Verify(x => x.Create(It.IsAny<Uri>()), Times.Exactly(2));
 
-            subscription.Dispose();
+			subscription.Dispose();
 		}
 	}
 }
