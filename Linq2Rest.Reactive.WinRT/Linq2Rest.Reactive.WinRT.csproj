@@ -200,8 +200,8 @@
     <Compile Include="..\Linq2Rest.Reactive\InnerRestObservableBase.cs">
       <Link>InnerRestObservableBase.cs</Link>
     </Compile>
-    <Compile Include="..\Linq2Rest.Reactive\ObservableExtensions.cs">
-      <Link>ObservableExtensions.cs</Link>
+    <Compile Include="..\Linq2Rest.Reactive\InteralObservableExtensions.cs">
+      <Link>InteralObservableExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest.Reactive\ReflectionHelper.cs">
       <Link>ReflectionHelper.cs</Link>
