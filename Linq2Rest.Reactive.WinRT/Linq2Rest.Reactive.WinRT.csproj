@@ -203,20 +203,8 @@
     <Compile Include="..\Linq2Rest.Reactive\ObservableExtensions.cs">
       <Link>ObservableExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Linq2Rest.Reactive\PollingRestObservable.cs">
-      <Link>PollingRestObservable.cs</Link>
-    </Compile>
-    <Compile Include="..\Linq2Rest.Reactive\PollingRestQueryableProvider.cs">
-      <Link>PollingRestQueryableProvider.cs</Link>
-    </Compile>
     <Compile Include="..\Linq2Rest.Reactive\ReflectionHelper.cs">
       <Link>ReflectionHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Linq2Rest.Reactive\RequeryingRestObservable.cs">
-      <Link>RequeryingRestObservable.cs</Link>
-    </Compile>
-    <Compile Include="..\Linq2Rest.Reactive\RequeryingRestQueryableProvider.cs">
-      <Link>RequeryingRestQueryableProvider.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest.Reactive\RestObservable.cs">
       <Link>RestObservable.cs</Link>

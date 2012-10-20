@@ -1,7 +1,14 @@
-﻿// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RestObservable.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines an observable REST query.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.Reactive
 {
@@ -53,27 +60,11 @@ namespace Linq2Rest.Reactive
         }
 
         /// <summary>
-        /// Creates an observable performing a continuous calls to the defined service at the defined intervals.
-        /// </summary>
-        /// <param name="interval">The interval between requests.</param>
-        /// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
-        public IQbservable<T> Poll(TimeSpan interval)
-        {
-            return new PollingRestObservable<T>(
-                interval,
-                _restClientFactory,
-                _serializerFactory,
-                null,
-                Scheduler.CurrentThread,
-                Scheduler.CurrentThread);
-        }
-
-        /// <summary>
         /// Creates an observable performing calls when triggered.
         /// </summary>
         /// <param name="trigger">The trigger.</param>
         /// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
-        public IQbservable<T> Triggered(IObservable<Unit> trigger)
+        public IQbservable<T> Poll(IObservable<Unit> trigger)
         {
             return new TriggeredRestObservable<T>(
                 trigger,
@@ -82,22 +73,6 @@ namespace Linq2Rest.Reactive
                 null,
 				CurrentThreadScheduler.Instance,
 				CurrentThreadScheduler.Instance);
-        }
-
-        /// <summary>
-        /// Creates an observable performing a continuous calls to the defined service at the defined intervals.
-        /// </summary>
-        /// <param name="interval">The interval between requests.</param>
-        /// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
-        public IQbservable<T> Requery(TimeSpan interval)
-        {
-            return new RequeryingRestObservable<T>(
-                interval,
-                _restClientFactory,
-                _serializerFactory,
-                null,
-                Scheduler.CurrentThread,
-                Scheduler.CurrentThread);
         }
 
 #if !WINDOWS_PHONE

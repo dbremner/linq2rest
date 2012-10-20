@@ -3,6 +3,8 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Linq;
+
 namespace Linq2Rest.Reactive.Tests
 {
 	using System;
@@ -25,7 +27,7 @@ namespace Linq2Rest.Reactive.Tests
 			var factory = new FakeAsyncRestClientFactory("[{\"Text\":\"blah\", \"Number\":1}]");
 			var observable = new RestObservable<FakeItem>(factory, new TestSerializerFactory());
 			var subscription = observable
-				.Triggered(Observable.Interval(TimeSpan.FromSeconds(0.5)).Select(x => Unit.Default))
+				.Poll(Observable.Interval(TimeSpan.FromSeconds(0.5)).Select(x => Unit.Default))
 				.ObserveOn(TaskPoolScheduler.Default)
 				.Where(x => x.StringValue == "blah")
 				.Subscribe(x => { }, () => waitHandle.Set());
@@ -44,7 +46,7 @@ namespace Linq2Rest.Reactive.Tests
 			var factory = new FakeAsyncRestClientFactory("[{\"Text\":\"blah\", \"Number\":1}]");
 			var observable = new RestObservable<FakeItem>(factory, new TestSerializerFactory());
 			var subscription = observable
-				.Triggered(Observable.Interval(TimeSpan.FromSeconds(0.5)).Select(x => Unit.Default))
+				.Poll(Observable.Interval(TimeSpan.FromSeconds(0.5)).Select(x => Unit.Default))
 				.Where(x => x.StringValue == "blah")
 				.Subscribe(x => { }, () => waitHandle.Set());
 
@@ -81,7 +83,7 @@ namespace Linq2Rest.Reactive.Tests
 				.Returns(mockRestClient.Object);
 
 			var subscription = new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
-				.Triggered(Observable.Repeat(Unit.Default, 2))
+				.Poll(Observable.Repeat(Unit.Default, 2))
 				.Where(x => x.IntValue == 2)
 				.Subscribe(x => { }, () => waitHandle.Set());
 
