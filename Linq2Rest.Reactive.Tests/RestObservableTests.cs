@@ -8,7 +8,6 @@ namespace Linq2Rest.Reactive.Tests
 	using System;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using System.Reactive.Threading.Tasks;
 	using System.Threading;
 	using Linq2Rest.Reactive;
 	using Linq2Rest.Reactive.Tests.Fakes;
@@ -130,8 +129,7 @@ namespace Linq2Rest.Reactive.Tests
 			var result = observable
 				.Create()
 				.Where(x => x.StringValue == "blah")
-				.ToTask()
-				.Result;
+				.SingleOrDefault();
 
 			Assert.Null(result);
 		}
