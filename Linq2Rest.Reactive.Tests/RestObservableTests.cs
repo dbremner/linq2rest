@@ -158,7 +158,7 @@ namespace Linq2Rest.Reactive.Tests
 			var waitHandle = new ManualResetEvent(false);
 
 			var mockRestClient = new Mock<IAsyncRestClient>();
-			mockRestClient.Setup(x => x.Get())
+			mockRestClient.Setup(x => x.Download())
 				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
 			
 			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
@@ -172,7 +172,7 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne(5000);
 
-			mockRestClient.Verify(x => x.Get());
+			mockRestClient.Verify(x => x.Download());
 		}
 	}
 }

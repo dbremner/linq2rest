@@ -31,54 +31,14 @@ namespace Linq2Rest.Reactive
 		/// Gets a service response.
 		/// </summary>
 		/// <returns>The service response as a <see cref="Task{Stream}"/>.</returns>
-		Task<Stream> Get();
-
-		/// <summary>
-		/// Posts the passed data to the service.
-		/// </summary>
-		/// <param name="input">The <see cref="Stream"/> representation to post.</param>
-		/// <returns>The service response as a <see cref="Task{Stream}"/>.</returns>
-		Task<Stream> Post(Stream input);
-
-		/// <summary>
-		/// Puts the passed data to the service.
-		/// </summary>
-		/// <param name="input">The <see cref="Stream"/> representation to put.</param>
-		/// <returns>The service response as a <see cref="Task{Stream}"/>.</returns>
-		Task<Stream> Put(Stream input);
-
-		/// <summary>
-		/// Deletes the resource at the service.
-		/// </summary>
-		/// <returns>The service response as a <see cref="Task{Stream}"/>.</returns>
-		Task<Stream> Delete();
+		Task<Stream> Download();
 	}
 
 #if !WINDOWS_PHONE
 	[ContractClassFor(typeof(IAsyncRestClient))]
 	internal abstract class AsyncRestClientContracts : IAsyncRestClient
 	{
-		public Task<Stream> Get()
-		{
-			Contract.Ensures(Contract.Result<Task<Stream>>() != null);
-			throw new NotImplementedException();
-		}
-
-		public Task<Stream> Post(Stream input)
-		{
-			Contract.Requires<ArgumentNullException>(input != null);
-			Contract.Ensures(Contract.Result<Task<Stream>>() != null);
-			throw new NotImplementedException();
-		}
-
-		public Task<Stream> Put(Stream input)
-		{
-			Contract.Requires<ArgumentNullException>(input != null);
-			Contract.Ensures(Contract.Result<Task<Stream>>() != null);
-			throw new NotImplementedException();
-		}
-
-		public Task<Stream> Delete()
+		public Task<Stream> Download()
 		{
 			Contract.Ensures(Contract.Result<Task<Stream>>() != null);
 			throw new NotImplementedException();

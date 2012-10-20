@@ -3,6 +3,7 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace Linq2Rest.Reactive.Implementations
@@ -17,6 +18,9 @@ namespace Linq2Rest.Reactive.Implementations
 	/// </summary>
 	public class AsyncJsonRestClientFactory : IAsyncRestClientFactory
 	{
+		private HttpMethod _method;
+		private Stream _input;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AsyncJsonRestClientFactory"/> class.
 		/// </summary>
@@ -29,6 +33,7 @@ namespace Linq2Rest.Reactive.Implementations
 #endif
 
 			ServiceBase = serviceBase;
+			_method = HttpMethod.Get;
 		}
 
 		/// <summary>
@@ -43,60 +48,81 @@ namespace Linq2Rest.Reactive.Implementations
 		/// <returns>An <see cref="IAsyncRestClient"/> instance.</returns>
 		public IAsyncRestClient Create(Uri source)
 		{
-			return new AsyncJsonRestClient(source);
+			return new AsyncJsonRestClient(source, _method, _input);
+		}
+
+		public void SetMethod(HttpMethod method)
+		{
+			_method = method;
+		}
+
+		public void SetInput(Stream input)
+		{
+			_input = input;
 		}
 
 		private class AsyncJsonRestClient : IAsyncRestClient
 		{
-			private readonly HttpWebRequest _request;
+			private readonly Uri _uri;
+			private readonly HttpMethod _method;
+			private readonly Stream _input;
 
-			public AsyncJsonRestClient(Uri uri)
+			public AsyncJsonRestClient(Uri uri, HttpMethod method, Stream input)
 			{
 #if !NETFX_CORE
 				Contract.Requires(uri != null);
 				Contract.Requires(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 #endif
 
-				_request = (HttpWebRequest)WebRequest.Create(uri);
-				_request.Accept = "application/json";
+				_uri = uri;
+				_method = method;
+				_input = input;
 			}
 
-			public Task<Stream> Get()
+			public Task<Stream> Download()
 			{
-				_request.Method = "GET";
-				return CreateRequestTask(_request);
-			}
+				var request = (HttpWebRequest)WebRequest.Create(_uri);
+				request.Accept = "application/json";
+				request.Method = _method.ToString().ToUpperInvariant();
+				if (_method == HttpMethod.Put || _method == HttpMethod.Post)
+				{
+					return Task<Stream>.Factory
+						.FromAsync(
+							request.BeginGetRequestStream,
+							request.EndGetRequestStream,
+							request)
+						.ContinueWith(s =>
+										  {
+											  var buffer = new byte[_input.Length];
+											  _input.Read(buffer, 0, buffer.Length);
 
-			public Task<Stream> Post(Stream input)
-			{
-				_request.Method = "POST";
-				return CreateRequestTask(_request);
-			}
+											  var stream = s.Result;
+											  stream.Write(buffer, 0, buffer.Length);
+											  return s.AsyncState as HttpWebRequest;
+										  })
+										  .ContinueWith(
+										  r =>
+										  {
+											  var webRequest = r.Result;
+											  return Task<WebResponse>.Factory.FromAsync(
+												  webRequest.BeginGetResponse,
+												  webRequest.EndGetResponse,
+												  null)
+												  .ContinueWith(w => w.Result.GetResponseStream())
+												  .Result;
+										  });
+				}
 
-			public Task<Stream> Put(Stream input)
-			{
-				_request.Method = "PUT";
-				return CreateRequestTask(_request);
-			}
-
-			public Task<Stream> Delete()
-			{
-				_request.Method = "DELETE";
-				return CreateRequestTask(_request);
-			}
-
-			private Task<Stream> CreateRequestTask(WebRequest request)
-			{
 				return Task<WebResponse>.Factory
-					.FromAsync(request.BeginGetResponse, request.EndGetResponse, null)
-					.ContinueWith(x => x.Result.GetResponseStream());
+						.FromAsync(request.BeginGetResponse, request.EndGetResponse, null)
+						.ContinueWith(x => x.Result.GetResponseStream());
 			}
 
 #if !NETFX_CORE
 			[ContractInvariantMethod]
 			private void Invariants()
 			{
-				Contract.Invariant(_request != null);
+				Contract.Invariant(_uri != null);
 			}
 #endif
 		}
