@@ -160,7 +160,7 @@ namespace Linq2Rest.Reactive.Tests
 			var mockRestClient = new Mock<IAsyncRestClient>();
 			mockRestClient.Setup(x => x.Download())
 				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
-			
+
 			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
 			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
 			mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(mockRestClient.Object);
@@ -173,6 +173,78 @@ namespace Linq2Rest.Reactive.Tests
 			waitHandle.WaitOne(5000);
 
 			mockRestClient.Verify(x => x.Download());
+		}
+
+		[Test]
+		public void WhenInvokingPostThenHttpMethodIsSetOnClientFactory()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			var mockRestClient = new Mock<IAsyncRestClient>();
+			mockRestClient.Setup(x => x.Download())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
+
+			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
+			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
+			mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(mockRestClient.Object);
+
+			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
+				.Create()
+				.Post(() => 1)
+				.Where(x => x.StringValue == "blah")
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(5000);
+
+			mockClientFactory.Verify(x => x.SetMethod(HttpMethod.Post));
+		}
+
+		[Test]
+		public void WhenInvokingPutThenHttpMethodIsSetOnClientFactory()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			var mockRestClient = new Mock<IAsyncRestClient>();
+			mockRestClient.Setup(x => x.Download())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
+
+			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
+			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
+			mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(mockRestClient.Object);
+
+			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
+				.Create()
+				.Put(() => 1)
+				.Where(x => x.StringValue == "blah")
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(5000);
+
+			mockClientFactory.Verify(x => x.SetMethod(HttpMethod.Put));
+		}
+
+		[Test]
+		public void WhenInvokingDeleteThenHttpMethodIsSetOnClientFactory()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			var mockRestClient = new Mock<IAsyncRestClient>();
+			mockRestClient.Setup(x => x.Download())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
+
+			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
+			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
+			mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(mockRestClient.Object);
+
+			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
+				.Create()
+				.Delete()
+				.Where(x => x.StringValue == "blah")
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(5000);
+
+			mockClientFactory.Verify(x => x.SetMethod(HttpMethod.Delete));
 		}
 	}
 }
