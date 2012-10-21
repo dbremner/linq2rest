@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
 	<id>Linq2Rest</id>
-	<version>2.5.0.0-alpha</version>
+	<version>2.5.0.0-alpha2</version>
 	<title>Linq2Rest</title>
 	<authors>Jacob Reimers</authors>
 	<owners>Jacob Reimers</owners>
@@ -10,7 +10,7 @@
 	<projectUrl>https://bitbucket.org/jjrdk/linq2rest</projectUrl>
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<description>Parses OData system query parameters to create a LINQ query that can be used to filter a model set. Also exposes a LINQ provider for web services supporting the OData query parameters. Use extension method Filter (in Linq2Rest namespace) on any IEnumerable source.</description>
-	<releaseNotes>Added support for more HTTP verbs. Now supports GET, POST, PUT and DELETE.</releaseNotes>
+	<releaseNotes>Added support for more HTTP verbs. Now supports GET, POST, PUT and DELETE. Added better support for Entity Framework.</releaseNotes>
 	<tags>OData LINQ REST</tags>
 	<references>
 	  <reference file="Linq2Rest.dll" />
