@@ -3,6 +3,8 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Linq;
+
 namespace Linq2Rest
 {
 	using System;
@@ -21,13 +23,13 @@ namespace Linq2Rest
 		/// </summary>
 		/// <param name="source">The source items to filter.</param>
 		/// <returns>A filtered enumeration and projected of the source items.</returns>
-		IEnumerable<object> Filter(IEnumerable<T> source);
+		IQueryable<object> Filter(IEnumerable<T> source);
 	}
 
 	[ContractClassFor(typeof(IModelFilter<>))]
 	internal abstract class ModelFilterContracts<T> : IModelFilter<T>
 	{
-		public IEnumerable<object> Filter(IEnumerable<T> source)
+		public IQueryable<object> Filter(IEnumerable<T> source)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 

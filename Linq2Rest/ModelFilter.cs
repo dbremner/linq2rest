@@ -30,9 +30,9 @@ namespace Linq2Rest
 			_sortDescriptions = sortDescriptions;
 		}
 
-		public IEnumerable<object> Filter(IEnumerable<T> model)
+		public IQueryable<object> Filter(IEnumerable<T> model)
 		{
-			var result = _filterExpression != null 
+			var result = _filterExpression != null
 				? model.AsQueryable().Where(_filterExpression)
 				: model.AsQueryable();
 
@@ -71,9 +71,7 @@ namespace Linq2Rest
 				result = result.Take(_top);
 			}
 
-			return _selectExpression == null
-					? result.OfType<object>()
-					: result.AsQueryable().Select(_selectExpression);
+			return new UntypedQueryable<T>(result, _selectExpression);
 		}
 	}
 }

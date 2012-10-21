@@ -25,7 +25,7 @@ namespace Linq2Rest
 		/// <param name="query">The query parameters defining the filter.</param>
 		/// <typeparam name="T">The <see cref="Type"/> of items in the source collection.</typeparam>
 		/// <returns>A filtered and projected enumeration of the source collection.</returns>
-		public static IEnumerable<object> Filter<T>(this IEnumerable<T> source, NameValueCollection query)
+		public static IQueryable<object> Filter<T>(this IEnumerable<T> source, NameValueCollection query)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 			Contract.Requires<ArgumentNullException>(query != null);
@@ -42,11 +42,11 @@ namespace Linq2Rest
 		/// <param name="filter">The filter to apply.</param>
 		/// <typeparam name="T">The <see cref="Type"/> of items in the source collection.</typeparam>
 		/// <returns>A filtered and projected enumeration of the source collection.</returns>
-		public static IEnumerable<object> Filter<T>(this IEnumerable<T> source, IModelFilter<T> filter)
+		public static IQueryable<object> Filter<T>(this IEnumerable<T> source, IModelFilter<T> filter)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 
-			return filter == null ? source.OfType<object>() : filter.Filter(source);
+			return filter == null ? source.OfType<object>().AsQueryable() : filter.Filter(source);
 		}
 	}
 }
