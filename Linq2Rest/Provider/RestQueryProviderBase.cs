@@ -3,6 +3,8 @@
 // Please see http://www.opensource.org/licenses/MS-PL] for details.
 // All other rights reserved.
 
+using System.Diagnostics.Contracts;
+
 namespace Linq2Rest.Provider
 {
 	using System;
@@ -28,7 +30,11 @@ namespace Linq2Rest.Provider
 
 		public abstract object Execute(Expression expression);
 
-		public abstract TResult Execute<TResult>(Expression expression);
+		public TResult Execute<TResult>(Expression expression)
+		{
+			Contract.Assume(expression != null);
+			return (TResult)Execute(expression);
+		}
 
 		public void Dispose()
 		{
