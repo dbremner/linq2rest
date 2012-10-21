@@ -76,12 +76,6 @@ namespace Linq2Rest.Provider
 				   ?? GetResults(_parameterBuilder);
 		}
 
-		public override TResult Execute<TResult>(Expression expression)
-		{
-			Contract.Assume(expression != null);
-			return (TResult)Execute(expression);
-		}
-
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing)

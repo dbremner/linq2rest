@@ -20,32 +20,33 @@ namespace Linq2Rest
 
 	internal class UntypedQueryable<T> : IQueryable<object>
 	{
-		private readonly IQueryable<T> _source;
-		private readonly Expression<Func<T, object>> _projection;
+		private readonly IQueryable _source;
 
 		public UntypedQueryable(IQueryable<T> source, Expression<Func<T, object>> projection)
 		{
-			_source = source;
-			_projection = projection;
-			Expression = source.Expression;
-			Provider = source.Provider;
+			_source = projection == null
+						  ? (IQueryable)source
+						  : source.Select(projection);
 		}
 
-		public Expression Expression { get; private set; }
+		public Expression Expression
+		{
+			get { return _source.Expression; }
+		}
 
 		public Type ElementType
 		{
 			get { return typeof(T); }
 		}
 
-		public IQueryProvider Provider { get; private set; }
+		public IQueryProvider Provider
+		{
+			get { return _source.Provider; }
+		}
 
 		public IEnumerator<object> GetEnumerator()
 		{
-			return (_projection == null
-						? _source.ToArray().OfType<object>()
-						: _source.Select(_projection))
-				.GetEnumerator();
+			return Enumerable.Cast<object>(_source).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
