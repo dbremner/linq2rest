@@ -18,15 +18,40 @@ namespace Linq2Rest.Reactive
 
 	public static class ObservableExtensions
 	{
-		public static IObservable<T> Post<T, TInput>(this IObservable<T> source, TInput input)
+		public static IObservable<T> Post<T, TInput>(this IObservable<T> source, Func<TInput> input)
 		{
 			var restObservable = source as InnerRestObservableBase<T>;
 			if (restObservable != null)
 			{
 				restObservable.ChangeMethod(HttpMethod.Post);
 				var serializer = restObservable.SerializerFactory.Create<TInput>();
-				var serialized = serializer.Serialize(input);
+				var serialized = serializer.Serialize(input());
 				restObservable.SetInput(serialized);
+			}
+
+			return source;
+		}
+
+		public static IObservable<T> Put<T, TInput>(this IObservable<T> source, Func<TInput> input)
+		{
+			var restObservable = source as InnerRestObservableBase<T>;
+			if (restObservable != null)
+			{
+				restObservable.ChangeMethod(HttpMethod.Put);
+				var serializer = restObservable.SerializerFactory.Create<TInput>();
+				var serialized = serializer.Serialize(input());
+				restObservable.SetInput(serialized);
+			}
+
+			return source;
+		}
+
+		public static IObservable<T> Delete<T>(this IObservable<T> source)
+		{
+			var restObservable = source as InnerRestObservableBase<T>;
+			if (restObservable != null)
+			{
+				restObservable.ChangeMethod(HttpMethod.Delete);
 			}
 
 			return source;

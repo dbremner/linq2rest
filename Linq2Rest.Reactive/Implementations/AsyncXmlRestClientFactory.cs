@@ -1,9 +1,14 @@
-// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
-
-using System.Threading.Tasks;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AsyncXmlRestClientFactory.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the factory to create a REST client using XML requests.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.Reactive.Implementations
 {
@@ -11,6 +16,7 @@ namespace Linq2Rest.Reactive.Implementations
 	using System.Diagnostics.Contracts;
 	using System.IO;
 	using System.Net;
+	using System.Threading.Tasks;
 
 	/// <summary>
 	/// Defines the factory to create a REST client using XML requests.

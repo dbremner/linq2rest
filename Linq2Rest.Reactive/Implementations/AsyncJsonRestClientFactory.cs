@@ -1,10 +1,14 @@
-// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
-
-using System.Globalization;
-using System.Threading.Tasks;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AsyncJsonRestClientFactory.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the factory to create a REST client using JSON requests.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.Reactive.Implementations
 {
@@ -12,6 +16,7 @@ namespace Linq2Rest.Reactive.Implementations
 	using System.Diagnostics.Contracts;
 	using System.IO;
 	using System.Net;
+	using System.Threading.Tasks;
 
 	/// <summary>
 	/// Defines the factory to create a REST client using JSON requests.
@@ -91,31 +96,36 @@ namespace Linq2Rest.Reactive.Implementations
 							request.BeginGetRequestStream,
 							request.EndGetRequestStream,
 							request)
-						.ContinueWith(s =>
-										  {
-											  var buffer = new byte[_input.Length];
-											  _input.Read(buffer, 0, buffer.Length);
-
-											  var stream = s.Result;
-											  stream.Write(buffer, 0, buffer.Length);
-											  return s.AsyncState as HttpWebRequest;
-										  })
-										  .ContinueWith(
-										  r =>
-										  {
-											  var webRequest = r.Result;
-											  return Task<WebResponse>.Factory.FromAsync(
-												  webRequest.BeginGetResponse,
-												  webRequest.EndGetResponse,
-												  null)
-												  .ContinueWith(w => w.Result.GetResponseStream())
-												  .Result;
-										  });
+						.ContinueWith<HttpWebRequest>(WriteRequestStream)
+						.ContinueWith<Task<WebResponse>>(GetResponse)
+						.ContinueWith<Stream>(w => w.Result.Result.GetResponseStream())
+						.ContinueWith(s => s.Result);
 				}
 
 				return Task<WebResponse>.Factory
 						.FromAsync(request.BeginGetResponse, request.EndGetResponse, null)
 						.ContinueWith(x => x.Result.GetResponseStream());
+			}
+
+			private Task<WebResponse> GetResponse(Task<HttpWebRequest> r)
+			{
+				var request = r.Result;
+				return Task<WebResponse>
+					.Factory
+					.FromAsync(
+						request.BeginGetResponse,
+						request.EndGetResponse,
+						null);
+			}
+
+			private HttpWebRequest WriteRequestStream(Task<Stream> s)
+			{
+				var buffer = new byte[_input.Length];
+				_input.Read(buffer, 0, buffer.Length);
+
+				var stream = s.Result;
+				stream.Write(buffer, 0, buffer.Length);
+				return s.AsyncState as HttpWebRequest;
 			}
 
 #if !NETFX_CORE
