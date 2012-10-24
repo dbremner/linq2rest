@@ -1,7 +1,14 @@
-﻿// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MainPage.xaml.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the MainPage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.Reactive.WP7Sample
 {
@@ -17,7 +24,7 @@ namespace Linq2Rest.Reactive.WP7Sample
 	{
 		private readonly RestObservable<NugetPackage> _nugetObservable;
 		private readonly ObservableCollection<NugetPackage> _packageCollection;
-		// Constructor
+
 		public MainPage()
 		{
 			_packageCollection = new ObservableCollection<NugetPackage>();

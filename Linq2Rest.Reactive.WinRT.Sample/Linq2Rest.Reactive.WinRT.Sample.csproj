@@ -116,10 +116,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\BindableBase.cs" />
-    <Compile Include="Common\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Common\BooleanNegationConverter.cs" />
-    <Compile Include="Common\RichTextColumns.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -140,6 +136,7 @@
     <None Include="Common\ReadMe.txt" />
     <None Include="Linq2Rest.Reactive.WinRT.Sample_TemporaryKey.pfx" />
     <None Include="packages.config" />
+    <None Include="Settings.StyleCop" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Logo.png">

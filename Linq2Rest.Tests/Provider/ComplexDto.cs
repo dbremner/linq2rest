@@ -1,8 +1,14 @@
-// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
-// Based on code from http://stackoverflow.com/questions/606104/how-to-create-linq-expression-tree-with-anonymous-type-in-it
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ComplexDto.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the ComplexDto type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.Tests.Provider
 {

@@ -1,14 +1,23 @@
-// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ExpressionWriter.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the ExpressionWriter type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.Provider
 {
 	using System;
-	using System.Collections.Generic;
 #if !WINDOWS_PHONE
 	using System.Collections.Concurrent;
+#endif
+	using System.Collections.Generic;
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
 	using System.Linq;
