@@ -145,7 +145,6 @@
     <Compile Include="Fakes\ODataResponse.cs" />
     <Compile Include="Fakes\ODataResult.cs" />
     <Compile Include="Fakes\TestComplexSerializer.cs" />
-    <Compile Include="Fakes\TestObserver.cs" />
     <Compile Include="Fakes\TestODataSerializer.cs" />
     <Compile Include="Fakes\TestODataSerializerFactory.cs" />
     <Compile Include="ODataCustomerServiceTests.cs" />

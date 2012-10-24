@@ -1,13 +1,20 @@
-// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
-
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ODataResult.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the ODataResult type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.Reactive.WinRT.Sample.Support
 {
+	using System.Collections.Generic;
+	using System.Runtime.Serialization;
+
 	[DataContract]
 	public class ODataResult<T>
 	{

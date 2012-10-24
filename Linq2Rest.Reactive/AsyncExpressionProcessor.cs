@@ -21,10 +21,10 @@ namespace Linq2Rest.Reactive
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Linq;
-	using Linq2Rest.Provider;
 #if NETFX_CORE
 	using System.Reflection;
 #endif
+	using Linq2Rest.Provider;
 
 	/// <summary>
 	/// The default async expression processor implementation.

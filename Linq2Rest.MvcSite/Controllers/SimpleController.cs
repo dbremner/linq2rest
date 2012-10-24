@@ -1,11 +1,19 @@
-﻿// (c) Copyright Reimers.dk.
-// This source is subject to the Microsoft Public License (Ms-PL).
-// Please see http://www.opensource.org/licenses/MS-PL] for details.
-// All other rights reserved.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SimpleController.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2011
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the SimpleController type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Linq2Rest.MvcSite.Controllers
 {
 	using System;
+	using System.Linq;
 	using System.Web.Mvc;
 	using Linq2Rest.MvcSite.Models;
 	using Linq2Rest.MvcSite.Support;
@@ -17,7 +25,8 @@ namespace Linq2Rest.MvcSite.Controllers
 		public ActionResult Index(IModelFilter<SimpleDto> filter, ResponseFormat format)
 		{
 			var model = _db.SimpleDtos.Filter(filter);
-
+			var count = model.Count();
+			
 			switch (format)
 			{
 				case ResponseFormat.JS:
