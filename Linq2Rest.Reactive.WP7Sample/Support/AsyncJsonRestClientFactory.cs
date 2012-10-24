@@ -8,12 +8,16 @@ namespace Linq2Rest.Reactive.WP7Sample.Support
 	using System;
 	using System.IO;
 	using System.Net;
+	using System.Threading.Tasks;
 
 	/// <summary>
 	/// Defines the factory to create a REST client using JSON requests.
 	/// </summary>
 	public class AsyncJsonRestClientFactory : IAsyncRestClientFactory
 	{
+		private HttpMethod _method;
+		private Stream _input;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AsyncJsonRestClientFactory"/> class.
 		/// </summary>
@@ -21,6 +25,7 @@ namespace Linq2Rest.Reactive.WP7Sample.Support
 		public AsyncJsonRestClientFactory(Uri serviceBase)
 		{
 			ServiceBase = serviceBase;
+			_method = HttpMethod.Get;
 		}
 
 		/// <summary>
@@ -35,30 +40,74 @@ namespace Linq2Rest.Reactive.WP7Sample.Support
 		/// <returns>An <see cref="IAsyncRestClient"/> instance.</returns>
 		public IAsyncRestClient Create(Uri source)
 		{
-			return new AsyncJsonRestClient(source);
+			return new AsyncJsonRestClient(source, _method, _input);
+		}
+
+		public void SetMethod(HttpMethod method)
+		{
+			_method = method;
+		}
+
+		public void SetInput(Stream input)
+		{
+			_input = input;
 		}
 
 		private class AsyncJsonRestClient : IAsyncRestClient
 		{
-			private readonly HttpWebRequest _request;
+			private readonly Uri _uri;
+			private readonly HttpMethod _method;
+			private readonly Stream _input;
 
-			public AsyncJsonRestClient(Uri uri)
+			public AsyncJsonRestClient(Uri uri, HttpMethod method, Stream input)
 			{
-				_request = (HttpWebRequest)WebRequest.Create(uri);
-				_request.Accept = "application/json";
+				_uri = uri;
+				_method = method;
+				_input = input;
 			}
 
-			public IAsyncResult BeginGetResult(AsyncCallback callback, object state)
+			public Task<Stream> Download()
 			{
-				return _request.BeginGetResponse(callback, state);
+				var request = (HttpWebRequest)WebRequest.Create(_uri);
+				request.Accept = "application/json";
+				request.Method = _method.ToString().ToUpperInvariant();
+				if (_method == HttpMethod.Put || _method == HttpMethod.Post)
+				{
+					return Task<Stream>.Factory
+						.FromAsync(
+							request.BeginGetRequestStream,
+							request.EndGetRequestStream,
+							request)
+						.ContinueWith<HttpWebRequest>(WriteRequestStream)
+						.ContinueWith<Task<WebResponse>>(GetResponse)
+						.ContinueWith<Stream>(w => w.Result.Result.GetResponseStream())
+						.ContinueWith(s => s.Result);
+				}
+
+				return Task<WebResponse>.Factory
+						.FromAsync(request.BeginGetResponse, request.EndGetResponse, null)
+						.ContinueWith(x => x.Result.GetResponseStream());
 			}
 
-			public Stream EndGetResult(IAsyncResult result)
+			private Task<WebResponse> GetResponse(Task<HttpWebRequest> r)
 			{
-				var response = _request.EndGetResponse(result);
-				var stream = response.GetResponseStream();
+				var request = r.Result;
+				return Task<WebResponse>
+					.Factory
+					.FromAsync(
+						request.BeginGetResponse,
+						request.EndGetResponse,
+						null);
+			}
 
-				return stream;
+			private HttpWebRequest WriteRequestStream(Task<Stream> s)
+			{
+				var buffer = new byte[_input.Length];
+				_input.Read(buffer, 0, buffer.Length);
+
+				var stream = s.Result;
+				stream.Write(buffer, 0, buffer.Length);
+				return s.AsyncState as HttpWebRequest;
 			}
 		}
 	}

@@ -6,9 +6,9 @@
 namespace Linq2Rest.Provider
 {
 	using System;
-	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 #if !WINDOWS_PHONE
+	using System.Collections.Concurrent;
 	using System.Diagnostics.Contracts;
 #endif
 	using System.Linq;
