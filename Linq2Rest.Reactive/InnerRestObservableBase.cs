@@ -10,6 +10,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Threading.Tasks;
+
 namespace Linq2Rest.Reactive
 {
 	using System;
@@ -123,7 +125,9 @@ namespace Linq2Rest.Reactive
 
 		internal void SetInput(Stream stream)
 		{
+#if !WINDOWS_PHONE
 			Contract.Requires(stream != null);
+#endif
 
 			RestClient.SetInput(stream);
 		}
@@ -132,8 +136,16 @@ namespace Linq2Rest.Reactive
 		{
 			var client = RestClient.Create(builder.GetFullUri());
 
+#if !WINDOWS_PHONE
 			return Observable.FromAsync(client.Download)
 				.Select(x => ReadIntermediateResponse(type, x));
+#else
+			Func<Task<Stream>> func = client.Download;
+			return Observable.FromAsyncPattern<Task<Stream>>(func.BeginInvoke, func.EndInvoke)
+				.Invoke()
+				.Select(x => x.Result)
+				.Select(x => ReadIntermediateResponse(type, x));
+#endif
 		}
 
 		protected IObservable<IEnumerable<T>> GetResults(ParameterBuilder builder)
@@ -144,8 +156,16 @@ namespace Linq2Rest.Reactive
 			var fullUri = builder.GetFullUri();
 			var client = RestClient.Create(fullUri);
 
+#if !WINDOWS_PHONE
 			return Observable.FromAsync(client.Download)
 				.Select(ReadResponse);
+#else
+			Func<Task<Stream>> func = client.Download;
+			return Observable.FromAsyncPattern<Task<Stream>>(func.BeginInvoke, func.EndInvoke)
+				.Invoke()
+				.Select(x => x.Result)
+				.Select(ReadResponse);
+#endif
 		}
 
 		protected IEnumerable ReadIntermediateResponse(Type type, Stream response)
