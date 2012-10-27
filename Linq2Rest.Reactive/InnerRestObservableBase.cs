@@ -140,11 +140,8 @@ namespace Linq2Rest.Reactive
 			return Observable.FromAsync(client.Download)
 				.Select(x => ReadIntermediateResponse(type, x));
 #else
-			Func<Task<Stream>> func = client.Download;
-			return Observable.FromAsyncPattern<Task<Stream>>(func.BeginInvoke, func.EndInvoke)
-				.Invoke()
-				.Select(x => x.Result)
-				.Select(x => ReadIntermediateResponse(type, x));
+			return Observable.Start<Task<Stream>>(client.Download)
+				.Select(x => ReadIntermediateResponse(type, x.Result));
 #endif
 		}
 
@@ -160,9 +157,7 @@ namespace Linq2Rest.Reactive
 			return Observable.FromAsync(client.Download)
 				.Select(ReadResponse);
 #else
-			Func<Task<Stream>> func = client.Download;
-			return Observable.FromAsyncPattern<Task<Stream>>(func.BeginInvoke, func.EndInvoke)
-				.Invoke()
+			return Observable.Start<Task<Stream>>(client.Download)
 				.Select(x => x.Result)
 				.Select(ReadResponse);
 #endif
