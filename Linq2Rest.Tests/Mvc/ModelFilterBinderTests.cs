@@ -39,5 +39,11 @@ namespace Linq2Rest.Tests.Mvc
 
 			mockParser.Verify(x => x.Parse(It.IsAny<NameValueCollection>()), Times.Once());
 		}
+
+		[Test]
+		public void WhenCreatingInstanceWithDefaultConstructorThenDoesNotThrow()
+		{
+			Assert.DoesNotThrow(() => new ModelFilterBinder<FakeItem>());
+		}
 	}
 }
