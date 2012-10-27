@@ -10,10 +10,10 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Reactive.WP7Sample.Support
-{
-	using Linq2Rest.Provider;
+using Linq2Rest.Provider;
 
+namespace Linq2Rest.Reactive.WP8.Sample.Support
+{
 	public class ODataSerializerFactory : ISerializerFactory
 	{
 		public ISerializer<T> Create<T>()

@@ -10,11 +10,11 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Reactive.WP7Sample.Models
-{
-	using System;
-	using System.Runtime.Serialization;
+using System;
+using System.Runtime.Serialization;
 
+namespace Linq2Rest.Reactive.WP8.Sample.Models
+{
 	[DataContract]
 	public class NugetPackage
 	{

@@ -10,13 +10,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Reactive.WP7Sample
-{
-	using System.Windows;
-	using System.Windows.Navigation;
-	using Microsoft.Phone.Controls;
-	using Microsoft.Phone.Shell;
+using System.Windows;
+using System.Windows.Navigation;
+using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
 
+namespace Linq2Rest.Reactive.WP8.Sample
+{
 	public partial class App : Application
 	{
 		// Avoid double-initialization

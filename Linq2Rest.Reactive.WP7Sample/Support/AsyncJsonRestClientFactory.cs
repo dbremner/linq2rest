@@ -10,13 +10,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Reactive.WP7Sample.Support
-{
-	using System;
-	using System.IO;
-	using System.Net;
-	using System.Threading.Tasks;
+using System;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
+namespace Linq2Rest.Reactive.WP8.Sample.Support
+{
 	/// <summary>
 	/// Defines the factory to create a REST client using JSON requests.
 	/// </summary>

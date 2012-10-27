@@ -10,10 +10,10 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Reactive.WP7Sample
-{
-	using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
+namespace Linq2Rest.Reactive.WP8.Sample
+{
 	[DataContract]
 	public class SampleDto
 	{

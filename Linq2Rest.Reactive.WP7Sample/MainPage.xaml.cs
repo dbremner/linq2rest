@@ -10,16 +10,15 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Reactive.WP7Sample
-{
-	using System;
-	using System.Collections.ObjectModel;
-	using System.Reactive.Concurrency;
-	using System.Reactive.Linq;
-	using Linq2Rest.Reactive.WP7Sample.Models;
-	using Linq2Rest.Reactive.WP7Sample.Support;
-	using Microsoft.Phone.Controls;
+using System;
+using System.Collections.ObjectModel;
+using System.Reactive.Linq;
+using Linq2Rest.Reactive.WP8.Sample.Models;
+using Linq2Rest.Reactive.WP8.Sample.Support;
+using Microsoft.Phone.Controls;
 
+namespace Linq2Rest.Reactive.WP8.Sample
+{
 	public partial class MainPage : PhoneApplicationPage
 	{
 		private readonly RestObservable<NugetPackage> _nugetObservable;
