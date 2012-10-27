@@ -44,7 +44,7 @@ namespace Linq2Rest.Tests.Parser
 		{
 			const string Expression = "Name eq ''single quote' test'";
 
-			var tokens = Expression.GetTokens().ToArray();
+			var tokens = Expression.GetTokens();
 
 			Assert.AreEqual(1, tokens.Count());
 		}
@@ -54,7 +54,7 @@ namespace Linq2Rest.Tests.Parser
 		{
 			const string Expression = "(Name eq ''single quote' test') eq true";
 
-			var tokens = Expression.GetTokens().ToArray();
+			var tokens = Expression.GetTokens();
 
 			Assert.AreEqual(1, tokens.Count());
 		}
@@ -64,7 +64,7 @@ namespace Linq2Rest.Tests.Parser
 		{
 			const string Expression = "Name eq '\"double quote\" test'";
 
-			var tokens = Expression.GetTokens().ToArray();
+			var tokens = Expression.GetTokens();
 
 			Assert.AreEqual(1, tokens.Count());
 		}
@@ -74,7 +74,7 @@ namespace Linq2Rest.Tests.Parser
 		{
 			const string Expression = "(Name eq '\"double quote\" test') eq true";
 
-			var tokens = Expression.GetTokens().ToArray();
+			var tokens = Expression.GetTokens();
 
 			Assert.AreEqual(1, tokens.Count());
 		}

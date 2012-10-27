@@ -10,6 +10,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Collections.ObjectModel;
+
 namespace Linq2Rest.Parser
 {
 	using System;
@@ -24,11 +26,12 @@ namespace Linq2Rest.Parser
 		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
 		private static readonly Regex AnyAllFunctionRx = new Regex(@"^(([0-9a-zA-Z_/]+/)+)(any|all)\((.*)\)$", RegexOptions.Compiled);
 
-		public static IEnumerable<TokenSet> GetTokens(this string expression)
+		public static ICollection<TokenSet> GetTokens(this string expression)
 		{
+			var tokens = new Collection<TokenSet>();
 			if (string.IsNullOrWhiteSpace(expression))
 			{
-				yield break;
+				return tokens;
 			}
 
 			var cleanMatch = expression.EnclosedMatch();
@@ -44,7 +47,7 @@ namespace Linq2Rest.Parser
 
 			if (expression.IsImpliedBoolean())
 			{
-				yield break;
+				return tokens;
 			}
 
 			var blocks = expression.Split(new[] { ' ' });
@@ -84,8 +87,8 @@ namespace Linq2Rest.Parser
 							{
 								currentTokens.Right = string.Join(" ", blocks.Where((x, j) => j > i));
 
-								yield return currentTokens;
-								yield break;
+								tokens.Add(currentTokens);
+								return tokens;
 							}
 						}
 						else
@@ -94,14 +97,14 @@ namespace Linq2Rest.Parser
 							Func<string, int, bool> rightPredicate = (x, j) => j >= expression1 && j < i2;
 							currentTokens.Right = string.Join(" ", blocks.Where(rightPredicate));
 
-							yield return currentTokens;
+							tokens.Add(currentTokens);
 
 							startExpression = i + 1;
 							currentTokens = new TokenSet();
 
 							if (blocks[i].IsCombinationOperation())
 							{
-								yield return new TokenSet { Operation = blocks[i].ToLowerInvariant() };
+								tokens.Add(new TokenSet { Operation = blocks[i].ToLowerInvariant() });
 							}
 						}
 					}
@@ -118,13 +121,20 @@ namespace Linq2Rest.Parser
 			if (!string.IsNullOrWhiteSpace(currentTokens.Left))
 			{
 				currentTokens.Right = remainingToken;
-				yield return currentTokens;
+				tokens.Add(currentTokens);
 			}
 			else if (remainingToken.IsEnclosed())
 			{
 				currentTokens.Left = remainingToken;
-				yield return currentTokens;
+				tokens.Add(currentTokens);
 			}
+			else if (tokens.Count > 0)
+			{
+				currentTokens.Left = remainingToken;
+				tokens.Add(currentTokens);
+			}
+
+			return tokens;
 		}
 
 		public static TokenSet GetArithmeticToken(this string expression)

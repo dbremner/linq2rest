@@ -367,7 +367,7 @@ namespace Linq2Rest.Parser
 				return null;
 			}
 
-			var tokens = filter.GetTokens().ToArray();
+			var tokens = filter.GetTokens();
 
 			if (tokens.Any())
 			{
@@ -434,7 +434,7 @@ namespace Linq2Rest.Parser
 			return expression;
 		}
 
-		private Expression GetTokenExpression<T>(ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider, TokenSet[] tokens)
+		private Expression GetTokenExpression<T>(ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider, ICollection<TokenSet> tokens)
 		{
 			Contract.Requires(tokens != null);
 			Contract.Requires(parameter != null);
