@@ -48,7 +48,7 @@ namespace Linq2Rest.Reactive.WinRT.Sample
 		{
 			var button = sender as Button;
 			button.IsEnabled = false;
-			if (films.Items.Any())
+			if (films.Items.Count > 0)
 			{
 				films.Items.Clear();
 			}
