@@ -24,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5D2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive.WP7", "Linq2Rest.Reactive.WinPhone\Linq2Rest.Reactive.WP7.csproj", "{6D753CA4-0081-48E6-A0AD-25FFE88CD741}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive.WP7Sample", "Linq2Rest.Reactive.WP7Sample\Linq2Rest.Reactive.WP7Sample.csproj", "{EC6D6A2B-62D4-4161-BBFF-B72CEDA2EE71}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive.WP8.Sample", "Linq2Rest.Reactive.WP7Sample\Linq2Rest.Reactive.WP8.Sample.csproj", "{EC6D6A2B-62D4-4161-BBFF-B72CEDA2EE71}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive.SL", "Linq2Rest.Reactive.SL\Linq2Rest.Reactive.SL.csproj", "{D72A609B-C351-43CF-B1B8-66AB52E25DF1}"
 EndProject
