@@ -56,11 +56,19 @@ namespace Linq2Rest.Reactive.Implementations
 			return new AsyncJsonRestClient(source, _method, _input);
 		}
 
+		/// <summary>
+		/// Sets the HTTP method for the request.
+		/// </summary>
+		/// <param name="method">The <see cref="HttpMethod"/> to set.</param>
 		public void SetMethod(HttpMethod method)
 		{
 			_method = method;
 		}
 
+		/// <summary>
+		/// Sets the input data to send to the server.
+		/// </summary>
+		/// <param name="input">The input as a <see cref="Stream"/>.</param>
 		public void SetInput(Stream input)
 		{
 			_input = input;

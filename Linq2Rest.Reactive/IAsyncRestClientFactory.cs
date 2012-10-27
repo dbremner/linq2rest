@@ -19,11 +19,29 @@ namespace Linq2Rest.Reactive
 	using System.Diagnostics.Contracts;
 #endif
 
+	/// <summary>
+	/// Defines the public enumeration of supported HTTP methods.
+	/// </summary>
 	public enum HttpMethod
 	{
+		/// <summary>
+		/// Represents the GET HTTP method.
+		/// </summary>
 		Get,
+
+		/// <summary>
+		/// Represents the PUT HTTP method.
+		/// </summary>
 		Put,
+
+		/// <summary>
+		/// Represents the POST HTTP method.
+		/// </summary>
 		Post,
+
+		/// <summary>
+		/// Represents the DELETE HTTP method.
+		/// </summary>
 		Delete
 	}
 
