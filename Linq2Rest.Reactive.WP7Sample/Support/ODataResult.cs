@@ -10,11 +10,11 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Reactive.WP7Sample.Support
-{
-	using System.Collections.Generic;
-	using System.Runtime.Serialization;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
+namespace Linq2Rest.Reactive.WP8.Sample.Support
+{
 	[DataContract]
 	public class ODataResult<T>
 	{

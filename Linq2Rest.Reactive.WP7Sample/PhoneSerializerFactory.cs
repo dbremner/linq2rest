@@ -10,13 +10,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Reactive.WP7Sample
-{
-	using System.Collections.Generic;
-	using System.IO;
-	using System.Runtime.Serialization.Json;
-	using Linq2Rest.Provider;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using Linq2Rest.Provider;
 
+namespace Linq2Rest.Reactive.WP8.Sample
+{
 	public class PhoneSerializerFactory : ISerializerFactory
 	{
 		public ISerializer<T> Create<T>()

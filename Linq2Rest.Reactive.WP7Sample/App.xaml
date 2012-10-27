@@ -1,5 +1,5 @@
 ﻿<Application 
-    x:Class="Linq2Rest.Reactive.WP7Sample.App"
+    x:Class="Linq2Rest.Reactive.WP8.Sample.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"       
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"

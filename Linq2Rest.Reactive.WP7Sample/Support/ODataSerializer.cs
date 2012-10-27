@@ -10,15 +10,15 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Reactive.WP7Sample.Support
-{
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Runtime.Serialization.Json;
-    using Linq2Rest.Provider;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization.Json;
+using Linq2Rest.Provider;
 
-    public class ODataSerializer<T> : ISerializer<T>
+namespace Linq2Rest.Reactive.WP8.Sample.Support
+{
+	public class ODataSerializer<T> : ISerializer<T>
     {
         private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(ODataResponse<T>));
 
