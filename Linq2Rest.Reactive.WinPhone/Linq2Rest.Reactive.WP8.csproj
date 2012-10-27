@@ -29,8 +29,9 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>Bin\Debug</OutputPath>
-    <DocumentationFile>Bin\Debug\Linq2Rest.Reactive.XML</DocumentationFile>
+    <OutputPath>bin\wp8\Debug\</OutputPath>
+    <BaseIntermediateOutputPath>obj\wp8</BaseIntermediateOutputPath>
+    <DocumentationFile>bin\wp8\Debug\Linq2Rest.Reactive.XML</DocumentationFile>
     <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
@@ -75,8 +76,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>Bin\Release</OutputPath>
-    <DocumentationFile>Bin\Debug\Linq2Rest.Reactive.xml</DocumentationFile>
+    <OutputPath>bin\wp8\Release\</OutputPath>
+    <BaseIntermediateOutputPath>obj\wp8</BaseIntermediateOutputPath>
+    <DocumentationFile>bin\wp8\Release\Linq2Rest.Reactive.xml</DocumentationFile>
     <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
