@@ -48,6 +48,16 @@ namespace Linq2Rest.Tests.Implementations
 		}
 
 		[Test]
+		public void CreatedSerializerCanSerializeDataContractType()
+		{
+			var serializer = _factory.Create<SimpleContractItem>();
+
+			var deserializedResult = serializer.Serialize(new SimpleContractItem());
+
+			Assert.NotNull(deserializedResult);
+		}
+
+		[Test]
 		public void CreatedSerializerCanDeserializeListOfDataContractType()
 		{
 			const string Xml = "<ArrayOfSimpleContractItem xmlns=\"http://schemas.datacontract.org/2004/07/Linq2Rest.Tests.Implementations\"><SimpleContractItem><Text>test</Text><Value>2</Value></SimpleContractItem></ArrayOfSimpleContractItem>";

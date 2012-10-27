@@ -21,7 +21,7 @@ namespace Linq2Rest.Implementations
 	/// <summary>
 	/// Defines the base REST client implementation.
 	/// </summary>
-	public class RestClientBase : IRestClient
+	public abstract class RestClientBase : IRestClient
 	{
 		private const string PostMethod = "POST";
 		private const string GetMethod = "GET";
@@ -149,7 +149,7 @@ namespace Linq2Rest.Implementations
 				requestStream.Flush();
 			}
 
-			request.Accept = _acceptHeader;
+			request.Headers.Add(HttpRequestHeader.Accept, _acceptHeader);
 			var response = request.GetResponse();
 			var stream = response.GetResponseStream();
 			return stream;

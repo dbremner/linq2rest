@@ -64,7 +64,12 @@ namespace Linq2Rest.Mvc.Provider
 		/// <returns>A <see cref="Stream"/> representation of the item.</returns>
 		public Stream Serialize(T item)
 		{
-			throw new NotImplementedException();
+			var ms = new MemoryStream();
+			var writer = new StreamWriter(ms);
+			writer.Write(_innerSerializer.Serialize(item));
+			writer.Flush();
+			ms.Position = 0;
+			return ms;
 		}
 
 		private IEnumerable<T> ReadToAnonymousType(string response)
@@ -120,11 +125,6 @@ namespace Linq2Rest.Mvc.Provider
 
 			var constructorInfos = _elementType.GetConstructors().ToArray();
 			var constructorInfo = constructorInfos.FirstOrDefault();
-
-			if (constructorInfo == null)
-			{
-				throw new InvalidOperationException("No public constructor found.");
-			}
 
 			var selector =
 				Expression.Lambda<Func<object, T>>(

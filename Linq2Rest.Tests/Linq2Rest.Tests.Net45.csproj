@@ -111,9 +111,13 @@
     <Compile Include="FakeChildItem.cs" />
     <Compile Include="FakeGrandChildItem.cs" />
     <Compile Include="Fakes\InMemoryJsonRestClient.cs" />
+    <Compile Include="Implementations\JsonContextTests.cs" />
     <Compile Include="Implementations\JsonDataContractSerializerFactoryTests.cs" />
+    <Compile Include="Implementations\JsonRestClientTests.cs" />
     <Compile Include="Implementations\SimpleContractItem.cs" />
+    <Compile Include="Implementations\XmlContextTests.cs" />
     <Compile Include="Implementations\XmlDataContractSerializerFactoryTests.cs" />
+    <Compile Include="Implementations\XmlRestClientTests.cs" />
     <Compile Include="Implementations\XmlSerializerFactoryTests.cs" />
     <Compile Include="ModelFilterExtensionsTests.cs" />
     <Compile Include="Mvc\RuntimeAnonymousTypeSerializerTests.cs" />
