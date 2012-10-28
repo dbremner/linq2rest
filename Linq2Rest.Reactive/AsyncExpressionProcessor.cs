@@ -74,7 +74,7 @@ namespace Linq2Rest.Reactive
 #endif
 			var parameters = new[] { results.ToQbservable(type) }
 				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue))
-				.Where(x => x != null)
+				.Where(x => !ReferenceEquals(x, null))
 				.ToArray();
 			return parameters;
 		}

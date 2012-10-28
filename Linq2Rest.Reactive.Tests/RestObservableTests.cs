@@ -138,7 +138,7 @@ namespace Linq2Rest.Reactive.Tests
 			var result = observable
 				.Create()
 				.Where(x => x.StringValue == "blah")
-				.SingleOrDefault();
+				.Wait();
 
 			Assert.Null(result);
 		}
