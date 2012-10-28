@@ -608,6 +608,18 @@ namespace Linq2Rest.Parser
 				return base.Visit(node);
 			}
 
+			protected override Expression VisitBinary(BinaryExpression node)
+			{
+				if (node.NodeType == ExpressionType.AndAlso)
+				{
+					Visit(node.Left);
+					Visit(node.Right);
+					return node;
+				}
+
+				return base.VisitBinary(node);
+			}
+
 			protected override Expression VisitParameter(ParameterExpression p)
 			{
 				if (!_parameters.Contains(p))
