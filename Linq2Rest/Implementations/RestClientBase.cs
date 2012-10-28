@@ -149,7 +149,7 @@ namespace Linq2Rest.Implementations
 				requestStream.Flush();
 			}
 
-			request.Headers.Add(HttpRequestHeader.Accept, _acceptHeader);
+			request.Accept = _acceptHeader;
 			var response = request.GetResponse();
 			var stream = response.GetResponseStream();
 			return stream;
