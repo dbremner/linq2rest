@@ -12,6 +12,7 @@
 
 using System.Collections.Specialized;
 using System.Linq;
+using Linq2Rest.Parser;
 using Linq2Rest.Tests.Fakes.ComplexDomain;
 
 namespace Linq2Rest.Tests
@@ -66,6 +67,7 @@ namespace Linq2Rest.Tests
 		[TestCase("Properties/any(pi: pi/DefinitionName eq 'Status' and pi/DefinitionName eq 'Approved')", 0)]
 		[TestCase("Properties/any(pi: pi/Values/any(v: v/StringNonUnicodeValue eq 'AAAAAApproved'))", 0)]
 		[TestCase("Properties/any(pi: pi/DefinitionName eq 'Status' and pi/Values/any(c: c/StringNonUnicodeValue eq 'Approved'))", 2)]
+		[TestCase("Properties/any(pi: pi/Values/any(c: c/StringNonUnicodeValue eq 'Approved') and pi/DefinitionName eq 'Status')", 2)]
 		[TestCase("Properties/any(pi: pi/DefinitionName eq 'Status' and pi/Values/any(c: c/StringNonUnicodeValue eq 'Approved')) and Properties/any(pi: pi/DefinitionName eq 'Frequency' and pi/Values/any(c: c/StringNonUnicodeValue eq '20'))", 1)]
 		[TestCase("Properties/any(pi: pi/Values/any(c: c/StringNonUnicodeValue eq 'Approved') and pi/DefinitionName eq 'Status')", 2)]
 		public void DomainTest(string filter, int result)
@@ -74,6 +76,17 @@ namespace Linq2Rest.Tests
 			var list = _model.AsQueryable().Filter(nv).ToList();
 
 			Assert.AreEqual(result, list.Count);
+		}
+
+		[TestCase("Properties/any(pi: pi/Values/any(c: c/StringNonUnicodeValue eq 'Approved') and pi/DefinitionName eq 'Status')", "x => x.Properties.Any(pi => (pi.Values.Any(c => (c.StringNonUnicodeValue == \"Approved\")) AndAlso (pi.DefinitionName == \"Status\")))")]
+		[TestCase("Properties/any(pi: pi/DefinitionName eq 'Status' and pi/Values/any(c: c/StringNonUnicodeValue eq 'Approved'))", "x => x.Properties.Any(pi => ((pi.DefinitionName == \"Status\") AndAlso pi.Values.Any(c => (c.StringNonUnicodeValue == \"Approved\"))))")]
+		public void WhenParsingInputThenCreatesExpectedExpression(string input, string expected)
+		{
+			var filterFactory = new FilterExpressionFactory();
+
+			var expression = filterFactory.Create<TypeInstanceData>(input);
+
+			Assert.AreEqual(expected, expression.ToString());
 		}
 
 		private PropertyInstanceData CreatePropertyInstanceData(string definitionName, string value)
