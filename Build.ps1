@@ -59,7 +59,7 @@ function UpdatePackages
 
 function BuildSolution
 {
-    $options = "/p:configuration=$configuration;platform=$platform"
+	$options = "/p:configuration=$configuration;platform=$platform"
 	msbuild .\Linq2Rest.All.sln $options
 }
 
