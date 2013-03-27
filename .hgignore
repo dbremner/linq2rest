@@ -14,3 +14,4 @@ Bin
 *.xap
 TestResult.xml
 *.Moles.dll
+*.snk
