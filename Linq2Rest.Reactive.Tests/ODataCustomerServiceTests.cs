@@ -50,22 +50,6 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
-		public void WhenRequestingGroupedCustomerByNameThenLoadsCustomer()
-		{
-			var waitHandle = new ManualResetEvent(false);
-
-			_customerContext
-				.Create()
-				.Where(x => x.CompanyName.IndexOf("Alfreds") > -1)
-				.GroupBy(x => x.CompanyName)
-				.Subscribe(x => waitHandle.Set());
-
-			var result = waitHandle.WaitOne(5000);
-
-			Assert.True(result);
-		}
-
-		[Test]
 		public void WhenRequestingCustomerByNameEndsWithThenLoadsCustomer()
 		{
 			var waitHandle = new ManualResetEvent(false);

@@ -55,8 +55,8 @@ namespace Linq2Rest.Reactive
 				_restClientFactory,
 				_serializerFactory,
 				null,
-				CurrentThreadScheduler.Instance,
-				CurrentThreadScheduler.Instance);
+				ImmediateScheduler.Instance,
+				ImmediateScheduler.Instance);
 		}
 
 		/// <summary>
@@ -71,8 +71,8 @@ namespace Linq2Rest.Reactive
 				_restClientFactory,
 				_serializerFactory,
 				null,
-				CurrentThreadScheduler.Instance,
-				CurrentThreadScheduler.Instance);
+				ImmediateScheduler.Instance,
+				ImmediateScheduler.Instance);
 		}
 
 #if !WINDOWS_PHONE
