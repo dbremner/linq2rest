@@ -101,7 +101,6 @@ namespace Linq2Rest.Reactive.Tests
 			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(2000), new TestSerializerFactory());
 			var subscription = observable
 				.Create()
-				.SubscribeOn(Scheduler.CurrentThread)
 				.Where(x => x.StringValue == "blah")
 				.ObserveOn(Scheduler.CurrentThread)
 				.Subscribe(x => onnextWaitHandle.Set(), () => completedWaitHandle.Set());
