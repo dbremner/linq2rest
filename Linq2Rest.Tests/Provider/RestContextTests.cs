@@ -78,6 +78,21 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenValueExpressionContainsCastingThenResolvesValue()
+		{
+			object value = "hello";
+			Expression<Func<SimpleDto, bool>> expression = x => x.Value == (value as string).Length;
+			var result =
+				_provider
+					.Query
+					.Where(expression)
+					.ToArray();
+
+			var uri = new Uri("http://localhost/?$filter=Value+eq+5");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
 		public void WhenMainExpressionIsContainedInIsTrueExpressionThenUsesOperandExpression()
 		{
 			var parameter = Expression.Parameter(typeof(SimpleDto), "x");
