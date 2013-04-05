@@ -65,14 +65,12 @@ namespace Linq2Rest.Provider
 			var declaringType = memberExpression.Member.DeclaringType;
 			var name = memberExpression.Member.Name;
 
-			if (declaringType == typeof(string))
-			{
-				if (name == "Length")
+			if (declaringType == typeof(string) && string.Equals(name, "Length"))
 				{
 					return name.ToLowerInvariant();
 				}
-			}
-			else if (declaringType == typeof(DateTime))
+			
+			if (declaringType == typeof(DateTime))
 			{
 				switch (name)
 				{
@@ -124,6 +122,8 @@ namespace Linq2Rest.Provider
 					}
 
 					break;
+				case ExpressionType.TypeAs:
+					return Expression.Constant(GetValue(input));
 			}
 
 			return input;
@@ -209,27 +209,27 @@ namespace Linq2Rest.Provider
 			return string.Empty;
 		}
 
-		private static string GetRootParameterName(Expression expression)
+		private static ParameterExpression GetRootParameterName(Expression expression)
 		{
 			if (expression is UnaryExpression)
 			{
 				expression = ((UnaryExpression)expression).Operand;
 			}
 
-			if (expression is LambdaExpression && ((LambdaExpression)expression).Parameters.Count() > 0)
+			if (expression is LambdaExpression && ((LambdaExpression)expression).Parameters.Any())
 			{
-				return ((LambdaExpression)expression).Parameters.First().Name;
+				return ((LambdaExpression)expression).Parameters.First();
 			}
 
 			return null;
 		}
 
-		private static string Write(Expression expression, string rootParameterName)
+		private static string Write(Expression expression, ParameterExpression rootParameterName)
 		{
 			return expression == null ? null : Write(expression, expression.Type, rootParameterName);
 		}
 
-		private static string GetMethodCall(MethodCallExpression expression, string rootParameterName)
+		private static string GetMethodCall(MethodCallExpression expression, ParameterExpression rootParameterName)
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
@@ -417,7 +417,7 @@ namespace Linq2Rest.Provider
 			return ParameterValueWriter.Write(GetValue(expression));
 		}
 
-		private static string Write(Expression expression, Type type, string rootParameterName)
+		private static string Write(Expression expression, Type type, ParameterExpression rootParameter)
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
@@ -454,185 +454,225 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Or:
 				case ExpressionType.OrElse:
 				case ExpressionType.Subtract:
-					{
-						var binaryExpression = expression as BinaryExpression;
-
-#if !WINDOWS_PHONE
-						Contract.Assume(binaryExpression != null);
-#endif
-
-						var operation = GetOperation(binaryExpression);
-
-						if (binaryExpression.Left.NodeType == ExpressionType.Call)
-						{
-							var compareResult = ResolveCompareToOperation(rootParameterName, (MethodCallExpression)binaryExpression.Left, operation, binaryExpression.Right as ConstantExpression);
-							if (compareResult != null)
-							{
-								return compareResult;
-							}
-						}
-
-						if (binaryExpression.Right.NodeType == ExpressionType.Call)
-						{
-							var compareResult = ResolveCompareToOperation(rootParameterName, (MethodCallExpression)binaryExpression.Right, operation, binaryExpression.Left as ConstantExpression);
-							if (compareResult != null)
-							{
-								return compareResult;
-							}
-						}
-
-						var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
-						var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
-
-						var leftType = GetUnconvertedType(binaryExpression.Left);
-						var leftString = Write(binaryExpression.Left, rootParameterName);
-						var rightString = Write(binaryExpression.Right, leftType, rootParameterName);
-
-						return string.Format(
-											 "{0} {1} {2}",
-											 string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
-											 operation,
-											 string.Format(isRightComposite ? "({0})" : "{0}", rightString));
-					}
-
+					return WriteBinaryExpression(expression, rootParameter);
 				case ExpressionType.Negate:
-					{
-						var unaryExpression = expression as UnaryExpression;
-
-#if !WINDOWS_PHONE
-						Contract.Assume(unaryExpression != null);
-#endif
-
-						var operand = unaryExpression.Operand;
-
-						return string.Format("-{0}", Write(operand, rootParameterName));
-					}
-
+					return WriteNegate(expression, rootParameter);
 				case ExpressionType.Not:
 #if !SILVERLIGHT
 				case ExpressionType.IsFalse:
 #endif
-					{
-						var unaryExpression = expression as UnaryExpression;
-
-#if !WINDOWS_PHONE
-						Contract.Assume(unaryExpression != null);
-#endif
-
-						var operand = unaryExpression.Operand;
-
-						return string.Format("not({0})", Write(operand, rootParameterName));
-					}
+					return WriteFalse(expression, rootParameter);
 #if !SILVERLIGHT
 				case ExpressionType.IsTrue:
-					{
-						var unaryExpression = expression as UnaryExpression;
-
-						Contract.Assume(unaryExpression != null);
-
-						var operand = unaryExpression.Operand;
-
-						return Write(operand, rootParameterName);
-					}
+					return WriteTrue(expression, rootParameter);
 #endif
 				case ExpressionType.Convert:
 				case ExpressionType.Quote:
-					{
-						var unaryExpression = expression as UnaryExpression;
-
-#if !WINDOWS_PHONE
-						Contract.Assume(unaryExpression != null);
-#endif
-
-						var operand = unaryExpression.Operand;
-						return Write(operand, rootParameterName);
-					}
-
+					return WriteConversion(expression, rootParameter);
 				case ExpressionType.MemberAccess:
-					{
-						var memberExpression = expression as MemberExpression;
-
-#if !WINDOWS_PHONE
-						Contract.Assume(memberExpression != null);
-#endif
-						if (memberExpression.Expression == null)
-						{
-							var memberValue = GetValue(memberExpression);
-							return ParameterValueWriter.Write(memberValue);
-						}
-
-						var pathPrefixes = new List<string>();
-
-						var currentMemberExpression = memberExpression;
-						while (currentMemberExpression != null)
-						{
-							pathPrefixes.Add(currentMemberExpression.Member.Name);
-							if (currentMemberExpression.Expression is ParameterExpression && ((ParameterExpression)currentMemberExpression.Expression).Name != rootParameterName)
-							{
-								pathPrefixes.Add(((ParameterExpression)currentMemberExpression.Expression).Name);
-							}
-
-							currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
-						}
-
-						pathPrefixes.Reverse();
-						var prefix = string.Join("/", pathPrefixes);
-
-						if (!IsMemberOfParameter(memberExpression))
-						{
-							var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
-							if (!(collapsedExpression is MemberExpression))
-							{
-#if !WINDOWS_PHONE
-								Contract.Assume(collapsedExpression != null);
-#endif
-
-								return Write(collapsedExpression, rootParameterName);
-							}
-
-							memberExpression = (MemberExpression)collapsedExpression;
-						}
-
-						var memberCall = GetMemberCall(memberExpression);
-
-						var innerExpression = memberExpression.Expression;
-
-#if !WINDOWS_PHONE
-						Contract.Assume(innerExpression != null);
-#endif
-
-						return string.IsNullOrWhiteSpace(memberCall)
-								? prefix
-								: string.Format("{0}({1})", memberCall, Write(innerExpression, rootParameterName));
-					}
-
+					return WriteMemberAccess(expression, rootParameter);
 				case ExpressionType.Call:
-					var methodCallExpression = expression as MethodCallExpression;
-
-#if !WINDOWS_PHONE
-					Contract.Assume(methodCallExpression != null);
-#endif
-
-					return GetMethodCall(methodCallExpression, rootParameterName);
+					return WriteCall(expression, rootParameter);
 				case ExpressionType.New:
 					var newValue = GetValue(expression);
 					return ParameterValueWriter.Write(newValue);
 				case ExpressionType.Lambda:
-					var lambdaExpression = expression as LambdaExpression;
-
-#if !WINDOWS_PHONE
-					Contract.Assume(lambdaExpression != null);
-#endif
-
-					var body = lambdaExpression.Body;
-					return Write(body, rootParameterName);
+					return WriteLambda(expression, rootParameter);
 				default:
 					throw new InvalidOperationException("Expression is not recognized or supported");
 			}
 		}
 
+		private static string WriteLambda(Expression expression, ParameterExpression rootParameter)
+		{
+			var lambdaExpression = expression as LambdaExpression;
+
+#if !WINDOWS_PHONE
+			Contract.Assume(lambdaExpression != null);
+#endif
+
+			var body = lambdaExpression.Body;
+			return Write(body, rootParameter);
+		}
+
+		private static string WriteFalse(Expression expression, ParameterExpression rootParameterName)
+		{
+			var unaryExpression = expression as UnaryExpression;
+
+#if !WINDOWS_PHONE
+			Contract.Assume(unaryExpression != null);
+#endif
+
+			var operand = unaryExpression.Operand;
+
+			return string.Format("not({0})", Write(operand, rootParameterName));
+		}
+
+		private static string WriteTrue(Expression expression, ParameterExpression rootParameterName)
+		{
+			var unaryExpression = expression as UnaryExpression;
+
+#if !WINDOWS_PHONE
+			Contract.Assume(unaryExpression != null);
+#endif
+
+			var operand = unaryExpression.Operand;
+
+			return Write(operand, rootParameterName);
+		}
+
+		private static string WriteConversion(Expression expression, ParameterExpression rootParameterName)
+		{
+			var unaryExpression = expression as UnaryExpression;
+
+#if !WINDOWS_PHONE
+			Contract.Assume(unaryExpression != null);
+#endif
+
+			var operand = unaryExpression.Operand;
+			return Write(operand, rootParameterName);
+		}
+
+		private static string WriteCall(Expression expression, ParameterExpression rootParameterName)
+		{
+			var methodCallExpression = expression as MethodCallExpression;
+
+#if !WINDOWS_PHONE
+			Contract.Assume(methodCallExpression != null);
+#endif
+
+			return GetMethodCall(methodCallExpression, rootParameterName);
+		}
+
+		private static string WriteMemberAccess(Expression expression, ParameterExpression rootParameterName)
+		{
+			var memberExpression = expression as MemberExpression;
+
+#if !WINDOWS_PHONE
+			Contract.Assume(memberExpression != null);
+#endif
+			if (memberExpression.Expression == null)
+			{
+				var memberValue = GetValue(memberExpression);
+				return ParameterValueWriter.Write(memberValue);
+			}
+
+			var pathPrefixes = new List<string>();
+
+			var currentMemberExpression = memberExpression;
+			while (currentMemberExpression != null)
+			{
+				pathPrefixes.Add(currentMemberExpression.Member.Name);
+				if (currentMemberExpression.Expression is ParameterExpression
+					&& rootParameterName != null
+					&& ((ParameterExpression)currentMemberExpression.Expression).Name != rootParameterName.Name)
+				{
+					pathPrefixes.Add(((ParameterExpression)currentMemberExpression.Expression).Name);
+				}
+
+				currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
+			}
+
+			pathPrefixes.Reverse();
+			var prefix = string.Join("/", pathPrefixes);
+
+			if (!IsMemberOfParameter(memberExpression))
+			{
+				var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
+				if (!(collapsedExpression is MemberExpression))
+				{
+#if !WINDOWS_PHONE
+					Contract.Assume(collapsedExpression != null);
+#endif
+
+					return Write(collapsedExpression, rootParameterName);
+				}
+
+				memberExpression = (MemberExpression)collapsedExpression;
+			}
+
+			var memberCall = GetMemberCall(memberExpression);
+
+			var innerExpression = memberExpression.Expression;
+
+#if !WINDOWS_PHONE
+			Contract.Assume(innerExpression != null);
+#endif
+
+			return string.IsNullOrWhiteSpace(memberCall)
+					   ? prefix
+					   : string.Format("{0}({1})", memberCall, Write(innerExpression, rootParameterName));
+		}
+
+		private static string WriteNegate(Expression expression, ParameterExpression rootParameterName)
+		{
+			var unaryExpression = expression as UnaryExpression;
+
+#if !WINDOWS_PHONE
+			Contract.Assume(unaryExpression != null);
+#endif
+
+			var operand = unaryExpression.Operand;
+
+			return string.Format("-{0}", Write(operand, rootParameterName));
+		}
+
+		private static string WriteBinaryExpression(Expression expression, ParameterExpression rootParameterName)
+		{
+			var binaryExpression = expression as BinaryExpression;
+
+#if !WINDOWS_PHONE
+			Contract.Assume(binaryExpression != null);
+#endif
+
+			var operation = GetOperation(binaryExpression);
+
+			if (binaryExpression.Left.NodeType == ExpressionType.Call)
+			{
+				var compareResult = ResolveCompareToOperation(rootParameterName,
+															  (MethodCallExpression)binaryExpression.Left,
+															  operation,
+															  binaryExpression.Right as ConstantExpression);
+				if (compareResult != null)
+				{
+					return compareResult;
+				}
+			}
+
+			if (binaryExpression.Right.NodeType == ExpressionType.Call)
+			{
+				var compareResult = ResolveCompareToOperation(rootParameterName,
+															  (MethodCallExpression)binaryExpression.Right,
+															  operation,
+															  binaryExpression.Left as ConstantExpression);
+				if (compareResult != null)
+				{
+					return compareResult;
+				}
+			}
+
+			var isLeftComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Left.NodeType);
+			var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
+
+			var leftType = GetUnconvertedType(binaryExpression.Left);
+			var leftString = Write(binaryExpression.Left, rootParameterName);
+			var rightString = Write(binaryExpression.Right, leftType, rootParameterName);
+
+			return string.Format(
+				"{0} {1} {2}",
+				string.Format(isLeftComposite
+								  ? "({0})"
+								  : "{0}",
+							  leftString),
+				operation,
+				string.Format(isRightComposite
+								  ? "({0})"
+								  : "{0}",
+							  rightString));
+		}
+
 		private static string ResolveCompareToOperation(
-			string rootParameterName,
+			ParameterExpression rootParameterName,
 			MethodCallExpression methodCallExpression,
 			string operation,
 			ConstantExpression comparisonExpression)
