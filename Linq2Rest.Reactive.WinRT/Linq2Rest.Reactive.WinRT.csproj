@@ -206,6 +206,9 @@
     <Compile Include="..\Linq2Rest.Reactive\ObservableExtensions.cs">
       <Link>ObservableExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\ObserverPublisher.cs">
+      <Link>ObserverPublisher.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest.Reactive\ReflectionHelper.cs">
       <Link>ReflectionHelper.cs</Link>
     </Compile>
@@ -217,6 +220,9 @@
     </Compile>
     <Compile Include="..\Linq2Rest.Reactive\RestQueryableProviderBase.cs">
       <Link>RestQueryableProviderBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest.Reactive\RestSubscription.cs">
+      <Link>RestSubscription.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest.Reactive\TriggeredRestObservable.cs">
       <Link>TriggeredRestObservable.cs</Link>

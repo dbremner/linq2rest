@@ -206,6 +206,28 @@ namespace Linq2Rest.Reactive
 					}
 
 					break;
+				case "Expand":
+#if !WINDOWS_PHONE
+					Contract.Assume(methodCall.Arguments.Count >= 2);
+#endif
+					{
+						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
+						if (result != null)
+						{
+							return InvokeEager<T>(methodCall, result);
+						}
+
+						var expression = methodCall.Arguments[1];
+#if !WINDOWS_PHONE
+						Contract.Assume(expression != null);
+#endif
+						var objectMember = Expression.Convert(expression, typeof(object));
+						var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
+
+						builder.ExpandParameter = getterLambda().ToString();
+					}
+
+					break;
 				default:
 					return ExecuteMethod(methodCall, builder, resultLoader, intermediateResultLoader);
 			}
@@ -234,7 +256,7 @@ namespace Linq2Rest.Reactive
 #if !NETFX_CORE
 			var method = typeof(Queryable)
 				.GetMethods()
-				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1)
+				.Single(x => string.Equals(x.Name, methodCall.Method.Name) && x.GetParameters().Length == 1)
 				.MakeGenericMethod(genericArguments);
 #else
 			var method = typeof(Queryable).GetTypeInfo()
