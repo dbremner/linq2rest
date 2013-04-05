@@ -150,11 +150,13 @@
     <Compile Include="InnerRestObservableBase.cs" />
     <Compile Include="InteralObservableExtensions.cs" />
     <Compile Include="ObservableExtensions.cs" />
+    <Compile Include="ObserverPublisher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionHelper.cs" />
     <Compile Include="RestObservable.cs" />
     <Compile Include="RestQueryableProvider.cs" />
     <Compile Include="RestQueryableProviderBase.cs" />
+    <Compile Include="RestSubscription.cs" />
     <Compile Include="TriggeredRestObservable.cs" />
     <Compile Include="TriggeredRestQueryableProvider.cs" />
   </ItemGroup>

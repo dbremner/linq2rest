@@ -13,7 +13,9 @@
 namespace Linq2Rest.Reactive.Implementations
 {
 	using System;
+#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
+#endif
 	using System.IO;
 	using System.Net;
 	using System.Threading.Tasks;
@@ -32,7 +34,7 @@ namespace Linq2Rest.Reactive.Implementations
 		/// <param name="serviceBase">The base <see cref="Uri"/> for the REST service.</param>
 		public AsyncJsonRestClientFactory(Uri serviceBase)
 		{
-#if !NETFX_CORE
+#if !NETFX_CORE && !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(serviceBase != null);
 			Contract.Requires<ArgumentException>(serviceBase.Scheme == Uri.UriSchemeHttp || serviceBase.Scheme == Uri.UriSchemeHttps);
 #endif
@@ -82,7 +84,7 @@ namespace Linq2Rest.Reactive.Implementations
 
 			public AsyncJsonRestClient(Uri uri, HttpMethod method, Stream input)
 			{
-#if !NETFX_CORE
+#if !NETFX_CORE && !WINDOWS_PHONE
 				Contract.Requires(uri != null);
 				Contract.Requires(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 #endif
@@ -136,7 +138,7 @@ namespace Linq2Rest.Reactive.Implementations
 				return s.AsyncState as HttpWebRequest;
 			}
 
-#if !NETFX_CORE
+#if !NETFX_CORE && !WINDOWS_PHONE
 			[ContractInvariantMethod]
 			private void Invariants()
 			{

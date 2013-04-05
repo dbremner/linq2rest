@@ -26,13 +26,13 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 		public T Deserialize(Stream input)
 		{
 			var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
-			return response.Result.Results.FirstOrDefault();
+			return response.Results.FirstOrDefault();
 		}
 
 		public IEnumerable<T> DeserializeList(Stream input)
 		{
 			var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
-			return response.Result.Results;
+			return response.Results;
 		}
 
 		public Stream Serialize(T item)
