@@ -123,6 +123,8 @@ namespace Linq2Rest.Provider
 
 					break;
 				case ExpressionType.TypeAs:
+				case ExpressionType.Convert:
+				case ExpressionType.ConvertChecked:
 					return Expression.Constant(GetValue(input));
 			}
 
