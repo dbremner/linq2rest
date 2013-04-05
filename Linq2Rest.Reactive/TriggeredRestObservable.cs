@@ -13,6 +13,7 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+	using System.Threading;
 #if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
@@ -67,6 +68,11 @@ namespace Linq2Rest.Reactive
 		/// <param name="observer">The object that is to receive notifications.</param>
 		public override IDisposable Subscribe(IObserver<T> observer)
 		{
+			if (_internalSubscription != null)
+			{
+				_internalSubscription.Dispose();
+			}
+
 			Observers.Add(observer);
 			_subscribeSubscription = SubscriberScheduler
 				.Schedule(
@@ -79,17 +85,26 @@ namespace Linq2Rest.Reactive
 								{
 									var filter = Expression as MethodCallExpression;
 									var parameterBuilder = new ParameterBuilder(RestClient.ServiceBase);
-
-									return Processor.ProcessMethodCall(
-										filter,
-										parameterBuilder,
-										GetResults,
-										GetIntermediateResults);
+									IObservable<T> result = null;
+									using (var waitHandle = new ManualResetEventSlim(false))
+									{
+										SubscriberScheduler.Schedule(() =>
+																		 {
+																			 result = Processor.ProcessMethodCall(
+																				 filter,
+																				 parameterBuilder,
+																				 GetResults,
+																				 GetIntermediateResults);
+																			 waitHandle.Set();
+																		 });
+										waitHandle.Wait();
+									}
+									return result;
 								})
 							.SelectMany(y => y)
-							.Subscribe(new ObserverPublisher(Observers, ObserverScheduler));
+							.Subscribe(new ObserverPublisher<T>(Observers, ObserverScheduler));
 					});
-			return new RestSubscription(observer, Unsubscribe);
+			return new RestSubscription<T>(observer, Unsubscribe);
 		}
 
 		private void Unsubscribe(IObserver<T> observer)

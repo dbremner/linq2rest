@@ -10,13 +10,12 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Threading.Tasks;
-
 namespace Linq2Rest.Reactive
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Threading;
 #if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
 #endif
@@ -24,6 +23,7 @@ namespace Linq2Rest.Reactive
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
+	using System.Threading.Tasks;
 	using Linq2Rest.Provider;
 
 	internal abstract class InnerRestObservableBase<T> : IQbservable<T>
@@ -99,6 +99,11 @@ namespace Linq2Rest.Reactive
 		/// <param name="observer">The object that is to receive notifications.</param>
 		public virtual IDisposable Subscribe(IObserver<T> observer)
 		{
+			if (_internalSubscription != null)
+			{
+				_internalSubscription.Dispose();
+			}
+
 			Observers.Add(observer);
 			_subscribeSubscription = SubscriberScheduler
 				.Schedule(
@@ -107,15 +112,24 @@ namespace Linq2Rest.Reactive
 						  {
 							  var filter = Expression as MethodCallExpression;
 							  var parameterBuilder = new ParameterBuilder(RestClient.ServiceBase);
-
-							  _internalSubscription = Processor.ProcessMethodCall(
-																				   filter,
-																				   parameterBuilder,
-																				   GetResults,
-																				   GetIntermediateResults)
-								  .Subscribe(new ObserverPublisher(Observers, ObserverScheduler));
+							  IObservable<T> source = null;
+							  using (var waitHandle = new ManualResetEventSlim(false))
+							  {
+								  SubscriberScheduler.Schedule(() =>
+								  {
+									  source = Processor.ProcessMethodCall(
+										  filter,
+										  parameterBuilder,
+										  GetResults,
+										  GetIntermediateResults);
+									  waitHandle.Set();
+								  });
+								  waitHandle.Wait();
+							  }
+							  _internalSubscription = source
+								  .Subscribe(new ObserverPublisher<T>(Observers, ObserverScheduler));
 						  });
-			return new RestSubscription(observer, Unsubscribe);
+			return new RestSubscription<T>(observer, Unsubscribe);
 		}
 
 		internal void ChangeMethod(HttpMethod method)
@@ -216,88 +230,5 @@ namespace Linq2Rest.Reactive
 			Contract.Invariant(Observers != null);
 		}
 #endif
-
-		internal class RestSubscription : IDisposable
-		{
-			private readonly IObserver<T> _observer;
-			private readonly Action<IObserver<T>> _unsubscription;
-
-			public RestSubscription(IObserver<T> observer, Action<IObserver<T>> unsubscription)
-			{
-#if !WINDOWS_PHONE
-				Contract.Requires(observer != null);
-				Contract.Requires(unsubscription != null);
-#endif
-
-				_observer = observer;
-				_unsubscription = unsubscription;
-			}
-
-			public void Dispose()
-			{
-				_unsubscription(_observer);
-			}
-
-#if !WINDOWS_PHONE
-			[ContractInvariantMethod]
-			private void Invariants()
-			{
-				Contract.Invariant(_observer != null);
-				Contract.Invariant(_unsubscription != null);
-			}
-#endif
-		}
-
-		internal class ObserverPublisher : IObserver<T>
-		{
-			private readonly IEnumerable<IObserver<T>> _observers;
-			private readonly IScheduler _observerScheduler;
-
-			public ObserverPublisher(IEnumerable<IObserver<T>> observers, IScheduler observerScheduler)
-			{
-#if !WINDOWS_PHONE
-				Contract.Requires(observers != null);
-				Contract.Requires(observerScheduler != null);
-#endif
-				_observers = observers;
-				_observerScheduler = observerScheduler;
-			}
-
-			public void OnNext(T value)
-			{
-				foreach (var observer in _observers)
-				{
-					var observer1 = observer;
-					_observerScheduler.Schedule(() => observer1.OnNext(value));
-				}
-			}
-
-			public void OnError(Exception error)
-			{
-				foreach (var observer in _observers)
-				{
-					var observer1 = observer;
-					_observerScheduler.Schedule(() => observer1.OnError(error));
-				}
-			}
-
-			public void OnCompleted()
-			{
-				foreach (var observer in _observers)
-				{
-					var observer1 = observer;
-					_observerScheduler.Schedule(observer1.OnCompleted);
-				}
-			}
-
-#if !WINDOWS_PHONE
-			[ContractInvariantMethod]
-			private void Invariants()
-			{
-				Contract.Invariant(_observers != null);
-				Contract.Invariant(_observerScheduler != null);
-			}
-#endif
-		}
 	}
 }
