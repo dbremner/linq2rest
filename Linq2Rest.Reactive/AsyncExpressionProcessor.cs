@@ -210,23 +210,9 @@ namespace Linq2Rest.Reactive
 #if !WINDOWS_PHONE
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 #endif
-					{
-						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
-						if (result != null)
-						{
-							return InvokeEager<T>(methodCall, result);
-						}
-
-						var expression = methodCall.Arguments[1];
-#if !WINDOWS_PHONE
-						Contract.Assume(expression != null);
-#endif
-						var objectMember = Expression.Convert(expression, typeof(object));
-						var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
-
-						builder.ExpandParameter = getterLambda().ToString();
-					}
-
+					builder.ExpandParameter = string.IsNullOrWhiteSpace(builder.ExpandParameter)
+						? methodCall.Arguments[1].ToString()
+						: string.Join(",", builder.ExpandParameter, methodCall.Arguments[1].ToString());
 					break;
 				default:
 					return ExecuteMethod(methodCall, builder, resultLoader, intermediateResultLoader);

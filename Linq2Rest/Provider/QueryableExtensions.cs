@@ -53,7 +53,7 @@ namespace Linq2Rest.Provider
 			Contract.Requires<ArgumentNullException>(source != null);
 #endif
 
-			if (!(source is RestGetQueryable<TSource>))
+			if (!(source is RestQueryableBase<TSource>))
 			{
 				return source;
 			}

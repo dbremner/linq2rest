@@ -41,5 +41,7 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 		}
 
 		public IList<ChildItem> Children { get; set; }
+
+		public IList<ChildItem> MoreChildren { get; set; }
 	}
 }

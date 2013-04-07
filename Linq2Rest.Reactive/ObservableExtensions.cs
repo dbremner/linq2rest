@@ -13,6 +13,16 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+	using System.Linq;
+	using System.Collections.Generic;
+#if NETFX_CORE
+	using System.Runtime.CompilerServices;
+#endif
+#if !WINDOWS_PHONE
+	using System.Diagnostics.Contracts;
+#endif
+	using System.Linq.Expressions;
+	using System.Reflection;
 
 	/// <summary>
 	/// Defines public extension methods on <see cref="IObservable{T}"/>
@@ -79,5 +89,89 @@ namespace Linq2Rest.Reactive
 
 			return source;
 		}
+
+		/// <summary>
+		/// Expands the specified source.
+		/// </summary>
+		/// <typeparam name="TSource"></typeparam>
+		/// <param name="source">The source.</param>
+		/// <param name="paths">The paths to expand in the format "Child1, Child2/GrandChild2".</param>
+		/// <returns>An <see cref="IObservable{T}"/> for continued querying.</returns>
+		public static IObservable<TSource> Expand<TSource>(this IObservable<TSource> source, string paths)
+		{
+#if !WINDOWS_PHONE
+			Contract.Requires<ArgumentNullException>(source != null);
+#endif
+
+			var restObservable = source as InnerRestObservable<TSource>;
+			if (restObservable == null)
+			{
+				return source;
+			}
+
+#if !NETFX_CORE
+			var genericMethod = ((MethodInfo)MethodBase.GetCurrentMethod()).MakeGenericMethod(new[] { typeof(TSource) });
+#else
+			var genericMethod = CreateGenericMethod<TSource>();
+#endif
+			return restObservable.Provider.CreateQuery<TSource>(
+					Expression.Call(
+						null,
+						genericMethod,
+						new[] { restObservable.Expression, Expression.Constant(paths) }));
+		}
+
+		/// <summary>
+		/// Expands the specified source.
+		/// </summary>
+		/// <typeparam name="TSource"></typeparam>
+		/// <param name="source">The source.</param>
+		/// <param name="properties">The paths to expand.</param>
+		/// <returns>An <see cref="IObservable{T}"/> for continued querying.</returns>
+		public static IObservable<TSource> Expand<TSource>(this IObservable<TSource> source, params Expression<Func<TSource, object>>[] properties)
+		{
+#if !WINDOWS_PHONE
+			Contract.Requires<ArgumentNullException>(source != null);
+			Contract.Assume(properties != null);
+#endif
+			var propertyNames = string.Join(",", properties.Where(x => x != null).Select(ResolvePropertyName));
+
+			return Expand(source, propertyNames);
+		}
+
+		private static string ResolvePropertyName<TSource>(Expression<Func<TSource, object>> property)
+		{
+#if !WINDOWS_PHONE
+			Contract.Requires(property != null);
+#endif
+
+			var pathPrefixes = new List<string>();
+
+			var body = property.Body;
+			if (body.NodeType == ExpressionType.Convert)
+			{
+				body = ((UnaryExpression)body).Operand;
+			}
+
+			var currentMemberExpression = body as MemberExpression;
+			while (currentMemberExpression != null)
+			{
+				pathPrefixes.Add(currentMemberExpression.Member.Name);
+				currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
+			}
+
+			pathPrefixes.Reverse();
+			return string.Join("/", pathPrefixes);
+		}
+
+#if NETFX_CORE
+		private static MethodInfo CreateGenericMethod<TSource>([CallerMemberName] string callerMemberName = "")
+		{
+			return typeof (ObservableExtensions)
+				.GetTypeInfo()
+				.GetDeclaredMethod(callerMemberName)
+				.MakeGenericMethod(typeof(TSource));
+		}
+#endif
 	}
 }

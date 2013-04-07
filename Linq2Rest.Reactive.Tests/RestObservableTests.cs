@@ -181,6 +181,29 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
+		public void WhenInvokingWithExpandThenCallsRestClient()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			var mockRestClient = new Mock<IAsyncRestClient>();
+			mockRestClient.Setup(x => x.Download())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
+
+			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
+			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
+			mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(mockRestClient.Object);
+
+			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
+				.Create()
+				.Expand(i => i.Children, i => i.MoreChildren)
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(5000);
+
+			mockRestClient.Verify(x => x.Download());
+		}
+
+		[Test]
 		public void WhenInvokingPostThenHttpMethodIsSetOnClientFactory()
 		{
 			var waitHandle = new ManualResetEvent(false);
