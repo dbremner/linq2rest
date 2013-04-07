@@ -52,8 +52,6 @@
 			<frameworkAssembly assemblyName="System" />
 			<frameworkAssembly assemblyName="System.Core" />
 			<frameworkAssembly assemblyName="Microsoft.CSharp"
-							   />
-			<frameworkAssembly assemblyName="Microsoft.CSharp"
 							   targetFramework="net45" />
 		</frameworkAssemblies>
 		<references>
