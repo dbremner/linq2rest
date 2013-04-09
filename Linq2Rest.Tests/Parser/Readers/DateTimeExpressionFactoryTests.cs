@@ -71,6 +71,17 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
+		public void WhenFilterIncludesDateTimeParameterWithMillisecondsThenReturnedExpressionContainsDateTime()
+		{
+			_dateTime = new DateTime(2012, 1, 1, 12, 0, 0, 11, DateTimeKind.Utc);
+			var parameter = string.Format("datetime'{0}'", _dateTime.ToString("o"));
+
+			var expression = _factory.Convert(parameter);
+
+			Assert.AreEqual(_dateTime, expression.Value);
+		}
+
+		[Test]
 		public void WhenFilterIncludesDateTimeParameterInDoubleQuotesThenReturnedExpressionContainsDateTime()
 		{
 			var parameter = string.Format("datetime\"{0}\"", _dateTime.ToString("yyyy-MM-ddThh:mm:ss"));

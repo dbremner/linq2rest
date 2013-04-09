@@ -19,7 +19,7 @@ namespace Linq2Rest.Parser.Readers
 
 	internal class DateTimeExpressionFactory : IValueExpressionFactory
 	{
-		private static readonly Regex DateTimeRegex = new Regex(@"datetime['\""](\d{4}\-\d{2}\-\d{2}(T\d{2}\:\d{2}\:\d{2})?(?<z>Z)?)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+		private static readonly Regex DateTimeRegex = new Regex(@"datetime['\""](\d{4}\-\d{2}\-\d{2}(T\d{2}\:\d{2}\:\d{2}(.\d+)?)?(?<z>Z)?)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
 		public Type Handles
 		{
