@@ -36,5 +36,14 @@ namespace Linq2Rest.Tests.Provider.Writers
 
 			Assert.AreEqual("datetime'2012-05-06T16:11:00Z'", result);
 		}
+
+		[Test]
+		public void WhenWritingDateTimeValueWithMillisecondsThenWritesString()
+		{
+			var value = new DateTime(2012, 5, 6, 16, 11, 00, 11, DateTimeKind.Utc);
+			var result = _writer.Write(value);
+
+			Assert.AreEqual("datetime'2012-05-06T16:11:00.011Z'", result);
+		}
 	}
 }
