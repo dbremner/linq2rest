@@ -54,7 +54,8 @@ namespace Linq2Rest.Provider
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			return Provider.Execute<IEnumerable<T>>(Expression).GetEnumerator();
+			var enumerable = Provider.Execute<IEnumerable<T>>(Expression);
+			return (enumerable ?? new T[0]).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

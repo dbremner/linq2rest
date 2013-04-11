@@ -69,11 +69,18 @@ namespace Linq2Rest.Provider
 			Contract.Assume(expression != null);
 
 			var methodCallExpression = expression as MethodCallExpression;
-
+			var resultsLoaded = false;
+			Func<ParameterBuilder, IEnumerable<T>> loadFunc = p =>
+																  {
+																	  resultsLoaded = true;
+																	  return GetResults(p);
+																  };
 			return (methodCallExpression != null
-						? _expressionProcessor.ProcessMethodCall(methodCallExpression, _parameterBuilder, GetResults, GetIntermediateResults)
+						? _expressionProcessor.ProcessMethodCall(methodCallExpression, _parameterBuilder, loadFunc, GetIntermediateResults)
 						: GetResults(_parameterBuilder))
-				   ?? GetResults(_parameterBuilder);
+				   ?? (resultsLoaded
+						? null
+						: GetResults(_parameterBuilder));
 		}
 
 		protected override void Dispose(bool disposing)
