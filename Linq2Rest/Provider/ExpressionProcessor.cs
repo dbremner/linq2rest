@@ -256,7 +256,7 @@ namespace Linq2Rest.Provider
 			var genericArguments = methodCall.Method.GetGenericArguments();
 			var queryableMethods = typeof(Queryable).GetMethods();
 
-			Contract.Assume(queryableMethods.Count() > 0);
+			Contract.Assume(queryableMethods.Any());
 
 			var nonGenericMethod = queryableMethods
 				.Single(x => x.Name == methodCall.Method.Name && x.GetParameters().Length == 1);
@@ -272,7 +272,8 @@ namespace Linq2Rest.Provider
 
 			var queryable = list.AsQueryable();
 			var parameters = new object[] { queryable };
-			return method.Invoke(null, parameters);
+			var result = method.Invoke(null, parameters);
+			return result ?? default(T);
 		}
 
 		private object GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IEnumerable<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)

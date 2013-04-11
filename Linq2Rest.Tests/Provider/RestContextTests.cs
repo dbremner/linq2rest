@@ -31,10 +31,12 @@ namespace Linq2Rest.Tests.Provider
 		private Mock<IRestClient> _mockClient;
 		private Mock<IRestClient> _mockComplexClient;
 		private Mock<IRestClient> _mockCollectionClient;
+		private string _singleResponse;
 
 		[SetUp]
 		public void TestSetup()
 		{
+			_singleResponse = "[{\"Value\" : 2, \"Content\" : \"blah\" }]";
 			var baseUri = new Uri("http://localhost");
 			var serializerFactory = new TestSerializerFactory();
 
@@ -42,16 +44,16 @@ namespace Linq2Rest.Tests.Provider
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(baseUri);
 			_mockClient.Setup(x => x.Get(It.IsAny<Uri>()))
 				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
-				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\" }]".ToStream());
+				.Returns(() => _singleResponse.ToStream());
 			_mockClient.Setup(x => x.Post(It.IsAny<Uri>(), It.IsAny<Stream>()))
 				.Callback<Uri, Stream>((u, s) => Console.WriteLine(u.ToString()))
-				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\" }]".ToStream());
+				.Returns(() => _singleResponse.ToStream());
 			_mockClient.Setup(x => x.Put(It.IsAny<Uri>(), It.IsAny<Stream>()))
 				.Callback<Uri, Stream>((u, s) => Console.WriteLine(u.ToString()))
-				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\" }]".ToStream());
+				.Returns(() => _singleResponse.ToStream());
 			_mockClient.Setup(x => x.Delete(It.IsAny<Uri>()))
 				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
-				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\" }]".ToStream());
+				.Returns(() => _singleResponse.ToStream());
 
 			_provider = new RestContext<SimpleDto>(_mockClient.Object, serializerFactory);
 
@@ -175,6 +177,13 @@ namespace Linq2Rest.Tests.Provider
 				.Count(x => x.ID != 0);
 
 			_mockClient.Verify(x => x.Get(It.IsAny<Uri>()), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingFirstOrDefaultThenCallsRestServiceOnce()
+		{
+			_singleResponse = "[]";
+			Assert.Null(_provider.Query.FirstOrDefault(x => x.Value <= 3));
 		}
 
 		[Test]
