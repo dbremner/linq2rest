@@ -78,32 +78,43 @@ namespace Linq2Rest.Reactive
 				.Schedule(
 					observer,
 					(s, o) =>
-					{
-						_internalSubscription = _trigger
-							.Select(
-								x =>
-								{
-									var filter = Expression as MethodCallExpression;
-									var parameterBuilder = new ParameterBuilder(RestClient.ServiceBase);
-									IObservable<T> result = null;
-									using (var waitHandle = new ManualResetEventSlim(false))
-									{
-										SubscriberScheduler.Schedule(() =>
-																		 {
-																			 result = Processor.ProcessMethodCall(
-																				 filter,
-																				 parameterBuilder,
-																				 GetResults,
-																				 GetIntermediateResults);
-																			 waitHandle.Set();
-																		 });
-										waitHandle.Wait();
-									}
-									return result;
-								})
-							.SelectMany(y => y)
-							.Subscribe(new ObserverPublisher<T>(Observers, ObserverScheduler));
-					});
+						{
+							_internalSubscription = _trigger
+								.Select(
+									x =>
+										{
+											var filter = Expression as MethodCallExpression;
+											var parameterBuilder = new ParameterBuilder(RestClient.ServiceBase);
+											IObservable<T> source = null;
+											using (var waitHandle = new ManualResetEventSlim(false))
+											{
+												SubscriberScheduler.Schedule(() =>
+																				 {
+																					 try
+																					 {
+																						 source = Processor.ProcessMethodCall(
+																							 filter,
+																							 parameterBuilder,
+																							 GetResults,
+																							 GetIntermediateResults);
+																					 }
+																					 catch (Exception e)
+																					 {
+																						 source = Observable.Throw(e, default(T));
+																					 }
+																					 finally
+																					 {
+																						 waitHandle.Set();
+																					 }
+																				 });
+												waitHandle.Wait();
+											}
+
+											return source;
+										})
+								.SelectMany(y => y)
+								.Subscribe(new ObserverPublisher<T>(Observers, ObserverScheduler));
+						});
 			return new RestSubscription<T>(observer, Unsubscribe);
 		}
 

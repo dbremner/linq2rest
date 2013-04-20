@@ -43,10 +43,12 @@ namespace Linq2Rest.Reactive
 
 		public IObservable<T> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
-			var task = ProcessMethodCallInternal(methodCall, builder, resultLoader, intermediateResultLoader);
-			return task == null
-					? resultLoader(builder).SelectMany(x => x)
-					: task.Select(o => (IQbservable<T>)o).SelectMany(x => x);
+				var task = ProcessMethodCallInternal(methodCall, builder, resultLoader, intermediateResultLoader);
+				return task == null
+						   ? resultLoader(builder)
+								 .SelectMany(x => x)
+						   : task.Select(o => (IQbservable<T>) o)
+								 .SelectMany(x => x);
 		}
 
 		private static IObservable<object> InvokeEager<T>(MethodCallExpression methodCall, object source)

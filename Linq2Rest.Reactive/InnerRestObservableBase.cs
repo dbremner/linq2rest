@@ -117,15 +117,26 @@ namespace Linq2Rest.Reactive
 							  {
 								  SubscriberScheduler.Schedule(() =>
 								  {
-									  source = Processor.ProcessMethodCall(
-										  filter,
-										  parameterBuilder,
-										  GetResults,
-										  GetIntermediateResults);
-									  waitHandle.Set();
+									  try
+									  {
+										  source = Processor.ProcessMethodCall(
+											  filter,
+											  parameterBuilder,
+											  GetResults,
+											  GetIntermediateResults);
+									  }
+									  catch (Exception e)
+									  {
+										  source = Observable.Throw(e, default(T));
+									  }
+									  finally
+									  {
+										  waitHandle.Set();
+									  }
 								  });
 								  waitHandle.Wait();
 							  }
+
 							  _internalSubscription = source
 								  .Subscribe(new ObserverPublisher<T>(Observers, ObserverScheduler));
 						  });
