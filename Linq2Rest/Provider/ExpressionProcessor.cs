@@ -82,33 +82,18 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
+						if (!string.IsNullOrWhiteSpace(builder.SelectParameter))
+						{
+							return ExecuteMethod(methodCall, builder, resultLoader, intermediateResultLoader);
+						}
+
 						var unaryExpression = methodCall.Arguments[1] as UnaryExpression;
 						if (unaryExpression != null)
 						{
 							var lambdaExpression = unaryExpression.Operand as LambdaExpression;
 							if (lambdaExpression != null)
 							{
-								var selectFunction = lambdaExpression.Body as NewExpression;
-
-								if (selectFunction != null)
-								{
-									var members = selectFunction.Members.Select(x => x.Name).ToArray();
-									var args = selectFunction.Arguments.OfType<MemberExpression>().Select(x => x.Member.Name).ToArray();
-									if (members.Intersect(args).Count() != members.Length)
-									{
-										throw new InvalidOperationException("Projection into new member names is not supported.");
-									}
-
-									builder.SelectParameter = string.Join(",", args);
-								}
-
-								var propertyExpression = lambdaExpression.Body as MemberExpression;
-								if (propertyExpression != null)
-								{
-									builder.SelectParameter = string.IsNullOrWhiteSpace(builder.SelectParameter)
-										? propertyExpression.Member.Name
-										: builder.SelectParameter + "," + propertyExpression.Member.Name;
-								}
+								return ResolveProjection(builder, lambdaExpression);
 							}
 						}
 					}
@@ -192,6 +177,36 @@ namespace Linq2Rest.Provider
 					break;
 				default:
 					return ExecuteMethod(methodCall, builder, resultLoader, intermediateResultLoader);
+			}
+
+			return null;
+		}
+
+		private static object ResolveProjection(ParameterBuilder builder, LambdaExpression lambdaExpression)
+		{
+			var selectFunction = lambdaExpression.Body as NewExpression;
+
+			if (selectFunction != null)
+			{
+				var members = selectFunction.Members.Select(x => x.Name)
+											.ToArray();
+				var args = selectFunction.Arguments.OfType<MemberExpression>()
+										 .Select(x => x.Member.Name)
+										 .ToArray();
+				if (members.Intersect(args).Count() != members.Length)
+				{
+					throw new InvalidOperationException("Projection into new member names is not supported.");
+				}
+
+				builder.SelectParameter = string.Join(",", args);
+			}
+
+			var propertyExpression = lambdaExpression.Body as MemberExpression;
+			if (propertyExpression != null)
+			{
+				builder.SelectParameter = string.IsNullOrWhiteSpace(builder.SelectParameter)
+					? propertyExpression.Member.Name
+					: builder.SelectParameter + "," + propertyExpression.Member.Name;
 			}
 
 			return null;

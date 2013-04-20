@@ -66,10 +66,10 @@ namespace Linq2Rest.Provider
 			var name = memberExpression.Member.Name;
 
 			if (declaringType == typeof(string) && string.Equals(name, "Length"))
-				{
-					return name.ToLowerInvariant();
-				}
-			
+			{
+				return name.ToLowerInvariant();
+			}
+
 			if (declaringType == typeof(DateTime))
 			{
 				switch (name)
@@ -476,6 +476,10 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Call:
 					return WriteCall(expression, rootParameter);
 				case ExpressionType.New:
+				case ExpressionType.ArrayIndex:
+				case ExpressionType.ArrayLength:
+				case ExpressionType.Conditional:
+				case ExpressionType.Coalesce:
 					var newValue = GetValue(expression);
 					return ParameterValueWriter.Write(newValue);
 				case ExpressionType.Lambda:
