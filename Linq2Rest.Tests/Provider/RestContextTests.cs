@@ -745,6 +745,50 @@ namespace Linq2Rest.Tests.Provider
 			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/all(y:+y/ID+eq+2+add+ID)")), Times.Once());
 		}
 
+		[Test]
+		public void WhenCapturingVariableHeldInArrayThenResolvesReference()
+		{
+			var names = new[] { "foo", "bar" };
+			var result = _collectionProvider.Query
+				.Where(c => c.Content == names[0] || c.Content == names[1])
+				.ToList();
+
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Content+eq+'foo'+or+Content+eq+'bar'")), Times.Once());
+		}
+
+		[Test]
+		public void WhenUsingCoalesceExpressionThenResolvesValue()
+		{
+			var names = new[] { null, "foo", "bar" };
+			var result = _collectionProvider.Query
+				.Where(c => c.Content == (names[0] ?? names[1]) || c.Content == names[2])
+				.ToList();
+
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Content+eq+'foo'+or+Content+eq+'bar'")), Times.Once());
+		}
+
+		[Test]
+		public void WhenUsingConditionalExpressionThenResolvesValue()
+		{
+			var names = new[] { "foo", "bar" };
+			var result = _collectionProvider.Query
+				.Where(c => c.Content == (names[0].Length < 10 ? names[0] : names[1]) || c.Content == names[1])
+				.ToList();
+
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Content+eq+'foo'+or+Content+eq+'bar'")), Times.Once());
+		}
+
+		[Test]
+		public void WhenUsingArrayLengthExpressionThenResolvesValue()
+		{
+			var names = new[] { "foo", "bar" };
+			var result = _collectionProvider.Query
+				.Where(c => c.Value == names.Length)
+				.ToList();
+
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Value+eq+2")), Times.Once());
+		}
+
 		private void VerifyCall(Expression<Func<SimpleDto, bool>> selection, string expectedUri)
 		{
 			var result = _provider.Query
