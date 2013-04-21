@@ -36,7 +36,7 @@ namespace Linq2Rest.Reactive.WP8.Sample.Support
 
         public Stream Serialize(T item)
         {
-            var response = new ODataResponse<T> { Result = new ODataResult<T> { Results = new List<T> { item } } };
+			var response = new ODataResponse<T> { Result = new ODataResult<T> { Results = new List<T> { item } } };
             var ms = new MemoryStream();
             _innerSerializer.WriteObject(ms, response);
             ms.Flush();

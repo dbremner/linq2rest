@@ -260,6 +260,9 @@
     <Compile Include="..\Linq2Rest\Provider\ParameterBuilder.cs">
       <Link>Provider\ParameterBuilder.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\AnyAllMethodWriter.cs">
+      <Link>Provider\Writers\AnyAllMethodWriter.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\BooleanValueWriter.cs">
       <Link>Provider\Writers\BooleanValueWriter.cs</Link>
     </Compile>
@@ -278,11 +281,23 @@
     <Compile Include="..\Linq2Rest\Provider\Writers\DecimalValueWriter.cs">
       <Link>Provider\Writers\DecimalValueWriter.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\DefaultMethodWriter.cs">
+      <Link>Provider\Writers\DefaultMethodWriter.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\DoubleValueWriter.cs">
       <Link>Provider\Writers\DoubleValueWriter.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\EmptyAnyMethodWriter.cs">
+      <Link>Provider\Writers\EmptyAnyMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\EqualsMethodWriter.cs">
+      <Link>Provider\Writers\EqualsMethodWriter.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\GuidValueWriter.cs">
       <Link>Provider\Writers\GuidValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\IMethodCallWriter.cs">
+      <Link>Provider\Writers\IMethodCallWriter.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\IntegerValueWriter.cs">
       <Link>Provider\Writers\IntegerValueWriter.cs</Link>
@@ -295,6 +310,18 @@
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\LongValueWriter.cs">
       <Link>Provider\Writers\LongValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\MathCeilingMethodWriter.cs">
+      <Link>Provider\Writers\MathCeilingMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\MathFloorMethodWriter.cs">
+      <Link>Provider\Writers\MathFloorMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\MathMethodWriter.cs">
+      <Link>Provider\Writers\MathMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\MathRoundMethodWriter.cs">
+      <Link>Provider\Writers\MathRoundMethodWriter.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\ParameterValueWriter.cs">
       <Link>Provider\Writers\ParameterValueWriter.cs</Link>
@@ -310,6 +337,33 @@
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\StreamValueWriter.cs">
       <Link>Provider\Writers\StreamValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StringContainsMethodWriter.cs">
+      <Link>Provider\Writers\StringContainsMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StringEndsWithMethodWriter.cs">
+      <Link>Provider\Writers\StringEndsWithMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StringIndexOfMethodWriter.cs">
+      <Link>Provider\Writers\StringIndexOfMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StringReplaceMethodWriter.cs">
+      <Link>Provider\Writers\StringReplaceMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StringStartsWithMethodWriter.cs">
+      <Link>Provider\Writers\StringStartsWithMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StringSubstringMethodWriter.cs">
+      <Link>Provider\Writers\StringSubstringMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StringToLowerMethodWriter.cs">
+      <Link>Provider\Writers\StringToLowerMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StringToUpperMethodWriter.cs">
+      <Link>Provider\Writers\StringToUpperMethodWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\StringTrimMethodWriter.cs">
+      <Link>Provider\Writers\StringTrimMethodWriter.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\StringValueWriter.cs">
       <Link>Provider\Writers\StringValueWriter.cs</Link>

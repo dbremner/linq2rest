@@ -30,15 +30,6 @@ namespace Linq2Rest.Reactive.WinRT.Sample
 			InitializeComponent();
 		}
 
-		/// <summary>
-		/// Invoked when this page is about to be displayed in a Frame.
-		/// </summary>
-		/// <param name="e">Event data that describes how this page was reached.  The Parameter
-		/// property is typically used to configure the page.</param>
-		protected override void OnNavigatedTo(NavigationEventArgs e)
-		{
-		}
-
 		private void AddFilm(NetflixFilm film)
 		{
 			films.Items.Add(film);
@@ -62,6 +53,7 @@ namespace Linq2Rest.Reactive.WinRT.Sample
 				.Where(x => x.Name.Contains(query))
 				.Subscribe(
 					x => Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => AddFilm(x)),
+					ex => Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => button.IsEnabled = true),
 					() => Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => button.IsEnabled = true));
 		}
 	}

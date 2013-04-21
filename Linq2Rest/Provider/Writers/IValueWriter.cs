@@ -15,17 +15,18 @@ namespace Linq2Rest.Provider.Writers
 	using System;
 #if !WINDOWS_PHONE && !NETFX_CORE
 	using System.Diagnostics.Contracts;
+
 #endif
 
 #if !WINDOWS_PHONE && !NETFX_CORE
 	[ContractClass(typeof(ValueWriterContracts))]
 #endif
-    internal interface IValueWriter
+	internal interface IValueWriter
 	{
 		Type Handles { get; }
 
 		string Write(object value);
-    }
+	}
 
 #if !WINDOWS_PHONE && !NETFX_CORE
 	[ContractClassFor(typeof(IValueWriter))]

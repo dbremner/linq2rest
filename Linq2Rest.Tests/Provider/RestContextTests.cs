@@ -726,6 +726,16 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenApplyingEmptyAnyOperatorThenSendEmptyPredicate()
+		{
+			var result = _collectionProvider.Query
+				.Where(x => x.Children.Any())
+				.ToList();
+
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/any()")), Times.Once());
+		}
+
+		[Test]
 		public void WhenApplyingFilterWithAllOnRootCollectionThenCallsRestServiceWithAllSyntax()
 		{
 			var result = _collectionProvider.Query

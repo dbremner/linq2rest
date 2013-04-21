@@ -17,6 +17,9 @@ using Microsoft.Phone.Shell;
 
 namespace Linq2Rest.Reactive.WP8.Sample
 {
+	using System.Threading;
+	using System.Windows.Threading;
+
 	public partial class App : Application
 	{
 		// Avoid double-initialization
@@ -27,7 +30,8 @@ namespace Linq2Rest.Reactive.WP8.Sample
 		/// </summary>
 		public App()
 		{
-			// Global handler for uncaught exceptions. 
+			SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
+			// Global handler for uncaught exceptions.
 			UnhandledException += Application_UnhandledException;
 
 			// Standard Silverlight initialization

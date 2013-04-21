@@ -42,15 +42,7 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
 			<TextBox x:Name="txtSearch" />
-			<Button Grid.Row="0"
-					Grid.Column="1"
-					Content="Search"
-					Click="Button_Click" />
 			<ListBox Grid.Row="1"
 					 Grid.ColumnSpan="2"
 					 ItemsSource="{Binding Source={StaticResource Packages}}">
@@ -66,8 +58,8 @@
 								<ColumnDefinition Width="*" />
 							</Grid.ColumnDefinitions>
 							<TextBlock Grid.Column="0"
-									   Text="{Binding Path=Id}"
-									   Style="{StaticResource PhoneTextTitle2Style}"
+									   Text="{Binding Path=Id}" TextWrapping="Wrap"
+									   Style="{StaticResource PhoneTextTitle2Style}" MaxWidth="400"
 									   VerticalAlignment="Bottom" />
 							<TextBlock Grid.Column="1"
 									   Text="{Binding Path=Version}"
