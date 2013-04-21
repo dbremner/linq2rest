@@ -28,6 +28,25 @@ namespace Linq2Rest.Provider
 	internal class ExpressionWriter : IExpressionWriter
 	{
 		private static readonly ExpressionType[] CompositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
+		private readonly IMethodCallWriter[] _methodCallWriters = new IMethodCallWriter[]
+																{
+																	new EqualsMethodWriter(), 
+																	new StringReplaceMethodWriter(), 
+																	new StringTrimMethodWriter(), 
+																	new StringToLowerMethodWriter(), 
+																	new StringToUpperMethodWriter(), 
+																	new StringSubstringMethodWriter(), 
+																	new StringContainsMethodWriter(), 
+																	new StringIndexOfMethodWriter(), 
+																	new StringEndsWithMethodWriter(), 
+																	new StringStartsWithMethodWriter(), 
+																	new MathRoundMethodWriter(), 
+																	new MathFloorMethodWriter(), 
+																	new MathCeilingMethodWriter(),
+ 																	new EmptyAnyMethodWriter(), 
+																	new AnyAllMethodWriter(), 
+																	new DefaultMethodWriter()
+																};
 
 		public string Write(Expression expression)
 		{
@@ -226,200 +245,12 @@ namespace Linq2Rest.Provider
 			return null;
 		}
 
-		private static string Write(Expression expression, ParameterExpression rootParameterName)
+		private string Write(Expression expression, ParameterExpression rootParameterName)
 		{
 			return expression == null ? null : Write(expression, expression.Type, rootParameterName);
 		}
 
-		private static string GetMethodCall(MethodCallExpression expression, ParameterExpression rootParameterName)
-		{
-#if !WINDOWS_PHONE
-			Contract.Requires(expression != null);
-#endif
-
-			var methodName = expression.Method.Name;
-			var declaringType = expression.Method.DeclaringType;
-
-			if (methodName == "Equals")
-			{
-				return string.Format(
-									 "{0} eq {1}",
-									 Write(expression.Object, rootParameterName),
-									 Write(expression.Arguments[0], rootParameterName));
-			}
-
-			if (declaringType == typeof(string))
-			{
-				var obj = expression.Object;
-#if !WINDOWS_PHONE
-				Contract.Assume(obj != null);
-#endif
-
-				switch (methodName)
-				{
-					case "Replace":
-						{
-#if !WINDOWS_PHONE
-							Contract.Assume(expression.Arguments.Count > 1);
-#endif
-
-							var firstArgument = expression.Arguments[0];
-							var secondArgument = expression.Arguments[1];
-
-#if !WINDOWS_PHONE
-							Contract.Assume(firstArgument != null);
-							Contract.Assume(secondArgument != null);
-#endif
-
-							return string.Format(
-								"replace({0}, {1}, {2})",
-								Write(obj, rootParameterName),
-								Write(firstArgument, rootParameterName),
-								Write(secondArgument, rootParameterName));
-						}
-
-					case "Trim":
-						return string.Format("trim({0})", Write(obj, rootParameterName));
-					case "ToLower":
-					case "ToLowerInvariant":
-						return string.Format("tolower({0})", Write(obj, rootParameterName));
-					case "ToUpper":
-					case "ToUpperInvariant":
-						return string.Format("toupper({0})", Write(obj, rootParameterName));
-					case "Substring":
-						{
-#if !WINDOWS_PHONE
-							Contract.Assume(expression.Arguments.Count > 0);
-#endif
-
-							if (expression.Arguments.Count == 1)
-							{
-								var argumentExpression = expression.Arguments[0];
-
-#if !WINDOWS_PHONE
-								Contract.Assume(argumentExpression != null);
-#endif
-
-								return string.Format(
-									"substring({0}, {1})", Write(obj, rootParameterName), Write(argumentExpression, rootParameterName));
-							}
-
-							var firstArgument = expression.Arguments[0];
-							var secondArgument = expression.Arguments[1];
-
-#if !WINDOWS_PHONE
-							Contract.Assume(firstArgument != null);
-							Contract.Assume(secondArgument != null);
-#endif
-
-							return string.Format(
-								"substring({0}, {1}, {2})",
-								Write(obj, rootParameterName),
-								Write(firstArgument, rootParameterName),
-								Write(secondArgument, rootParameterName));
-						}
-
-					case "Contains":
-						{
-							var argumentExpression = expression.Arguments[0];
-
-#if !WINDOWS_PHONE
-							Contract.Assume(argumentExpression != null);
-#endif
-
-							return string.Format(
-								"substringof({0}, {1})",
-								Write(argumentExpression, rootParameterName),
-								Write(obj, rootParameterName));
-						}
-
-					case "IndexOf":
-						{
-#if !WINDOWS_PHONE
-							Contract.Assume(expression.Arguments.Count > 0);
-#endif
-
-							var argumentExpression = expression.Arguments[0];
-
-#if !WINDOWS_PHONE
-							Contract.Assume(argumentExpression != null);
-#endif
-
-							return string.Format("indexof({0}, {1})", Write(obj, rootParameterName), Write(argumentExpression, rootParameterName));
-						}
-
-					case "EndsWith":
-						{
-#if !WINDOWS_PHONE
-							Contract.Assume(expression.Arguments.Count > 0);
-#endif
-
-							var argumentExpression = expression.Arguments[0];
-
-#if !WINDOWS_PHONE
-							Contract.Assume(argumentExpression != null);
-#endif
-
-							return string.Format("endswith({0}, {1})", Write(obj, rootParameterName), Write(argumentExpression, rootParameterName));
-						}
-
-					case "StartsWith":
-						{
-#if !WINDOWS_PHONE
-							Contract.Assume(expression.Arguments.Count > 0);
-#endif
-
-							var argumentExpression = expression.Arguments[0];
-
-#if !WINDOWS_PHONE
-							Contract.Assume(argumentExpression != null);
-#endif
-
-							return string.Format("startswith({0}, {1})", Write(obj, rootParameterName), Write(argumentExpression, rootParameterName));
-						}
-				}
-			}
-			else if (declaringType == typeof(Math))
-			{
-#if !WINDOWS_PHONE
-				Contract.Assume(expression.Arguments.Count > 0);
-#endif
-
-				var mathArgument = expression.Arguments[0];
-
-#if !WINDOWS_PHONE
-				Contract.Assume(mathArgument != null);
-#endif
-
-				switch (methodName)
-				{
-					case "Round":
-						return string.Format("round({0})", Write(mathArgument, rootParameterName));
-					case "Floor":
-						return string.Format("floor({0})", Write(mathArgument, rootParameterName));
-					case "Ceiling":
-						return string.Format("ceiling({0})", Write(mathArgument, rootParameterName));
-				}
-			}
-
-			if (expression.Method.Name == "Any" || expression.Method.Name == "All")
-			{
-#if !WINDOWS_PHONE
-				Contract.Assume(expression.Arguments.Count > 1);
-#endif
-
-				var firstArg = Write(expression.Arguments[0], rootParameterName);
-				var method = expression.Method.Name.ToLowerInvariant();
-				var parameter = expression.Arguments[1] is LambdaExpression ? (expression.Arguments[1] as LambdaExpression).Parameters.First().Name : null;
-				var predicate = Write(expression.Arguments[1], rootParameterName);
-
-				return string.Format("{0}/{1}({2}: {3})", firstArg, method, parameter, predicate);
-			}
-
-			return ParameterValueWriter.Write(GetValue(expression));
-		}
-
-		private static string Write(Expression expression, Type type, ParameterExpression rootParameter)
+		private string Write(Expression expression, Type type, ParameterExpression rootParameter)
 		{
 #if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
@@ -489,7 +320,7 @@ namespace Linq2Rest.Provider
 			}
 		}
 
-		private static string WriteLambda(Expression expression, ParameterExpression rootParameter)
+		private string WriteLambda(Expression expression, ParameterExpression rootParameter)
 		{
 			var lambdaExpression = expression as LambdaExpression;
 
@@ -501,7 +332,7 @@ namespace Linq2Rest.Provider
 			return Write(body, rootParameter);
 		}
 
-		private static string WriteFalse(Expression expression, ParameterExpression rootParameterName)
+		private string WriteFalse(Expression expression, ParameterExpression rootParameterName)
 		{
 			var unaryExpression = expression as UnaryExpression;
 
@@ -514,7 +345,7 @@ namespace Linq2Rest.Provider
 			return string.Format("not({0})", Write(operand, rootParameterName));
 		}
 
-		private static string WriteTrue(Expression expression, ParameterExpression rootParameterName)
+		private string WriteTrue(Expression expression, ParameterExpression rootParameterName)
 		{
 			var unaryExpression = expression as UnaryExpression;
 
@@ -527,7 +358,7 @@ namespace Linq2Rest.Provider
 			return Write(operand, rootParameterName);
 		}
 
-		private static string WriteConversion(Expression expression, ParameterExpression rootParameterName)
+		private string WriteConversion(Expression expression, ParameterExpression rootParameterName)
 		{
 			var unaryExpression = expression as UnaryExpression;
 
@@ -539,7 +370,7 @@ namespace Linq2Rest.Provider
 			return Write(operand, rootParameterName);
 		}
 
-		private static string WriteCall(Expression expression, ParameterExpression rootParameterName)
+		private string WriteCall(Expression expression, ParameterExpression rootParameterName)
 		{
 			var methodCallExpression = expression as MethodCallExpression;
 
@@ -550,7 +381,7 @@ namespace Linq2Rest.Provider
 			return GetMethodCall(methodCallExpression, rootParameterName);
 		}
 
-		private static string WriteMemberAccess(Expression expression, ParameterExpression rootParameterName)
+		private string WriteMemberAccess(Expression expression, ParameterExpression rootParameterName)
 		{
 			var memberExpression = expression as MemberExpression;
 
@@ -610,7 +441,7 @@ namespace Linq2Rest.Provider
 					   : string.Format("{0}({1})", memberCall, Write(innerExpression, rootParameterName));
 		}
 
-		private static string WriteNegate(Expression expression, ParameterExpression rootParameterName)
+		private string WriteNegate(Expression expression, ParameterExpression rootParameterName)
 		{
 			var unaryExpression = expression as UnaryExpression;
 
@@ -623,7 +454,7 @@ namespace Linq2Rest.Provider
 			return string.Format("-{0}", Write(operand, rootParameterName));
 		}
 
-		private static string WriteBinaryExpression(Expression expression, ParameterExpression rootParameterName)
+		private string WriteBinaryExpression(Expression expression, ParameterExpression rootParameterName)
 		{
 			var binaryExpression = expression as BinaryExpression;
 
@@ -677,7 +508,7 @@ namespace Linq2Rest.Provider
 							  rightString));
 		}
 
-		private static string ResolveCompareToOperation(
+		private string ResolveCompareToOperation(
 			ParameterExpression rootParameterName,
 			MethodCallExpression methodCallExpression,
 			string operation,
@@ -697,6 +528,20 @@ namespace Linq2Rest.Provider
 			}
 
 			return null;
+		}
+
+		private string GetMethodCall(MethodCallExpression expression, ParameterExpression rootParameterName)
+		{
+#if !WINDOWS_PHONE
+			Contract.Requires(expression != null);
+#endif
+			var methodCallWriter = _methodCallWriters.FirstOrDefault(w => w.CanHandle(expression));
+			if (methodCallWriter == null)
+			{
+				throw new NotSupportedException(expression + " is not supported");
+			}
+
+			return methodCallWriter.Handle(expression, e => Write(e, rootParameterName));
 		}
 	}
 }

@@ -19,9 +19,15 @@ using Microsoft.Phone.Controls;
 
 namespace Linq2Rest.Reactive.WP8.Sample
 {
+	using System.Reactive;
+	using System.Reactive.Concurrency;
+	using System.Threading;
+	using System.Windows.Controls;
+	using System.Windows.Threading;
+
 	public partial class MainPage : PhoneApplicationPage
 	{
-		private readonly RestObservable<NugetPackage> _nugetObservable;
+		private readonly IDisposable _nugetObservable;
 		private readonly ObservableCollection<NugetPackage> _packageCollection;
 
 		public MainPage()
@@ -29,21 +35,19 @@ namespace Linq2Rest.Reactive.WP8.Sample
 			_packageCollection = new ObservableCollection<NugetPackage>();
 			Resources.Add("Packages", _packageCollection);
 			InitializeComponent();
+			var trigger = Observable.FromEventPattern(txtSearch, "TextChanged")
+								 .Throttle(TimeSpan.FromMilliseconds(300))
+								 .Do(_ => Dispatcher.BeginInvoke(() => _packageCollection.Clear()))
+								 .Select(_ => Unit.Default);
 			_nugetObservable = new RestObservable<NugetPackage>(
 				new AsyncJsonRestClientFactory(new Uri("http://nuget.org/api/v2/Packages")),
-				new ODataSerializerFactory());
-		}
-
-		private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-		{
-			_packageCollection.Clear();
-			var subscription = _nugetObservable
-				.Create()
-				.Where(x => x.Dependencies.Contains(txtSearch.Text) && x.IsLatestVersion)
-				.Subscribe(
-						   x => Dispatcher.BeginInvoke(() => _packageCollection.Add(x)),
-						   ex => Dispatcher.BeginInvoke(() => txtStatus.Text = ex.Message),
-						   () => Dispatcher.BeginInvoke(() => txtStatus.Text = "Finished"));
+				new ODataSerializerFactory())
+				.Poll(trigger)
+				.Where(p => p.Id.ToLower()
+							 .Contains(txtSearch.Text))
+				.ObserveOn(new SynchronizationContextScheduler(SynchronizationContext.Current))
+				.SubscribeOn(new SynchronizationContextScheduler(SynchronizationContext.Current))
+				.SubscribeSafe(Observer.Create<NugetPackage>(_packageCollection.Add));
 		}
 	}
 }
