@@ -311,19 +311,15 @@ namespace Linq2Rest.Parser
 				.GetParameters(right)
 				.Where(p => p.Name != sourceParameter.Name)
 				.ToArray();
-
-			if (filteredParameters.Length > 0)
+			if (!filteredParameters.Any())
 			{
-				return Expression.Call(
-									   anyAllMethod,
-									   left,
-									   Expression.Lambda(genericFunc, right, filteredParameters));
+				filteredParameters = lambdaParameters.ToArray();
 			}
 
 			return Expression.Call(
-								   MethodProvider.GetAnyAllMethod("All", left.Type),
+								   anyAllMethod,
 								   left,
-								   Expression.Lambda(genericFunc, right, lambdaParameters));
+								   Expression.Lambda(genericFunc, right, filteredParameters));
 		}
 
 		private static Type GetNonNullableType(Type type)
@@ -423,6 +419,15 @@ namespace Linq2Rest.Parser
 					{
 						expression = booleanExpression;
 					}
+				}
+			}
+
+			if (expression == null)
+			{
+				var booleanExpression = ParameterValueReader.Read(typeof(bool), filter, formatProvider) as ConstantExpression;
+				if (booleanExpression != null && booleanExpression.Value != null)
+				{
+					expression = booleanExpression;
 				}
 			}
 

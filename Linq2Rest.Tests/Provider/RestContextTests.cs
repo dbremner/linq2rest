@@ -732,7 +732,7 @@ namespace Linq2Rest.Tests.Provider
 				.Where(x => x.Children.Any())
 				.ToList();
 
-			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/any()")), Times.Once());
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/any(Param_0:+true)")), Times.Once());
 		}
 
 		[Test]
