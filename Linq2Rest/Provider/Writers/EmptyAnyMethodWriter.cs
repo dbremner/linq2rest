@@ -13,10 +13,21 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
+	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Reflection;
 
 	internal class EmptyAnyMethodWriter : IMethodCallWriter
 	{
+		private static readonly MethodInfo AnyMethod = typeof(Enumerable)
+#if !NETFX_CORE
+.GetMethods()
+#else
+.GetRuntimeMethods()
+#endif
+.FirstOrDefault(m => m.Name == "Any" && m.GetParameters()
+													 .Length == 2);
+
 		public bool CanHandle(MethodCallExpression expression)
 		{
 			return expression.Method.Name == "Any" && expression.Arguments.Count == 1;
@@ -24,8 +35,27 @@ namespace Linq2Rest.Provider.Writers
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
-			var firstArg = expressionWriter(expression.Arguments[0]);
-			return string.Format("{0}/any()", firstArg);
+#if !NETFX_CORE
+			var argumentType = expression.Arguments[0].Type;
+#else
+			var argumentType = expression.Arguments[0].Type.GetTypeInfo();
+#endif
+			var parameterType = argumentType.IsGenericType
+#if !NETFX_CORE
+									? argumentType.GetGenericArguments()[0]
+#else
+									? argumentType.GetGenericParameterConstraints()[0]
+#endif
+									: typeof(object);
+			var anyMethod = AnyMethod.MakeGenericMethod(parameterType);
+#if !WP7
+			var parameter = Expression.Parameter(parameterType);
+#else
+			var parameter = Expression.Parameter(parameterType, "Param_0");
+#endif
+			var lambda = Expression.Lambda(Expression.Constant(true), parameter);
+			var rewritten = Expression.Call(expression.Object, anyMethod, expression.Arguments[0], lambda);
+			return expressionWriter(rewritten);
 		}
 	}
 }

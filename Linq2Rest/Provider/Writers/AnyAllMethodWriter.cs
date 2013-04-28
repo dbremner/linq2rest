@@ -34,7 +34,14 @@ namespace Linq2Rest.Provider.Writers
 
 			var firstArg = expressionWriter(expression.Arguments[0]);
 			var method = expression.Method.Name.ToLowerInvariant();
-			var parameter = expression.Arguments[1] is LambdaExpression ? (expression.Arguments[1] as LambdaExpression).Parameters.First().Name : null;
+			string parameter = null;
+			var lambdaParameter = expression.Arguments[1] as LambdaExpression;
+			if (lambdaParameter != null)
+			{
+				var first = lambdaParameter.Parameters.First();
+				parameter = first.Name ?? first.ToString();
+			}
+
 			var predicate = expressionWriter(expression.Arguments[1]);
 
 			return string.Format("{0}/{1}({2}: {3})", firstArg, method, parameter, predicate);

@@ -29,7 +29,7 @@
     <OutputPath>bin\wp7\Debug\</OutputPath>
     <BaseIntermediateOutputPath>obj\wp7</BaseIntermediateOutputPath>
     <DocumentationFile>bin\wp7\Debug\Linq2Rest.Reactive.XML</DocumentationFile>
-    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE;WP7</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
