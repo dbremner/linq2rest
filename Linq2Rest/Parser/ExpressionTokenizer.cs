@@ -23,7 +23,7 @@ namespace Linq2Rest.Parser
 	internal static class ExpressionTokenizer
 	{
 		private static readonly Regex FunctionRx = new Regex(@"^([^\(\)]+)\((.+)\)$", RegexOptions.Compiled);
-		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*(.+)$", RegexOptions.Compiled);
+		private static readonly Regex FunctionContentRx = new Regex(@"^(.*\((?>[^()]+|\((?<Depth>.*)|\)(?<-Depth>.*))*(?(Depth)(?!))\)|.*?)\s*,\s*([^,]*)$", RegexOptions.Compiled);
 		private static readonly Regex AnyAllFunctionRx = new Regex(@"^(([0-9a-zA-Z_/]+/)+)(any|all)\((.*)\)$", RegexOptions.Compiled);
 
 		public static ICollection<TokenSet> GetTokens(this string expression)
