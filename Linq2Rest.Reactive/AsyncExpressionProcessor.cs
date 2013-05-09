@@ -15,9 +15,7 @@ namespace Linq2Rest.Reactive
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Linq;
@@ -35,33 +33,28 @@ namespace Linq2Rest.Reactive
 
 		public AsyncExpressionProcessor(IExpressionWriter writer)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(writer != null);
-#endif
+
 			_writer = writer;
 		}
 
 		public IObservable<T> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
-				var task = ProcessMethodCallInternal(methodCall, builder, resultLoader, intermediateResultLoader);
-				return task == null
-						   ? resultLoader(builder)
-								 .SelectMany(x => x)
-						   : task.Select(o => (IQbservable<T>) o)
-								 .SelectMany(x => x);
+			var task = ProcessMethodCallInternal(methodCall, builder, resultLoader, intermediateResultLoader);
+			return task == null
+					   ? resultLoader(builder)
+							 .SelectMany(x => x)
+					   : task.Select(o => (IQbservable<T>)o)
+							 .SelectMany(x => x);
 		}
 
 		private static IObservable<object> InvokeEager<T>(MethodCallExpression methodCall, object source)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(methodCall != null);
-#endif
 
 			var enumerableSource = source as IEnumerable;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(enumerableSource != null);
-#endif
 
 			var parameters = ResolveInvocationParameters(enumerableSource, typeof(T), methodCall);
 			return Observable.Return(methodCall.Method.Invoke(null, parameters));
@@ -69,11 +62,10 @@ namespace Linq2Rest.Reactive
 
 		private static object[] ResolveInvocationParameters(IEnumerable results, Type type, MethodCallExpression methodCall)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(results != null);
 			Contract.Requires(type != null);
 			Contract.Requires(methodCall != null);
-#endif
+
 			var parameters = new[] { results.ToQbservable(type) }
 				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue))
 				.Where(x => !ReferenceEquals(x, null))
@@ -98,10 +90,9 @@ namespace Linq2Rest.Reactive
 
 		private IObservable<object> ProcessMethodCallInternal<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(builder != null);
 			Contract.Requires(resultLoader != null);
-#endif
+
 			if (methodCall == null)
 			{
 				return null;
@@ -118,9 +109,7 @@ namespace Linq2Rest.Reactive
 							? GetMethodResult(methodCall, builder, resultLoader, intermediateResultLoader)
 							: GetResult(methodCall, builder, resultLoader, intermediateResultLoader);
 				case "Where":
-#if !WINDOWS_PHONE
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-#endif
 					{
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
@@ -137,9 +126,7 @@ namespace Linq2Rest.Reactive
 
 					break;
 				case "Select":
-#if !WINDOWS_PHONE
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-#endif
 					{
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
@@ -179,9 +166,7 @@ namespace Linq2Rest.Reactive
 
 					break;
 				case "Take":
-#if !WINDOWS_PHONE
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-#endif
 					{
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
@@ -194,9 +179,7 @@ namespace Linq2Rest.Reactive
 
 					break;
 				case "Skip":
-#if !WINDOWS_PHONE
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-#endif
 					{
 						var result = ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
@@ -209,9 +192,8 @@ namespace Linq2Rest.Reactive
 
 					break;
 				case "Expand":
-#if !WINDOWS_PHONE
 					Contract.Assume(methodCall.Arguments.Count >= 2);
-#endif
+
 					builder.ExpandParameter = string.IsNullOrWhiteSpace(builder.ExpandParameter)
 						? methodCall.Arguments[1].ToString()
 						: string.Join(",", builder.ExpandParameter, methodCall.Arguments[1].ToString());
@@ -225,12 +207,10 @@ namespace Linq2Rest.Reactive
 
 		private IObservable<object> GetMethodResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(methodCall != null);
 			Contract.Requires(builder != null);
 			Contract.Requires(resultLoader != null);
 			Contract.Assume(methodCall.Arguments.Count >= 2);
-#endif
 
 			ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
@@ -257,9 +237,7 @@ namespace Linq2Rest.Reactive
 				.Select<IEnumerable<T>, object>(
 							  list =>
 							  {
-#if !WINDOWS_PHONE
 								  Contract.Assume(list != null);
-#endif
 
 								  var qbservable = list.ToObservable().AsQbservable();
 								  var parameters = new object[] { qbservable };
@@ -270,12 +248,10 @@ namespace Linq2Rest.Reactive
 
 		private IObservable<object> GetResult<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(methodCall != null);
 			Contract.Requires(builder != null);
 			Contract.Requires(resultLoader != null);
 			Contract.Assume(methodCall.Arguments.Count >= 1);
-#endif
 
 			ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
@@ -283,9 +259,7 @@ namespace Linq2Rest.Reactive
 				.Select(
 							  list =>
 							  {
-#if !WINDOWS_PHONE
 								  Contract.Assume(!ReferenceEquals(list, null));
-#endif
 
 								  var parameters = ResolveInvocationParameters(list, typeof(T), methodCall);
 								  return methodCall.Method.Invoke(null, parameters);
@@ -294,13 +268,11 @@ namespace Linq2Rest.Reactive
 
 		private IObservable<object> ExecuteMethod<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(methodCall != null);
 			Contract.Requires(resultLoader != null);
 			Contract.Requires(intermediateResultLoader != null);
 			Contract.Requires(builder != null);
 			Contract.Assume(methodCall.Arguments.Count >= 2);
-#endif
 
 			var innerMethod = methodCall.Arguments[0] as MethodCallExpression;
 
@@ -345,12 +317,10 @@ namespace Linq2Rest.Reactive
 			return observable;
 		}
 
-#if !WINDOWS_PHONE
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
 			Contract.Invariant(_writer != null);
 		}
-#endif
 	}
 }

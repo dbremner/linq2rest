@@ -13,18 +13,14 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.IO;
 	using System.Threading.Tasks;
 
 	/// <summary>
 	/// Defines the public interface for an async REST client.
 	/// </summary>
-#if !WINDOWS_PHONE
 	[ContractClass(typeof(AsyncRestClientContracts))]
-#endif
 	public interface IAsyncRestClient
 	{
 		/// <summary>
@@ -33,8 +29,7 @@ namespace Linq2Rest.Reactive
 		/// <returns>The service response as a <see cref="Task{Stream}"/>.</returns>
 		Task<Stream> Download();
 	}
-
-#if !WINDOWS_PHONE
+	
 	[ContractClassFor(typeof(IAsyncRestClient))]
 	internal abstract class AsyncRestClientContracts : IAsyncRestClient
 	{
@@ -44,5 +39,4 @@ namespace Linq2Rest.Reactive
 			throw new NotImplementedException();
 		}
 	}
-#endif
 }

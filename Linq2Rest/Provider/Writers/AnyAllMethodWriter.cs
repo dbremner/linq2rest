@@ -13,9 +13,7 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq;
 	using System.Linq.Expressions;
 
@@ -28,9 +26,7 @@ namespace Linq2Rest.Provider.Writers
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
-#if !WINDOWS_PHONE
 			Contract.Assume(expression.Arguments.Count > 1);
-#endif
 
 			var firstArg = expressionWriter(expression.Arguments[0]);
 			var method = expression.Method.Name.ToLowerInvariant();

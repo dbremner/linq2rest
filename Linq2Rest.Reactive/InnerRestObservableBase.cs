@@ -15,15 +15,12 @@ namespace Linq2Rest.Reactive
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.Threading;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.IO;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using System.Threading.Tasks;
+	using System.Threading;
 	using Linq2Rest.Provider;
 
 	internal abstract class InnerRestObservableBase<T> : IQbservable<T>
@@ -40,10 +37,8 @@ namespace Linq2Rest.Reactive
 			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(restClient != null);
 			Contract.Requires(serializerFactory != null);
-#endif
 
 			Observers = new List<IObserver<T>>();
 			Processor = new AsyncExpressionProcessor(new ExpressionWriter());
@@ -150,9 +145,7 @@ namespace Linq2Rest.Reactive
 
 		internal void SetInput(Stream stream)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(stream != null);
-#endif
 
 			RestClient.SetInput(stream);
 		}
@@ -161,31 +154,19 @@ namespace Linq2Rest.Reactive
 		{
 			var client = RestClient.Create(builder.GetFullUri());
 
-#if !WINDOWS_PHONE
 			return Observable.FromAsync(client.Download)
 				.Select(x => ReadIntermediateResponse(type, x));
-#else
-			return Observable.Start<Task<Stream>>(client.Download)
-				.Select(x => ReadIntermediateResponse(type, x.Result));
-#endif
 		}
 
 		protected IObservable<IEnumerable<T>> GetResults(ParameterBuilder builder)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(builder != null);
-#endif
+		
 			var fullUri = builder.GetFullUri();
 			var client = RestClient.Create(fullUri);
 
-#if !WINDOWS_PHONE
 			return Observable.FromAsync(client.Download)
 				.Select(ReadResponse);
-#else
-			return Observable.Start<Task<Stream>>(client.Download)
-				.Select(x => x.Result)
-				.Select(ReadResponse);
-#endif
 		}
 
 		protected IEnumerable ReadIntermediateResponse(Type type, Stream response)
@@ -232,7 +213,6 @@ namespace Linq2Rest.Reactive
 			}
 		}
 
-#if !WINDOWS_PHONE
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
@@ -240,6 +220,5 @@ namespace Linq2Rest.Reactive
 			Contract.Invariant(_serializerFactory != null);
 			Contract.Invariant(Observers != null);
 		}
-#endif
 	}
 }

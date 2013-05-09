@@ -12,9 +12,7 @@
 
 namespace Linq2Rest.Reactive
 {
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
@@ -33,12 +31,10 @@ namespace Linq2Rest.Reactive
 			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(asyncRestClient != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
-#endif
 
 			_asyncRestClient = asyncRestClient;
 			_serializerFactory = serializerFactory;
@@ -67,15 +63,11 @@ namespace Linq2Rest.Reactive
 						{
 							var constantExpression = methodCallExpression.Arguments[1] as ConstantExpression;
 
-#if !WINDOWS_PHONE
 							Contract.Assume(constantExpression != null);
-#endif
 
 							var subscribeScheduler = constantExpression.Value as IScheduler;
 
-#if !WINDOWS_PHONE
 							Contract.Assume(subscribeScheduler != null);
-#endif
 
 							return CreateQbservable<TResult>(
 															 methodCallExpression.Arguments[0],
@@ -87,15 +79,11 @@ namespace Linq2Rest.Reactive
 						{
 							var constantExpression = methodCallExpression.Arguments[1] as ConstantExpression;
 
-#if !WINDOWS_PHONE
 							Contract.Assume(constantExpression != null);
-#endif
 
 							var observeScheduler = constantExpression.Value as IScheduler;
 
-#if !WINDOWS_PHONE
 							Contract.Assume(observeScheduler != null);
-#endif
 
 							return CreateQbservable<TResult>(
 															 methodCallExpression.Arguments[0],
@@ -110,7 +98,6 @@ namespace Linq2Rest.Reactive
 
 		protected abstract IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler);
 
-#if !WINDOWS_PHONE
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
@@ -119,6 +106,5 @@ namespace Linq2Rest.Reactive
 			Contract.Invariant(_subscriberScheduler != null);
 			Contract.Invariant(_observerScheduler != null);
 		}
-#endif
 	}
 }

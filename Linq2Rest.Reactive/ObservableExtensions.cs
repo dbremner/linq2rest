@@ -18,9 +18,7 @@ namespace Linq2Rest.Reactive
 #if NETFX_CORE
 	using System.Runtime.CompilerServices;
 #endif
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq.Expressions;
 	using System.Reflection;
 
@@ -99,9 +97,7 @@ namespace Linq2Rest.Reactive
 		/// <returns>An <see cref="IObservable{T}"/> for continued querying.</returns>
 		public static IObservable<TSource> Expand<TSource>(this IObservable<TSource> source, string paths)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(source != null);
-#endif
 
 			var restObservable = source as InnerRestObservable<TSource>;
 			if (restObservable == null)
@@ -130,10 +126,9 @@ namespace Linq2Rest.Reactive
 		/// <returns>An <see cref="IObservable{T}"/> for continued querying.</returns>
 		public static IObservable<TSource> Expand<TSource>(this IObservable<TSource> source, params Expression<Func<TSource, object>>[] properties)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(source != null);
 			Contract.Assume(properties != null);
-#endif
+		
 			var propertyNames = string.Join(",", properties.Where(x => x != null).Select(ResolvePropertyName));
 
 			return Expand(source, propertyNames);
@@ -141,9 +136,7 @@ namespace Linq2Rest.Reactive
 
 		private static string ResolvePropertyName<TSource>(Expression<Func<TSource, object>> property)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(property != null);
-#endif
 
 			var pathPrefixes = new List<string>();
 
@@ -167,7 +160,7 @@ namespace Linq2Rest.Reactive
 #if NETFX_CORE
 		private static MethodInfo CreateGenericMethod<TSource>([CallerMemberName] string callerMemberName = "")
 		{
-			return typeof (ObservableExtensions)
+			return typeof(ObservableExtensions)
 				.GetTypeInfo()
 				.GetDeclaredMethod(callerMemberName)
 				.MakeGenericMethod(typeof(TSource));

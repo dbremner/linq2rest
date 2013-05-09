@@ -13,9 +13,7 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq.Expressions;
 
 	internal class StringReplaceMethodWriter : IMethodCallWriter
@@ -28,19 +26,15 @@ namespace Linq2Rest.Provider.Writers
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
-#if !WINDOWS_PHONE
 			Contract.Assume(expression.Arguments.Count > 1);
-#endif
 
 			var firstArgument = expression.Arguments[0];
 			var secondArgument = expression.Arguments[1];
 			var obj = expression.Object;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(firstArgument != null);
 			Contract.Assume(secondArgument != null);
 			Contract.Assume(obj != null);
-#endif
 
 			return string.Format(
 				"replace({0}, {1}, {2})",

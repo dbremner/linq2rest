@@ -1,25 +1,22 @@
-﻿using System.Linq;
-
-namespace Linq2Rest.Tests.Fakes.ComplexDomain
+﻿namespace Linq2Rest.Tests.Fakes.ComplexDomain
 {
-	/// <summary>
-	/// A property instance data 
-	/// </summary>
+	using System.Linq;
 
+	/// <summary>
+	/// A property instance data .
+	/// </summary>
 	public class PropertyInstanceData
 	{
 		#region Properties
 
 		/// <summary>
-		/// The property definition name that this instance belongs to
+		/// The property definition name that this instance belongs to.
 		/// </summary>
-
 		public string DefinitionName { get; set; }
 
 		/// <summary>
-		/// The values for this instance
+		/// The values for this instance.
 		/// </summary>
-
 		public PropertyInstanceValueData[] Values { get; set; }
 
 		#endregion
@@ -72,14 +69,16 @@ namespace Linq2Rest.Tests.Fakes.ComplexDomain
 			}
 
 			// Last check it's the same exact values  
-			return (this.Values.Except(that.Values).Count() == 0);
-
+			return !Values.Except(that.Values).Any();
 		}
 
 		/// <summary>
-		/// Returns the hash code for this PropertyInstanceData
+		/// Serves as a hash function for a particular type. 
 		/// </summary>
-		/// <returns>the hash code</returns>
+		/// <returns>
+		/// A hash code for the current <see cref="T:System.Object"/>.
+		/// </returns>
+		/// <filterpriority>2</filterpriority>
 		public override int GetHashCode()
 		{
 			return DefinitionName.GetHashCode();

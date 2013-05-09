@@ -1,55 +1,47 @@
-﻿using System;
-
-namespace Linq2Rest.Tests.Fakes.ComplexDomain
+﻿namespace Linq2Rest.Tests.Fakes.ComplexDomain
 {
-	/// <summary>
-	/// A property instance value data
-	/// </summary>
+	using System;
 
+	/// <summary>
+	/// A property instance value data.
+	/// </summary>
 	public class PropertyInstanceValueData
 	{
 		#region Properties
 
 		/// <summary>
-		/// The value type
+		/// The value type.
 		/// </summary>
-
 		public ValueTypeDefinitionData? ValueType { get; set; }
 
 		/// <summary>
-		/// The DateTime value 
+		/// The DateTime value.
 		/// </summary>
-
 		public DateTime? DateTimeValue { get; set; }
 
 		/// <summary>
-		/// The reference user defined id value 
+		/// The reference user defined id value.
 		/// </summary>
-
-		public string ReferenceValue { get; set; }//user defined id is a string
+		public string ReferenceValue { get; set; }
 
 		/// <summary>
-		/// The bool value 
+		/// The bool value.
 		/// </summary>
-
 		public bool? BoolValue { get; set; }
 
 		/// <summary>
-		/// The float value 
+		/// The float value. 
 		/// </summary>
-
 		public float? FloatValue { get; set; }
 
 		/// <summary>
-		/// The int value 
+		/// The int value.
 		/// </summary>
-
 		public int? IntValue { get; set; }
 
 		/// <summary>
-		/// The string value 
+		/// The string value .
 		/// </summary>
-
 		public string StringNonUnicodeValue { get; set; }
 
 		#endregion

@@ -13,9 +13,7 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq.Expressions;
 
 	internal class StringContainsMethodWriter : IMethodCallWriter
@@ -28,12 +26,13 @@ namespace Linq2Rest.Provider.Writers
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
+			Contract.Assume(expression.Arguments.Count > 0);
+
 			var argumentExpression = expression.Arguments[0];
 			var obj = expression.Object;
-#if !WINDOWS_PHONE
+
 			Contract.Assume(obj != null);
 			Contract.Assume(argumentExpression != null);
-#endif
 
 			return string.Format(
 				"substringof({0}, {1})",

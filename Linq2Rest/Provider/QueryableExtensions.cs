@@ -33,9 +33,7 @@ namespace Linq2Rest.Provider
 		/// <returns>A task returning the query result.</returns>
 		public static Task<IEnumerable<T>> ExecuteAsync<T>(this IQueryable<T> queryable)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(queryable != null);
-#endif
 
 			return Task.Factory.StartNew(() => queryable.ToArray().AsEnumerable());
 		}
@@ -49,9 +47,7 @@ namespace Linq2Rest.Provider
 		/// <returns>An <see cref="IQueryable{T}"/> for continued querying.</returns>
 		public static IQueryable<TSource> Expand<TSource>(this IQueryable<TSource> source, string paths)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(source != null);
-#endif
 
 			if (!(source is RestQueryableBase<TSource>))
 			{
@@ -74,10 +70,9 @@ namespace Linq2Rest.Provider
 		/// <returns>An <see cref="IQueryable{T}"/> for continued querying.</returns>
 		public static IQueryable<TSource> Expand<TSource>(this IQueryable<TSource> source, params Expression<Func<TSource, object>>[] properties)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(source != null);
 			Contract.Assume(properties != null);
-#endif
+		
 			var propertyNames = string.Join(",", properties.Where(x => x != null).Select(ResolvePropertyName));
 
 			return Expand(source, propertyNames);

@@ -31,6 +31,7 @@ namespace Linq2Rest.Reactive.WP8.Sample
 		public App()
 		{
 			SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
+
 			// Global handler for uncaught exceptions.
 			UnhandledException += Application_UnhandledException;
 

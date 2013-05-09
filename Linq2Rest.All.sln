@@ -22,8 +22,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5D2
 		RestorePackages.ps1 = RestorePackages.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive.WP7", "Linq2Rest.Reactive.WinPhone\Linq2Rest.Reactive.WP7.csproj", "{6D753CA4-0081-48E6-A0AD-25FFE88CD741}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive.WP8.Sample", "Linq2Rest.Reactive.WP7Sample\Linq2Rest.Reactive.WP8.Sample.csproj", "{EC6D6A2B-62D4-4161-BBFF-B72CEDA2EE71}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive.SL", "Linq2Rest.Reactive.SL\Linq2Rest.Reactive.SL.csproj", "{D72A609B-C351-43CF-B1B8-66AB52E25DF1}"
@@ -126,16 +124,6 @@ Global
 		{8D19958C-1F14-436E-AE2C-ECD8E58998EB}.Release|ARM.ActiveCfg = Release|Any CPU
 		{8D19958C-1F14-436E-AE2C-ECD8E58998EB}.Release|x64.ActiveCfg = Release|Any CPU
 		{8D19958C-1F14-436E-AE2C-ECD8E58998EB}.Release|x86.ActiveCfg = Release|Any CPU
-		{6D753CA4-0081-48E6-A0AD-25FFE88CD741}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D753CA4-0081-48E6-A0AD-25FFE88CD741}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D753CA4-0081-48E6-A0AD-25FFE88CD741}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{6D753CA4-0081-48E6-A0AD-25FFE88CD741}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{6D753CA4-0081-48E6-A0AD-25FFE88CD741}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6D753CA4-0081-48E6-A0AD-25FFE88CD741}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D753CA4-0081-48E6-A0AD-25FFE88CD741}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D753CA4-0081-48E6-A0AD-25FFE88CD741}.Release|ARM.ActiveCfg = Release|Any CPU
-		{6D753CA4-0081-48E6-A0AD-25FFE88CD741}.Release|x64.ActiveCfg = Release|Any CPU
-		{6D753CA4-0081-48E6-A0AD-25FFE88CD741}.Release|x86.ActiveCfg = Release|Any CPU
 		{EC6D6A2B-62D4-4161-BBFF-B72CEDA2EE71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC6D6A2B-62D4-4161-BBFF-B72CEDA2EE71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC6D6A2B-62D4-4161-BBFF-B72CEDA2EE71}.Debug|Any CPU.Deploy.0 = Debug|Any CPU

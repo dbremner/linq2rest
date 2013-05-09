@@ -15,18 +15,14 @@ namespace Linq2Rest.Reactive
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq.Expressions;
 	using Linq2Rest.Provider;
 
 	/// <summary>
 	/// Defines the inteface for an expression processor.
 	/// </summary>
-#if !WINDOWS_PHONE
 	[ContractClass(typeof(AsyncExpressionProcessorContracts))]
-#endif
 	internal interface IAsyncExpressionProcessor
 	{
 		/// <summary>
@@ -40,8 +36,7 @@ namespace Linq2Rest.Reactive
 		/// <returns>An <see cref="IObservable{T}"/> sequence with the result of the method call.</returns>
 		IObservable<T> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader);
 	}
-
-#if !WINDOWS_PHONE
+	
 	[ContractClassFor(typeof(IAsyncExpressionProcessor))]
 	internal abstract class AsyncExpressionProcessorContracts : IAsyncExpressionProcessor
 	{
@@ -54,5 +49,4 @@ namespace Linq2Rest.Reactive
 			throw new NotImplementedException();
 		}
 	}
-#endif
 }
