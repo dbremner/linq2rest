@@ -14,9 +14,7 @@ namespace Linq2Rest.Reactive
 {
 	using System;
 	using System.Collections;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq;
 	using System.Reactive.Linq;
 	using System.Reflection;
@@ -35,11 +33,9 @@ namespace Linq2Rest.Reactive
 			var qbservableMethods = typeof(Qbservable).GetTypeInfo().GetDeclaredMethods("AsQbservable").ToArray();
 			var observableMethods = typeof(Observable).GetTypeInfo().GetDeclaredMethods("ToObservable").ToArray();
 #endif
-
-#if !WINDOWS_PHONE
+			
 			Contract.Assume(qbservableMethods.Length > 0);
 			Contract.Assume(observableMethods.Length > 0);
-#endif
 
 			InnerToObservableMethod = observableMethods
 					.First(x => x.Name == "ToObservable" && x.GetParameters().Length == 1);
@@ -49,10 +45,8 @@ namespace Linq2Rest.Reactive
 
 		public static object ToQbservable(this IEnumerable enumerable, Type type)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(enumerable != null);
 			Contract.Requires(type != null);
-#endif
 
 			var genericObservableMethod = InnerToObservableMethod.MakeGenericMethod(type);
 			var genericQbservableMethod = InnerToQbservableMethod.MakeGenericMethod(type);

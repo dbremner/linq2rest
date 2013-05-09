@@ -13,9 +13,7 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Reactive;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
@@ -37,10 +35,9 @@ namespace Linq2Rest.Reactive
 		/// <param name="serializerFactory">An <see cref="ISerializerFactory"/> to perform deserialization.</param>
 		public RestObservable(IAsyncRestClientFactory restClientFactory, ISerializerFactory serializerFactory)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires<ArgumentNullException>(restClientFactory != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
-#endif
+
 			_restClientFactory = restClientFactory;
 			_serializerFactory = serializerFactory;
 		}
@@ -75,13 +72,11 @@ namespace Linq2Rest.Reactive
 				ImmediateScheduler.Instance);
 		}
 
-#if !WINDOWS_PHONE
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
 			Contract.Invariant(_restClientFactory != null);
 			Contract.Invariant(_serializerFactory != null);
 		}
-#endif
 	}
 }

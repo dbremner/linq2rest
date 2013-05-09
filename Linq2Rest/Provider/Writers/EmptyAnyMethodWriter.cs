@@ -48,11 +48,9 @@ namespace Linq2Rest.Provider.Writers
 #endif
 									: typeof(object);
 			var anyMethod = AnyMethod.MakeGenericMethod(parameterType);
-#if !WP7
+
 			var parameter = Expression.Parameter(parameterType);
-#else
-			var parameter = Expression.Parameter(parameterType, "Param_0");
-#endif
+
 			var lambda = Expression.Lambda(Expression.Constant(true), parameter);
 			var rewritten = Expression.Call(expression.Object, anyMethod, expression.Arguments[0], lambda);
 			return expressionWriter(rewritten);

@@ -12,9 +12,8 @@
 
 namespace Linq2Rest.Reactive
 {
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
+
 	using System.Reflection;
 	using Linq2Rest.Provider;
 
@@ -33,7 +32,7 @@ namespace Linq2Rest.Reactive
 		{
 			get
             {
-#if !WINDOWS_PHONE && !NETFX_CORE
+#if !NETFX_CORE
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 #endif
 

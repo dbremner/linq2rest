@@ -12,7 +12,7 @@
 		<description>Generates OData style Rx Observables from LINQ queries against a REST service.</description>
 		<releaseNotes>Added support for observing GET, POST, PUT and DELETE operations. Added support for WP8. Updated to use Rx v. 2.1.30214.0.</releaseNotes>
 		<copyright>Jacob Reimers (Reimers.dk)</copyright>
-		<tags>OData LINQ REST Rx Reactive SL WP7 WP8 WinRT</tags>
+		<tags>OData LINQ REST Rx Reactive SL5 WP8 WinRT</tags>
 		<dependencies>
 			<group>
 				<dependency id="Rx-Providers"
@@ -28,12 +28,6 @@
 			</group>
 
 			<group targetFramework="SL5">
-				<dependency id="Rx-Providers"
-							version="2.1.30214.0" />
-				<dependency id="System.Threading.Tasks"
-							version="3.0.1" />
-			</group>
-			<group targetFramework="wp71">
 				<dependency id="Rx-Providers"
 							version="2.1.30214.0" />
 				<dependency id="System.Threading.Tasks"
@@ -78,10 +72,6 @@
 			  target="lib\SL5" />
 		<file src="Linq2Rest.Reactive.SL\bin\Release\CodeContracts\Linq2Rest.Reactive.Contracts.dll"
 			  target="lib\SL5\CodeContracts" />
-		<file src="Linq2Rest.Reactive.WinPhone\bin\wp7\Release\Linq2Rest.Reactive.dll"
-			  target="lib\wp71" />
-		<file src="Linq2Rest.Reactive.WinPhone\bin\wp7\Release\Linq2Rest.Reactive.xml"
-			  target="lib\wp71" />
 		<file src="Linq2Rest.Reactive.WinPhone\bin\wp8\Release\Linq2Rest.Reactive.dll"
 			  target="lib\wp8" />
 		<file src="Linq2Rest.Reactive.WinPhone\bin\wp8\Release\Linq2Rest.Reactive.xml"

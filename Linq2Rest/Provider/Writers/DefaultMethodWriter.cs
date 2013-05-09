@@ -13,9 +13,7 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq.Expressions;
 
 	internal class DefaultMethodWriter : IMethodCallWriter
@@ -32,15 +30,12 @@ namespace Linq2Rest.Provider.Writers
 
 		private static object GetValue(Expression input)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(input != null);
-#endif
 
 			var objectMember = Expression.Convert(input, typeof(object));
 			var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
 
 			return getterLambda();
 		}
-
 	}
 }

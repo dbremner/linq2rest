@@ -204,13 +204,10 @@
     <Compile Include="Fakes\TestODataSerializerFactory.cs" />
     <Compile Include="Fakes\TestSerializer.cs" />
     <Compile Include="Fakes\TestSerializerFactory.cs" />
-    <Compile Include="Fakes\ComplexDomain\AttributeInstanceData.cs" />
-    <Compile Include="Fakes\ComplexDomain\PropertyDefinitionData.cs" />
     <Compile Include="Fakes\ComplexDomain\PropertyInstanceData.cs" />
     <Compile Include="Fakes\ComplexDomain\PropertyInstanceValueData.cs" />
     <Compile Include="Fakes\ComplexDomain\TypeInstanceData.cs" />
     <Compile Include="Fakes\ComplexDomain\ValueTypeDefinitionData.cs" />
-    <Compile Include="Fakes\ComplexDomain\ValueTypeInstanceData.cs" />
     <Compile Include="SelectExpressionFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup>

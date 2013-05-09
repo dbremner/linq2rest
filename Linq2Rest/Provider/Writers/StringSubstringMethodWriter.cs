@@ -13,9 +13,7 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq.Expressions;
 
 	internal class StringSubstringMethodWriter : IMethodCallWriter
@@ -28,21 +26,17 @@ namespace Linq2Rest.Provider.Writers
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
-#if !WINDOWS_PHONE
 			Contract.Assume(expression.Arguments.Count > 0);
-#endif
+
 			var obj = expression.Object;
-#if !WINDOWS_PHONE
+
 			Contract.Assume(obj != null);
-#endif
 
 			if (expression.Arguments.Count == 1)
 			{
 				var argumentExpression = expression.Arguments[0];
 
-#if !WINDOWS_PHONE
 				Contract.Assume(argumentExpression != null);
-#endif
 
 				return string.Format(
 					"substring({0}, {1})", expressionWriter(obj), expressionWriter(argumentExpression));
@@ -51,10 +45,8 @@ namespace Linq2Rest.Provider.Writers
 			var firstArgument = expression.Arguments[0];
 			var secondArgument = expression.Arguments[1];
 
-#if !WINDOWS_PHONE
 			Contract.Assume(firstArgument != null);
 			Contract.Assume(secondArgument != null);
-#endif
 
 			return string.Format(
 				"substring({0}, {1}, {2})",

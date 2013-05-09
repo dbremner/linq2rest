@@ -13,6 +13,7 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
+	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 
 	internal class EqualsMethodWriter : IMethodCallWriter
@@ -24,6 +25,8 @@ namespace Linq2Rest.Provider.Writers
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
+			Contract.Assume(expression.Arguments.Count > 0);
+
 			return string.Format(
 				"{0} eq {1}",
 				expressionWriter(expression.Object),

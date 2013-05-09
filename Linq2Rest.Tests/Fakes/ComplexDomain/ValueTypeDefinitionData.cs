@@ -1,7 +1,7 @@
 ﻿namespace Linq2Rest.Tests.Fakes.ComplexDomain
 {
 	/// <summary>
-	/// Defines a value type in Metal
+	/// Defines a value type in Metal.
 	/// </summary>
 	public enum ValueTypeDefinitionData : short
 	{

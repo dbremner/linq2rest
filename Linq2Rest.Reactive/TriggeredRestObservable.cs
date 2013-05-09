@@ -14,9 +14,7 @@ namespace Linq2Rest.Reactive
 {
 	using System;
 	using System.Threading;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq.Expressions;
 	using System.Reactive;
 	using System.Reactive.Concurrency;
@@ -39,13 +37,11 @@ namespace Linq2Rest.Reactive
 			IScheduler observerScheduler)
 			: base(restClient, serializerFactory, expression, subscriberScheduler, observerScheduler)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(restClient != null);
 			Contract.Requires(trigger != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
-#endif
 
 			_trigger = trigger;
 			_provider = new TriggeredRestQueryableProvider(trigger, restClient, serializerFactory, subscriberScheduler, observerScheduler);
@@ -141,13 +137,11 @@ namespace Linq2Rest.Reactive
 			}
 		}
 
-#if !WINDOWS_PHONE
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
 			Contract.Invariant(_trigger != null);
 			Contract.Invariant(_provider != null);
 		}
-#endif
 	}
 }

@@ -13,14 +13,10 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
-#if !WINDOWS_PHONE && !NETFX_CORE
 	using System.Diagnostics.Contracts;
+	using System.Reflection;
 
-#endif
-
-#if !WINDOWS_PHONE && !NETFX_CORE
 	[ContractClass(typeof(ValueWriterContracts))]
-#endif
 	internal interface IValueWriter
 	{
 		Type Handles { get; }
@@ -28,7 +24,6 @@ namespace Linq2Rest.Provider.Writers
 		string Write(object value);
 	}
 
-#if !WINDOWS_PHONE && !NETFX_CORE
 	[ContractClassFor(typeof(IValueWriter))]
 	internal abstract class ValueWriterContracts : IValueWriter
 	{
@@ -45,9 +40,12 @@ namespace Linq2Rest.Provider.Writers
 		public string Write(object value)
 		{
 			Contract.Requires(value != null);
+#if NETFX_CORE
+			Contract.Requires(Handles.GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo()));
+#else
 			Contract.Requires(Handles.IsAssignableFrom(value.GetType()));
+#endif
 			throw new NotImplementedException();
 		}
 	}
-#endif
 }

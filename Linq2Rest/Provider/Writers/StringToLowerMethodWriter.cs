@@ -13,9 +13,7 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq.Expressions;
 
 	internal class StringToLowerMethodWriter : IMethodCallWriter
@@ -29,9 +27,8 @@ namespace Linq2Rest.Provider.Writers
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
 			var obj = expression.Object;
-#if !WINDOWS_PHONE
+
 			Contract.Assume(obj != null);
-#endif
 
 			return string.Format("tolower({0})", expressionWriter(obj));
 		}

@@ -13,13 +13,9 @@
 namespace Linq2Rest.Provider
 {
 	using System;
-#if !WINDOWS_PHONE
 	using System.Collections.Concurrent;
-#endif
 	using System.Collections.Generic;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
@@ -55,18 +51,14 @@ namespace Linq2Rest.Provider
 
 		private static Type GetUnconvertedType(Expression expression)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
-#endif
 
 			switch (expression.NodeType)
 			{
 				case ExpressionType.Convert:
 					var unaryExpression = expression as UnaryExpression;
 
-#if !WINDOWS_PHONE
 					Contract.Assume(unaryExpression != null, "Matches node type.");
-#endif
 
 					return unaryExpression.Operand.Type;
 				default:
@@ -76,10 +68,8 @@ namespace Linq2Rest.Provider
 
 		private static string GetMemberCall(MemberExpression memberExpression)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(memberExpression != null);
 			Contract.Ensures(Contract.Result<string>() != null);
-#endif
 
 			var declaringType = memberExpression.Member.DeclaringType;
 			var name = memberExpression.Member.Name;
@@ -152,9 +142,7 @@ namespace Linq2Rest.Provider
 
 		private static object GetValue(Expression input)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(input != null);
-#endif
 
 			var objectMember = Expression.Convert(input, typeof(object));
 			var getterLambda = Expression.Lambda<Func<object>>(objectMember).Compile();
@@ -187,9 +175,7 @@ namespace Linq2Rest.Provider
 
 		private static string GetOperation(Expression expression)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
-#endif
 
 			switch (expression.NodeType)
 			{
@@ -252,18 +238,15 @@ namespace Linq2Rest.Provider
 
 		private string Write(Expression expression, Type type, ParameterExpression rootParameter)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
 			Contract.Requires(type != null);
-#endif
+
 			switch (expression.NodeType)
 			{
 				case ExpressionType.Parameter:
 					var parameterExpression = expression as ParameterExpression;
 
-#if !WINDOWS_PHONE
 					Contract.Assume(parameterExpression != null);
-#endif
 
 					return parameterExpression.Name;
 				case ExpressionType.Constant:
@@ -324,9 +307,7 @@ namespace Linq2Rest.Provider
 		{
 			var lambdaExpression = expression as LambdaExpression;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(lambdaExpression != null);
-#endif
 
 			var body = lambdaExpression.Body;
 			return Write(body, rootParameter);
@@ -336,9 +317,7 @@ namespace Linq2Rest.Provider
 		{
 			var unaryExpression = expression as UnaryExpression;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(unaryExpression != null);
-#endif
 
 			var operand = unaryExpression.Operand;
 
@@ -349,9 +328,7 @@ namespace Linq2Rest.Provider
 		{
 			var unaryExpression = expression as UnaryExpression;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(unaryExpression != null);
-#endif
 
 			var operand = unaryExpression.Operand;
 
@@ -362,9 +339,7 @@ namespace Linq2Rest.Provider
 		{
 			var unaryExpression = expression as UnaryExpression;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(unaryExpression != null);
-#endif
 
 			var operand = unaryExpression.Operand;
 			return Write(operand, rootParameterName);
@@ -374,9 +349,7 @@ namespace Linq2Rest.Provider
 		{
 			var methodCallExpression = expression as MethodCallExpression;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(methodCallExpression != null);
-#endif
 
 			return GetMethodCall(methodCallExpression, rootParameterName);
 		}
@@ -385,9 +358,8 @@ namespace Linq2Rest.Provider
 		{
 			var memberExpression = expression as MemberExpression;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(memberExpression != null);
-#endif
+
 			if (memberExpression.Expression == null)
 			{
 				var memberValue = GetValue(memberExpression);
@@ -418,9 +390,7 @@ namespace Linq2Rest.Provider
 				var collapsedExpression = CollapseCapturedOuterVariables(memberExpression);
 				if (!(collapsedExpression is MemberExpression))
 				{
-#if !WINDOWS_PHONE
 					Contract.Assume(collapsedExpression != null);
-#endif
 
 					return Write(collapsedExpression, rootParameterName);
 				}
@@ -432,9 +402,7 @@ namespace Linq2Rest.Provider
 
 			var innerExpression = memberExpression.Expression;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(innerExpression != null);
-#endif
 
 			return string.IsNullOrWhiteSpace(memberCall)
 					   ? prefix
@@ -445,9 +413,7 @@ namespace Linq2Rest.Provider
 		{
 			var unaryExpression = expression as UnaryExpression;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(unaryExpression != null);
-#endif
 
 			var operand = unaryExpression.Operand;
 
@@ -458,18 +424,17 @@ namespace Linq2Rest.Provider
 		{
 			var binaryExpression = expression as BinaryExpression;
 
-#if !WINDOWS_PHONE
 			Contract.Assume(binaryExpression != null);
-#endif
 
 			var operation = GetOperation(binaryExpression);
 
 			if (binaryExpression.Left.NodeType == ExpressionType.Call)
 			{
-				var compareResult = ResolveCompareToOperation(rootParameterName,
-															  (MethodCallExpression)binaryExpression.Left,
-															  operation,
-															  binaryExpression.Right as ConstantExpression);
+				var compareResult = ResolveCompareToOperation(
+					rootParameterName,
+					(MethodCallExpression)binaryExpression.Left,
+					operation,
+					binaryExpression.Right as ConstantExpression);
 				if (compareResult != null)
 				{
 					return compareResult;
@@ -478,10 +443,11 @@ namespace Linq2Rest.Provider
 
 			if (binaryExpression.Right.NodeType == ExpressionType.Call)
 			{
-				var compareResult = ResolveCompareToOperation(rootParameterName,
-															  (MethodCallExpression)binaryExpression.Right,
-															  operation,
-															  binaryExpression.Left as ConstantExpression);
+				var compareResult = ResolveCompareToOperation(
+					rootParameterName,
+					(MethodCallExpression)binaryExpression.Right,
+					operation,
+					binaryExpression.Left as ConstantExpression);
 				if (compareResult != null)
 				{
 					return compareResult;
@@ -497,15 +463,9 @@ namespace Linq2Rest.Provider
 
 			return string.Format(
 				"{0} {1} {2}",
-				string.Format(isLeftComposite
-								  ? "({0})"
-								  : "{0}",
-							  leftString),
+				string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
 				operation,
-				string.Format(isRightComposite
-								  ? "({0})"
-								  : "{0}",
-							  rightString));
+				string.Format(isRightComposite ? "({0})" : "{0}", rightString));
 		}
 
 		private string ResolveCompareToOperation(
@@ -532,9 +492,8 @@ namespace Linq2Rest.Provider
 
 		private string GetMethodCall(MethodCallExpression expression, ParameterExpression rootParameterName)
 		{
-#if !WINDOWS_PHONE
 			Contract.Requires(expression != null);
-#endif
+
 			var methodCallWriter = _methodCallWriters.FirstOrDefault(w => w.CanHandle(expression));
 			if (methodCallWriter == null)
 			{

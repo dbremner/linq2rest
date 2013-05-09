@@ -14,9 +14,7 @@ namespace Linq2Rest.Provider
 {
 	using System;
 	using System.Collections.Generic;
-#if !WINDOWS_PHONE
 	using System.Diagnostics.Contracts;
-#endif
 	using System.Linq;
 #if !NETFX_CORE && !SILVERLIGHT
 	using System.Web;
@@ -28,11 +26,12 @@ namespace Linq2Rest.Provider
 
 		public ParameterBuilder(Uri serviceBase)
         {
-#if !WINDOWS_PHONE && !NETFX_CORE
 			Contract.Requires(serviceBase != null);
+#if !NETFX_CORE
 			Contract.Requires(serviceBase.Scheme == Uri.UriSchemeHttp || serviceBase.Scheme == Uri.UriSchemeHttps);
 #endif
-            _serviceBase = serviceBase;
+
+			_serviceBase = serviceBase;
 			OrderByParameter = new List<string>();
 		}
 
@@ -50,10 +49,11 @@ namespace Linq2Rest.Provider
 
 		public Uri GetFullUri()
         {
-#if !WINDOWS_PHONE && !NETFX_CORE
 			Contract.Ensures(Contract.Result<Uri>() != null);
+#if !NETFX_CORE
 			Contract.Ensures(Contract.Result<Uri>().Scheme == Uri.UriSchemeHttp || Contract.Result<Uri>().Scheme == Uri.UriSchemeHttps);
 #endif
+
             var parameters = new List<string>();
 			if (!string.IsNullOrWhiteSpace(FilterParameter))
 			{
@@ -94,7 +94,7 @@ namespace Linq2Rest.Provider
 
 			var resultUri = builder.Uri;
 
-#if !WINDOWS_PHONE && !NETFX_CORE
+#if !NETFX_CORE
 			Contract.Assume(_serviceBase.Scheme == Uri.UriSchemeHttp || _serviceBase.Scheme == Uri.UriSchemeHttps);
 			Contract.Assume(resultUri.Scheme == Uri.UriSchemeHttp || resultUri.Scheme == Uri.UriSchemeHttps);
 #endif
@@ -107,14 +107,14 @@ namespace Linq2Rest.Provider
 			return name + "=" + value;
         }
 
-#if !WINDOWS_PHONE && !NETFX_CORE
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
 			Contract.Invariant(_serviceBase != null);
+#if !NETFX_CORE
 			Contract.Invariant(_serviceBase.Scheme == Uri.UriSchemeHttp || _serviceBase.Scheme == Uri.UriSchemeHttps);
+#endif
 			Contract.Invariant(OrderByParameter != null);
 		}
-#endif
     }
 }

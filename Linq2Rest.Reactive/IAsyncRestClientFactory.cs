@@ -15,10 +15,8 @@ using System.IO;
 namespace Linq2Rest.Reactive
 {
 	using System;
-#if !WINDOWS_PHONE && !NETFX_CORE
 	using System.Diagnostics.Contracts;
-#endif
-
+	
 	/// <summary>
 	/// Defines the public enumeration of supported HTTP methods.
 	/// </summary>
@@ -48,9 +46,7 @@ namespace Linq2Rest.Reactive
 	/// <summary>
 	/// Defines the public interface for the async REST client factory.
 	/// </summary>
-#if !WINDOWS_PHONE && !NETFX_CORE
 	[ContractClass(typeof(AsyncRestClientFactoryContracts))]
-#endif
 	public interface IAsyncRestClientFactory
 	{
 		/// <summary>
@@ -78,7 +74,6 @@ namespace Linq2Rest.Reactive
 		void SetInput(Stream input);
 	}
 
-#if !WINDOWS_PHONE && !NETFX_CORE
 	[ContractClassFor(typeof(IAsyncRestClientFactory))]
 	internal abstract class AsyncRestClientFactoryContracts : IAsyncRestClientFactory
 	{
@@ -87,8 +82,9 @@ namespace Linq2Rest.Reactive
 			get
 			{
 				Contract.Ensures(Contract.Result<Uri>() != null);
+#if !NETFX_CORE
 				Contract.Ensures(Contract.Result<Uri>().Scheme == Uri.UriSchemeHttp || Contract.Result<Uri>().Scheme == Uri.UriSchemeHttps);
-
+#endif
 				throw new NotImplementedException();
 			}
 		}
@@ -96,8 +92,9 @@ namespace Linq2Rest.Reactive
 		public IAsyncRestClient Create(Uri source)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
+#if !NETFX_CORE
 			Contract.Requires<ArgumentException>(source.Scheme == Uri.UriSchemeHttp || source.Scheme == Uri.UriSchemeHttps);
-
+#endif
 			throw new NotImplementedException();
 		}
 
@@ -110,5 +107,4 @@ namespace Linq2Rest.Reactive
 			throw new NotImplementedException();
 		}
 	}
-#endif
 }
