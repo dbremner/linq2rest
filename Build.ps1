@@ -7,6 +7,14 @@ $cleanPackages = $false
 
 $oldEnvPath = ""
 
+function CheckKey
+{
+	if((Test-Path .\Linq2Rest.snk) -eq $false){
+		Write-Host "Creating key for signing"
+		sn -k Linq2Rest.snk
+	}
+}
+
 function CheckMsBuildPath
 {
 	$envPath = $Env:Path
@@ -78,6 +86,7 @@ function PublishPackage
 	.\.nuget\nuget.exe pack Linq2Rest.Reactive.nuspec
 }
 
+CheckKey
 CheckMsBuildPath
 CleanFolder
 UpdatePackages
