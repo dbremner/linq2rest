@@ -18,6 +18,7 @@ namespace Linq2Rest.Reactive
 	using System.Reactive.Linq;
 	using Linq2Rest.Provider;
 
+	[ContractClass(typeof(RestQueryableProviderBaseContracts))]
 	internal abstract class RestQueryableProviderBase : IQbservableProvider
 	{
 		private readonly IAsyncRestClientFactory _asyncRestClient;
@@ -31,11 +32,6 @@ namespace Linq2Rest.Reactive
 			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
 		{
-			Contract.Requires(asyncRestClient != null);
-			Contract.Requires(serializerFactory != null);
-			Contract.Requires(subscriberScheduler != null);
-			Contract.Requires(observerScheduler != null);
-
 			_asyncRestClient = asyncRestClient;
 			_serializerFactory = serializerFactory;
 			_subscriberScheduler = subscriberScheduler;
@@ -101,10 +97,31 @@ namespace Linq2Rest.Reactive
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
-			Contract.Invariant(AsyncRestClient != null);
-			Contract.Invariant(SerializerFactory != null);
+			Contract.Invariant(_asyncRestClient != null);
+			Contract.Invariant(_serializerFactory != null);
 			Contract.Invariant(_subscriberScheduler != null);
 			Contract.Invariant(_observerScheduler != null);
+		}
+	}
+
+	[ContractClassFor(typeof(RestQueryableProviderBase))]
+	internal abstract class RestQueryableProviderBaseContracts : RestQueryableProviderBase
+	{
+		protected RestQueryableProviderBaseContracts(IAsyncRestClientFactory asyncRestClient, ISerializerFactory serializerFactory, IScheduler subscriberScheduler, IScheduler observerScheduler)
+			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)
+		{
+			Contract.Requires(asyncRestClient != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(subscriberScheduler != null);
+			Contract.Requires(observerScheduler != null);
+		}
+
+		protected override IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
+		{
+			Contract.Requires(subscriberScheduler != null);
+			Contract.Requires(observerScheduler != null);
+
+			throw new System.NotImplementedException();
 		}
 	}
 }

@@ -25,6 +25,11 @@ namespace Linq2Rest.Provider
 		public RestPostQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, Stream inputData)
 			: base(client, serializerFactory, expressionProcessor)
 		{
+			Contract.Requires(client != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(expressionProcessor != null);
+			Contract.Requires(inputData != null);
+
 			_inputData = inputData;
 		}
 
@@ -49,6 +54,12 @@ namespace Linq2Rest.Provider
 			var resultSet = serializer.DeserializeList(response);
 
 			return resultSet;
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_inputData != null);
 		}
 	}
 }

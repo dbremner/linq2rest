@@ -318,6 +318,7 @@ namespace Linq2Rest
 		{
 			Contract.Requires(typeArgs != null);
 			Contract.Requires(type != null);
+			Contract.Assume(System.Type.DefaultBinder != null);
 
 			var typeArity = typeArgs.Length;
 			var methods = type.GetMethods()

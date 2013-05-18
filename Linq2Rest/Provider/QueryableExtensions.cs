@@ -72,7 +72,7 @@ namespace Linq2Rest.Provider
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 			Contract.Assume(properties != null);
-		
+
 			var propertyNames = string.Join(",", properties.Where(x => x != null).Select(ResolvePropertyName));
 
 			return Expand(source, propertyNames);
@@ -88,6 +88,8 @@ namespace Linq2Rest.Provider
 		/// <returns></returns>
 		public static IQueryable<TResult> Post<TResult, TInput>(this IQueryable<TResult> source, TInput input)
 		{
+			Contract.Requires<ArgumentException>(!ReferenceEquals(input, null));
+
 			var restQueryable = source as RestQueryableBase<TResult>;
 			if (restQueryable != null)
 			{
@@ -98,7 +100,7 @@ namespace Linq2Rest.Provider
 
 			return source;
 		}
-		
+
 		/// <summary>
 		/// Creates a queryable source where the passed input will be put to the REST service to create the result.
 		/// </summary>
@@ -109,6 +111,8 @@ namespace Linq2Rest.Provider
 		/// <returns></returns>
 		public static IQueryable<TResult> Put<TResult, TInput>(this IQueryable<TResult> source, TInput input)
 		{
+			Contract.Requires<ArgumentException>(!ReferenceEquals(input, null));
+
 			var restQueryable = source as RestQueryableBase<TResult>;
 			if (restQueryable != null)
 			{
@@ -119,7 +123,7 @@ namespace Linq2Rest.Provider
 
 			return source;
 		}
-		
+
 		/// <summary>
 		/// Creates a queryable source where the passed input will be put to the REST service to create the result.
 		/// </summary>
@@ -136,7 +140,7 @@ namespace Linq2Rest.Provider
 
 			return source;
 		}
-		
+
 		private static string ResolvePropertyName<TSource>(Expression<Func<TSource, object>> property)
 		{
 			Contract.Requires(property != null);

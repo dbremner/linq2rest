@@ -184,6 +184,8 @@ namespace Linq2Rest.Provider
 
 		private static object ResolveProjection(ParameterBuilder builder, LambdaExpression lambdaExpression)
 		{
+			Contract.Requires(lambdaExpression != null);
+
 			var selectFunction = lambdaExpression.Body as NewExpression;
 
 			if (selectFunction != null)

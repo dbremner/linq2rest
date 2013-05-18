@@ -13,6 +13,7 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
+	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 
 	internal class MathRoundMethodWriter : MathMethodWriter
@@ -24,6 +25,8 @@ namespace Linq2Rest.Provider.Writers
 
 		public override bool CanHandle(MethodCallExpression expression)
 		{
+			Contract.Assert(expression.Method != null);
+
 			return expression.Method.DeclaringType == typeof(Math)
 				   && expression.Method.Name == "Round";
 		}

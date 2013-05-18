@@ -20,6 +20,8 @@ namespace Linq2Rest.Provider.Writers
 	{
 		public bool CanHandle(MethodCallExpression expression)
 		{
+			Contract.Assert(expression.Method != null);
+
 			return expression.Method.DeclaringType == typeof(string)
 				   && (expression.Method.Name == "ToLower" || expression.Method.Name == "ToLowerInvariant");
 		}

@@ -22,6 +22,9 @@ namespace Linq2Rest.Provider
 		public RestDeleteQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor)
 			: base(client, serializerFactory, expressionProcessor)
 		{
+			Contract.Requires(client != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(expressionProcessor != null);
 		}
 
 		protected override IEnumerable<T> GetResults(ParameterBuilder builder)
