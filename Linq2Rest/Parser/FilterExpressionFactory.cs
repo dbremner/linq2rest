@@ -402,41 +402,32 @@ namespace Linq2Rest.Parser
 			}
 
 			var expression = GetAnyAllFunctionExpression<T>(filter, sourceParameter, lambdaParameters, formatProvider)
-						 ?? GetPropertyExpression<T>(filter, sourceParameter, lambdaParameters)
-						 ?? GetArithmeticExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider)
-						 ?? GetFunctionExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider);
-
-			if (expression == null)
-			{
-				if (type != null)
-				{
-					expression = ParameterValueReader.Read(type, filter, formatProvider);
-				}
-				else
-				{
-					var booleanExpression = ParameterValueReader.Read(typeof(bool), filter, formatProvider) as ConstantExpression;
-					if (booleanExpression != null && booleanExpression.Value != null)
-					{
-						expression = booleanExpression;
-					}
-				}
-			}
-
-			if (expression == null)
-			{
-				var booleanExpression = ParameterValueReader.Read(typeof(bool), filter, formatProvider) as ConstantExpression;
-				if (booleanExpression != null && booleanExpression.Value != null)
-				{
-					expression = booleanExpression;
-				}
-			}
-
+				?? GetPropertyExpression<T>(filter, sourceParameter, lambdaParameters)
+				?? GetArithmeticExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider)
+				?? GetFunctionExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider)
+				?? GetParameterExpression(filter, type, formatProvider);
+			
 			if (expression == null)
 			{
 				throw new InvalidOperationException("Could not create expression from: " + filter);
 			}
 
 			return expression;
+		}
+
+		private static Expression GetBooleanExpression(string filter, IFormatProvider formatProvider)
+		{
+			var booleanExpression = ParameterValueReader.Read(typeof(bool), filter, formatProvider) as ConstantExpression;
+			return booleanExpression != null && booleanExpression.Value != null
+				? booleanExpression
+				: null;
+		}
+
+		private static Expression GetParameterExpression(string filter, Type type, IFormatProvider formatProvider)
+		{
+			return type != null
+				? ParameterValueReader.Read(type, filter, formatProvider)
+				: GetBooleanExpression(filter, formatProvider);
 		}
 
 		private Expression GetTokenExpression<T>(ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider, ICollection<TokenSet> tokens)
@@ -604,6 +595,8 @@ namespace Linq2Rest.Parser
 
 			public override Expression Visit(Expression node)
 			{
+				Contract.Assume(node != null);
+
 				if (node.NodeType == ExpressionType.Call && AnyAllMethodNames.Contains(((MethodCallExpression)node).Method.Name))
 				{
 					// Skip the second parameter of the Any/All as this has already been covered
@@ -615,6 +608,8 @@ namespace Linq2Rest.Parser
 
 			protected override Expression VisitBinary(BinaryExpression node)
 			{
+				Contract.Assume(node != null);
+
 				if (node.NodeType == ExpressionType.AndAlso)
 				{
 					Visit(node.Left);
@@ -625,14 +620,17 @@ namespace Linq2Rest.Parser
 				return base.VisitBinary(node);
 			}
 
-			protected override Expression VisitParameter(ParameterExpression p)
+			protected override Expression VisitParameter(ParameterExpression node)
 			{
-				if (!_parameters.Contains(p))
+				Contract.Assume(node != null);
+				Contract.Assume(_parameters != null);
+
+				if (!_parameters.Contains(node))
 				{
-					_parameters.Add(p);
+					_parameters.Add(node);
 				}
 
-				return base.VisitParameter(p);
+				return base.VisitParameter(node);
 			}
 		}
 	}
