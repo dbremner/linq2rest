@@ -20,12 +20,15 @@ namespace Linq2Rest.Provider.Writers
 	{
 		public bool CanHandle(MethodCallExpression expression)
 		{
+			Contract.Assert(expression.Method != null);
+
 			return expression.Method.DeclaringType == typeof(string)
 				   && expression.Method.Name == "Substring";
 		}
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
+			Contract.Assume(expression.Arguments != null);
 			Contract.Assume(expression.Arguments.Count > 0);
 
 			var obj = expression.Object;

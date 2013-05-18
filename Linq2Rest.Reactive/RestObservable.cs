@@ -48,6 +48,8 @@ namespace Linq2Rest.Reactive
 		/// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
 		public IQbservable<T> Create()
 		{
+			Contract.Assume(ImmediateScheduler.Instance != null);
+
 			return new InnerRestObservable<T>(
 				_restClientFactory,
 				_serializerFactory,
@@ -63,6 +65,9 @@ namespace Linq2Rest.Reactive
 		/// <returns>An instance of an <see cref="IQbservable{T}"/>.</returns>
 		public IQbservable<T> Poll(IObservable<Unit> trigger)
 		{
+			Contract.Requires<ArgumentNullException>(trigger != null);
+			Contract.Assume(ImmediateScheduler.Instance != null);
+
 			return new TriggeredRestObservable<T>(
 				trigger,
 				_restClientFactory,

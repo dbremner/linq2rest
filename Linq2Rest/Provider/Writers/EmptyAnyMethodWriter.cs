@@ -13,6 +13,7 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
@@ -30,11 +31,15 @@ namespace Linq2Rest.Provider.Writers
 
 		public bool CanHandle(MethodCallExpression expression)
 		{
+			Contract.Assert(expression.Method != null);
+
 			return expression.Method.Name == "Any" && expression.Arguments.Count == 1;
 		}
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
+			Contract.Assume(expression.Arguments.Count > 0);
+
 #if !NETFX_CORE
 			var argumentType = expression.Arguments[0].Type;
 #else
@@ -42,11 +47,11 @@ namespace Linq2Rest.Provider.Writers
 #endif
 			var parameterType = argumentType.IsGenericType
 #if !NETFX_CORE
-									? argumentType.GetGenericArguments()[0]
+ ? argumentType.GetGenericArguments()[0]
 #else
 									? argumentType.GetGenericParameterConstraints()[0]
 #endif
-									: typeof(object);
+ : typeof(object);
 			var anyMethod = AnyMethod.MakeGenericMethod(parameterType);
 
 			var parameter = Expression.Parameter(parameterType);

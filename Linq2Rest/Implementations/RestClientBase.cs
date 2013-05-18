@@ -130,6 +130,8 @@ namespace Linq2Rest.Implementations
 
 		private Stream GetResponseStream(Uri uri, string method, Stream inputStream)
 		{
+			Contract.Requires(uri != null);
+
 			var request = (HttpWebRequest)WebRequest.Create(uri);
 			request.Method = method;
 			if (method == PostMethod || method == PutMethod)

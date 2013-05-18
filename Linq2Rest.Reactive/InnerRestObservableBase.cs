@@ -161,7 +161,7 @@ namespace Linq2Rest.Reactive
 		protected IObservable<IEnumerable<T>> GetResults(ParameterBuilder builder)
 		{
 			Contract.Requires(builder != null);
-		
+
 			var fullUri = builder.GetFullUri();
 			var client = RestClient.Create(fullUri);
 
@@ -185,6 +185,8 @@ namespace Linq2Rest.Reactive
 
 		private IEnumerable<T> ReadResponse(Stream stream)
 		{
+			Contract.Requires(stream != null);
+
 			var serializer = SerializerFactory.Create<T>();
 
 			return serializer.DeserializeList(stream);

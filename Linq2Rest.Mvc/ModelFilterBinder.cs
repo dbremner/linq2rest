@@ -12,6 +12,7 @@
 
 namespace Linq2Rest.Mvc
 {
+	using System.Diagnostics.Contracts;
 	using System.Web.Mvc;
 	using Linq2Rest.Parser;
 
@@ -49,10 +50,22 @@ namespace Linq2Rest.Mvc
 		/// <param name="controllerContext">The controller context.</param><param name="bindingContext">The binding context.</param>
 		public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
 		{
+			Contract.Assume(controllerContext != null);
+			Contract.Assume(controllerContext.RequestContext != null);
+			Contract.Assert(controllerContext.RequestContext.HttpContext != null);
+			Contract.Assert(controllerContext.RequestContext.HttpContext.Request != null);
+			Contract.Assume(controllerContext.RequestContext.HttpContext.Request.Params != null);
+
 			var request = controllerContext.RequestContext.HttpContext.Request;
 			var queryParameters = request.Params;
 
 			return _parser.Parse(queryParameters);
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_parser != null);
 		}
 	}
 }

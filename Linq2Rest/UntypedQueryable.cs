@@ -15,6 +15,7 @@ namespace Linq2Rest
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
 
@@ -24,6 +25,8 @@ namespace Linq2Rest
 
 		public UntypedQueryable(IQueryable<T> source, Expression<Func<T, object>> projection)
 		{
+			Contract.Requires(projection == null || source != null);
+
 			_source = projection == null
 						  ? (IQueryable)source
 						  : source.Select(projection);
@@ -52,6 +55,12 @@ namespace Linq2Rest
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_source != null);
 		}
 	}
 }

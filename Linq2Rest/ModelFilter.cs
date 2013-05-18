@@ -75,8 +75,12 @@ namespace Linq2Rest
 
 			if (_top > -1)
 			{
+				Contract.Assume(result != null);
+
 				result = result.Take(_top);
 			}
+
+			Contract.Assume(_selectExpression == null || result != null);
 
 			return new UntypedQueryable<T>(result, _selectExpression);
 		}

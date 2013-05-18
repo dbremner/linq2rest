@@ -28,9 +28,9 @@ namespace Linq2Rest.Provider
 
 		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor)
 		{
-			Contract.Requires<ArgumentNullException>(client != null);
-			Contract.Requires<ArgumentNullException>(serializerFactory != null);
-			Contract.Requires<ArgumentNullException>(expressionProcessor != null);
+			Contract.Requires(client != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(expressionProcessor != null);
 
 			Client = client;
 			SerializerFactory = serializerFactory;

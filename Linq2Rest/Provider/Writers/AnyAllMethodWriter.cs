@@ -21,11 +21,15 @@ namespace Linq2Rest.Provider.Writers
 	{
 		public bool CanHandle(MethodCallExpression expression)
 		{
+			Contract.Assert(expression.Method != null);
+
 			return expression.Method.Name == "Any" || expression.Method.Name == "All";
 		}
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
+			Contract.Assert(expression.Method != null);
+			Contract.Assume(expression.Arguments != null);
 			Contract.Assume(expression.Arguments.Count > 1);
 
 			var firstArg = expressionWriter(expression.Arguments[0]);

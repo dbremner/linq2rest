@@ -137,6 +137,7 @@ namespace Linq2Rest
 		private static void SetAttributes(TypeBuilder typeBuilder, Type type)
 		{
 			Contract.Requires(typeBuilder != null);
+			Contract.Requires(type != null);
 
 			var attributeBuilders = TypeAttributeBuilders
 				.GetOrAdd(
