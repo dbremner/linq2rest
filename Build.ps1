@@ -1,96 +1,46 @@
+# Helper script for those who want to run psake without importing the module.
+# Example:
+# .\psake.ps1 "default.ps1" "BuildHelloWord" "4.0" 
+
+# Must match parameter definitions for psake.psm1/invoke-psake 
+# otherwise named parameter binding fails
 param(
-$configuration = "Release",
-$platform = "Any CPU",
-$folderPath = ".\",
-$cleanPackages = $false
+    [Parameter(Position=0,Mandatory=0)]
+    [string]$buildFile = 'tasks.ps1',
+    [Parameter(Position=1,Mandatory=0)]
+    [string[]]$taskList = @(),
+    [Parameter(Position=2,Mandatory=0)]
+    [string]$framework,
+    [Parameter(Position=3,Mandatory=0)]
+    [switch]$docs = $false,
+    [Parameter(Position=4,Mandatory=0)]
+    [System.Collections.Hashtable]$parameters = @{},
+    [Parameter(Position=5, Mandatory=0)]
+    [System.Collections.Hashtable]$properties = @{},
+    [Parameter(Position=6, Mandatory=0)]
+    [alias("init")]
+    [scriptblock]$initialization = {},
+    [Parameter(Position=7, Mandatory=0)]
+    [switch]$nologo = $false,
+    [Parameter(Position=8, Mandatory=0)]
+    [switch]$help = $false,
+    [Parameter(Position=9, Mandatory=0)]
+    [string]$scriptPath = $(Split-Path -parent $MyInvocation.MyCommand.path)
 )
 
-$oldEnvPath = ""
-
-function CheckKey
-{
-	if((Test-Path .\Linq2Rest.snk) -eq $false){
-		Write-Host "Creating key for signing"
-		sn -k Linq2Rest.snk
-	}
+# '[p]sake' is the same as 'psake' but $Error is not polluted
+remove-module [p]sake
+import-module (join-path $scriptPath psake.psm1)
+if ($help) {
+  Get-Help Invoke-psake -full
+  return
 }
 
-function CheckMsBuildPath
-{
-	$envPath = $Env:Path
-	if($envPath.Contains("C:\Windows\Microsoft.NET\Framework\v4.0") -eq $false)
-	{
-		if(Test-Path "C:\Windows\Microsoft.NET\Framework\v4.0.30319")
-		{
-			$oldEnvPath = $envPath
-			$Env:Path = $envPath + ";C:\Windows\Microsoft.NET\Framework\v4.0.30319"
-		}
-		else
-		{
-			Write-Host "Could not determine path to MSBuild. Make sure you have .NET 4.0.30319 installed"
-		}
-	}
-}
+if (-not(test-path $buildFile)) {
+    $absoluteBuildFile = (join-path $scriptPath $buildFile)
+    if (test-path $absoluteBuildFile) {
+        $buildFile = $absoluteBuildFile
+    }
+} 
 
-function CleanUpMsBuildPath
-{
-	if($oldEnvPath -ne "")
-	{
-		Write-Host "Reverting Path variable"
-		$Env:Path = $oldEnvPath
-	}
-}
-
-function CleanFolder
-{
-	Write-Host "Cleaning Folders in $folderPath"
-	Get-ChildItem $folderPath -include bin,obj -Recurse | foreach ($_) { remove-item $_.fullname -Force -Recurse }
-	if($cleanPackages -eq $true){
-		if(Test-Path "$folderPath\packages"){
-			Get-ChildItem "$folderPath\packages" -Recurse | Where { $_.PSIsContainer } | foreach ($_) { Write-Host $_.fullname; remove-item $_.fullname -Force -Recurse }
-		}
-	}
-	
-	if(Test-Path "$folderPath\BuildOutput"){
-		Get-ChildItem "$folderPath\BuildOutput" -Recurse | foreach ($_) { Write-Host $_.fullname; remove-item $_.fullname -Force -Recurse }
-	}
-}
-
-function UpdatePackages
-{
-	$packageConfigs = Get-ChildItem -Path .\ -Include "packages.config" -Recurse
-	foreach($config in $packageConfigs){
-        Write-Host $config.DirectoryName
-		.\.nuget\nuget.exe i $config.FullName -o packages -source https://nuget.org/api/v2/
-	}
-}
-
-function BuildSolution
-{
-	$options = "/p:configuration=$configuration;platform=$platform"
-	msbuild .\Linq2Rest.All.sln $options
-}
-
-function RunTests
-{
-	.\packages\NUnit.Runners.2.6.1\tools\nunit-console.exe .\Linq2Rest.Tests\bin\v4.0\$configuration\Linq2Rest.Tests.dll
-	.\packages\NUnit.Runners.2.6.1\tools\nunit-console.exe .\Linq2Rest.Tests\bin\v4.5\$configuration\Linq2Rest.Tests.dll
-	.\packages\NUnit.Runners.2.6.1\tools\nunit-console.exe .\Linq2Rest.Reactive.Tests\bin\v4.0\$configuration\Linq2Rest.Reactive.Tests.dll
-	.\packages\NUnit.Runners.2.6.1\tools\nunit-console.exe .\Linq2Rest.Reactive.Tests\bin\v4.5\$configuration\Linq2Rest.Reactive.Tests.dll
-}
-
-function PublishPackage
-{
-	.\.nuget\nuget.exe pack Linq2Rest.nuspec
-	.\.nuget\nuget.exe pack Linq2Rest.Mvc.nuspec
-	.\.nuget\nuget.exe pack Linq2Rest.Reactive.nuspec
-}
-
-CheckKey
-CheckMsBuildPath
-CleanFolder
-UpdatePackages
-BuildSolution
-RunTests
-PublishPackage
-CleanUpMsBuildPath
+invoke-psake $buildFile $taskList $framework $docs $parameters $properties $initialization $nologo
