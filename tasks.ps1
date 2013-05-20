@@ -32,10 +32,10 @@ task UpdatePackages -depends CleanFolder {
 
 task RunTests -depends Compile {
 	'Running Tests'
-	.\packages\NUnit.Runners.2.6.1\tools\nunit-console.exe .\Linq2Rest.Tests\bin\v4.0\$configuration\Linq2Rest.Tests.dll
-	.\packages\NUnit.Runners.2.6.1\tools\nunit-console.exe .\Linq2Rest.Tests\bin\v4.5\$configuration\Linq2Rest.Tests.dll
-	.\packages\NUnit.Runners.2.6.1\tools\nunit-console.exe .\Linq2Rest.Reactive.Tests\bin\v4.0\$configuration\Linq2Rest.Reactive.Tests.dll
-	.\packages\NUnit.Runners.2.6.1\tools\nunit-console.exe .\Linq2Rest.Reactive.Tests\bin\v4.5\$configuration\Linq2Rest.Reactive.Tests.dll
+	.\packages\NUnit.Runners.2.6.2\tools\nunit-console.exe .\Linq2Rest.Tests\bin\v4.0\$configuration\Linq2Rest.Tests.dll
+	.\packages\NUnit.Runners.2.6.2\tools\nunit-console.exe .\Linq2Rest.Tests\bin\v4.5\$configuration\Linq2Rest.Tests.dll
+	.\packages\NUnit.Runners.2.6.2\tools\nunit-console.exe .\Linq2Rest.Reactive.Tests\bin\v4.0\$configuration\Linq2Rest.Reactive.Tests.dll
+	.\packages\NUnit.Runners.2.6.2\tools\nunit-console.exe .\Linq2Rest.Reactive.Tests\bin\v4.5\$configuration\Linq2Rest.Reactive.Tests.dll
 }
 
 task PublishPackage -depends RunTests {

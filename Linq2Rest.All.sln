@@ -19,7 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5D2
 		Linq2Rest.Mvc.nuspec = Linq2Rest.Mvc.nuspec
 		Linq2Rest.nuspec = Linq2Rest.nuspec
 		Linq2Rest.Reactive.nuspec = Linq2Rest.Reactive.nuspec
+		psake.psm1 = psake.psm1
 		RestorePackages.ps1 = RestorePackages.ps1
+		tasks.ps1 = tasks.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Reactive.WP8.Sample", "Linq2Rest.Reactive.WP7Sample\Linq2Rest.Reactive.WP8.Sample.csproj", "{EC6D6A2B-62D4-4161-BBFF-B72CEDA2EE71}"
