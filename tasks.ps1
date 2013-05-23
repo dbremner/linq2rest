@@ -16,13 +16,13 @@ task CleanUpMsBuildPath -depends PublishPackage {
 	}
 }
 
-task Compile -depends Clean { 
+task Compile -depends UpdatePackages { 
 	$options = "/p:configuration=$configuration;platform=$platform"
 	exec { C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe .\Linq2Rest.sln $options }
 	'Executed Compile!'
 }
 
-task UpdatePackages -depends CleanFolder {
+task UpdatePackages -depends Clean {
 	$packageConfigs = Get-ChildItem -Path .\ -Include "packages.config" -Recurse
 	foreach($config in $packageConfigs){
         #Write-Host $config.DirectoryName
