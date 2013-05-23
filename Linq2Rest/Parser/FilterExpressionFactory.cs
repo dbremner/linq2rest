@@ -405,7 +405,8 @@ namespace Linq2Rest.Parser
 				?? GetPropertyExpression<T>(filter, sourceParameter, lambdaParameters)
 				?? GetArithmeticExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider)
 				?? GetFunctionExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider)
-				?? GetParameterExpression(filter, type, formatProvider);
+				?? GetParameterExpression(filter, type, formatProvider)
+				?? GetBooleanExpression(filter, formatProvider);
 			
 			if (expression == null)
 			{

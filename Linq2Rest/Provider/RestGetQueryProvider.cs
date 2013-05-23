@@ -44,8 +44,9 @@ namespace Linq2Rest.Provider
 			var fullUri = builder.GetFullUri();
 			var response = Client.Get(fullUri);
 			var genericMethod = CreateMethod.MakeGenericMethod(type);
-			dynamic serializer = genericMethod.Invoke(SerializerFactory, null);
-			var resultSet = serializer.DeserializeList(response);
+			var serializer = genericMethod.Invoke(SerializerFactory, null);
+			var deserializeListMethod = serializer.GetType().GetMethod("DeserializeList");
+			var resultSet = (IEnumerable)deserializeListMethod.Invoke(serializer, new object[] { response });
 
 			return resultSet;
 		}

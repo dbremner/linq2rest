@@ -532,6 +532,29 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenApplyingMultipleProjectionsThenUsesFirst()
+		{
+			var result = _provider.Query
+				.Select(x => new { x.Content })
+				.Select(x => new ChildDto { Name = x.Content })
+				.ToArray();
+
+			var uri = new Uri("http://localhost/?$select=Content");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingMultipleProjectionsThenReturnsFinalProjection()
+		{
+			var result = _provider.Query
+				.Select(x => new { x.Content })
+				.Select(x => new ChildDto { Name = x.Content })
+				.ToArray();
+
+			Assert.True(typeof(ChildDto) == result.First().GetType());
+		}
+
+		[Test]
 		public void WhenApplyingAllOperationsThenCallsRestServiceWithAllParametersSet()
 		{
 			var result = _provider.Query
