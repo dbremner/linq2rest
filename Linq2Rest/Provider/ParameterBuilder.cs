@@ -25,7 +25,7 @@ namespace Linq2Rest.Provider
 		private readonly Uri _serviceBase;
 
 		public ParameterBuilder(Uri serviceBase)
-        {
+		{
 			Contract.Requires(serviceBase != null);
 #if !NETFX_CORE
 			Contract.Requires(serviceBase.Scheme == Uri.UriSchemeHttp || serviceBase.Scheme == Uri.UriSchemeHttps);
@@ -48,13 +48,13 @@ namespace Linq2Rest.Provider
 		public string ExpandParameter { get; set; }
 
 		public Uri GetFullUri()
-        {
+		{
 			Contract.Ensures(Contract.Result<Uri>() != null);
 #if !NETFX_CORE
 			Contract.Ensures(Contract.Result<Uri>().Scheme == Uri.UriSchemeHttp || Contract.Result<Uri>().Scheme == Uri.UriSchemeHttps);
 #endif
 
-            var parameters = new List<string>();
+			var parameters = new List<string>();
 			if (!string.IsNullOrWhiteSpace(FilterParameter))
 			{
 #if !SILVERLIGHT && !NETFX_CORE
@@ -90,7 +90,7 @@ namespace Linq2Rest.Provider
 			}
 
 			var builder = new UriBuilder(_serviceBase);
-			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : "&") + string.Join("&", parameters);
+			builder.Query = (string.IsNullOrEmpty(builder.Query) ? string.Empty : builder.Query.Substring(1) + "&") + string.Join("&", parameters);
 
 			var resultUri = builder.Uri;
 
@@ -99,13 +99,13 @@ namespace Linq2Rest.Provider
 			Contract.Assume(resultUri.Scheme == Uri.UriSchemeHttp || resultUri.Scheme == Uri.UriSchemeHttps);
 #endif
 
-            return resultUri;
+			return resultUri;
 		}
 
 		private static string BuildParameter(string name, string value)
 		{
 			return name + "=" + value;
-        }
+		}
 
 		[ContractInvariantMethod]
 		private void Invariants()
@@ -116,5 +116,5 @@ namespace Linq2Rest.Provider
 #endif
 			Contract.Invariant(OrderByParameter != null);
 		}
-    }
+	}
 }
