@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest.Mvc</id>
-		<version>3.2.0.0</version>
+		<version>3.2.1.0</version>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
 		<licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
@@ -16,7 +16,7 @@
 		</references>
 		<dependencies>
 			<dependency id="Linq2Rest"
-						version="3.2.0.0" />
+						version="3.2.1.0" />
 		</dependencies>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System" />
