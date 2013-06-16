@@ -80,6 +80,28 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		[Ignore("Stupid URL comparison.")]
+		public void WhenBaseUriHasQueryParametersThenTheyArePreservedInTheRequest()
+		{
+			var client = new Mock<IRestClient>();
+			client.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost?abc=123"));
+			client.Setup(x => x.Get(It.IsAny<Uri>()))
+				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
+				.Returns(() => _singleResponse.ToStream());
+			var provider = new RestContext<SimpleDto>(client.Object, new TestSerializerFactory());
+
+			Expression<Func<SimpleDto, bool>> expression = x => x.Value == 5;
+			var result =
+				provider
+					.Query
+					.Where(expression)
+					.ToArray();
+
+			var uri = new Uri("http://localhost/?abc=123&$filter=Value+eq+5");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
 		public void WhenValueExpressionContainsSafeCastingThenResolvesValue()
 		{
 			object value = "hello";
