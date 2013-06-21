@@ -10,6 +10,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+
 namespace Linq2Rest.Tests.Fakes
 {
 	using System.Runtime.Serialization;
@@ -17,7 +19,7 @@ namespace Linq2Rest.Tests.Fakes
 	[DataContract]
 	public class ODataResponse<T>
 	{
-		[DataMember(Name = "d")]
-		public ODataResult<T> Result { get; set; }
+		[DataMember(Name = "value")]
+		public List<T> Results { get; set; }
 	}
 }

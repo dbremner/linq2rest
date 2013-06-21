@@ -18,7 +18,7 @@ namespace Linq2Rest.Tests.Fakes
 	[DataContract]
 	public class ODataResult<T>
 	{
-		[DataMember(Name = "results")]
-		public List<T> Results { get; set; }
+		[DataMember(Name = "value")]
+		public IEnumerable<T> Results { get; set; }
 	}
 }
