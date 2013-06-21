@@ -23,25 +23,34 @@ namespace Linq2Rest.Implementations
 	/// </summary>
 	public abstract class RestClientBase : IRestClient
 	{
-		private const string PostMethod = "POST";
-		private const string GetMethod = "GET";
-		private const string PutMethod = "PUT";
-		private const string DeleteMethod = "DELETE";
 		private readonly string _acceptHeader;
+        private readonly IHttpRequestFactory _httpRequestFactory;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RestClientBase"/> class.
+        /// </summary>
+        /// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
+        /// <param name="acceptHeader">The accept header to use in web requests.</param>
+        protected RestClientBase(Uri uri, string acceptHeader)
+            :this(uri, acceptHeader, new HttpRequestFactory())
+        {}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RestClientBase"/> class.
 		/// </summary>
 		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
 		/// <param name="acceptHeader">The accept header to use in web requests.</param>
-		protected RestClientBase(Uri uri, string acceptHeader)
+		/// <param name="httpRequestFactory">The factory used to create Linq2Rest.Provider.IHttpRequest implementations </param>
+		protected RestClientBase(Uri uri, string acceptHeader, IHttpRequestFactory httpRequestFactory)
 		{
 			Contract.Requires<ArgumentNullException>(uri != null);
 			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 			Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(acceptHeader));
+            Contract.Requires<ArgumentException>(httpRequestFactory != null);
 
-			_acceptHeader = acceptHeader;
-			ServiceBase = uri;
+			_acceptHeader       = acceptHeader;
+		    _httpRequestFactory = httpRequestFactory;
+			ServiceBase         = uri;
 		}
 
 		/// <summary>
@@ -56,7 +65,7 @@ namespace Linq2Rest.Implementations
 		/// <returns>A string representation of the resource.</returns>
 		public Stream Get(Uri uri)
 		{
-			var stream = GetResponseStream(uri, GetMethod, null);
+			var stream = GetResponseStream(uri, HttpMethod.Get);
 
 			Contract.Assume(stream != null);
 
@@ -71,7 +80,7 @@ namespace Linq2Rest.Implementations
 		/// <returns>The service response as a <see cref="Stream"/>.</returns>
 		public Stream Post(Uri uri, Stream input)
 		{
-			var stream = GetResponseStream(uri, PostMethod, input);
+			var stream = GetResponseStream(uri, HttpMethod.Post, input);
 
 			Contract.Assume(stream != null);
 
@@ -86,7 +95,7 @@ namespace Linq2Rest.Implementations
 		/// <returns>The service response as a <see cref="Stream"/>.</returns>
 		public Stream Put(Uri uri, Stream input)
 		{
-			var stream = GetResponseStream(uri, PutMethod, input);
+			var stream = GetResponseStream(uri, HttpMethod.Put, input);
 
 			Contract.Assume(stream != null);
 
@@ -100,7 +109,7 @@ namespace Linq2Rest.Implementations
 		/// <returns>The service response as a <see cref="Stream"/>.</returns>
 		public Stream Delete(Uri uri)
 		{
-			var stream = GetResponseStream(uri, DeleteMethod, null);
+			var stream = GetResponseStream(uri, HttpMethod.Delete, null);
 
 			Contract.Assume(stream != null);
 
@@ -128,33 +137,16 @@ namespace Linq2Rest.Implementations
 			}
 		}
 
-		private Stream GetResponseStream(Uri uri, string method, Stream inputStream)
+		private Stream GetResponseStream(Uri uri, HttpMethod method, Stream requestStream = null)
 		{
-			Contract.Requires(uri != null);
+		    IHttpRequest request = _httpRequestFactory.Create(uri, method, _acceptHeader, _acceptHeader);
 
-			var request = (HttpWebRequest)WebRequest.Create(uri);
-			request.Method = method;
-			if (method == PostMethod || method == PutMethod)
-			{
-				request.ContentType = _acceptHeader;
-			}
+		    if (requestStream != null)
+		    {
+		        request.WriteRequestStream(requestStream);
+		    }
 
-			if (inputStream != null)
-			{
-				var requestStream = request.GetRequestStream();
-				int nextByte;
-				while ((nextByte = inputStream.ReadByte()) > -1)
-				{
-					requestStream.WriteByte((byte)nextByte);
-				}
-
-				requestStream.Flush();
-			}
-
-			request.Accept = _acceptHeader;
-			var response = request.GetResponse();
-			var stream = response.GetResponseStream();
-			return stream;
+		    return request.GetResponseStream();
 		}
 
 		[ContractInvariantMethod]

@@ -109,7 +109,7 @@
     <CodeAnalysisRuleSet>..\Linq2Rest.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <DelaySign>false</DelaySign>
@@ -128,6 +128,9 @@
   <ItemGroup>
     <Compile Include="GeneralExtensions.cs" />
     <Compile Include="IModelFilter.cs" />
+    <Compile Include="Implementations\HttpRequestFactory.cs" />
+    <Compile Include="Implementations\HttpRequestFactoryCertified.cs" />
+    <Compile Include="Implementations\HttpWebRequestAdapter.cs" />
     <Compile Include="Implementations\JsonContext.cs" />
     <Compile Include="Implementations\JsonDataContractSerializerFactory.cs" />
     <Compile Include="Implementations\RestClientBase.cs" />
@@ -178,6 +181,9 @@
     <Compile Include="Provider\ExpressionWriter.cs" />
     <Compile Include="Provider\IExpressionProcessor.cs" />
     <Compile Include="Provider\IExpressionWriter.cs" />
+    <Compile Include="Provider\IHttpRequest.cs" />
+    <Compile Include="Provider\IHttpRequestExtensions.cs" />
+    <Compile Include="Provider\IHttpRequestFactory.cs" />
     <Compile Include="Provider\IRestClient.cs" />
     <Compile Include="Provider\ISerializer.cs" />
     <Compile Include="Provider\ISerializerFactory.cs" />
