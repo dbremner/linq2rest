@@ -10,6 +10,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Linq2Rest.Provider;
+
 namespace Linq2Rest.Implementations
 {
 	using System;
@@ -20,15 +22,24 @@ namespace Linq2Rest.Implementations
 	/// </summary>
 	public class JsonRestClient : RestClientBase
 	{
+        /// <summary>
+		/// Initializes a new instance of the <see cref="JsonRestClient"/> class.
+		/// </summary>
+		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
+        public JsonRestClient(Uri uri): this(uri, new HttpRequestFactory())
+        {}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="JsonRestClient"/> class.
 		/// </summary>
 		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
-		public JsonRestClient(Uri uri)
-			: base(uri, StringConstants.JsonMimeType)
+		/// <param name="httpRequestFactory">The factory to use to create our HTTP Requests </param>
+        public JsonRestClient(Uri uri, IHttpRequestFactory httpRequestFactory)
+			: base(uri, StringConstants.JsonMimeType, httpRequestFactory)
 		{
 			Contract.Requires<ArgumentNullException>(uri != null);
 			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+            Contract.Requires<ArgumentException>(httpRequestFactory != null);
 		}
 	}
 }
