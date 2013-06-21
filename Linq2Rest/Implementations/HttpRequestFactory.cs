@@ -10,13 +10,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 using System;
 using System.Diagnostics.Contracts;
-using System.Net;
 using Linq2Rest.Provider;
 
 namespace Linq2Rest.Implementations
 {
     /// <summary>
-    /// 
+    /// Creates a basic IHttpRequest
     /// </summary>
     class HttpRequestFactory: IHttpRequestFactory
     {
