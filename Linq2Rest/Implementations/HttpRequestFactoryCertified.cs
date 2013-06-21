@@ -10,14 +10,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 using System;
 using System.Diagnostics.Contracts;
-using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using Linq2Rest.Provider;
 
 namespace Linq2Rest.Implementations
 {
     /// <summary>
-    /// 
+    /// Creates an IHttpRequest with the given certificate attached to it
     /// </summary>
     class HttpRequestFactoryCertified : IHttpRequestFactory
     {
