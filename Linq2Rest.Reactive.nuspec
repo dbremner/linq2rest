@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest.Reactive</id>
-		<version>3.2.1.0</version>
+		<version>3.3.0.0</version>
 		<title>Reactive Extensions for Linq2Rest</title>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
@@ -18,13 +18,13 @@
 				<dependency id="Rx-Providers"
 							version="2.1.30214.0" />
 				<dependency id="Linq2Rest"
-							version="3.2.1.0" />
+							version="3.3.0.0" />
 			</group>
 			<group targetFramework="net45">
 				<dependency id="Rx-Providers"
 							version="2.1.30214.0" />
 				<dependency id="Linq2Rest"
-							version="3.2.1.0" />
+							version="3.3.0.0" />
 			</group>
 
 			<group targetFramework="SL5">

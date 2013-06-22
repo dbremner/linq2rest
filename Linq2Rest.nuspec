@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
 	<id>Linq2Rest</id>
-	<version>3.2.1.0</version>
+	<version>3.3.0.0</version>
 	<title>Linq2Rest</title>
 	<authors>Jacob Reimers</authors>
 	<owners>Jacob Reimers</owners>
