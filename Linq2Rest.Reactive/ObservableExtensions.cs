@@ -42,7 +42,12 @@ namespace Linq2Rest.Reactive
 			{
 				restObservable.ChangeMethod(HttpMethod.Post);
 				var serializer = restObservable.SerializerFactory.Create<TInput>();
-				var serialized = serializer.Serialize(input());
+				var inputData = input();
+				if (ReferenceEquals(inputData, null))
+				{
+					throw new NullReferenceException();
+				}
+				var serialized = serializer.Serialize(inputData);
 				restObservable.SetInput(serialized);
 			}
 
@@ -64,7 +69,12 @@ namespace Linq2Rest.Reactive
 			{
 				restObservable.ChangeMethod(HttpMethod.Put);
 				var serializer = restObservable.SerializerFactory.Create<TInput>();
-				var serialized = serializer.Serialize(input());
+				var inputData = input();
+				if (ReferenceEquals(inputData, null))
+				{
+					throw new NullReferenceException();
+				}
+				var serialized = serializer.Serialize(inputData);
 				restObservable.SetInput(serialized);
 			}
 
@@ -128,7 +138,7 @@ namespace Linq2Rest.Reactive
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 			Contract.Assume(properties != null);
-		
+
 			var propertyNames = string.Join(",", properties.Where(x => x != null).Select(ResolvePropertyName));
 
 			return Expand(source, propertyNames);

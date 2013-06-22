@@ -66,7 +66,7 @@ namespace Linq2Rest.Provider
     }
 
     [ContractClassFor(typeof(IHttpRequest))]
-    internal class HttpRequestContracts : IHttpRequest
+    internal abstract class HttpRequestContracts : IHttpRequest
     {
         public Stream GetRequestStream()
         {

@@ -29,10 +29,6 @@ namespace Linq2Rest.Implementations
 
         public IHttpRequest Create(Uri uri, HttpMethod method, string acceptMimeType, string requestMimeType = null)
         {
-            Contract.Requires(uri != null);
-            Contract.Requires(acceptMimeType != null);
-            Contract.Requires(method != HttpMethod.None);
-
             var httpWebRequest = HttpWebRequestAdapter.CreateHttpWebRequest(uri, method, acceptMimeType, requestMimeType);
 
             httpWebRequest.ClientCertificates.Add(_clientCertificate);
