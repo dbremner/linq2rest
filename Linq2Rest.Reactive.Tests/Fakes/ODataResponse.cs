@@ -18,7 +18,7 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 	[DataContract]
 	public class ODataResponse<T>
 	{
-		[DataMember(Name = "d")]
+		[DataMember(Name = "value")]
 		public List<T> Results { get; set; }
 	}
 }
