@@ -13,20 +13,19 @@
 namespace Linq2Rest.Tests.Provider.Writers
 {
 	using System;
-	using System.Xml;
 	using Linq2Rest.Provider.Writers;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class DateTimeValueWriterTests
 	{
-		private DateTimeValueWriter _writer;
-
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new DateTimeValueWriter();
 		}
+
+		private DateTimeValueWriter _writer;
 
 		[Test]
 		public void WhenWritingDateTimeValueThenWritesString()

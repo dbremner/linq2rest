@@ -13,26 +13,17 @@
 namespace Linq2Rest.Tests.Provider
 {
 	using System;
-	using System.Diagnostics;
 	using System.IO;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using Fakes;
 	using Linq2Rest.Provider;
-	using Linq2Rest.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class RestContextTests
 	{
-		private RestContext<SimpleDto> _provider;
-		private RestContext<ComplexDto> _complexProvider;
-		private RestContext<CollectionDto> _collectionProvider;
-		private Mock<IRestClient> _mockClient;
-		private Mock<IRestClient> _mockComplexClient;
-		private Mock<IRestClient> _mockCollectionClient;
-		private string _singleResponse;
-
 		[SetUp]
 		public void TestSetup()
 		{
@@ -73,175 +64,66 @@ namespace Linq2Rest.Tests.Provider
 			_collectionProvider = new RestContext<CollectionDto>(_mockCollectionClient.Object, serializerFactory);
 		}
 
-		[Test]
-		public void WhenDisposingThenDoesNotThrow()
+		private RestContext<SimpleDto> _provider;
+		private RestContext<ComplexDto> _complexProvider;
+		private RestContext<CollectionDto> _collectionProvider;
+		private Mock<IRestClient> _mockClient;
+		private Mock<IRestClient> _mockComplexClient;
+		private Mock<IRestClient> _mockCollectionClient;
+		private string _singleResponse;
+
+		private void VerifyCall(Expression<Func<SimpleDto, bool>> selection, string expectedUri)
 		{
-			Assert.DoesNotThrow(() => _provider.Dispose());
+			var result = _provider.Query
+				.Where(selection)
+				.Count();
+
+			_mockClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == expectedUri)), Times.Once());
 		}
 
 		[Test]
-		[Ignore("Stupid URL comparison.")]
-		public void WhenBaseUriHasQueryParametersThenTheyArePreservedInTheRequest()
+		public void WhenAnyExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
 		{
-			var client = new Mock<IRestClient>();
-			client.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost?abc=123"));
-			client.Setup(x => x.Get(It.IsAny<Uri>()))
-				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
-				.Returns(() => _singleResponse.ToStream());
-			var provider = new RestContext<SimpleDto>(client.Object, new TestSerializerFactory());
-
-			Expression<Func<SimpleDto, bool>> expression = x => x.Value == 5;
-			var result =
-				provider
-					.Query
-					.Where(expression)
-					.ToArray();
-
-			var uri = new Uri("http://localhost/?abc=123&$filter=Value+eq+5");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
-		}
-
-		[Test]
-		public void WhenValueExpressionContainsSafeCastingThenResolvesValue()
-		{
-			object value = "hello";
-			Expression<Func<SimpleDto, bool>> expression = x => x.Value == (value as string).Length;
-			var result =
-				_provider
-					.Query
-					.Where(expression)
-					.ToArray();
-
-			var uri = new Uri("http://localhost/?$filter=Value+eq+5");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
-		}
-
-		[Test]
-		public void WhenValueExpressionContainsCastingThenResolvesValue()
-		{
-			object value = "hello";
-			Expression<Func<SimpleDto, bool>> expression = x => x.Value == ((string)value).Length;
-			var result =
-				_provider
-					.Query
-					.Where(expression)
-					.ToArray();
-
-			var uri = new Uri("http://localhost/?$filter=Value+eq+5");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
-		}
-
-		[Test]
-		public void WhenMainExpressionIsContainedInIsTrueExpressionThenUsesOperandExpression()
-		{
-			var parameter = Expression.Parameter(typeof(SimpleDto), "x");
-			var trueExpression =
-				Expression.IsTrue(
-				Expression.LessThanOrEqual(Expression.Property(parameter, "Value"), Expression.Constant(3d)));
-
-			var result =
-				_provider
+			var result = _provider
 				.Query
-				.Where(Expression.Lambda<Func<SimpleDto, bool>>(trueExpression, parameter))
-				.Count(x => x.ID != 0);
+				.Where(x => x.Value <= 3)
+				.Any(x => x.Value.Equals(3d));
 
-			var uri = new Uri("http://localhost/?$filter=(Value+le+3)+and+(ID+ne+0)");
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
-		public void WhenApplyingQueryWithNoFilterThenCallsRestServiceOnce()
+		public void WhenApplyingAllOperationsThenCallsRestServiceWithAllParametersSet()
 		{
-			var result = _provider.Query.ToList();
+			var result = _provider.Query
+				.Where(x => x.Value <= 3)
+				.Select(x => new { x.Value, x.Content })
+				.OrderBy(x => x.Value)
+				.Skip(1)
+				.Take(1)
+				.Count();
 
-			var uri = new Uri("http://localhost/");
+			var uri = new Uri("http://localhost/?$filter=Value+le+3&$select=Value,Content&$skip=1&$top=1&$orderby=Value");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
-		public void WhenApplyingPostQueryThenCallsRestServiceOnce()
+		public void WhenApplyingCeilingExpressionThenCallRestServiceWithFilterParameter()
 		{
-			var result = _provider.Query
-				.Where(x => x.Value <= 3)
-				.Post(new SimpleDto { ID = 1 })
-				.Count(x => x.ID != 0);
-
-			_mockClient.Verify(x => x.Post(It.IsAny<Uri>(), It.IsAny<Stream>()), Times.Once());
+			VerifyCall(x => Math.Ceiling(x.Value) == 10d, "http://localhost/?$filter=ceiling(Value)+eq+10");
 		}
 
 		[Test]
-		public void WhenApplyingPutQueryThenCallsRestServiceOnce()
+		public void WhenApplyingCompareGreaterExpressionThenCallRestServiceWithFilterParameter()
 		{
-			var result = _provider.Query
-				.Where(x => x.Value <= 3)
-				.Put(new SimpleDto { ID = 1 })
-				.Count(x => x.ID != 0);
-
-			_mockClient.Verify(x => x.Put(It.IsAny<Uri>(), It.IsAny<Stream>()), Times.Once());
+			VerifyCall(x => x.Content.CompareTo("text") > 0, "http://localhost/?$filter=Content+gt+'text'");
 		}
 
 		[Test]
-		public void WhenApplyingDeleteQueryThenCallsRestServiceOnce()
+		public void WhenApplyingCompareLesserExpressionThenCallRestServiceWithFilterParameter()
 		{
-			var result = _provider.Query
-				.Where(x => x.Value <= 3)
-				.Delete()
-				.Count(x => x.ID != 0);
-
-			_mockClient.Verify(x => x.Delete(It.IsAny<Uri>()), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingQueryThenCallsRestServiceOnce()
-		{
-			var result = _provider.Query
-				.Where(x => x.Value <= 3)
-				.Count(x => x.ID != 0);
-
-			_mockClient.Verify(x => x.Get(It.IsAny<Uri>()), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingFirstOrDefaultThenCallsRestServiceOnce()
-		{
-			_singleResponse = "[]";
-			Assert.Null(_provider.Query.FirstOrDefault(x => x.Value <= 3));
-		}
-
-		[Test]
-		[Ignore("For some reason the URI comparison fails for the same URIs.")]
-		public void WhenApplyingPostQueryInMiddleThenCallsRestServiceOnceWithFullQuery()
-		{
-			var result = _provider.Query
-				.Where(x => x.Value <= 3)
-				.Post(new SimpleDto { ID = 1 })
-				.Count(x => x.ID != 0);
-
-			var uri = new Uri("http://localhost/?$filter=(Value+lt+3)+and+(ID+ne+0)");
-			_mockClient.Verify(x => x.Post(uri, It.IsAny<Stream>()), Times.Once());
-		}
-
-		[Test]
-		[Ignore("For some reason the URI comparison fails for the same URIs.")]
-		public void WhenApplyingPutQueryInMiddleThenCallsRestServiceOnceWithFullQuery()
-		{
-			var result = _provider.Query
-				.Where(x => x.Value <= 3)
-				.Put(new SimpleDto { ID = 1 })
-				.Count(x => x.ID != 0);
-
-			var uri = new Uri("http://localhost/?$filter=(Value+lt+3)+and+(ID+ne+0)");
-			_mockClient.Verify(x => x.Put(uri, It.IsAny<Stream>()), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingNegateQueryThenCallsRestServiceWithFilter()
-		{
-			var result = _provider.Query
-				.Count(x => -x.Value < 3);
-
-			var uri = new Uri("http://localhost/?$filter=-Value+lt+3");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			VerifyCall(x => x.Content.CompareTo("text") <= 0, "http://localhost/?$filter=Content+le+'text'");
 		}
 
 		[Test]
@@ -257,12 +139,130 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
+		public void WhenApplyingDayExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Date.Day == 10, "http://localhost/?$filter=day(Date)+eq+10");
+		}
+
+		[Test]
+		public void WhenApplyingDeleteQueryThenCallsRestServiceOnce()
+		{
+			var result = _provider.Query
+				.Where(x => x.Value <= 3)
+				.Delete()
+				.Count(x => x.ID != 0);
+
+			_mockClient.Verify(x => x.Delete(It.IsAny<Uri>()), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingEmptyAnyOperatorThenSendEmptyPredicate()
+		{
+			var result = _collectionProvider.Query
+				.Where(x => x.Children.Any())
+				.ToList();
+
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/any(Param_0:+true)")), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingEndsWithExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Content.EndsWith("text"), "http://localhost/?$filter=endswith(Content,+'text')");
+		}
+
+		[Test]
+		public void WhenApplyingEqualityExpressionForCatpuredVariablePropertyThenCallsRestServiceWithFilterParameter()
+		{
+			const string Variable = "blah";
+			VerifyCall(x => x.Value == Variable.Length, "http://localhost/?$filter=Value+eq+4");
+		}
+
+		[Test]
+		public void WhenApplyingEqualityExpressionForCatpuredVariableThenCallsRestServiceWithFilterParameter()
+		{
+			const double Variable = 2.0;
+			VerifyCall(x => x.Value == Variable, "http://localhost/?$filter=Value+eq+2");
+		}
+
+		[Test]
+		public void WhenApplyingEqualityExpressionForFlagsEnumThenCallsRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Choice == Choice.That, "http://localhost/?$filter=Choice+eq+That");
+		}
+
+		[Test]
+		[Ignore("For some reason the URI comparison fails for the same URIs.")]
+		public void WhenApplyingEqualsQueryOnDateTimeOffsetThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Count(x => x.PointInTime == new DateTimeOffset(2012, 5, 6, 18, 10, 0, TimeSpan.FromHours(2)));
+
+			var uri = new Uri("http://localhost/?$filter=PointInTime+eq+datetimeoffset'2012-05-06T18:10:00%2B02:00'");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingEqualsQueryOnDateTimeThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Count(x => x.Date == new DateTime(2012, 5, 6, 16, 11, 00, DateTimeKind.Utc));
+
+			var uri = new Uri("http://localhost/?$filter=Date+eq+datetime'2012-05-06T16:11:00Z'");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingEqualsQueryOnTimeSpanThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Count(x => x.Duration == new TimeSpan(2, 15, 0));
+
+			var uri = new Uri("http://localhost/?$filter=Duration+eq+time'PT2H15M'");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
 		public void WhenApplyingEqualsQueryThenCallsRestServiceWithFilter()
 		{
 			var result = _provider.Query
 				.Count(x => x.Value.Equals(3));
 
 			var uri = new Uri("http://localhost/?$filter=Value+eq+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingExpandThenCallsRestServiceWithExpandParameterSet()
+		{
+			var result = _provider.Query
+				.Expand("Foo,Bar/Qux")
+				.ToList();
+
+			var uri = new Uri("http://localhost/?$expand=Foo,Bar/Qux");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingExpandWithOrderByThenCallsRestServiceWithExpandParameterSet()
+		{
+			var result = _provider.Query
+				.Expand("Foo,Bar/Qux")
+				.OrderBy(x => x.Date)
+				.ToList();
+
+			var uri = new Uri("http://localhost/?$orderby=Date&$expand=Foo,Bar/Qux");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingExpandsOnSubPropertyUsingExpressionQueryThenCallsRestServiceWithFilter()
+		{
+			var result = _provider.Query
+				.Expand(x => x.Date.Year)
+				.ToArray();
+
+			var uri = new Uri("http://localhost/?$expand=Date/Year");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -300,107 +300,173 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenApplyingExpandsOnSubPropertyUsingExpressionQueryThenCallsRestServiceWithFilter()
+		public void WhenApplyingFilterWithAllOnRootCollectionAndFunctionThenCallsRestServiceWithAllSyntax()
+		{
+			var result = _collectionProvider.Query
+				.Where(x => x.Children.All(y => y.ID == 2 + x.ID))
+				.ToList();
+
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/all(y:+y/ID+eq+2+add+ID)")), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingFilterWithAllOnRootCollectionThenCallsRestServiceWithAllSyntax()
+		{
+			var result = _collectionProvider.Query
+				.Where(x => x.Children.All(y => y.ID == 2))
+				.ToList();
+
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/all(y:+y/ID+eq+2)")), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingFilterWithAnyOnRootCollectionThenCallsRestServiceWithAnySyntax()
+		{
+			var result = _collectionProvider.Query
+				.Where(x => x.Children.Any(y => y.ID == 2))
+				.ToList();
+
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/any(y:+y/ID+eq+2)")), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingFirstOrDefaultThenCallsRestServiceOnce()
+		{
+			_singleResponse = "[]";
+			Assert.Null(_provider.Query.FirstOrDefault(x => x.Value <= 3));
+		}
+
+		[Test]
+		public void WhenApplyingFloorExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => Math.Floor(x.Value) == 10d, "http://localhost/?$filter=floor(Value)+eq+10");
+		}
+
+		[Test]
+		public void WhenApplyingHourExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Date.Hour == 10, "http://localhost/?$filter=hour(Date)+eq+10");
+		}
+
+		[Test]
+		public void WhenApplyingIndexOfExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Content.IndexOf("text") > -1, "http://localhost/?$filter=indexof(Content,+'text')+gt+-1");
+		}
+
+		[Test]
+		public void WhenApplyingLengthExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Content.Length > 32, "http://localhost/?$filter=length(Content)+gt+32");
+		}
+
+		[Test]
+		public void WhenApplyingMinuteExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Date.Minute == 10, "http://localhost/?$filter=minute(Date)+eq+10");
+		}
+
+		[Test]
+		public void WhenApplyingMonthExpressionThenCallRestServiceWithFilterParameter()
+		{
+			VerifyCall(x => x.Date.Month == 10, "http://localhost/?$filter=month(Date)+eq+10");
+		}
+
+		[Test]
+		public void WhenApplyingMultipleProjectionsThenReturnsFinalProjection()
 		{
 			var result = _provider.Query
-				.Expand(x => x.Date.Year)
+				.Select(x => new { x.Content })
+				.Select(x => new ChildDto { Name = x.Content })
 				.ToArray();
 
-			var uri = new Uri("http://localhost/?$expand=Date/Year");
+			Assert.True(typeof(ChildDto) == result.First().GetType());
+		}
+
+		[Test]
+		public void WhenApplyingMultipleProjectionsThenUsesFirst()
+		{
+			var result = _provider.Query
+				.Select(x => new { x.Content })
+				.Select(x => new ChildDto { Name = x.Content })
+				.ToArray();
+
+			var uri = new Uri("http://localhost/?$select=Content");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
-		public void WhenApplyingEqualsQueryOnDateTimeThenCallsRestServiceWithFilter()
+		public void WhenApplyingNegateQueryThenCallsRestServiceWithFilter()
 		{
 			var result = _provider.Query
-				.Count(x => x.Date == new DateTime(2012, 5, 6, 16, 11, 00, DateTimeKind.Utc));
+				.Count(x => -x.Value < 3);
 
-			var uri = new Uri("http://localhost/?$filter=Date+eq+datetime'2012-05-06T16:11:00Z'");
+			var uri = new Uri("http://localhost/?$filter=-Value+lt+3");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
-		public void WhenApplyingEqualsQueryOnTimeSpanThenCallsRestServiceWithFilter()
+		public void WhenApplyingNotExpressionThenCallRestServiceWithFilterParameter()
 		{
-			var result = _provider.Query
-				.Count(x => x.Duration == new TimeSpan(2, 15, 0));
-
-			var uri = new Uri("http://localhost/?$filter=Duration+eq+time'PT2H15M'");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			VerifyCall(x => !(x.Value <= 3), "http://localhost/?$filter=not(Value+le+3)");
 		}
 
 		[Test]
 		[Ignore("For some reason the URI comparison fails for the same URIs.")]
-		public void WhenApplyingEqualsQueryOnDateTimeOffsetThenCallsRestServiceWithFilter()
+		public void WhenApplyingPostQueryInMiddleThenCallsRestServiceOnceWithFullQuery()
 		{
 			var result = _provider.Query
-				.Count(x => x.PointInTime == new DateTimeOffset(2012, 5, 6, 18, 10, 0, TimeSpan.FromHours(2)));
+				.Where(x => x.Value <= 3)
+				.Post(new SimpleDto { ID = 1 })
+				.Count(x => x.ID != 0);
 
-			var uri = new Uri("http://localhost/?$filter=PointInTime+eq+datetimeoffset'2012-05-06T18:10:00%2B02:00'");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			var uri = new Uri("http://localhost/?$filter=(Value+lt+3)+and+(ID+ne+0)");
+			_mockClient.Verify(x => x.Post(uri, It.IsAny<Stream>()), Times.Once());
 		}
 
 		[Test]
-		public void WhenApplyingQueryWithMultipleFiltersThenCallsRestServiceWithSingleFilterParameter()
+		public void WhenApplyingPostQueryThenCallsRestServiceOnce()
 		{
-			var result = _provider
-				.Query
+			var result = _provider.Query
 				.Where(x => x.Value <= 3)
-				.Where(x => x.Content == "blah")
-				.ToArray();
+				.Post(new SimpleDto { ID = 1 })
+				.Count(x => x.ID != 0);
 
-			var uri = new Uri("http://localhost/?$filter=(Value+le+3)+and+(Content+eq+'blah')");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			_mockClient.Verify(x => x.Post(It.IsAny<Uri>(), It.IsAny<Stream>()), Times.Once());
 		}
 
 		[Test]
-		public void WhenGroupByExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		[Ignore("For some reason the URI comparison fails for the same URIs.")]
+		public void WhenApplyingPutQueryInMiddleThenCallsRestServiceOnceWithFullQuery()
 		{
-			var result = _provider
-				.Query
+			var result = _provider.Query
 				.Where(x => x.Value <= 3)
-				.GroupBy(x => x.Content)
-				.ToArray();
+				.Put(new SimpleDto { ID = 1 })
+				.Count(x => x.ID != 0);
 
-			var uri = new Uri("http://localhost/?$filter=Value+le+3");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			var uri = new Uri("http://localhost/?$filter=(Value+lt+3)+and+(ID+ne+0)");
+			_mockClient.Verify(x => x.Put(uri, It.IsAny<Stream>()), Times.Once());
 		}
 
 		[Test]
-		public void WhenMaxExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		public void WhenApplyingPutQueryThenCallsRestServiceOnce()
 		{
-			var result = _provider
-				.Query
+			var result = _provider.Query
 				.Where(x => x.Value <= 3)
-				.Max(x => x.Value);
+				.Put(new SimpleDto { ID = 1 })
+				.Count(x => x.ID != 0);
 
-			var uri = new Uri("http://localhost/?$filter=Value+le+3");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			_mockClient.Verify(x => x.Put(It.IsAny<Uri>(), It.IsAny<Stream>()), Times.Once());
 		}
 
 		[Test]
-		public void WhenMinExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		public void WhenApplyingQueryThenCallsRestServiceOnce()
 		{
-			var result = _provider
-				.Query
+			var result = _provider.Query
 				.Where(x => x.Value <= 3)
-				.Min(x => x.Value);
+				.Count(x => x.ID != 0);
 
-			var uri = new Uri("http://localhost/?$filter=Value+le+3");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
-		}
-
-		[Test]
-		public void WhenAnyExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
-		{
-			var result = _provider
-				.Query
-				.Where(x => x.Value <= 3)
-				.Any(x => x.Value.Equals(3d));
-
-			var uri = new Uri("http://localhost/?$filter=Value+le+3");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			_mockClient.Verify(x => x.Get(It.IsAny<Uri>()), Times.Once());
 		}
 
 		[Test]
@@ -415,30 +481,7 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenApplyingQueryWithSingleOrDefaultFilterThenCallsRestServiceWithFilterParameter()
-		{
-			var result = _provider
-				.Query
-				.FirstOrDefault(x => x.Value <= 3);
-
-			var uri = new Uri("http://localhost/?$filter=Value+le+3&$top=1");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingQueryWithSingleOrDefaultFilterOnNavigationPropertyThenCallsRestServiceWithFilterParameter()
-		{
-			var result = _complexProvider
-				.Query
-				.FirstOrDefault(x => x.Child.Name == "Foo");
-
-			var uri = new Uri("http://localhost/?$filter=Child%2fName+eq+'Foo'&$top=1");
-
-			_mockComplexClient.Verify(x => x.Get(uri), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingQueryWithSingleFilterThenCallsRestServiceWithFilterParameter()
+		public void WhenApplyingQueryWithFirstFilterThenCallsRestServiceWithFilterParameter()
 		{
 			var result = _provider
 				.Query
@@ -460,13 +503,13 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenApplyingQueryWithFirstFilterThenCallsRestServiceWithFilterParameter()
+		public void WhenApplyingQueryWithLastFilterThenCallsRestServiceWithFilterParameter()
 		{
 			var result = _provider
 				.Query
-				.First(x => x.Value <= 3);
+				.Last(x => x.Value <= 3);
 
-			var uri = new Uri("http://localhost/?$filter=Value+le+3&$top=1");
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -482,20 +525,47 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenApplyingQueryWithLastFilterThenCallsRestServiceWithFilterParameter()
+		public void WhenApplyingQueryWithMultipleFiltersThenCallsRestServiceWithSingleFilterParameter()
 		{
 			var result = _provider
 				.Query
-				.Last(x => x.Value <= 3);
+				.Where(x => x.Value <= 3)
+				.Where(x => x.Content == "blah")
+				.ToArray();
 
-			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			var uri = new Uri("http://localhost/?$filter=(Value+le+3)+and+(Content+eq+'blah')");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
-		public void WhenSelectQueryProjectsIntoMemberWithDifferentNameThenThrows()
+		public void WhenApplyingQueryWithMultipleSelectionsThenCallsRestServiceWithSelectParameter()
 		{
-			Assert.Throws<InvalidOperationException>(() => _provider.Query.Select(x => new { Something = x.Value }).Count());
+			var result = _provider.Query
+				.Select(x => new { x.Value, x.Content })
+				.Count();
+
+			var uri = new Uri("http://localhost/?$select=Value,Content");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithNoFilterThenCallsRestServiceOnce()
+		{
+			var result = _provider.Query.ToList();
+
+			var uri = new Uri("http://localhost/");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithOrderingThenCallsRestServiceWithOrderParameter()
+		{
+			var result = _provider.Query
+				.OrderBy(x => x.Value)
+				.Count();
+
+			var uri = new Uri("http://localhost/?$orderby=Value");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
@@ -510,13 +580,36 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenApplyingQueryWithMultipleSelectionsThenCallsRestServiceWithSelectParameter()
+		public void WhenApplyingQueryWithSingleFilterThenCallsRestServiceWithFilterParameter()
 		{
-			var result = _provider.Query
-				.Select(x => new { x.Value, x.Content })
-				.Count();
+			var result = _provider
+				.Query
+				.First(x => x.Value <= 3);
 
-			var uri = new Uri("http://localhost/?$select=Value,Content");
+			var uri = new Uri("http://localhost/?$filter=Value+le+3&$top=1");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithSingleOrDefaultFilterOnNavigationPropertyThenCallsRestServiceWithFilterParameter()
+		{
+			var result = _complexProvider
+				.Query
+				.FirstOrDefault(x => x.Child.Name == "Foo");
+
+			var uri = new Uri("http://localhost/?$filter=Child%2fName+eq+'Foo'&$top=1");
+
+			_mockComplexClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingQueryWithSingleOrDefaultFilterThenCallsRestServiceWithFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.FirstOrDefault(x => x.Value <= 3);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3&$top=1");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
@@ -543,114 +636,21 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenApplyingQueryWithOrderingThenCallsRestServiceWithOrderParameter()
+		public void WhenApplyingRoundExpressionThenCallRestServiceWithFilterParameter()
 		{
-			var result = _provider.Query
-				.OrderBy(x => x.Value)
-				.Count();
-
-			var uri = new Uri("http://localhost/?$orderby=Value");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			VerifyCall(x => Math.Round(x.Value) == 10d, "http://localhost/?$filter=round(Value)+eq+10");
 		}
 
 		[Test]
-		public void WhenApplyingMultipleProjectionsThenUsesFirst()
+		public void WhenApplyingSecondExpressionThenCallRestServiceWithFilterParameter()
 		{
-			var result = _provider.Query
-				.Select(x => new { x.Content })
-				.Select(x => new ChildDto { Name = x.Content })
-				.ToArray();
-
-			var uri = new Uri("http://localhost/?$select=Content");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingMultipleProjectionsThenReturnsFinalProjection()
-		{
-			var result = _provider.Query
-				.Select(x => new { x.Content })
-				.Select(x => new ChildDto { Name = x.Content })
-				.ToArray();
-
-			Assert.True(typeof(ChildDto) == result.First().GetType());
-		}
-
-		[Test]
-		public void WhenApplyingAllOperationsThenCallsRestServiceWithAllParametersSet()
-		{
-			var result = _provider.Query
-				.Where(x => x.Value <= 3)
-				.Select(x => new { x.Value, x.Content })
-				.OrderBy(x => x.Value)
-				.Skip(1)
-				.Take(1)
-				.Count();
-
-			var uri = new Uri("http://localhost/?$filter=Value+le+3&$select=Value,Content&$skip=1&$top=1&$orderby=Value");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingEqualityExpressionForFlagsEnumThenCallsRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Choice == Choice.That, "http://localhost/?$filter=Choice+eq+That");
-		}
-
-		[Test]
-		public void WhenApplyingEqualityExpressionForCatpuredVariableThenCallsRestServiceWithFilterParameter()
-		{
-			const double Variable = 2.0;
-			VerifyCall(x => x.Value == Variable, "http://localhost/?$filter=Value+eq+2");
-		}
-
-		[Test]
-		public void WhenApplyingEqualityExpressionForCatpuredVariablePropertyThenCallsRestServiceWithFilterParameter()
-		{
-			const string Variable = "blah";
-			VerifyCall(x => x.Value == Variable.Length, "http://localhost/?$filter=Value+eq+4");
-		}
-
-		[Test]
-		public void WhenApplyingNotExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => !(x.Value <= 3), "http://localhost/?$filter=not(Value+le+3)");
-		}
-
-		[Test]
-		public void WhenApplyingCompareGreaterExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Content.CompareTo("text") > 0, "http://localhost/?$filter=Content+gt+'text'");
-		}
-
-		[Test]
-		public void WhenApplyingCompareLesserExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Content.CompareTo("text") <= 0, "http://localhost/?$filter=Content+le+'text'");
-		}
-
-		[Test]
-		public void WhenApplyingIndexOfExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Content.IndexOf("text") > -1, "http://localhost/?$filter=indexof(Content,+'text')+gt+-1");
+			VerifyCall(x => x.Date.Second == 10, "http://localhost/?$filter=second(Date)+eq+10");
 		}
 
 		[Test]
 		public void WhenApplyingStartsWithExpressionThenCallRestServiceWithFilterParameter()
 		{
 			VerifyCall(x => x.Content.StartsWith("text"), "http://localhost/?$filter=startswith(Content,+'text')");
-		}
-
-		[Test]
-		public void WhenApplyingEndsWithExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Content.EndsWith("text"), "http://localhost/?$filter=endswith(Content,+'text')");
-		}
-
-		[Test]
-		public void WhenApplyingLengthExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Content.Length > 32, "http://localhost/?$filter=length(Content)+gt+32");
 		}
 
 		[Test]
@@ -684,120 +684,31 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenApplyingSecondExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Date.Second == 10, "http://localhost/?$filter=second(Date)+eq+10");
-		}
-
-		[Test]
-		public void WhenApplyingMinuteExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Date.Minute == 10, "http://localhost/?$filter=minute(Date)+eq+10");
-		}
-
-		[Test]
-		public void WhenApplyingHourExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Date.Hour == 10, "http://localhost/?$filter=hour(Date)+eq+10");
-		}
-
-		[Test]
-		public void WhenApplyingDayExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Date.Day == 10, "http://localhost/?$filter=day(Date)+eq+10");
-		}
-
-		[Test]
-		public void WhenApplyingMonthExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => x.Date.Month == 10, "http://localhost/?$filter=month(Date)+eq+10");
-		}
-
-		[Test]
 		public void WhenApplyingYearExpressionThenCallRestServiceWithFilterParameter()
 		{
 			VerifyCall(x => x.Date.Year == 10, "http://localhost/?$filter=year(Date)+eq+10");
 		}
 
 		[Test]
-		public void WhenApplyingRoundExpressionThenCallRestServiceWithFilterParameter()
+		[Ignore("Stupid URL comparison.")]
+		public void WhenBaseUriHasQueryParametersThenTheyArePreservedInTheRequest()
 		{
-			VerifyCall(x => Math.Round(x.Value) == 10d, "http://localhost/?$filter=round(Value)+eq+10");
-		}
+			var client = new Mock<IRestClient>();
+			client.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost?abc=123"));
+			client.Setup(x => x.Get(It.IsAny<Uri>()))
+				.Callback<Uri>(u => Console.WriteLine(u.ToString()))
+				.Returns(() => _singleResponse.ToStream());
+			var provider = new RestContext<SimpleDto>(client.Object, new TestSerializerFactory());
 
-		[Test]
-		public void WhenApplyingFloorExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => Math.Floor(x.Value) == 10d, "http://localhost/?$filter=floor(Value)+eq+10");
-		}
+			Expression<Func<SimpleDto, bool>> expression = x => x.Value == 5;
+			var result =
+				provider
+					.Query
+					.Where(expression)
+					.ToArray();
 
-		[Test]
-		public void WhenApplyingCeilingExpressionThenCallRestServiceWithFilterParameter()
-		{
-			VerifyCall(x => Math.Ceiling(x.Value) == 10d, "http://localhost/?$filter=ceiling(Value)+eq+10");
-		}
-
-		[Test]
-		public void WhenApplyingExpandThenCallsRestServiceWithExpandParameterSet()
-		{
-			var result = _provider.Query
-				.Expand("Foo,Bar/Qux")
-				.ToList();
-
-			var uri = new Uri("http://localhost/?$expand=Foo,Bar/Qux");
+			var uri = new Uri("http://localhost/?abc=123&$filter=Value+eq+5");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingExpandWithOrderByThenCallsRestServiceWithExpandParameterSet()
-		{
-			var result = _provider.Query
-				.Expand("Foo,Bar/Qux")
-				.OrderBy(x => x.Date)
-				.ToList();
-
-			var uri = new Uri("http://localhost/?$orderby=Date&$expand=Foo,Bar/Qux");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingFilterWithAnyOnRootCollectionThenCallsRestServiceWithAnySyntax()
-		{
-			var result = _collectionProvider.Query
-				.Where(x => x.Children.Any(y => y.ID == 2))
-				.ToList();
-
-			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/any(y:+y/ID+eq+2)")), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingEmptyAnyOperatorThenSendEmptyPredicate()
-		{
-			var result = _collectionProvider.Query
-				.Where(x => x.Children.Any())
-				.ToList();
-
-			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/any(Param_0:+true)")), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingFilterWithAllOnRootCollectionThenCallsRestServiceWithAllSyntax()
-		{
-			var result = _collectionProvider.Query
-				.Where(x => x.Children.All(y => y.ID == 2))
-				.ToList();
-
-			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/all(y:+y/ID+eq+2)")), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingFilterWithAllOnRootCollectionAndFunctionThenCallsRestServiceWithAllSyntax()
-		{
-			var result = _collectionProvider.Query
-				.Where(x => x.Children.All(y => y.ID == 2 + x.ID))
-				.ToList();
-
-			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/all(y:+y/ID+eq+2+add+ID)")), Times.Once());
 		}
 
 		[Test]
@@ -809,6 +720,84 @@ namespace Linq2Rest.Tests.Provider
 				.ToList();
 
 			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Content+eq+'foo'+or+Content+eq+'bar'")), Times.Once());
+		}
+
+		[Test]
+		public void WhenDisposingThenDoesNotThrow()
+		{
+			Assert.DoesNotThrow(() => _provider.Dispose());
+		}
+
+		[Test]
+		public void WhenGroupByExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.Where(x => x.Value <= 3)
+				.GroupBy(x => x.Content)
+				.ToArray();
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenMainExpressionIsContainedInIsTrueExpressionThenUsesOperandExpression()
+		{
+			var parameter = Expression.Parameter(typeof(SimpleDto), "x");
+			var trueExpression =
+				Expression.IsTrue(
+					Expression.LessThanOrEqual(Expression.Property(parameter, "Value"), Expression.Constant(3d)));
+
+			var result =
+				_provider
+					.Query
+					.Where(Expression.Lambda<Func<SimpleDto, bool>>(trueExpression, parameter))
+					.Count(x => x.ID != 0);
+
+			var uri = new Uri("http://localhost/?$filter=(Value+le+3)+and+(ID+ne+0)");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenMaxExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.Where(x => x.Value <= 3)
+				.Max(x => x.Value);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenMinExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var result = _provider
+				.Query
+				.Where(x => x.Value <= 3)
+				.Min(x => x.Value);
+
+			var uri = new Uri("http://localhost/?$filter=Value+le+3");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		[Test]
+		public void WhenSelectQueryProjectsIntoMemberWithDifferentNameThenThrows()
+		{
+			Assert.Throws<InvalidOperationException>(() => _provider.Query.Select(x => new { Something = x.Value }).Count());
+		}
+
+		[Test]
+		public void WhenUsingArrayLengthExpressionThenResolvesValue()
+		{
+			var names = new[] { "foo", "bar" };
+			var result = _collectionProvider.Query
+				.Where(c => c.Value == names.Length)
+				.ToList();
+
+			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Value+eq+2")), Times.Once());
 		}
 
 		[Test]
@@ -834,23 +823,33 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenUsingArrayLengthExpressionThenResolvesValue()
+		public void WhenValueExpressionContainsCastingThenResolvesValue()
 		{
-			var names = new[] { "foo", "bar" };
-			var result = _collectionProvider.Query
-				.Where(c => c.Value == names.Length)
-				.ToList();
+			object value = "hello";
+			Expression<Func<SimpleDto, bool>> expression = x => x.Value == ((string)value).Length;
+			var result =
+				_provider
+					.Query
+					.Where(expression)
+					.ToArray();
 
-			_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Value+eq+2")), Times.Once());
+			var uri = new Uri("http://localhost/?$filter=Value+eq+5");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 
-		private void VerifyCall(Expression<Func<SimpleDto, bool>> selection, string expectedUri)
+		[Test]
+		public void WhenValueExpressionContainsSafeCastingThenResolvesValue()
 		{
-			var result = _provider.Query
-				.Where(selection)
-				.Count();
+			object value = "hello";
+			Expression<Func<SimpleDto, bool>> expression = x => x.Value == (value as string).Length;
+			var result =
+				_provider
+					.Query
+					.Where(expression)
+					.ToArray();
 
-			_mockClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == expectedUri)), Times.Once());
+			var uri = new Uri("http://localhost/?$filter=Value+eq+5");
+			_mockClient.Verify(x => x.Get(uri), Times.Once());
 		}
 	}
 }

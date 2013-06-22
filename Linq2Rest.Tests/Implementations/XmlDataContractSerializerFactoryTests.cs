@@ -20,19 +20,13 @@ namespace Linq2Rest.Tests.Implementations
 	[TestFixture]
 	public class XmlDataContractSerializerFactoryTests
 	{
-		private XmlDataContractSerializerFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new XmlDataContractSerializerFactory(Type.EmptyTypes);
 		}
 
-		[Test]
-		public void WhenCreatingSerializerThenDoesNotReturnNull()
-		{
-			Assert.NotNull(_factory.Create<SimpleContractItem>());
-		}
+		private XmlDataContractSerializerFactory _factory;
 
 		[Test]
 		public void CreatedSerializerCanDeserializeDataContractType()
@@ -48,6 +42,18 @@ namespace Linq2Rest.Tests.Implementations
 		}
 
 		[Test]
+		public void CreatedSerializerCanDeserializeListOfDataContractType()
+		{
+			const string Xml = "<ArrayOfSimpleContractItem xmlns=\"http://schemas.datacontract.org/2004/07/Linq2Rest.Tests.Implementations\"><SimpleContractItem><Text>test</Text><Value>2</Value></SimpleContractItem></ArrayOfSimpleContractItem>";
+
+			var serializer = _factory.Create<SimpleContractItem>();
+
+			var deserializedResult = serializer.DeserializeList(Xml.ToStream());
+
+			Assert.AreEqual(1, deserializedResult.Count());
+		}
+
+		[Test]
 		public void CreatedSerializerCanSerializeDataContractType()
 		{
 			var serializer = _factory.Create<SimpleContractItem>();
@@ -58,15 +64,9 @@ namespace Linq2Rest.Tests.Implementations
 		}
 
 		[Test]
-		public void CreatedSerializerCanDeserializeListOfDataContractType()
+		public void WhenCreatingSerializerThenDoesNotReturnNull()
 		{
-			const string Xml = "<ArrayOfSimpleContractItem xmlns=\"http://schemas.datacontract.org/2004/07/Linq2Rest.Tests.Implementations\"><SimpleContractItem><Text>test</Text><Value>2</Value></SimpleContractItem></ArrayOfSimpleContractItem>";
-
-			var serializer = _factory.Create<SimpleContractItem>();
-
-			var deserializedResult = serializer.DeserializeList(Xml.ToStream());
-
-			Assert.AreEqual(1, deserializedResult.Count());
+			Assert.NotNull(_factory.Create<SimpleContractItem>());
 		}
 	}
 }

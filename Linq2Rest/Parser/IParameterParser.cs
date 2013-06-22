@@ -37,7 +37,7 @@ namespace Linq2Rest.Parser
 		public IModelFilter<T> Parse(NameValueCollection queryParameters)
 		{
 			Contract.Requires<ArgumentNullException>(queryParameters != null);
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

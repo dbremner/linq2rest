@@ -19,7 +19,7 @@ namespace Linq2Rest.Implementations
 	using System.Linq;
 	using System.Runtime.Serialization;
 	using System.Xml;
-	using Linq2Rest.Provider;
+	using Provider;
 
 	/// <summary>
 	/// Defines the XmlDataContractSerializer factory.
@@ -57,8 +57,8 @@ namespace Linq2Rest.Implementations
 
 		private class XmlDataContractSerializer<T> : ISerializer<T>
 		{
-			private readonly DataContractSerializer _serializer;
 			private readonly DataContractSerializer _listSerializer;
+			private readonly DataContractSerializer _serializer;
 
 			public XmlDataContractSerializer(IEnumerable<Type> knownTypes)
 			{

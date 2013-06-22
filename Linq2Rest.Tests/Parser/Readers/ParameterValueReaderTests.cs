@@ -21,18 +21,6 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class ParameterValueReaderTests
 	{
-		[Test]
-		public void EnumIsAssignableFromAnEnumType()
-		{
-			Assert.IsTrue(typeof(Enum).IsAssignableFrom(typeof(Choice)));
-		}
-
-		[Test]
-		public void DecimalIsNotAssignableFromDouble()
-		{
-			Assert.False(typeof(decimal).IsAssignableFrom(typeof(double)));
-		}
-
 		[TestCase("null", typeof(string))]
 		[TestCase("'test'", typeof(string))]
 		[TestCase("guid'D81D5F0C-2574-4D5C-A394-E280E6E02A7F'", typeof(Guid))]
@@ -90,6 +78,18 @@ namespace Linq2Rest.Tests.Parser.Readers
 		public void CanConvertValidFilterValue(string token, Type type)
 		{
 			Assert.DoesNotThrow(() => ParameterValueReader.Read(type, token, CultureInfo.CurrentCulture));
+		}
+
+		[Test]
+		public void DecimalIsNotAssignableFromDouble()
+		{
+			Assert.False(typeof(decimal).IsAssignableFrom(typeof(double)));
+		}
+
+		[Test]
+		public void EnumIsAssignableFromAnEnumType()
+		{
+			Assert.IsTrue(typeof(Enum).IsAssignableFrom(typeof(Choice)));
 		}
 	}
 }

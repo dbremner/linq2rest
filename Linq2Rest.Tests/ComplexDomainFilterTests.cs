@@ -10,20 +10,17 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Specialized;
-using System.Linq;
-using Linq2Rest.Parser;
-using Linq2Rest.Tests.Fakes.ComplexDomain;
-
 namespace Linq2Rest.Tests
 {
+	using System.Collections.Specialized;
+	using System.Linq;
+	using Fakes.ComplexDomain;
+	using Linq2Rest.Parser;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class ComplexDomainFilterTests
 	{
-		private TypeInstanceData[] _model;
-
 		[SetUp]
 		public void Setup()
 		{
@@ -63,6 +60,8 @@ namespace Linq2Rest.Tests
 						         }
 				         };
 		}
+
+		private TypeInstanceData[] _model;
 
 		[TestCase("Properties/any(pi: pi/DefinitionName eq 'Status' and pi/DefinitionName eq 'Approved')", 0)]
 		[TestCase("Properties/any(pi: pi/Values/any(v: v/StringNonUnicodeValue eq 'AAAAAApproved'))", 0)]

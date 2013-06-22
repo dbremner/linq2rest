@@ -13,12 +13,12 @@ namespace Linq2Rest.Reactive.WinRT.Sample
 {
 	using System;
 	using System.Reactive.Linq;
-	using Linq2Rest.Reactive.Implementations;
-	using Linq2Rest.Reactive.WinRT.Sample.Models;
-	using Linq2Rest.Reactive.WinRT.Sample.Support;
 	using Windows.UI.Core;
+	using Windows.UI.Xaml;
 	using Windows.UI.Xaml.Controls;
-	using Windows.UI.Xaml.Navigation;
+	using Implementations;
+	using Models;
+	using Support;
 
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
@@ -35,7 +35,7 @@ namespace Linq2Rest.Reactive.WinRT.Sample
 			films.Items.Add(film);
 		}
 
-		private void OnSearch(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		private void OnSearch(object sender, RoutedEventArgs e)
 		{
 			var button = sender as Button;
 			button.IsEnabled = false;

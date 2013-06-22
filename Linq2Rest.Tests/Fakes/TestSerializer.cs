@@ -19,8 +19,8 @@ namespace Linq2Rest.Tests.Fakes
 
 	public class TestSerializer<T> : ISerializer<T>
 	{
-		private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(T));
 		private readonly DataContractJsonSerializer _innerListSerializer = new DataContractJsonSerializer(typeof(List<T>));
+		private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(T));
 
 		public T Deserialize(Stream input)
 		{

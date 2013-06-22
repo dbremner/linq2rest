@@ -9,12 +9,12 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Diagnostics.Contracts;
-
 namespace Linq2Rest.Provider
 {
-    /// <summary>
+	using System;
+	using System.Diagnostics.Contracts;
+
+	/// <summary>
     /// Defines the public interface for a Lin2Rest.Provider.IHttpRequest object factory
     /// </summary>
     [ContractClass(typeof(HttpRequestFactoryContracts))]

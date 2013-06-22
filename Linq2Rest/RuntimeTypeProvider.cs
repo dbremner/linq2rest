@@ -20,7 +20,7 @@ namespace Linq2Rest
 	using System.Reflection;
 	using System.Reflection.Emit;
 	using System.Threading;
-	using Linq2Rest.Parser;
+	using Parser;
 
 	/// <summary>
 	/// Defines the RuntimeTypeProvider.

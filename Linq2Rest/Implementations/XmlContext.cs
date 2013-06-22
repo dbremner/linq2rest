@@ -12,11 +12,11 @@
 
 namespace Linq2Rest.Implementations
 {
-    using System;
-    using System.Diagnostics.Contracts;
-    using Linq2Rest.Provider;
+	using System;
+	using System.Diagnostics.Contracts;
+	using Provider;
 
-    /// <summary>
+	/// <summary>
     /// Defines the XmlContext class.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> of the item returned from the service.</typeparam>

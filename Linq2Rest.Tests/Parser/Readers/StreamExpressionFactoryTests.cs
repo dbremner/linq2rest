@@ -20,22 +20,14 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class StreamExpressionFactoryTests
 	{
-		private const string Base64 = "TWFuIGlzIG/pc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=";
-		private StreamExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new StreamExpressionFactory();
 		}
 
-		[Test]
-		public void WhenFilterIsIncorrectFormatThenThrows()
-		{
-			const string Parameter = "blah";
-
-			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
-		}
+		private const string Base64 = "TWFuIGlzIG/pc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=";
+		private StreamExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesBinaryParameterWithPrefixBinaryThenReturnedExpressionContainsStream()
@@ -51,6 +43,14 @@ namespace Linq2Rest.Tests.Parser.Readers
 			var expression = _factory.Convert(string.Format("X'{0}'", Base64));
 
 			Assert.IsAssignableFrom<MemoryStream>(expression.Value);
+		}
+
+		[Test]
+		public void WhenFilterIsIncorrectFormatThenThrows()
+		{
+			const string Parameter = "blah";
+
+			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
 		}
 	}
 }

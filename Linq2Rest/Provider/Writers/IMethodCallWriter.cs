@@ -15,7 +15,7 @@ namespace Linq2Rest.Provider.Writers
 	using System;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
-	
+
 	[ContractClass(typeof(MethodCallWriterContracts))]
 	internal interface IMethodCallWriter
 	{

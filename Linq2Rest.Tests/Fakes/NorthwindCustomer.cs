@@ -10,8 +10,6 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Runtime.Serialization;
-
 namespace Linq2Rest.Tests.Fakes
 {
 	public class NorthwindCustomer

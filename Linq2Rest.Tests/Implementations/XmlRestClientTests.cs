@@ -22,8 +22,8 @@ namespace Linq2Rest.Tests.Implementations
 	public class XmlRestClientTests
 	{
 		private const string XmlHeader = "application/xml";
-		private XmlRestClient _xmlClient;
 		private Mock<HttpWebRequest> _mockRequest;
+		private XmlRestClient _xmlClient;
 
 		[SetUp]
 		public void Setup()

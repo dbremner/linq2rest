@@ -20,19 +20,13 @@ namespace Linq2Rest.Tests.Implementations
 	[TestFixture]
 	public class JsonDataContractSerializerFactoryTests
 	{
-		private JsonDataContractSerializerFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new JsonDataContractSerializerFactory(Type.EmptyTypes);
 		}
 
-		[Test]
-		public void WhenCreatingSerializerThenDoesNotReturnNull()
-		{
-			Assert.NotNull(_factory.Create<SimpleContractItem>());
-		}
+		private JsonDataContractSerializerFactory _factory;
 
 		[Test]
 		public void CreatedSerializerCanDeserializeDataContractType()
@@ -48,6 +42,18 @@ namespace Linq2Rest.Tests.Implementations
 		}
 
 		[Test]
+		public void CreatedSerializerCanDeserializeListOfDataContractType()
+		{
+			const string Json = "[{\"Value\": 2, \"Text\":\"test\"}]";
+
+			var serializer = _factory.Create<SimpleContractItem>();
+
+			var deserializedResult = serializer.DeserializeList(Json.ToStream());
+
+			Assert.AreEqual(1, deserializedResult.Count());
+		}
+
+		[Test]
 		public void CreatedSerializerCanSerializeDataContractType()
 		{
 			var serializer = _factory.Create<SimpleContractItem>();
@@ -58,15 +64,9 @@ namespace Linq2Rest.Tests.Implementations
 		}
 
 		[Test]
-		public void CreatedSerializerCanDeserializeListOfDataContractType()
+		public void WhenCreatingSerializerThenDoesNotReturnNull()
 		{
-			const string Json = "[{\"Value\": 2, \"Text\":\"test\"}]";
-
-			var serializer = _factory.Create<SimpleContractItem>();
-
-			var deserializedResult = serializer.DeserializeList(Json.ToStream());
-
-			Assert.AreEqual(1, deserializedResult.Count());
+			Assert.NotNull(_factory.Create<SimpleContractItem>());
 		}
 	}
 }

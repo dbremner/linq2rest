@@ -43,13 +43,13 @@
 		public virtual bool Equals(PropertyInstanceData that)
 		{
 			// if data is null - not equal
-			if (object.ReferenceEquals(that, null))
+			if (ReferenceEquals(that, null))
 			{
 				return false;
 			}
 
 			// if data is has same reference to me - equal
-			if (object.ReferenceEquals(this, that))
+			if (ReferenceEquals(this, that))
 			{
 				return true;
 			}
@@ -57,13 +57,13 @@
 			// otherwise do comparison logic here
 
 			// First check it's the same definition name
-			if (!this.DefinitionName.Equals(that.DefinitionName))
+			if (!DefinitionName.Equals(that.DefinitionName))
 			{
 				return false;
 			}
 
 			// Second, check it's the same number of values
-			if (this.Values.Length != that.Values.Length)
+			if (Values.Length != that.Values.Length)
 			{
 				return false;
 			}

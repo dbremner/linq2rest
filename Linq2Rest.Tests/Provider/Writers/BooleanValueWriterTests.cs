@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class BooleanValueWriterTests
 	{
-		private BooleanValueWriter _writer;
-
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new BooleanValueWriter();
 		}
+
+		private BooleanValueWriter _writer;
 
 		[Test]
 		public void WhenWritingBooleanThenEnclosesInSingleQuote()

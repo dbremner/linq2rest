@@ -19,12 +19,21 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class TimeSpanValueWriterTests
 	{
-		private TimeSpanValueWriter _writer;
-
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new TimeSpanValueWriter();
+		}
+
+		private TimeSpanValueWriter _writer;
+
+		[Test]
+		public void WhenWritingShortTimeSpanValueThenWritesString()
+		{
+			var value = new TimeSpan(2, 15, 0);
+			var result = _writer.Write(value);
+
+			Assert.AreEqual("time'PT2H15M'", result);
 		}
 
 		[Test]
@@ -34,15 +43,6 @@ namespace Linq2Rest.Tests.Provider.Writers
 			var result = _writer.Write(value);
 
 			Assert.AreEqual("time'P2DT2H15M'", result);
-		}
-
-		[Test]
-		public void WhenWritingShortTimeSpanValueThenWritesString()
-		{
-			var value = new TimeSpan(2, 15, 0);
-			var result = _writer.Write(value);
-
-			Assert.AreEqual("time'PT2H15M'", result);
 		}
 	}
 }

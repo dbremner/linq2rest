@@ -17,8 +17,7 @@ namespace Linq2Rest
 	using System.Collections.Specialized;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
-
-	using Linq2Rest.Parser;
+	using Parser;
 
 	/// <summary>
 	/// Defines extension methods for model filters.

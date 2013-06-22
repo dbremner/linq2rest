@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class UnsignedLongValueWriterTests
 	{
-		private UnsignedLongValueWriter _writer;
-
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new UnsignedLongValueWriter();
 		}
+
+		private UnsignedLongValueWriter _writer;
 
 		[Test]
 		public void WhenWritingUnsignedLongValueThenWritesString()

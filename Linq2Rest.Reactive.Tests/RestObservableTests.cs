@@ -18,8 +18,7 @@ namespace Linq2Rest.Reactive.Tests
 	using System.Reactive.Linq;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using Linq2Rest.Reactive;
-	using Linq2Rest.Reactive.Tests.Fakes;
+	using Fakes;
 	using Moq;
 	using NUnit.Framework;
 
@@ -64,35 +63,6 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
-		public void WhenObservingOnDifferentSchedulerThenInvocationHappensOnDifferentThread()
-		{
-			var testThreadId = Thread.CurrentThread.ManagedThreadId;
-
-			var waitHandle = new ManualResetEvent(false);
-			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
-			observable
-				.Create()
-				.Where(x => x.StringValue == "blah")
-				.ObserveOn(Scheduler.Default)
-				.Subscribe(
-					x =>
-					{
-					},
-					() =>
-					{
-						var observerThreadId = Thread.CurrentThread.ManagedThreadId;
-						if (observerThreadId != testThreadId)
-						{
-							waitHandle.Set();
-						}
-					});
-
-			var result = waitHandle.WaitOne(2000);
-
-			Assert.True(result);
-		}
-
-		[Test]
 		public void WhenDisposingSubscriptionThenDoesNotExecute()
 		{
 			var completedWaitHandle = new ManualResetEvent(false);
@@ -115,6 +85,18 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
+		public void WhenGettingSingleThenReturnsResults()
+		{
+			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
+			var result = observable
+				.Create()
+				.Where(x => x.StringValue == "blah")
+				.SingleOrDefault();
+
+			Assert.Null(result);
+		}
+
+		[Test]
 		public void WhenGroupingSourceThenReturnsResults()
 		{
 			var waitHandle = new ManualResetEvent(false);
@@ -131,34 +113,7 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
-		public void WhenGettingSingleThenReturnsResults()
-		{
-			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
-			var result = observable
-				.Create()
-				.Where(x => x.StringValue == "blah")
-				.SingleOrDefault();
-
-			Assert.Null(result);
-		}
-
-		[Test]
-		public void WhenResultReturnedThenCompletesSubscription()
-		{
-			var waitHandle = new ManualResetEvent(false);
-			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
-			var subscription = observable
-				.Create()
-				.Where(x => x.StringValue == "blah")
-				.Subscribe(x => { }, () => waitHandle.Set());
-
-			var result = waitHandle.WaitOne();
-
-			Assert.True(result);
-		}
-
-		[Test]
-		public void WhenInvokingThenCallsRestClient()
+		public void WhenInvokingDeleteThenHttpMethodIsSetOnClientFactory()
 		{
 			var waitHandle = new ManualResetEvent(false);
 
@@ -172,35 +127,13 @@ namespace Linq2Rest.Reactive.Tests
 
 			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
 				.Create()
+				.Delete()
 				.Where(x => x.StringValue == "blah")
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
 			waitHandle.WaitOne(5000);
 
-			mockRestClient.Verify(x => x.Download());
-		}
-
-		[Test]
-		public void WhenInvokingWithExpandThenCallsRestClient()
-		{
-			var waitHandle = new ManualResetEvent(false);
-
-			var mockRestClient = new Mock<IAsyncRestClient>();
-			mockRestClient.Setup(x => x.Download())
-				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
-
-			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
-			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
-			mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(mockRestClient.Object);
-
-			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
-				.Create()
-				.Expand(i => i.Children, i => i.MoreChildren)
-				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
-
-			waitHandle.WaitOne(5000);
-
-			mockRestClient.Verify(x => x.Download());
+			mockClientFactory.Verify(x => x.SetMethod(HttpMethod.Delete));
 		}
 
 		[Test]
@@ -252,7 +185,7 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
-		public void WhenInvokingDeleteThenHttpMethodIsSetOnClientFactory()
+		public void WhenInvokingThenCallsRestClient()
 		{
 			var waitHandle = new ManualResetEvent(false);
 
@@ -266,13 +199,79 @@ namespace Linq2Rest.Reactive.Tests
 
 			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
 				.Create()
-				.Delete()
 				.Where(x => x.StringValue == "blah")
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
 			waitHandle.WaitOne(5000);
 
-			mockClientFactory.Verify(x => x.SetMethod(HttpMethod.Delete));
+			mockRestClient.Verify(x => x.Download());
+		}
+
+		[Test]
+		public void WhenInvokingWithExpandThenCallsRestClient()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			var mockRestClient = new Mock<IAsyncRestClient>();
+			mockRestClient.Setup(x => x.Download())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
+
+			var mockClientFactory = new Mock<IAsyncRestClientFactory>();
+			mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
+			mockClientFactory.Setup(x => x.Create(It.IsAny<Uri>())).Returns(mockRestClient.Object);
+
+			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
+				.Create()
+				.Expand(i => i.Children, i => i.MoreChildren)
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(5000);
+
+			mockRestClient.Verify(x => x.Download());
+		}
+
+		[Test]
+		public void WhenObservingOnDifferentSchedulerThenInvocationHappensOnDifferentThread()
+		{
+			var testThreadId = Thread.CurrentThread.ManagedThreadId;
+
+			var waitHandle = new ManualResetEvent(false);
+			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
+			observable
+				.Create()
+				.Where(x => x.StringValue == "blah")
+				.ObserveOn(Scheduler.Default)
+				.Subscribe(
+					x =>
+					{
+					},
+					() =>
+					{
+						var observerThreadId = Thread.CurrentThread.ManagedThreadId;
+						if (observerThreadId != testThreadId)
+						{
+							waitHandle.Set();
+						}
+					});
+
+			var result = waitHandle.WaitOne(2000);
+
+			Assert.True(result);
+		}
+
+		[Test]
+		public void WhenResultReturnedThenCompletesSubscription()
+		{
+			var waitHandle = new ManualResetEvent(false);
+			var observable = new RestObservable<FakeItem>(new FakeAsyncRestClientFactory(), new TestSerializerFactory());
+			var subscription = observable
+				.Create()
+				.Where(x => x.StringValue == "blah")
+				.Subscribe(x => { }, () => waitHandle.Set());
+
+			var result = waitHandle.WaitOne();
+
+			Assert.True(result);
 		}
 	}
 }

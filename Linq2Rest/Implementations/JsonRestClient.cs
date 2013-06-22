@@ -10,12 +10,11 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Linq2Rest.Provider;
-
 namespace Linq2Rest.Implementations
 {
 	using System;
 	using System.Diagnostics.Contracts;
+	using Provider;
 
 	/// <summary>
 	/// Defines a REST client implementation for JSON requests.

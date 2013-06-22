@@ -9,13 +9,12 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-
-using System.Diagnostics.Contracts;
-using System.IO;
-
 namespace Linq2Rest.Provider
 {
-    /// <summary>
+	using System.Diagnostics.Contracts;
+	using System.IO;
+
+	/// <summary>
     /// Extensions on the IHttpRequest interface (aka Extension Interface Pattern). 
     /// </summary>
     public static class IHttpRequestExtensions

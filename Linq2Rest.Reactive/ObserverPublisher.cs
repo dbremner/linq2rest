@@ -7,8 +7,8 @@ namespace Linq2Rest.Reactive
 
 	internal class ObserverPublisher<T> : IObserver<T>
 	{
-		private readonly IEnumerable<IObserver<T>> _observers;
 		private readonly IScheduler _observerScheduler;
+		private readonly IEnumerable<IObserver<T>> _observers;
 
 		public ObserverPublisher(IEnumerable<IObserver<T>> observers, IScheduler observerScheduler)
 		{

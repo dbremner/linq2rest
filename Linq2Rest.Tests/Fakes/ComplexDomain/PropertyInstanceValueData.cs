@@ -66,13 +66,13 @@
 		public virtual bool Equals(PropertyInstanceValueData that)
 		{
 			// if that is null - not equal
-			if (object.ReferenceEquals(that, null))
+			if (ReferenceEquals(that, null))
 			{
 				return false;
 			}
 
 			// if that is has same reference to me - equal
-			if (object.ReferenceEquals(this, that))
+			if (ReferenceEquals(this, that))
 			{
 				return true;
 			}

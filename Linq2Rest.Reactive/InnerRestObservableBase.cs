@@ -21,14 +21,14 @@ namespace Linq2Rest.Reactive
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using System.Threading;
-	using Linq2Rest.Provider;
+	using Provider;
 
 	internal abstract class InnerRestObservableBase<T> : IQbservable<T>
 	{
 		private readonly IAsyncRestClientFactory _restClient;
 		private readonly ISerializerFactory _serializerFactory;
-		private IDisposable _subscribeSubscription;
 		private IDisposable _internalSubscription;
+		private IDisposable _subscribeSubscription;
 
 		internal InnerRestObservableBase(
 			IAsyncRestClientFactory restClient,
@@ -49,24 +49,6 @@ namespace Linq2Rest.Reactive
 			Expression = expression ?? Expression.Constant(this);
 		}
 
-		/// <summary>
-		/// Gets the type of the element(s) that are returned when the expression tree associated with this instance of IQbservable is executed.
-		/// </summary>
-		public Type ElementType
-		{
-			get { return typeof(T); }
-		}
-
-		/// <summary>
-		/// Gets the expression tree that is associated with the instance of IQbservable.
-		/// </summary>
-		public Expression Expression { get; private set; }
-
-		/// <summary>
-		/// Gets the query provider that is associated with this data source.
-		/// </summary>
-		public abstract IQbservableProvider Provider { get; }
-
 		public ISerializerFactory SerializerFactory
 		{
 			get { return _serializerFactory; }
@@ -84,6 +66,24 @@ namespace Linq2Rest.Reactive
 		protected IScheduler ObserverScheduler { get; private set; }
 
 		protected IScheduler SubscriberScheduler { get; private set; }
+
+		/// <summary>
+		/// Gets the type of the element(s) that are returned when the expression tree associated with this instance of IQbservable is executed.
+		/// </summary>
+		public Type ElementType
+		{
+			get { return typeof(T); }
+		}
+
+		/// <summary>
+		/// Gets the expression tree that is associated with the instance of IQbservable.
+		/// </summary>
+		public Expression Expression { get; private set; }
+
+		/// <summary>
+		/// Gets the query provider that is associated with this data source.
+		/// </summary>
+		public abstract IQbservableProvider Provider { get; }
 
 		/// <summary>
 		/// Notifies the provider that an observer is to receive notifications.

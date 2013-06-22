@@ -79,55 +79,32 @@ namespace Linq2Rest.Tests.Parser
 				};
 		}
 
-		[Test]
-		[TestCase(true)]
-		[TestCase(false)]
-		public void WhenRequestContainsNoSystemParametersThenReturnedModelFilterWithoutFiltering(bool useModelFilter)
+		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection)
 		{
-			var collection = new NameValueCollection();
-			var filteredItems = GetFilteredItems(useModelFilter, collection);
+			return GetFilteredItems(useModelFilter, collection, _items);
+		}
 
-			Assert.AreEqual(3, filteredItems.Count());
+		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection, FakeItem[] items)
+		{
+			var filteredItems = useModelFilter
+				? GetModelFilter(collection).Filter(items)
+				: items.Filter(collection);
+			return filteredItems.ToArray();
+		}
+
+		private IModelFilter<FakeItem> GetModelFilter(NameValueCollection parameters)
+		{
+			var filter = _parser.Parse(parameters);
+			return filter;
 		}
 
 		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
-		public void WhenRequestContainsFilterParameterAndSortThenReturnedModelFilterFilteringAndSortedByValue(bool useModelFilter)
+		public void WhenRequestContainsAnyFilterParameterThenReturnedModelFilterFilteringCollectionByValue(bool useModelFilter)
 		{
-			var collection = new NameValueCollection { { "$filter", "IntValue ge 1" }, { "$orderby", "IntValue desc" } };
-			var filteredItems = GetFilteredItems(useModelFilter, collection);
-
-			Assert.AreEqual(3, filteredItems.OfType<FakeItem>().ElementAt(0).IntValue);
-			Assert.AreEqual(2, filteredItems.OfType<FakeItem>().ElementAt(1).IntValue);
-			Assert.AreEqual(1, filteredItems.OfType<FakeItem>().ElementAt(2).IntValue);
-		}
-
-		[Test]
-		[TestCase(true)]
-		[TestCase(false)]
-		public void WhenRequestContainsFilterSortSkipAndTopThenReturnedModelFilterFilteringFindsItem(bool useModelFilter)
-		{
-			var collection = new NameValueCollection
-			                 	{
-			                 		{ "$filter", "IntValue ge 1" },
-			                 		{ "$skip", "1" },
-			                 		{ "$top", "1" },
-			                 		{ "$orderby", "IntValue desc" }
-			                 	};
-			var filteredItems = GetFilteredItems(useModelFilter, collection);
-
-			Assert.AreEqual(2, filteredItems.OfType<FakeItem>().ElementAt(0).IntValue);
-			Assert.AreEqual(1, filteredItems.Length);
-		}
-
-		[Test]
-		[TestCase(true)]
-		[TestCase(false)]
-		public void WhenRequestContainsFilterParameterThenReturnedModelFilterFilteringByValue(bool useModelFilter)
-		{
-			var collection = new NameValueCollection { { "$filter", "IntValue eq 1" } };
-			var filteredItems = GetFilteredItems(useModelFilter, collection);
+			var collection = new NameValueCollection { { "$filter", "Children/any(a: a/ChildStringValue eq '1')" } };
+			var filteredItems = GetFilteredItems(useModelFilter, collection, _nestedItems);
 
 			Assert.AreEqual(1, filteredItems.Count());
 		}
@@ -146,6 +123,48 @@ namespace Linq2Rest.Tests.Parser
 		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
+		public void WhenRequestContainsFilterParameterAndSortThenReturnedModelFilterFilteringAndSortedByValue(bool useModelFilter)
+		{
+			var collection = new NameValueCollection { { "$filter", "IntValue ge 1" }, { "$orderby", "IntValue desc" } };
+			var filteredItems = GetFilteredItems(useModelFilter, collection);
+
+			Assert.AreEqual(3, filteredItems.OfType<FakeItem>().ElementAt(0).IntValue);
+			Assert.AreEqual(2, filteredItems.OfType<FakeItem>().ElementAt(1).IntValue);
+			Assert.AreEqual(1, filteredItems.OfType<FakeItem>().ElementAt(2).IntValue);
+		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public void WhenRequestContainsFilterParameterThenReturnedModelFilterFilteringByValue(bool useModelFilter)
+		{
+			var collection = new NameValueCollection { { "$filter", "IntValue eq 1" } };
+			var filteredItems = GetFilteredItems(useModelFilter, collection);
+
+			Assert.AreEqual(1, filteredItems.Count());
+		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
+		public void WhenRequestContainsFilterSortSkipAndTopThenReturnedModelFilterFilteringFindsItem(bool useModelFilter)
+		{
+			var collection = new NameValueCollection
+							 {
+								 { "$filter", "IntValue ge 1" },
+								 { "$skip", "1" },
+								 { "$top", "1" },
+								 { "$orderby", "IntValue desc" }
+							 };
+			var filteredItems = GetFilteredItems(useModelFilter, collection);
+
+			Assert.AreEqual(2, filteredItems.OfType<FakeItem>().ElementAt(0).IntValue);
+			Assert.AreEqual(1, filteredItems.Length);
+		}
+
+		[Test]
+		[TestCase(true)]
+		[TestCase(false)]
 		public void WhenRequestContainsMathFunctionFilterParameterThenReturnedModelFilterFilteringByValue(bool useModelFilter)
 		{
 			var collection = new NameValueCollection { { "$filter", "floor(DoubleValue) gt 1" } };
@@ -157,12 +176,12 @@ namespace Linq2Rest.Tests.Parser
 		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
-		public void WhenRequestContainsAnyFilterParameterThenReturnedModelFilterFilteringCollectionByValue(bool useModelFilter)
+		public void WhenRequestContainsNoSystemParametersThenReturnedModelFilterWithoutFiltering(bool useModelFilter)
 		{
-			var collection = new NameValueCollection { { "$filter", "Children/any(a: a/ChildStringValue eq '1')" } };
-			var filteredItems = GetFilteredItems(useModelFilter, collection, _nestedItems);
+			var collection = new NameValueCollection();
+			var filteredItems = GetFilteredItems(useModelFilter, collection);
 
-			Assert.AreEqual(1, filteredItems.Count());
+			Assert.AreEqual(3, filteredItems.Count());
 		}
 
 		[Test]
@@ -185,25 +204,6 @@ namespace Linq2Rest.Tests.Parser
 			var filteredItems = GetFilteredItems(useModelFilter, collection);
 
 			Assert.AreEqual(1, filteredItems.Count());
-		}
-
-		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection)
-		{
-			return GetFilteredItems(useModelFilter, collection, _items);
-		}
-
-		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection, FakeItem[] items)
-		{
-			var filteredItems = useModelFilter
-									? GetModelFilter(collection).Filter(items)
-									: items.Filter(collection);
-			return filteredItems.ToArray();
-		}
-
-		private IModelFilter<FakeItem> GetModelFilter(NameValueCollection parameters)
-		{
-			var filter = _parser.Parse(parameters);
-			return filter;
 		}
 	}
 }

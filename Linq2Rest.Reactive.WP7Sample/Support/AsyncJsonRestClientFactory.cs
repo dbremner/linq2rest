@@ -10,20 +10,20 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-
 namespace Linq2Rest.Reactive.WP8.Sample.Support
 {
+	using System;
+	using System.IO;
+	using System.Net;
+	using System.Threading.Tasks;
+
 	/// <summary>
 	/// Defines the factory to create a REST client using JSON requests.
 	/// </summary>
 	public class AsyncJsonRestClientFactory : IAsyncRestClientFactory
 	{
-		private HttpMethod _method;
 		private Stream _input;
+		private HttpMethod _method;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AsyncJsonRestClientFactory"/> class.
@@ -62,9 +62,9 @@ namespace Linq2Rest.Reactive.WP8.Sample.Support
 
 		private class AsyncJsonRestClient : IAsyncRestClient
 		{
-			private readonly Uri _uri;
-			private readonly HttpMethod _method;
 			private readonly Stream _input;
+			private readonly HttpMethod _method;
+			private readonly Uri _uri;
 
 			public AsyncJsonRestClient(Uri uri, HttpMethod method, Stream input)
 			{

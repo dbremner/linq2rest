@@ -14,7 +14,10 @@ namespace Linq2Rest.Provider.Writers
 {
 	using System;
 	using System.Diagnostics.Contracts;
+
+#if NETFX_CORE
 	using System.Reflection;
+#endif
 
 	[ContractClass(typeof(ValueWriterContracts))]
 	internal interface IValueWriter

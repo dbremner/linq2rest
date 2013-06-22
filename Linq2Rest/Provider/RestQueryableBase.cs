@@ -30,6 +30,16 @@ namespace Linq2Rest.Provider
 			SerializerFactory = serializerFactory;
 		}
 
+		internal IRestClient Client { get; private set; }
+
+		internal ISerializerFactory SerializerFactory { get; set; }
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
 		/// <summary>
 		/// 	<see cref="Type"/> of T in IQueryable of T.
 		/// </summary>
@@ -48,10 +58,6 @@ namespace Linq2Rest.Provider
 		/// </summary>
 		public IQueryProvider Provider { get; protected set; }
 
-		internal IRestClient Client { get; private set; }
-
-		internal ISerializerFactory SerializerFactory { get; set; }
-
 		public IEnumerator<T> GetEnumerator()
 		{
 			var enumerable = Provider.Execute<IEnumerable<T>>(Expression);
@@ -61,12 +67,6 @@ namespace Linq2Rest.Provider
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return Provider.Execute<IEnumerable>(Expression).GetEnumerator();
-		}
-
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
 		}
 
 		protected virtual void Dispose(bool disposing)

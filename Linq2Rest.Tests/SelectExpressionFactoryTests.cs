@@ -13,22 +13,21 @@
 namespace Linq2Rest.Tests
 {
 	using System.Linq;
-	using Linq2Rest;
 	using Linq2Rest.Parser;
 	using NUnit.Framework;
 
 	public class SelectExpressionFactoryTests
 	{
-		private FakeItem[] _items;
 		private SelectExpressionFactory<FakeItem> _factory;
+		private FakeItem[] _items;
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
 			var memberNameResolver = new MemberNameResolver();
-			this._factory = new SelectExpressionFactory<FakeItem>(memberNameResolver, new RuntimeTypeProvider(memberNameResolver));
+			_factory = new SelectExpressionFactory<FakeItem>(memberNameResolver, new RuntimeTypeProvider(memberNameResolver));
 
-			this._items = new[]
+			_items = new[]
 				{
 					new FakeItem { IntValue = 2, DoubleValue = 5 },
 					new FakeItem { IntValue = 1, DoubleValue = 4 },
@@ -39,9 +38,9 @@ namespace Linq2Rest.Tests
 		[Test]
 		public void WhenApplyingSelectionThenReturnsObjectWithOnlySelectedPropertiesAsFields()
 		{
-			var expression = this._factory.Create("Number").Compile();
+			var expression = _factory.Create("Number").Compile();
 
-			var selection = this._items.Select(expression);
+			var selection = _items.Select(expression);
 
 			Assert.True(selection.All(x => x.GetType().GetProperty("Number") != null));
 		}

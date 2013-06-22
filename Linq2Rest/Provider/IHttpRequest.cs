@@ -9,14 +9,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Diagnostics.Contracts;
-using System.IO;
-
-
 namespace Linq2Rest.Provider
 {
-    /// <summary>
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.IO;
+
+	/// <summary>
     /// Defines the public enumeration of supported HTTP methods.
     /// </summary>
     public enum HttpMethod

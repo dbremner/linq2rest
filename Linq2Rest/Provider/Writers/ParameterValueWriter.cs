@@ -16,6 +16,7 @@ namespace Linq2Rest.Provider.Writers
 	using System.Collections.Generic;
 	using System.Globalization;
 	using System.Linq;
+
 #if NETFX_CORE
 	using System.Reflection;
 #endif

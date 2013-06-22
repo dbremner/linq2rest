@@ -15,8 +15,8 @@ namespace Linq2Rest.MvcSite.Controllers
 	using System;
 	using System.Linq;
 	using System.Web.Mvc;
-	using Linq2Rest.MvcSite.Models;
-	using Linq2Rest.MvcSite.Support;
+	using Models;
+	using Support;
 
 	public class SimpleController : Controller
 	{

@@ -13,7 +13,9 @@
 namespace Linq2Rest.Reactive.SL.IntegrationTests
 {
 	using System;
+	using System.Diagnostics;
 	using System.Windows;
+	using System.Windows.Browser;
 	using Microsoft.Silverlight.Testing;
 
 	public partial class App : Application
@@ -41,7 +43,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 			// If the app is running outside of the debugger then report the exception using
 			// the browser's exception mechanism. On IE this will display it a yellow alert 
 			// icon in the status bar and Firefox will display a script error.
-			if (!System.Diagnostics.Debugger.IsAttached)
+			if (!Debugger.IsAttached)
 			{
 				// NOTE: This will allow the application to continue running after an exception has been thrown
 				// but not handled. 
@@ -59,7 +61,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests
 				string errorMsg = e.ExceptionObject.Message + e.ExceptionObject.StackTrace;
 				errorMsg = errorMsg.Replace('"', '\'').Replace("\r\n", @"\n");
 
-				System.Windows.Browser.HtmlPage.Window.Eval("throw new Error(\"Unhandled Error in Silverlight Application " + errorMsg + "\");");
+				HtmlPage.Window.Eval("throw new Error(\"Unhandled Error in Silverlight Application " + errorMsg + "\");");
 			}
 			catch (Exception)
 			{

@@ -6,6 +6,7 @@
 namespace Linq2Rest.Provider
 {
 	using System;
+	using System.Diagnostics.CodeAnalysis;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 
@@ -29,7 +30,7 @@ namespace Linq2Rest.Provider
 		/// </summary>
 		/// <param name="expression">The expression to convert.</param>
 		/// <returns>An OData <see cref="string"/> representation.</returns>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Restriction is intended.")]
+		[SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Restriction is intended.")]
 		public string Convert<T>(Expression<Func<T, bool>> expression)
 		{
 			return _writer.Write(expression);
@@ -38,7 +39,7 @@ namespace Linq2Rest.Provider
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
-			Contract.Invariant(this._writer != null);
+			Contract.Invariant(_writer != null);
 		}
 	}
 }

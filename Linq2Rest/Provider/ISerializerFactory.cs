@@ -12,6 +12,7 @@
 
 namespace Linq2Rest.Provider
 {
+	using System;
 	using System.Diagnostics.Contracts;
 
 	/// <summary>
@@ -34,7 +35,7 @@ namespace Linq2Rest.Provider
 		public ISerializer<T> Create<T>()
 		{
 			Contract.Ensures(Contract.Result<ISerializer<T>>() != null);
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

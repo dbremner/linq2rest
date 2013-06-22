@@ -10,10 +10,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-
 namespace Linq2Rest.Tests.Fakes
 {
+	using System.Collections.Generic;
 	using System.Runtime.Serialization;
 
 	[DataContract]

@@ -13,13 +13,12 @@
 namespace Linq2Rest.Provider
 {
 	using System;
-	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Linq2Rest.Provider.Writers;
+	using Writers;
 
 	internal class ExpressionWriter : IExpressionWriter
 	{

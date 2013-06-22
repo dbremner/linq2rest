@@ -15,12 +15,12 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Runtime.Serialization.Json;
-	using Linq2Rest.Provider;
+	using Provider;
 
 	public class TestSerializer<T> : ISerializer<T>
 	{
-		private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(T));
 		private readonly DataContractJsonSerializer _innerListSerializer = new DataContractJsonSerializer(typeof(List<T>));
+		private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(T));
 
 		public T Deserialize(Stream input)
 		{

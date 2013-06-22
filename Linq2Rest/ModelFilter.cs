@@ -18,15 +18,15 @@ namespace Linq2Rest
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Web.UI.WebControls;
-	using Linq2Rest.Parser;
+	using Parser;
 
 	internal class ModelFilter<T> : IModelFilter<T>
 	{
-		private readonly int _skip;
-		private readonly int _top;
 		private readonly Expression<Func<T, bool>> _filterExpression;
 		private readonly Expression<Func<T, object>> _selectExpression;
+		private readonly int _skip;
 		private readonly IEnumerable<SortDescription<T>> _sortDescriptions;
+		private readonly int _top;
 
 		public ModelFilter(Expression<Func<T, bool>> filterExpression, Expression<Func<T, object>> selectExpression, IEnumerable<SortDescription<T>> sortDescriptions, int skip, int top)
 		{

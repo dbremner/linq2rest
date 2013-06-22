@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class DecimalValueWriterTests
 	{
-		private DecimalValueWriter _writer;
-
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new DecimalValueWriter();
 		}
+
+		private DecimalValueWriter _writer;
 
 		[Test]
 		public void WhenWritingDecimalValueThenWritesString()

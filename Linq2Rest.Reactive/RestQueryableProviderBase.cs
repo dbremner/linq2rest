@@ -12,19 +12,20 @@
 
 namespace Linq2Rest.Reactive
 {
+	using System;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using Linq2Rest.Provider;
+	using Provider;
 
 	[ContractClass(typeof(RestQueryableProviderBaseContracts))]
 	internal abstract class RestQueryableProviderBase : IQbservableProvider
 	{
 		private readonly IAsyncRestClientFactory _asyncRestClient;
+		private readonly IScheduler _observerScheduler;
 		private readonly ISerializerFactory _serializerFactory;
 		private readonly IScheduler _subscriberScheduler;
-		private readonly IScheduler _observerScheduler;
 
 		public RestQueryableProviderBase(
 			IAsyncRestClientFactory asyncRestClient,
@@ -121,7 +122,7 @@ namespace Linq2Rest.Reactive
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
 
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class ByteValueWriterTests
 	{
-		private ByteValueWriter _writer;
-
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new ByteValueWriter();
 		}
+
+		private ByteValueWriter _writer;
 
 		[Test]
 		public void WhenWritingByteValueThenWritesString()

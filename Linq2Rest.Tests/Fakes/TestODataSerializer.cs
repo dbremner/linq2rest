@@ -12,6 +12,7 @@
 
 namespace Linq2Rest.Tests.Fakes
 {
+	using System;
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Linq;
@@ -36,7 +37,7 @@ namespace Linq2Rest.Tests.Fakes
 
 		public Stream Serialize(T item)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

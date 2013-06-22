@@ -10,14 +10,14 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Json;
-using Linq2Rest.Provider;
-
 namespace Linq2Rest.Reactive.WinRT.Sample.Support
 {
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Linq;
+	using System.Runtime.Serialization.Json;
+	using Provider;
+
 	public class ODataSerializer<T> : ISerializer<T>
 	{
 		private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(ODataResponse<T>));

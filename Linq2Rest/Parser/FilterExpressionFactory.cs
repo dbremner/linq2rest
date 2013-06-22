@@ -20,7 +20,7 @@ namespace Linq2Rest.Parser
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Text.RegularExpressions;
-	using Linq2Rest.Parser.Readers;
+	using Readers;
 
 	/// <summary>
 	/// Defines the FilterExpressionFactory.
