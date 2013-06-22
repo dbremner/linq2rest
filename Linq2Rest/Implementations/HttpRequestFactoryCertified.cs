@@ -8,14 +8,14 @@
 //   Defines the public interface for an HTTP request.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-using System;
-using System.Diagnostics.Contracts;
-using System.Security.Cryptography.X509Certificates;
-using Linq2Rest.Provider;
 
 namespace Linq2Rest.Implementations
 {
-    /// <summary>
+	using System;
+	using System.Security.Cryptography.X509Certificates;
+	using Provider;
+
+	/// <summary>
     /// Creates an IHttpRequest with the given certificate attached to it
     /// </summary>
     class HttpRequestFactoryCertified : IHttpRequestFactory

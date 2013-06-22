@@ -16,6 +16,7 @@ namespace Linq2Rest.Provider
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
+
 #if !NETFX_CORE && !SILVERLIGHT
 	using System.Web;
 #endif

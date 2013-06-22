@@ -10,20 +10,17 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.ObjectModel;
-using System.Reactive.Linq;
-using Linq2Rest.Reactive.WP8.Sample.Models;
-using Linq2Rest.Reactive.WP8.Sample.Support;
-using Microsoft.Phone.Controls;
-
 namespace Linq2Rest.Reactive.WP8.Sample
 {
+	using System;
+	using System.Collections.ObjectModel;
 	using System.Reactive;
 	using System.Reactive.Concurrency;
+	using System.Reactive.Linq;
 	using System.Threading;
-	using System.Windows.Controls;
-	using System.Windows.Threading;
+	using Microsoft.Phone.Controls;
+	using Models;
+	using Support;
 
 	public partial class MainPage : PhoneApplicationPage
 	{

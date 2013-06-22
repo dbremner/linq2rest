@@ -20,20 +20,23 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class DateTimeOffsetExpressionFactoryTests
 	{
-		private DateTimeOffsetExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new DateTimeOffsetExpressionFactory();
 		}
 
-		[Test]
-		public void WhenFilterIsIncorrectFormatThenThrows()
-		{
-			const string Parameter = "blah";
+		private DateTimeOffsetExpressionFactory _factory;
 
-			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
+		[Test]
+		public void WhenFilterIncludesDateTimeOffsetParameterInDoubleQuotesThenReturnedExpressionContainsDateTimeOffset()
+		{
+			var dateTimeOffset = new DateTimeOffset(2012, 5, 6, 18, 10, 0, TimeSpan.FromHours(2));
+			var parameter = string.Format("datetimeoffset\"{0}\"", XmlConvert.ToString(dateTimeOffset));
+
+			var expression = _factory.Convert(parameter);
+
+			Assert.IsAssignableFrom<DateTimeOffset>(expression.Value);
 		}
 
 		[Test]
@@ -48,14 +51,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterIncludesDateTimeOffsetParameterInDoubleQuotesThenReturnedExpressionContainsDateTimeOffset()
+		public void WhenFilterIsIncorrectFormatThenThrows()
 		{
-			var dateTimeOffset = new DateTimeOffset(2012, 5, 6, 18, 10, 0, TimeSpan.FromHours(2));
-			var parameter = string.Format("datetimeoffset\"{0}\"", XmlConvert.ToString(dateTimeOffset));
+			const string Parameter = "blah";
 
-			var expression = _factory.Convert(parameter);
-
-			Assert.IsAssignableFrom<DateTimeOffset>(expression.Value);
+			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
 		}
 	}
 }

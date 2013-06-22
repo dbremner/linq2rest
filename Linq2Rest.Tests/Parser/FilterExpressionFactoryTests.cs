@@ -16,9 +16,7 @@ namespace Linq2Rest.Tests.Parser
 	using System.Globalization;
 	using System.Linq;
 	using System.Threading;
-
 	using Linq2Rest.Parser;
-
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -31,6 +29,62 @@ namespace Linq2Rest.Tests.Parser
 		{
 			Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
 			_factory = new FilterExpressionFactory();
+		}
+
+		[TestCase("DateValue eq 123", typeof(FormatException))]
+		[TestCase("DateValue eq datetime'123'", typeof(FormatException))]
+		[TestCase("PointInTime eq 'nothing'", typeof(InvalidOperationException))]
+		[TestCase("DoubleValue ge 'nothing'", typeof(InvalidOperationException))]
+		[TestCase("IntValue lt 'nothing'", typeof(InvalidOperationException))]
+		[TestCase("IntValue lt ('nothing' add 1)", typeof(InvalidOperationException))]
+		[TestCase("blah", typeof(InvalidOperationException))]
+		[TestCase("StringValue not foo", typeof(InvalidOperationException))]
+		[TestCase("'StringValue' not foo", typeof(InvalidOperationException))]
+		[TestCase("StringValue gt foo", typeof(InvalidOperationException))]
+		[TestCase("-StringValue eq 'blah'", typeof(InvalidOperationException))]
+		[TestCase("not DateValue", typeof(InvalidOperationException))]
+		[TestCase("not DoubleValue", typeof(InvalidOperationException))]
+		[TestCase("Not DoubleValue", typeof(InvalidOperationException))]
+		[TestCase("Duration eq time'PT2H15M' and Not DoubleValue", typeof(InvalidOperationException))]
+		[TestCase("\0\0", typeof(InvalidOperationException))]
+		public void WhenParsingInvalidExpressionThenThrows(string filter, Type exceptionType)
+		{
+			Assert.Throws(exceptionType, () => _factory.Create<FakeItem>(filter));
+		}
+
+		[Test]
+		public void CanHandleEqualComparisonWithEmptyGuid()
+		{
+			var result = _factory.Create<FakeItem>("GlobalID eq guid'00000000-0000-0000-0000-000000000000'");
+
+			Assert.AreEqual("x => (x.GlobalID == 00000000-0000-0000-0000-000000000000)", result.ToString());
+		}
+
+		[Test]
+		public void CanHandleNotEqualComparisonWithEmptyGuid()
+		{
+			var result = _factory.Create<FakeItem>("GlobalID ne guid'00000000-0000-0000-0000-000000000000'");
+
+			Assert.AreEqual("x => (x.GlobalID != 00000000-0000-0000-0000-000000000000)", result.ToString());
+		}
+
+		[Test]
+		public void CanHandleParsedValues()
+		{
+			var result = _factory.Create<ParseParent>("Item eq 1 and Number le 2");
+
+			Assert.AreEqual("x => ((x.Item == Parse(\"1\")) AndAlso (x.Number <= 2))", result.ToString());
+		}
+
+		[Test]
+		public void FilteringIsCaseSensitive()
+		{
+			var items = new[] { new FakeItem { StringValue = "blah blah" } };
+			var filter = _factory.Create<FakeItem>("substringof('Blah', StringValue)");
+
+			var result = items.Where(filter.Compile());
+
+			Assert.IsEmpty(result);
 		}
 
 		[Test]
@@ -166,62 +220,6 @@ namespace Linq2Rest.Tests.Parser
 			var result = _factory.Create<FakeItem>(filter);
 
 			Assert.AreEqual(expression, result.ToString(), "Failed for " + filter);
-		}
-
-		[Test]
-		public void CanHandleParsedValues()
-		{
-			var result = _factory.Create<ParseParent>("Item eq 1 and Number le 2");
-
-			Assert.AreEqual("x => ((x.Item == Parse(\"1\")) AndAlso (x.Number <= 2))", result.ToString());
-		}
-
-		[Test]
-		public void FilteringIsCaseSensitive()
-		{
-			var items = new[] { new FakeItem { StringValue = "blah blah" } };
-			var filter = _factory.Create<FakeItem>("substringof('Blah', StringValue)");
-
-			var result = items.Where(filter.Compile());
-
-			Assert.IsEmpty(result);
-		}
-
-		[Test]
-		public void CanHandleEqualComparisonWithEmptyGuid()
-		{
-			var result = _factory.Create<FakeItem>("GlobalID eq guid'00000000-0000-0000-0000-000000000000'");
-
-			Assert.AreEqual("x => (x.GlobalID == 00000000-0000-0000-0000-000000000000)", result.ToString());
-		}
-
-		[Test]
-		public void CanHandleNotEqualComparisonWithEmptyGuid()
-		{
-			var result = _factory.Create<FakeItem>("GlobalID ne guid'00000000-0000-0000-0000-000000000000'");
-
-			Assert.AreEqual("x => (x.GlobalID != 00000000-0000-0000-0000-000000000000)", result.ToString());
-		}
-
-		[TestCase("DateValue eq 123", typeof(FormatException))]
-		[TestCase("DateValue eq datetime'123'", typeof(FormatException))]
-		[TestCase("PointInTime eq 'nothing'", typeof(InvalidOperationException))]
-		[TestCase("DoubleValue ge 'nothing'", typeof(InvalidOperationException))]
-		[TestCase("IntValue lt 'nothing'", typeof(InvalidOperationException))]
-		[TestCase("IntValue lt ('nothing' add 1)", typeof(InvalidOperationException))]
-		[TestCase("blah", typeof(InvalidOperationException))]
-		[TestCase("StringValue not foo", typeof(InvalidOperationException))]
-		[TestCase("'StringValue' not foo", typeof(InvalidOperationException))]
-		[TestCase("StringValue gt foo", typeof(InvalidOperationException))]
-		[TestCase("-StringValue eq 'blah'", typeof(InvalidOperationException))]
-		[TestCase("not DateValue", typeof(InvalidOperationException))]
-		[TestCase("not DoubleValue", typeof(InvalidOperationException))]
-		[TestCase("Not DoubleValue", typeof(InvalidOperationException))]
-		[TestCase("Duration eq time'PT2H15M' and Not DoubleValue", typeof(InvalidOperationException))]
-		[TestCase("\0\0", typeof(InvalidOperationException))]
-		public void WhenParsingInvalidExpressionThenThrows(string filter, Type exceptionType)
-		{
-			Assert.Throws(exceptionType, () => _factory.Create<FakeItem>(filter));
 		}
 	}
 }

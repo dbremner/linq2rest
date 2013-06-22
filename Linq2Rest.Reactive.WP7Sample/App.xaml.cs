@@ -10,15 +10,15 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Windows;
-using System.Windows.Navigation;
-using Microsoft.Phone.Controls;
-using Microsoft.Phone.Shell;
-
 namespace Linq2Rest.Reactive.WP8.Sample
 {
+	using System.Diagnostics;
 	using System.Threading;
+	using System.Windows;
+	using System.Windows.Navigation;
 	using System.Windows.Threading;
+	using Microsoft.Phone.Controls;
+	using Microsoft.Phone.Shell;
 
 	public partial class App : Application
 	{
@@ -42,10 +42,10 @@ namespace Linq2Rest.Reactive.WP8.Sample
 			InitializePhoneApplication();
 
 			// Show graphics profiling information while debugging.
-			if (System.Diagnostics.Debugger.IsAttached)
+			if (Debugger.IsAttached)
 			{
 				// Display the current frame rate counters.
-				Application.Current.Host.Settings.EnableFrameRateCounter = true;
+				Current.Host.Settings.EnableFrameRateCounter = true;
 
 				// Show the areas of the app that are being redrawn in each frame.
 				// Application.Current.Host.Settings.EnableRedrawRegions = true;
@@ -95,20 +95,20 @@ namespace Linq2Rest.Reactive.WP8.Sample
 		// Code to execute if a navigation fails
 		private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
 		{
-			if (System.Diagnostics.Debugger.IsAttached)
+			if (Debugger.IsAttached)
 			{
 				// A navigation has failed; break into the debugger
-				System.Diagnostics.Debugger.Break();
+				Debugger.Break();
 			}
 		}
 
 		// Code to execute on Unhandled Exceptions
 		private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
 		{
-			if (System.Diagnostics.Debugger.IsAttached)
+			if (Debugger.IsAttached)
 			{
 				// An unhandled exception has occurred; break into the debugger
-				System.Diagnostics.Debugger.Break();
+				Debugger.Break();
 			}
 		}
 

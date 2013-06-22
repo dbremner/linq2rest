@@ -20,12 +20,29 @@ namespace Linq2Rest.Tests
 	[TestFixture]
 	public class RuntimeTypeProviderTests
 	{
-		private RuntimeTypeProvider _typeProvider;
-
 		[SetUp]
 		public void Setup()
 		{
 			_typeProvider = new RuntimeTypeProvider(new MemberNameResolver());
+		}
+
+		private RuntimeTypeProvider _typeProvider;
+
+		[Test]
+		public void WhenCreatingDynamicTypeThenTransfersCustomAttributesWithDefaultConstructor()
+		{
+			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
+
+			var dynamicType = _typeProvider.Get(typeof(FakeItem), properties);
+
+			Assert.AreEqual(1, dynamicType.GetProperties().Length);
+			Assert.NotNull(dynamicType.GetProperty("DateValue"));
+		}
+
+		[Test]
+		public void WhenCreatingDynamicTypeWithNoPropertiesThenThrows()
+		{
+			Assert.Throws<ArgumentOutOfRangeException>(() => _typeProvider.Get(typeof(FakeItem), new PropertyInfo[0]));
 		}
 
 		[Test]
@@ -36,9 +53,28 @@ namespace Linq2Rest.Tests
 		}
 
 		[Test]
-		public void WhenCreatingDynamicTypeWithNoPropertiesThenThrows()
+		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenCreatesTypeWithOneProperty()
 		{
-			Assert.Throws<ArgumentOutOfRangeException>(() => _typeProvider.Get(typeof(FakeItem), new PropertyInfo[0]));
+			var properties = new[] { typeof(FakeItem).GetProperty("ChoiceValue") };
+
+			var dynamicType = _typeProvider.Get(typeof(FakeItem), properties);
+
+			var dataMemberAttribute = dynamicType
+				.GetProperty("Choice")
+				.GetCustomAttributes(false);
+
+			Assert.IsNotEmpty(dataMemberAttribute);
+		}
+
+		[Test]
+		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenCreatesTypeWithOnePropertyWhereTypeMatchesProperty()
+		{
+			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
+
+			var dynamicType = _typeProvider.Get(typeof(FakeItem), properties);
+			var property = dynamicType.GetProperty("DateValue");
+
+			Assert.AreEqual(typeof(DateTime), property.PropertyType);
 		}
 
 		[Test]
@@ -66,42 +102,6 @@ namespace Linq2Rest.Tests
 				.GetCustomAttributes(false);
 			var data = dynamicType.GetCustomAttributesData();
 			Assert.IsNotEmpty(dataMemberAttribute);
-		}
-
-		[Test]
-		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenCreatesTypeWithOneProperty()
-		{
-			var properties = new[] { typeof(FakeItem).GetProperty("ChoiceValue") };
-
-			var dynamicType = _typeProvider.Get(typeof(FakeItem), properties);
-
-			var dataMemberAttribute = dynamicType
-				.GetProperty("Choice")
-				.GetCustomAttributes(false);
-
-			Assert.IsNotEmpty(dataMemberAttribute);
-		}
-
-		[Test]
-		public void WhenCreatingDynamicTypeThenTransfersCustomAttributesWithDefaultConstructor()
-		{
-			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
-
-			var dynamicType = _typeProvider.Get(typeof(FakeItem), properties);
-
-			Assert.AreEqual(1, dynamicType.GetProperties().Length);
-			Assert.NotNull(dynamicType.GetProperty("DateValue"));
-		}
-
-		[Test]
-		public void WhenCreatingDynamicTypeWithOnePropertyInfoThenCreatesTypeWithOnePropertyWhereTypeMatchesProperty()
-		{
-			var properties = new[] { typeof(FakeItem).GetProperty("DateValue") };
-
-			var dynamicType = _typeProvider.Get(typeof(FakeItem), properties);
-			var property = dynamicType.GetProperty("DateValue");
-
-			Assert.AreEqual(typeof(DateTime), property.PropertyType);
 		}
 	}
 }

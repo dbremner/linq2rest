@@ -19,7 +19,7 @@ namespace Linq2Rest.Implementations
 	using System.Linq;
 	using System.Xml;
 	using System.Xml.Serialization;
-	using Linq2Rest.Provider;
+	using Provider;
 
 	/// <summary>
 	/// Defines the XmlSerializer factory.
@@ -57,8 +57,8 @@ namespace Linq2Rest.Implementations
 
 		private class XmlSerializer<T> : ISerializer<T>
 		{
-			private readonly XmlSerializer _serializer;
 			private readonly XmlSerializer _listSerializer;
+			private readonly XmlSerializer _serializer;
 
 			public XmlSerializer(IEnumerable<Type> knownTypes)
 			{

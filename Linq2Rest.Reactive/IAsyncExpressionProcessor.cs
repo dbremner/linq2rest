@@ -17,7 +17,7 @@ namespace Linq2Rest.Reactive
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
-	using Linq2Rest.Provider;
+	using Provider;
 
 	/// <summary>
 	/// Defines the inteface for an expression processor.

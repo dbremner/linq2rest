@@ -14,9 +14,9 @@ namespace Linq2Rest.Tests
 {
 	using System;
 	using System.Linq;
+	using Fakes;
 	using Linq2Rest.Implementations;
 	using Linq2Rest.Provider;
-	using Linq2Rest.Tests.Fakes;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -34,9 +34,34 @@ namespace Linq2Rest.Tests
 		}
 
 		[Test]
-		public void WhenRequestingCustomerByNameThenLoadsCustomer()
+		public void WhenAsyncRequestingCustomerByNameEndsWithThenLoadsCustomer()
 		{
-			var results = _customerContext.Query.Where(x => x.CompanyName.IndexOf("Alfreds") > -1).ToArray();
+			var task = _customerContext.Query.Where(x => x.CompanyName.EndsWith("Futterkiste")).ExecuteAsync();
+
+			task.Wait();
+			var results = task.Result.ToArray();
+
+			Assert.Less(0, results.Length);
+		}
+
+		[Test]
+		public void WhenAsyncRequestingCustomerByNameLengthThenLoadsCustomer()
+		{
+			var task = _customerContext.Query.Where(x => x.CompanyName.Length > 10).ExecuteAsync();
+
+			task.Wait();
+			var results = task.Result.ToArray();
+
+			Assert.Less(0, results.Length);
+		}
+
+		[Test]
+		public void WhenAsyncRequestingCustomerByNameStartsWithThenLoadsCustomer()
+		{
+			var task = _customerContext.Query.Where(x => x.CompanyName.StartsWith("Alfr")).ExecuteAsync();
+
+			task.Wait();
+			var results = task.Result.ToArray();
 
 			Assert.Less(0, results.Length);
 		}
@@ -61,12 +86,9 @@ namespace Linq2Rest.Tests
 		}
 
 		[Test]
-		public void WhenAsyncRequestingCustomerByNameEndsWithThenLoadsCustomer()
+		public void WhenRequestingCustomerByNameLengthThenLoadsCustomer()
 		{
-			var task = _customerContext.Query.Where(x => x.CompanyName.EndsWith("Futterkiste")).ExecuteAsync();
-
-			task.Wait();
-			var results = task.Result.ToArray();
+			var results = _customerContext.Query.Where(x => x.CompanyName.Length > 10).ToArray();
 
 			Assert.Less(0, results.Length);
 		}
@@ -80,12 +102,9 @@ namespace Linq2Rest.Tests
 		}
 
 		[Test]
-		public void WhenAsyncRequestingCustomerByNameStartsWithThenLoadsCustomer()
+		public void WhenRequestingCustomerByNameThenLoadsCustomer()
 		{
-			var task = _customerContext.Query.Where(x => x.CompanyName.StartsWith("Alfr")).ExecuteAsync();
-
-			task.Wait();
-			var results = task.Result.ToArray();
+			var results = _customerContext.Query.Where(x => x.CompanyName.IndexOf("Alfreds") > -1).ToArray();
 
 			Assert.Less(0, results.Length);
 		}
@@ -96,25 +115,6 @@ namespace Linq2Rest.Tests
 			var result = _customerContext.Query.Count(x => x.CompanyName.StartsWith("Alfr"));
 
 			Assert.Less(0, result);
-		}
-
-		[Test]
-		public void WhenRequestingCustomerByNameLengthThenLoadsCustomer()
-		{
-			var results = _customerContext.Query.Where(x => x.CompanyName.Length > 10).ToArray();
-
-			Assert.Less(0, results.Length);
-		}
-
-		[Test]
-		public void WhenAsyncRequestingCustomerByNameLengthThenLoadsCustomer()
-		{
-			var task = _customerContext.Query.Where(x => x.CompanyName.Length > 10).ExecuteAsync();
-
-			task.Wait();
-			var results = task.Result.ToArray();
-
-			Assert.Less(0, results.Length);
 		}
 	}
 }

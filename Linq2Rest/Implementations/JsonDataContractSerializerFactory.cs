@@ -18,7 +18,7 @@ namespace Linq2Rest.Implementations
 	using System.IO;
 	using System.Linq;
 	using System.Runtime.Serialization.Json;
-	using Linq2Rest.Provider;
+	using Provider;
 
 	/// <summary>
 	/// Defines the JsonDataContractSerializer factory.
@@ -56,8 +56,8 @@ namespace Linq2Rest.Implementations
 
 		private class JsonDataContractSerializer<T> : ISerializer<T>
 		{
-			private readonly DataContractJsonSerializer _serializer;
 			private readonly DataContractJsonSerializer _listSerializer;
+			private readonly DataContractJsonSerializer _serializer;
 
 			public JsonDataContractSerializer(IEnumerable<Type> knownTypes)
 			{

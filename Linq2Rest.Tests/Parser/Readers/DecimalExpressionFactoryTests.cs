@@ -19,26 +19,26 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class DecimalExpressionFactoryTests
 	{
-		private DecimalExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new DecimalExpressionFactory();
 		}
 
-		[Test]
-		public void WhenFilterIsIncorrectFormatThenThrows()
-		{
-			const string Parameter = "blah";
-
-			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
-		}
+		private DecimalExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesDecimalParameterThenReturnedExpressionContainsDecimal()
 		{
 			var expression = _factory.Convert("1.23");
+
+			Assert.IsAssignableFrom<decimal>(expression.Value);
+		}
+
+		[Test]
+		public void WhenFilterIncludesDecimalParameterWithTrailingLowerCaseMThenReturnedExpressionContainsDecimal()
+		{
+			var expression = _factory.Convert("1.23m");
 
 			Assert.IsAssignableFrom<decimal>(expression.Value);
 		}
@@ -52,11 +52,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterIncludesDecimalParameterWithTrailingLowerCaseMThenReturnedExpressionContainsDecimal()
+		public void WhenFilterIsIncorrectFormatThenThrows()
 		{
-			var expression = _factory.Convert("1.23m");
+			const string Parameter = "blah";
 
-			Assert.IsAssignableFrom<decimal>(expression.Value);
+			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
 		}
 	}
 }

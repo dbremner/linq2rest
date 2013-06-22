@@ -14,16 +14,12 @@ namespace Linq2Rest.Tests.Parser
 {
 	using System;
 	using System.Linq;
-
 	using Linq2Rest.Parser;
-
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class FilterTests
 	{
-		private FakeItem[] _collection;
-
 		[SetUp]
 		public void TestSetup()
 		{
@@ -58,6 +54,8 @@ namespace Linq2Rest.Tests.Parser
 						}
 				};
 		}
+
+		private FakeItem[] _collection;
 
 		[Test]
 		public void WhenApplyingSerializedExpressionThenCreatesSameResultAsOriginalExpression()

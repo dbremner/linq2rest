@@ -19,18 +19,13 @@ namespace Linq2Rest.Reactive.Tests
 	using System.Reactive.Linq;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using Linq2Rest.Reactive;
-	using Linq2Rest.Reactive.Tests.Fakes;
+	using Fakes;
 	using Moq;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class RequestTests
 	{
-		private Mock<IAsyncRestClient> _mockRestClient;
-		private Mock<IAsyncRestClientFactory> _mockClientFactory;
-		private RestObservable<FakeItem> _observable;
-
 		[SetUp]
 		public void Setup()
 		{
@@ -45,39 +40,88 @@ namespace Linq2Rest.Reactive.Tests
 			_observable = new RestObservable<FakeItem>(_mockClientFactory.Object, new TestSerializerFactory());
 		}
 
+		private Mock<IAsyncRestClient> _mockRestClient;
+		private Mock<IAsyncRestClientFactory> _mockClientFactory;
+		private RestObservable<FakeItem> _observable;
+
 		[Test]
-		public void WhenMainExpressionIsContainedInIsTrueExpressionThenUsesOperandExpression()
+		public void WhenAnyExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
 		{
 			var waitHandle = new ManualResetEvent(false);
 
-			var parameter = Expression.Parameter(typeof(FakeItem), "x");
-			var trueExpression =
-				Expression.IsTrue(
-				Expression.LessThanOrEqual(Expression.Property(parameter, "IntValue"), Expression.Constant(3)));
-
 			_observable
 				.Create()
-				.Where(Expression.Lambda<Func<FakeItem, bool>>(trueExpression, parameter))
+				.Where(x => x.IntValue <= 3)
+				.Any(x => x.DoubleValue.Equals(3d))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
-			waitHandle.WaitOne();
+			waitHandle.WaitOne(2000);
 
 			var requestUri = new Uri("http://localhost/?$filter=IntValue+le+3");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
-		public void WhenApplyingQueryWithNoFilterThenCallsRestServiceOnce()
+		public void WhenApplyingAllQueryThenCallsRestServiceWithFilterParameter()
 		{
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
 				.Create()
+				.Where(x => x.Children.All(y => y.Text == "blah"))
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(2000);
+
+			var requestUri = new Uri("http://localhost/?$filter=Children%2fall(y:+y%2fText+eq+'blah')");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingAnyQueryThenCallsRestServiceWithFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_observable
+				.Create()
+				.Where(x => x.Children.Any(y => y.Text == "blah"))
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(2000);
+
+			var requestUri = new Uri("http://localhost/?$filter=Children%2fany(y:+y%2fText+eq+'blah')");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingNestedAllQueryThenCallsRestServiceWithFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_observable
+				.Create()
+				.Where(x => x.Children.All(y => y.Descendants.Any(z => z.Text == "blah")))
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			waitHandle.WaitOne(2000);
+
+			var requestUri = new Uri("http://localhost/?$filter=Children%2fall(y:+y%2fDescendants%2fany(z:+z%2fText+eq+'blah'))");
+			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
+		}
+
+		[Test]
+		public void WhenApplyingProjectionThenCallsRestServiceWithExistingFilterParameter()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_observable
+				.Create()
+				.Select(x => new { x.StringValue, x.IntValue })
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
 			waitHandle.WaitOne();
 
-			var requestUri = new Uri("http://localhost/");
+			var requestUri = new Uri("http://localhost/?$select=StringValue,IntValue");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
@@ -114,50 +158,50 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
-		public void WhenApplyingAnyQueryThenCallsRestServiceWithFilterParameter()
+		public void WhenApplyingQueryWithNoFilterThenCallsRestServiceOnce()
 		{
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
 				.Create()
-				.Where(x => x.Children.Any(y => y.Text == "blah"))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
-			waitHandle.WaitOne(2000);
+			waitHandle.WaitOne();
 
-			var requestUri = new Uri("http://localhost/?$filter=Children%2fany(y:+y%2fText+eq+'blah')");
+			var requestUri = new Uri("http://localhost/");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
-		public void WhenApplyingAllQueryThenCallsRestServiceWithFilterParameter()
+		public void WhenApplyingSkipFilterThenCallsRestServiceWithExistingFilterParameter()
 		{
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
 				.Create()
-				.Where(x => x.Children.All(y => y.Text == "blah"))
+				.Skip(1)
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
-			waitHandle.WaitOne(2000);
+			waitHandle.WaitOne();
 
-			var requestUri = new Uri("http://localhost/?$filter=Children%2fall(y:+y%2fText+eq+'blah')");
+			var requestUri = new Uri("http://localhost/?$skip=1");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
 		[Test]
-		public void WhenApplyingNestedAllQueryThenCallsRestServiceWithFilterParameter()
+		public void WhenApplyingTakeFilterThenCallsRestServiceWithExistingFilterParameter()
 		{
 			var waitHandle = new ManualResetEvent(false);
 
 			_observable
 				.Create()
-				.Where(x => x.Children.All(y => y.Descendants.Any(z => z.Text == "blah")))
+				.Take(1)
+
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
-			waitHandle.WaitOne(2000);
+			waitHandle.WaitOne();
 
-			var requestUri = new Uri("http://localhost/?$filter=Children%2fall(y:+y%2fDescendants%2fany(z:+z%2fText+eq+'blah'))");
+			var requestUri = new Uri("http://localhost/?$top=1");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
@@ -179,20 +223,44 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
-		public void WhenApplyingTakeFilterThenCallsRestServiceWithExistingFilterParameter()
+		public void WhenMainExpressionIsContainedInIsTrueExpressionThenUsesOperandExpression()
 		{
 			var waitHandle = new ManualResetEvent(false);
 
+			var parameter = Expression.Parameter(typeof(FakeItem), "x");
+			var trueExpression =
+				Expression.IsTrue(
+					Expression.LessThanOrEqual(Expression.Property(parameter, "IntValue"), Expression.Constant(3)));
+
 			_observable
 				.Create()
-				.Take(1)
-
+				.Where(Expression.Lambda<Func<FakeItem, bool>>(trueExpression, parameter))
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
 			waitHandle.WaitOne();
 
-			var requestUri = new Uri("http://localhost/?$top=1");
+			var requestUri = new Uri("http://localhost/?$filter=IntValue+le+3");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
+		}
+
+		[Test]
+		public void WhenQueryIncludesFinalEffectsThenInvokesSideEffect()
+		{
+			_mockRestClient.Setup(x => x.Download())
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[{\"DoubleValue\":1.2}]".ToStream()));
+			var waitHandle = new ManualResetEvent(false);
+			var action = new Action(() => waitHandle.Set());
+			var mockObserver = new Mock<IObserver<FakeItem>>();
+
+			_observable
+				.Create()
+				.Take(1)
+				.Finally(action)
+				.Subscribe(mockObserver.Object);
+
+			var result = waitHandle.WaitOne(2000);
+
+			Assert.True(result);
 		}
 
 		[Test]
@@ -231,75 +299,6 @@ namespace Linq2Rest.Reactive.Tests
 			var result = waitHandle.WaitOne(2000);
 
 			Assert.True(result);
-		}
-
-		[Test]
-		public void WhenQueryIncludesFinalEffectsThenInvokesSideEffect()
-		{
-			_mockRestClient.Setup(x => x.Download())
-				.Returns(() => Task<Stream>.Factory.StartNew(() => "[{\"DoubleValue\":1.2}]".ToStream()));
-			var waitHandle = new ManualResetEvent(false);
-			var action = new Action(() => waitHandle.Set());
-			var mockObserver = new Mock<IObserver<FakeItem>>();
-
-			_observable
-				.Create()
-				.Take(1)
-				.Finally(action)
-				.Subscribe(mockObserver.Object);
-
-			var result = waitHandle.WaitOne(2000);
-
-			Assert.True(result);
-		}
-
-		[Test]
-		public void WhenApplyingSkipFilterThenCallsRestServiceWithExistingFilterParameter()
-		{
-			var waitHandle = new ManualResetEvent(false);
-
-			_observable
-				.Create()
-				.Skip(1)
-				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
-
-			waitHandle.WaitOne();
-
-			var requestUri = new Uri("http://localhost/?$skip=1");
-			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
-		}
-
-		[Test]
-		public void WhenApplyingProjectionThenCallsRestServiceWithExistingFilterParameter()
-		{
-			var waitHandle = new ManualResetEvent(false);
-
-			_observable
-				.Create()
-				.Select(x => new { x.StringValue, x.IntValue })
-				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
-
-			waitHandle.WaitOne();
-
-			var requestUri = new Uri("http://localhost/?$select=StringValue,IntValue");
-			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
-		}
-
-		[Test]
-		public void WhenAnyExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
-		{
-			var waitHandle = new ManualResetEvent(false);
-
-			_observable
-				.Create()
-				.Where(x => x.IntValue <= 3)
-				.Any(x => x.DoubleValue.Equals(3d))
-				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
-
-			waitHandle.WaitOne(2000);
-
-			var requestUri = new Uri("http://localhost/?$filter=IntValue+le+3");
-			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 	}
 }

@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class ShortValueWriterTests
 	{
-		private ShortValueWriter _writer;
-
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new ShortValueWriter();
 		}
+
+		private ShortValueWriter _writer;
 
 		[Test]
 		public void WhenWritingShortValueThenWritesString()

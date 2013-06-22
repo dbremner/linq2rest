@@ -18,21 +18,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class BooleanExpressionFactoryTests
 	{
-		private BooleanExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new BooleanExpressionFactory();
 		}
 
-		[Test]
-		public void WhenFilterIsIncorrectFormatThenReturnsNullValue()
-		{
-			const string Parameter = "blah";
-
-			Assert.AreEqual(null, _factory.Convert(Parameter).Value);
-		}
+		private BooleanExpressionFactory _factory;
 
 		[TestCase("1", true)]
 		[TestCase("0", false)]
@@ -54,6 +46,14 @@ namespace Linq2Rest.Tests.Parser.Readers
 			var expression = _factory.Convert(parameter);
 
 			Assert.AreEqual(value, expression.Value);
+		}
+
+		[Test]
+		public void WhenFilterIsIncorrectFormatThenReturnsNullValue()
+		{
+			const string Parameter = "blah";
+
+			Assert.AreEqual(null, _factory.Convert(Parameter).Value);
 		}
 	}
 }

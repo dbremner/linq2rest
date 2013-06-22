@@ -15,6 +15,28 @@ namespace Linq2Rest.Tests.Provider
 	public class ODataExpressionWriterTests
 	{
 		[Test]
+		public void CanFilterOnSubCollection()
+		{
+			var converter = new ODataExpressionConverter();
+			Expression<Func<FakeItem, bool>> expression = x => x.Child.Attributes.Any(y => y == "blah");
+
+			var serialized = converter.Convert(expression);
+
+			Assert.AreEqual("Child/Attributes/any(y: y eq 'blah')", serialized);
+		}
+
+		[Test]
+		public void CanSerializeEmptyGuid()
+		{
+			var converter = new ODataExpressionConverter();
+			Expression<Func<ChildDto, bool>> expression = x => x.GlobalID != Guid.Empty;
+
+			var serialized = converter.Convert(expression);
+
+			Assert.AreEqual("GlobalID ne guid'00000000-0000-0000-0000-000000000000'", serialized);
+		}
+
+		[Test]
 		public void ConvertsExpressionToString()
 		{
 			var converter = new ODataExpressionConverter();
@@ -34,28 +56,6 @@ namespace Linq2Rest.Tests.Provider
 			var serialized = converter.Convert(expression);
 
 			Assert.AreEqual("length(Name) add 2 eq 7", serialized);
-		}
-
-		[Test]
-		public void CanSerializeEmptyGuid()
-		{
-			var converter = new ODataExpressionConverter();
-			Expression<Func<ChildDto, bool>> expression = x => x.GlobalID != Guid.Empty;
-
-			var serialized = converter.Convert(expression);
-
-			Assert.AreEqual("GlobalID ne guid'00000000-0000-0000-0000-000000000000'", serialized);
-		}
-
-		[Test]
-		public void CanFilterOnSubCollection()
-		{
-			var converter = new ODataExpressionConverter();
-			Expression<Func<FakeItem, bool>> expression = x => x.Child.Attributes.Any(y => y == "blah");
-
-			var serialized = converter.Convert(expression);
-
-			Assert.AreEqual("Child/Attributes/any(y: y eq 'blah')", serialized);
 		}
 	}
 }

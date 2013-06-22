@@ -27,9 +27,9 @@ namespace Linq2Rest.Parser
 	public class SelectExpressionFactory<T> : ISelectExpressionFactory<T>
 	{
 		private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+		private readonly IDictionary<string, Expression<Func<T, object>>> _knownSelections;
 		private readonly IMemberNameResolver _nameResolver;
 		private readonly IRuntimeTypeProvider _runtimeTypeProvider;
-		private readonly IDictionary<string, Expression<Func<T, object>>> _knownSelections;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SelectExpressionFactory{T}"/> class.

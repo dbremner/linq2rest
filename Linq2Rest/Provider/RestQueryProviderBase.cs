@@ -30,6 +30,12 @@ namespace Linq2Rest.Provider
 			}
 		}
 
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
 		public abstract IQueryable CreateQuery(Expression expression);
 
 		public abstract IQueryable<TElement> CreateQuery<TElement>(Expression expression);
@@ -40,12 +46,6 @@ namespace Linq2Rest.Provider
 		{
 			Contract.Assume(expression != null);
 			return (TResult)Execute(expression);
-		}
-
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
 		}
 
 		protected abstract void Dispose(bool disposing);

@@ -12,16 +12,17 @@
 
 namespace Linq2Rest.Tests.Fakes
 {
+	using System;
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Runtime.Serialization.Json;
 	using Linq2Rest.Provider;
-	using Linq2Rest.Tests.Provider;
+	using Provider;
 
 	public class TestComplexSerializer : ISerializer<ComplexDto>
 	{
-		private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(ComplexDto));
 		private readonly DataContractJsonSerializer _innerListSerializer = new DataContractJsonSerializer(typeof(List<ComplexDto>));
+		private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(ComplexDto));
 
 		public ComplexDto Deserialize(Stream input)
 		{
@@ -35,7 +36,7 @@ namespace Linq2Rest.Tests.Fakes
 
 		public Stream Serialize(ComplexDto item)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

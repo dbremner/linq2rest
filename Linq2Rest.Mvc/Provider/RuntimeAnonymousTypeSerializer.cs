@@ -20,7 +20,6 @@ namespace Linq2Rest.Mvc.Provider
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Web.Script.Serialization;
-
 	using Linq2Rest.Provider;
 
 	/// <summary>
@@ -29,8 +28,8 @@ namespace Linq2Rest.Mvc.Provider
 	/// <typeparam name="T">The <see cref="Type"/> to serialize.</typeparam>
 	public class RuntimeAnonymousTypeSerializer<T> : ISerializer<T>
 	{
-		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 		private readonly Type _elementType = typeof(T);
+		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
 
 		/// <summary>
 		/// Deserializes a single item.

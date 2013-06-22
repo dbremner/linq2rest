@@ -10,11 +10,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Runtime.Serialization;
-
 namespace Linq2Rest.Reactive.WP8.Sample.Support
 {
-	using System.Collections.Generic;
+	using System.Runtime.Serialization;
 
 	[DataContract]
 	public class ODataResponse<T>

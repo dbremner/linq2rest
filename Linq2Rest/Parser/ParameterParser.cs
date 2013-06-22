@@ -23,8 +23,8 @@ namespace Linq2Rest.Parser
 	public class ParameterParser<T> : IParameterParser<T>
 	{
 		private readonly IFilterExpressionFactory _filterExpressionFactory;
-		private readonly ISortExpressionFactory _sortExpressionFactory;
 		private readonly ISelectExpressionFactory<T> _selectExpressionFactory;
+		private readonly ISortExpressionFactory _sortExpressionFactory;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ParameterParser{T}"/> class.

@@ -1,9 +1,9 @@
 body
 {
-    font-size: .85em;
-    font-family: "Trebuchet MS", Verdana, Helvetica, Sans-Serif;
-    color: #232323;
     background-color: #fff;
+    color: #232323;
+    font-family: "Trebuchet MS", Verdana, Helvetica, Sans-Serif;
+    font-size: .85em;
 }
 
 header,
@@ -19,8 +19,8 @@ section {
 fieldset 
 {
     border:1px solid #ddd;
-    padding:0 1.4em 1.4em 1.4em;
     margin:0 0 1.5em 0;
+    padding:0 1.4em 1.4em 1.4em;
 }
 
 legend 
@@ -59,14 +59,14 @@ textarea
 
 .input-validation-error
 {
-    border: 1px solid #ff0000;
     background-color: #ffeeee;
+    border: 1px solid #ff0000;
 }
 
 .validation-summary-errors
 {
-    font-weight: bold;
     color: #ff0000;
+    font-weight: bold;
 }
 
 .validation-summary-valid

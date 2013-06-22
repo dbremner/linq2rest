@@ -15,8 +15,7 @@ namespace Linq2Rest.Implementations
 	using System;
 	using System.Diagnostics.Contracts;
 	using System.IO;
-	using System.Net;
-	using Linq2Rest.Provider;
+	using Provider;
 
 	/// <summary>
 	/// Defines the base REST client implementation.

@@ -10,12 +10,11 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Collections.ObjectModel;
-
 namespace Linq2Rest.Parser
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Text.RegularExpressions;

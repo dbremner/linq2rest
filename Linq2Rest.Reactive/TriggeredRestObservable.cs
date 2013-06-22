@@ -13,18 +13,18 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
-	using System.Threading;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 	using System.Reactive;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using Linq2Rest.Provider;
+	using System.Threading;
+	using Provider;
 
 	internal class TriggeredRestObservable<T> : InnerRestObservableBase<T>
 	{
-		private readonly IObservable<Unit> _trigger;
 		private readonly IQbservableProvider _provider;
+		private readonly IObservable<Unit> _trigger;
 		private IDisposable _internalSubscription;
 		private IDisposable _subscribeSubscription;
 

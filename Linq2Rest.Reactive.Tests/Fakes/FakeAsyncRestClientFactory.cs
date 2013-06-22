@@ -16,12 +16,11 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 	using System.IO;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using Linq2Rest.Reactive;
 
 	public class FakeAsyncRestClientFactory : IAsyncRestClientFactory
 	{
-		private readonly int _responseDelay;
 		private readonly string _response = "[]";
+		private readonly int _responseDelay;
 
 		public FakeAsyncRestClientFactory()
 			: this(-1)
@@ -62,8 +61,8 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 
 		private class FakeAsyncResultClient : IAsyncRestClient
 		{
-			private readonly int _responseDelay;
 			private readonly string _response;
+			private readonly int _responseDelay;
 
 			public FakeAsyncResultClient(int responseDelay, string response)
 			{

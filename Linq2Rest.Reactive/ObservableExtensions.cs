@@ -13,14 +13,14 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
-	using System.Linq;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using System.Linq.Expressions;
+	using System.Reflection;
 #if NETFX_CORE
 	using System.Runtime.CompilerServices;
 #endif
-	using System.Diagnostics.Contracts;
-	using System.Linq.Expressions;
-	using System.Reflection;
 
 	/// <summary>
 	/// Defines public extension methods on <see cref="IObservable{T}"/>

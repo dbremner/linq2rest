@@ -14,8 +14,8 @@ namespace Linq2Rest.Tests.Provider
 {
 	using System;
 	using System.Collections;
+	using Fakes;
 	using Linq2Rest.Provider;
-	using Linq2Rest.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
 
@@ -41,17 +41,17 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		public void WhenGettingNonGenericEnumeratorThenDoesNotReturnNull()
-		{
-			Assert.NotNull((_getQueryable as IEnumerable).GetEnumerator());
-		}
-
-		[Test]
 		public void WhenDisposingThenDisposesClient()
 		{
 			_getQueryable.Dispose();
 
 			_mockClient.Verify(x => x.Dispose());
+		}
+
+		[Test]
+		public void WhenGettingNonGenericEnumeratorThenDoesNotReturnNull()
+		{
+			Assert.NotNull((_getQueryable as IEnumerable).GetEnumerator());
 		}
 	}
 }

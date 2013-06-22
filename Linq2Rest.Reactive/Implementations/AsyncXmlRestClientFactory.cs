@@ -23,8 +23,8 @@ namespace Linq2Rest.Reactive.Implementations
 	/// </summary>
 	public class AsyncXmlRestClientFactory : IAsyncRestClientFactory
 	{
-		private HttpMethod _method;
 		private Stream _input;
+		private HttpMethod _method;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AsyncXmlRestClientFactory"/> class.
@@ -75,9 +75,9 @@ namespace Linq2Rest.Reactive.Implementations
 
 		private class AsyncXmlRestClient : IAsyncRestClient
 		{
-			private readonly Uri _uri;
-			private readonly HttpMethod _method;
 			private readonly Stream _input;
+			private readonly HttpMethod _method;
+			private readonly Uri _uri;
 
 			public AsyncXmlRestClient(Uri uri, HttpMethod method, Stream input)
 			{

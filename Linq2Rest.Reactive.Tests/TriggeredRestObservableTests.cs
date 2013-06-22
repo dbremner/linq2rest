@@ -19,32 +19,13 @@ namespace Linq2Rest.Reactive.Tests
 	using System.Reactive.Linq;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using Linq2Rest.Reactive.Tests.Fakes;
+	using Fakes;
 	using Moq;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class TriggeredRestObservableTests
 	{
-		[Test]
-		public void WhenObservablePollsThenDoesNotComplete()
-		{
-			var waitHandle = new ManualResetEvent(false);
-			var factory = new FakeAsyncRestClientFactory("[{\"Text\":\"blah\", \"Number\":1}]");
-			var observable = new RestObservable<FakeItem>(factory, new TestSerializerFactory());
-			var subscription = observable
-				.Poll(Observable.Interval(TimeSpan.FromSeconds(0.5)).Select(x => Unit.Default))
-				.ObserveOn(TaskPoolScheduler.Default)
-				.Where(x => x.StringValue == "blah")
-				.Subscribe(x => { }, () => waitHandle.Set());
-
-			var result = waitHandle.WaitOne(2000);
-
-			Assert.False(result);
-
-			subscription.Dispose();
-		}
-
 		[Test]
 		public void WhenDisposingPollSubscriptionThenCompletes()
 		{
@@ -92,6 +73,25 @@ namespace Linq2Rest.Reactive.Tests
 			waitHandle.WaitOne(2000);
 
 			mockClientFactory.Verify(x => x.Create(It.IsAny<Uri>()), Times.Exactly(2));
+
+			subscription.Dispose();
+		}
+
+		[Test]
+		public void WhenObservablePollsThenDoesNotComplete()
+		{
+			var waitHandle = new ManualResetEvent(false);
+			var factory = new FakeAsyncRestClientFactory("[{\"Text\":\"blah\", \"Number\":1}]");
+			var observable = new RestObservable<FakeItem>(factory, new TestSerializerFactory());
+			var subscription = observable
+				.Poll(Observable.Interval(TimeSpan.FromSeconds(0.5)).Select(x => Unit.Default))
+				.ObserveOn(TaskPoolScheduler.Default)
+				.Where(x => x.StringValue == "blah")
+				.Subscribe(x => { }, () => waitHandle.Set());
+
+			var result = waitHandle.WaitOne(2000);
+
+			Assert.False(result);
 
 			subscription.Dispose();
 		}

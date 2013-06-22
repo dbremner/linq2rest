@@ -14,7 +14,7 @@ namespace Linq2Rest.Implementations
 {
 	using System;
 	using System.Diagnostics.Contracts;
-	using Linq2Rest.Provider;
+	using Provider;
 
 	/// <summary>
 	/// Defines the JsonContext class.

@@ -23,8 +23,8 @@ namespace Linq2Rest.Parser
 	/// <typeparam name="T">The <see cref="Type"/> to sort.</typeparam>
 	public class SortDescription<T>
 	{
-		private readonly Expression _keySelector;
 		private readonly SortDirection _direction;
+		private readonly Expression _keySelector;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SortDescription{T}"/> class.

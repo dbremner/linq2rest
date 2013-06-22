@@ -13,27 +13,29 @@
 namespace Linq2Rest.Tests.Parser.Readers
 {
 	using System;
-	using System.Linq.Expressions;
 	using Linq2Rest.Parser.Readers;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class GuidExpressionFactoryTests
 	{
-		private GuidExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new GuidExpressionFactory();
 		}
 
-		[Test]
-		public void WhenFilterIsIncorrectFormatThenThrows()
-		{
-			const string Parameter = "blah";
+		private GuidExpressionFactory _factory;
 
-			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
+		[Test]
+		public void WhenFilterIncludesGuidParameterInDoubleQuotesThenReturnedExpressionContainsGuid()
+		{
+			var guid = Guid.NewGuid();
+			var parameter = string.Format("guid\"{0}\"", guid);
+
+			var expression = _factory.Convert(parameter);
+
+			Assert.IsAssignableFrom<Guid>(expression.Value);
 		}
 
 		[Test]
@@ -41,6 +43,17 @@ namespace Linq2Rest.Tests.Parser.Readers
 		{
 			var guid = Guid.NewGuid();
 			var parameter = string.Format("guid'{0}'", guid);
+
+			var expression = _factory.Convert(parameter);
+
+			Assert.IsAssignableFrom<Guid>(expression.Value);
+		}
+
+		[Test]
+		public void WhenFilterIncludesGuidParameterWithNoDashesInDoubleQuotesThenReturnedExpressionContainsGuid()
+		{
+			var guid = Guid.NewGuid();
+			var parameter = string.Format("guid\"{0}\"", guid.ToString("N"));
 
 			var expression = _factory.Convert(parameter);
 
@@ -59,25 +72,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterIncludesGuidParameterInDoubleQuotesThenReturnedExpressionContainsGuid()
+		public void WhenFilterIsIncorrectFormatThenThrows()
 		{
-			var guid = Guid.NewGuid();
-			var parameter = string.Format("guid\"{0}\"", guid);
+			const string Parameter = "blah";
 
-			var expression = _factory.Convert(parameter);
-
-			Assert.IsAssignableFrom<Guid>(expression.Value);
-		}
-
-		[Test]
-		public void WhenFilterIncludesGuidParameterWithNoDashesInDoubleQuotesThenReturnedExpressionContainsGuid()
-		{
-			var guid = Guid.NewGuid();
-			var parameter = string.Format("guid\"{0}\"", guid.ToString("N"));
-
-			var expression = _factory.Convert(parameter);
-
-			Assert.IsAssignableFrom<Guid>(expression.Value);
+			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
 		}
 	}
 }

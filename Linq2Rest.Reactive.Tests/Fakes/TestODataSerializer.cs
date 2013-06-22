@@ -16,8 +16,7 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 	using System.IO;
 	using System.Linq;
 	using System.Runtime.Serialization.Json;
-	using System.Web.Script.Serialization;
-	using Linq2Rest.Provider;
+	using Provider;
 
 	public class TestODataSerializer<T> : ISerializer<T>
 	{

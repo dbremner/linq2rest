@@ -19,26 +19,26 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class SingleExpressionFactoryTests
 	{
-		private SingleExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new SingleExpressionFactory();
 		}
 
-		[Test]
-		public void WhenFilterIsIncorrectFormatThenThrows()
-		{
-			const string Parameter = "blah";
-
-			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
-		}
+		private SingleExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesSingleParameterThenReturnedExpressionContainsSingle()
 		{
 			var expression = _factory.Convert("1.23");
+
+			Assert.IsAssignableFrom<float>(expression.Value);
+		}
+
+		[Test]
+		public void WhenFilterIncludesSingleParameterWithTrailingLowerCaseMThenReturnedExpressionContainsSingle()
+		{
+			var expression = _factory.Convert("1.23f");
 
 			Assert.IsAssignableFrom<float>(expression.Value);
 		}
@@ -52,11 +52,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterIncludesSingleParameterWithTrailingLowerCaseMThenReturnedExpressionContainsSingle()
+		public void WhenFilterIsIncorrectFormatThenThrows()
 		{
-			var expression = _factory.Convert("1.23f");
+			const string Parameter = "blah";
 
-			Assert.IsAssignableFrom<float>(expression.Value);
+			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
 		}
 	}
 }

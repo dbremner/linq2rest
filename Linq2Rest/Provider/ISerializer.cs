@@ -58,7 +58,7 @@ namespace Linq2Rest.Provider
 		{
 			Contract.Requires<ArgumentNullException>(input != null);
 
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -70,7 +70,7 @@ namespace Linq2Rest.Provider
 		{
 			Contract.Requires<ArgumentNullException>(input != null);
 
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -82,7 +82,7 @@ namespace Linq2Rest.Provider
 		{
 			Contract.Requires<ArgumentNullException>(!ReferenceEquals(item, null));
 
-			throw new System.NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

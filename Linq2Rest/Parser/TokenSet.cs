@@ -18,8 +18,8 @@ namespace Linq2Rest.Parser
 	internal class TokenSet
 	{
 		private string _left;
-		private string _right;
 		private string _operation;
+		private string _right;
 
 		public TokenSet()
 		{

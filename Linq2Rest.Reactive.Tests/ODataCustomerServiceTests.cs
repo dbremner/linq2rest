@@ -15,9 +15,8 @@ namespace Linq2Rest.Reactive.Tests
 	using System;
 	using System.Reactive.Linq;
 	using System.Threading;
-	using Linq2Rest.Reactive;
-	using Linq2Rest.Reactive.Implementations;
-	using Linq2Rest.Reactive.Tests.Fakes;
+	using Fakes;
+	using Implementations;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -32,21 +31,6 @@ namespace Linq2Rest.Reactive.Tests
 			_customerContext = new RestObservable<NorthwindCustomer>(
 				new AsyncJsonRestClientFactory(new Uri("http://services.odata.org/Northwind/Northwind.svc/Customers")),
 				new TestODataSerializerFactory());
-		}
-
-		[Test]
-		public void WhenRequestingCustomerByNameThenLoadsCustomer()
-		{
-			var waitHandle = new ManualResetEvent(false);
-
-			_customerContext
-				.Create()
-				.Where(x => x.CompanyName.IndexOf("Alfreds") > -1)
-				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
-
-			var result = waitHandle.WaitOne(2000);
-
-			Assert.True(result);
 		}
 
 		[Test]
@@ -68,6 +52,21 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
+		public void WhenRequestingCustomerByNameLengthThenLoadsCustomer()
+		{
+			var waitHandle = new ManualResetEvent(false);
+
+			_customerContext
+				.Create()
+				.Where(x => x.CompanyName.Length > 10)
+				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+
+			var result = waitHandle.WaitOne(2000);
+
+			Assert.True(result);
+		}
+
+		[Test]
 		public void WhenRequestingCustomerByNameStartsWithThenLoadsCustomer()
 		{
 			var waitHandle = new ManualResetEvent(false);
@@ -83,13 +82,13 @@ namespace Linq2Rest.Reactive.Tests
 		}
 
 		[Test]
-		public void WhenRequestingCustomerByNameLengthThenLoadsCustomer()
+		public void WhenRequestingCustomerByNameThenLoadsCustomer()
 		{
 			var waitHandle = new ManualResetEvent(false);
 
 			_customerContext
 				.Create()
-				.Where(x => x.CompanyName.Length > 10)
+				.Where(x => x.CompanyName.IndexOf("Alfreds") > -1)
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
 			var result = waitHandle.WaitOne(2000);

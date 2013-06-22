@@ -8,13 +8,13 @@
 //   Defines the public interface for an HTTP request.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-using System;
-using System.Diagnostics.Contracts;
-using Linq2Rest.Provider;
 
 namespace Linq2Rest.Implementations
 {
-    /// <summary>
+	using System;
+	using Provider;
+
+	/// <summary>
     /// Creates a basic IHttpRequest
     /// </summary>
     class HttpRequestFactory: IHttpRequestFactory

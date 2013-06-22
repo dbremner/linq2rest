@@ -10,13 +10,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Json;
-using Linq2Rest.Provider;
-
 namespace Linq2Rest.Reactive.WP8.Sample
 {
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Runtime.Serialization.Json;
+	using Provider;
+
 	public class PhoneSerializerFactory : ISerializerFactory
 	{
 		public ISerializer<T> Create<T>()
@@ -26,8 +26,8 @@ namespace Linq2Rest.Reactive.WP8.Sample
 
 		private class PhoneSerializer<T> : ISerializer<T>
 		{
-			private readonly DataContractJsonSerializer _innerSerializer;
 			private readonly DataContractJsonSerializer _innerListSerializer;
+			private readonly DataContractJsonSerializer _innerSerializer;
 
 			public PhoneSerializer()
 			{

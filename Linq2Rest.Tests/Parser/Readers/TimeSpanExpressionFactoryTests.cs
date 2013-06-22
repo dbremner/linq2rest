@@ -20,20 +20,23 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class TimeSpanExpressionFactoryTests
 	{
-		private TimeSpanExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new TimeSpanExpressionFactory();
 		}
 
-		[Test]
-		public void WhenFilterIsIncorrectFormatThenThrows()
-		{
-			const string Parameter = "blah";
+		private TimeSpanExpressionFactory _factory;
 
-			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
+		[Test]
+		public void WhenFilterIncludesTimeSpanParameterInDoubleQuotesThenReturnedExpressionContainsTimeSpan()
+		{
+			var timeSpan = new TimeSpan(1, 2, 15, 00);
+			var parameter = string.Format("time\"{0}\"", XmlConvert.ToString(timeSpan));
+
+			var expression = _factory.Convert(parameter);
+
+			Assert.IsAssignableFrom<TimeSpan>(expression.Value);
 		}
 
 		[Test]
@@ -48,14 +51,11 @@ namespace Linq2Rest.Tests.Parser.Readers
 		}
 
 		[Test]
-		public void WhenFilterIncludesTimeSpanParameterInDoubleQuotesThenReturnedExpressionContainsTimeSpan()
+		public void WhenFilterIsIncorrectFormatThenThrows()
 		{
-			var timeSpan = new TimeSpan(1, 2, 15, 00);
-			var parameter = string.Format("time\"{0}\"", XmlConvert.ToString(timeSpan));
+			const string Parameter = "blah";
 
-			var expression = _factory.Convert(parameter);
-
-			Assert.IsAssignableFrom<TimeSpan>(expression.Value);
+			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
 		}
 	}
 }

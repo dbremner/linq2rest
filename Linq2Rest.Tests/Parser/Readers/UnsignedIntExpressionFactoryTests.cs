@@ -19,12 +19,20 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class UnsignedIntExpressionFactoryTests
 	{
-		private UnsignedIntExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new UnsignedIntExpressionFactory();
+		}
+
+		private UnsignedIntExpressionFactory _factory;
+
+		[Test]
+		public void WhenFilterIncludesUnsignedIntParameterThenReturnedExpressionContainsUnsignedInt()
+		{
+			var expression = _factory.Convert("123");
+
+			Assert.IsAssignableFrom<uint>(expression.Value);
 		}
 
 		[Test]
@@ -33,14 +41,6 @@ namespace Linq2Rest.Tests.Parser.Readers
 			const string Parameter = "blah";
 
 			Assert.Throws<FormatException>(() => _factory.Convert(Parameter));
-		}
-
-		[Test]
-		public void WhenFilterIncludesUnsignedIntParameterThenReturnedExpressionContainsUnsignedInt()
-		{
-			var expression = _factory.Convert("123");
-
-			Assert.IsAssignableFrom<uint>(expression.Value);
 		}
 	}
 }

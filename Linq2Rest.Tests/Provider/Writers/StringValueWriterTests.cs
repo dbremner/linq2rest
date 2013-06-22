@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class StringValueWriterTests
 	{
-		private StringValueWriter _writer;
-
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new StringValueWriter();
 		}
+
+		private StringValueWriter _writer;
 
 		[Test]
 		public void WhenWritingStringThenEnclosesInSingleQuote()
