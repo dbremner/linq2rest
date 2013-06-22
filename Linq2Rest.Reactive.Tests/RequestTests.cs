@@ -36,7 +36,7 @@ namespace Linq2Rest.Reactive.Tests
 		{
 			_mockRestClient = new Mock<IAsyncRestClient>();
 			_mockRestClient.Setup(x => x.Download())
-				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
+				.Returns(() => Task<Stream>.Factory.StartNew(() => GeneralExtensions.ToStream("[]")));
 
 			_mockClientFactory = new Mock<IAsyncRestClientFactory>();
 			_mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));

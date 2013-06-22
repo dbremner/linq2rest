@@ -27,7 +27,9 @@ namespace Linq2Rest.Implementations
 		/// </summary>
 		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
         public JsonRestClient(Uri uri): this(uri, new HttpRequestFactory())
-        {}
+		{
+			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="JsonRestClient"/> class.

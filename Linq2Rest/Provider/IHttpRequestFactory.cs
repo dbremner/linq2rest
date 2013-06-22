@@ -32,13 +32,13 @@ namespace Linq2Rest.Provider
     }
 
     [ContractClassFor(typeof(IHttpRequestFactory))]
-    internal class HttpRequestFactoryContracts:IHttpRequestFactory
+    internal abstract class HttpRequestFactoryContracts:IHttpRequestFactory
     {
         public IHttpRequest Create(Uri uri, HttpMethod method, string acceptMimeType, string requestMimeType = null)
         {
-            Contract.Requires(uri != null);
-            Contract.Requires(acceptMimeType != null);
-            Contract.Requires(method != HttpMethod.None);
+            Contract.Requires<ArgumentNullException>(uri != null);
+            Contract.Requires<ArgumentNullException>(acceptMimeType != null);
+            Contract.Requires<ArgumentException>(method != HttpMethod.None);
 
             throw new NotImplementedException();
         }

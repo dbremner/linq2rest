@@ -24,16 +24,18 @@ namespace Linq2Rest.Implementations
 	public abstract class RestClientBase : IRestClient
 	{
 		private readonly string _acceptHeader;
-        private readonly IHttpRequestFactory _httpRequestFactory;
+		private readonly IHttpRequestFactory _httpRequestFactory;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RestClientBase"/> class.
-        /// </summary>
-        /// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
-        /// <param name="acceptHeader">The accept header to use in web requests.</param>
-        protected RestClientBase(Uri uri, string acceptHeader)
-            :this(uri, acceptHeader, new HttpRequestFactory())
-        {}
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RestClientBase"/> class.
+		/// </summary>
+		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
+		/// <param name="acceptHeader">The accept header to use in web requests.</param>
+		protected RestClientBase(Uri uri, string acceptHeader)
+			: this(uri, acceptHeader, new HttpRequestFactory())
+		{
+			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RestClientBase"/> class.
@@ -46,11 +48,11 @@ namespace Linq2Rest.Implementations
 			Contract.Requires<ArgumentNullException>(uri != null);
 			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 			Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(acceptHeader));
-            Contract.Requires<ArgumentException>(httpRequestFactory != null);
+			Contract.Requires<ArgumentException>(httpRequestFactory != null);
 
-			_acceptHeader       = acceptHeader;
-		    _httpRequestFactory = httpRequestFactory;
-			ServiceBase         = uri;
+			_acceptHeader = acceptHeader;
+			_httpRequestFactory = httpRequestFactory;
+			ServiceBase = uri;
 		}
 
 		/// <summary>
@@ -139,14 +141,14 @@ namespace Linq2Rest.Implementations
 
 		private Stream GetResponseStream(Uri uri, HttpMethod method, Stream requestStream = null)
 		{
-		    IHttpRequest request = _httpRequestFactory.Create(uri, method, _acceptHeader, _acceptHeader);
+			IHttpRequest request = _httpRequestFactory.Create(uri, method, _acceptHeader, _acceptHeader);
 
-		    if (requestStream != null)
-		    {
-		        request.WriteRequestStream(requestStream);
-		    }
+			if (requestStream != null)
+			{
+				request.WriteRequestStream(requestStream);
+			}
 
-		    return request.GetResponseStream();
+			return request.GetResponseStream();
 		}
 
 		[ContractInvariantMethod]
