@@ -57,7 +57,10 @@ namespace Linq2Rest.Reactive.Tests
 			_customerContext
 				.Create()
 				.Where(x => x.CompanyName.EndsWith("Futterkiste"))
-				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+				.Subscribe(
+					x => waitHandle.Set(),
+					e => Console.WriteLine(e.Message),
+					() => waitHandle.Set());
 
 			var result = waitHandle.WaitOne(5000);
 
