@@ -121,6 +121,8 @@
     <Compile Include="FakeChildItem.cs" />
     <Compile Include="FakeGrandChildItem.cs" />
     <Compile Include="Fakes\InMemoryJsonRestClient.cs" />
+    <Compile Include="Implementations\HttpRequestFactoryTests.cs" />
+    <Compile Include="Implementations\HttpWebRequestAdapterTests.cs" />
     <Compile Include="Implementations\JsonContextTests.cs" />
     <Compile Include="Implementations\JsonDataContractSerializerFactoryTests.cs" />
     <Compile Include="Implementations\JsonRestClientTests.cs" />
