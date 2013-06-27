@@ -32,7 +32,7 @@ namespace Linq2Rest.Provider
             Stream requestStream = httpRequest.GetRequestStream();
 
             inputStream.CopyTo(requestStream);
-            requestStream.Flush();
+            requestStream.Close();
         }
     }
 }

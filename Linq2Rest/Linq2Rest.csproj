@@ -128,7 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IModelFilter.cs" />
-    <Compile Include="Implementations\HttpRequestFactoryCertified.cs" />
+    <Compile Include="Implementations\HttpRequestFactoryWithCertificate.cs" />
     <Compile Include="Implementations\HttpWebRequestAdapter.cs" />
     <Compile Include="Implementations\HttpRequestFactory.cs" />
     <Compile Include="Implementations\JsonContext.cs" />

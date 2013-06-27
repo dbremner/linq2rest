@@ -22,21 +22,24 @@ namespace Linq2Rest.Implementations
     /// </summary>
     class HttpWebRequestAdapter: IHttpRequest
     {
-        private readonly HttpWebRequest _httpWebRequest;
+        /// <summary>
+        /// The HttpWebRequest we are adapting to IHttpRequest
+        /// </summary>
+        public HttpWebRequest HttpWebRequest { get; private set; }
 
 		public HttpWebRequestAdapter(HttpWebRequest httpWebRequest)
         {
-            _httpWebRequest = httpWebRequest;
+            HttpWebRequest = httpWebRequest;
         }
 
         public Stream GetRequestStream()
         {
-            return _httpWebRequest.GetRequestStream();
+            return HttpWebRequest.GetRequestStream();
         }
 
         public Stream GetResponseStream()
         {
-			var response = _httpWebRequest.GetResponse();
+			var response = HttpWebRequest.GetResponse();
 			var stream = response.GetResponseStream();
 			return stream;
         }
@@ -47,15 +50,15 @@ namespace Linq2Rest.Implementations
 		/// <param name="uri">The uri to send the request to</param>
 		/// <param name="method">The Http Request Method</param>
 		/// <param name="requestMimeType">The MIME type of the data we are sending</param>
-		/// <param name="acceptMimeType">The MIME we accept in response</param>
+		/// <param name="responseMimeType">The MIME we accept in response</param>
 		/// <returns>Returns an HttpWebRequest initialized with the given parameters</returns>
-		public static HttpWebRequest CreateHttpWebRequest(Uri uri, HttpMethod method, string requestMimeType, string acceptMimeType)
+        public static HttpWebRequest CreateHttpWebRequest(Uri uri, HttpMethod method, string responseMimeType, string requestMimeType)
 		{
 			Contract.Requires(uri != null);
-			Contract.Requires(acceptMimeType != null);
+			Contract.Requires(responseMimeType != null);
 			Contract.Requires(method != HttpMethod.None);
 
-			requestMimeType = requestMimeType ?? acceptMimeType;
+			requestMimeType = requestMimeType ?? responseMimeType;
 
 			var httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
 
@@ -66,7 +69,7 @@ namespace Linq2Rest.Implementations
 				httpWebRequest.ContentType = requestMimeType;
 			}
 
-			httpWebRequest.Accept = acceptMimeType;
+			httpWebRequest.Accept = responseMimeType;
 
 			return httpWebRequest;
 		}
