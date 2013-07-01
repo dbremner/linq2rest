@@ -1,11 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IHttpRequestExtensions.cs">
+// <copyright file="IHttpRequestExtensions.cs" company="INTEGRIS Health" developer="Mark Rucker">
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 //   All other rights reserved.
 // </copyright>
 // <summary>
-//   Defines the public interface for an HTTP request.
+//   Defines public extension methods for IHttpRequest.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
