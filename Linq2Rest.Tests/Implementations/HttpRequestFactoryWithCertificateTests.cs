@@ -1,6 +1,19 @@
-﻿namespace Linq2Rest.Tests.Implementations
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="HttpRequestFactoryWithCertificateTests.cs" company="INTEGRIS Health" developer="Mark Rucker">
+//   Copyright © Reimers.dk 2012
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   Defines the HttpRequestFactoryWithCertificateTests type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Linq2Rest.Tests.Implementations
 {
     using System;
+    using System.Net;
     using System.Security.Cryptography.X509Certificates;
     using Linq2Rest.Implementations;
     using Linq2Rest.Provider;
@@ -9,104 +22,160 @@
     [TestFixture]
     class HttpRequestFactoryWithCertificateTests
     {
-        [Test]
-        public void CanCreateHttpGetRequest()
+        [SetUp]
+        public void SetupFixture()
         {
-            var expectedUri = new Uri("http://test.com");
-            var expectedMethod = "GET";
-            var expectedAccept = "text/html";
-            var expectedContentType = null as string;
-            var expectedCertificate = new X509Certificate();
-
-            var httpRequestFactory = new HttpRequestFactoryWithCertificate(expectedCertificate);
-
-            IHttpRequest httpRequest  = httpRequestFactory.Create(expectedUri, HttpMethod.Get, "text/html", "text/html");
-            var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
-            var actualHttpWebRequest  = httpWebRequestAdapter.HttpWebRequest;
-
-            Assert.AreEqual(expectedUri, actualHttpWebRequest.RequestUri);
-            Assert.AreEqual(expectedMethod, actualHttpWebRequest.Method);
-            Assert.AreEqual(expectedAccept, actualHttpWebRequest.Accept);
-            Assert.AreEqual(expectedContentType, actualHttpWebRequest.ContentType);
-            Assert.IsTrue(actualHttpWebRequest.ClientCertificates.Contains(expectedCertificate));
+            _httpRequestFactory = new HttpRequestFactoryWithCertificate(new X509Certificate());
         }
 
-        [Test]
-        public void CanCreateHttpPostRequest()
+        private IHttpRequestFactory _httpRequestFactory;
+
+        [TestCase("http://test.com/", HttpMethod.Get, "text/html", null, ExpectedResult = "http://test.com/")]
+        [TestCase("http://test.com/", HttpMethod.Post, "text/html", "text/json", ExpectedResult = "http://test.com/")]
+        public string CreateShouldReturnHttpRequestWithCorrectUri(string uriString, HttpMethod httpMethod, string accept, string contentType)
         {
-            var expectedUri = new Uri("http://test.com");
-            var expectedMethod = "POST";
-            var expectedAccept = "text/xml";
-            var expectedContentType = "text/json";
-            var expectedCertificate = new X509Certificate();
+            IHttpRequest httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
 
-            var httpRequestFactory = new HttpRequestFactoryWithCertificate(expectedCertificate);
-
-            IHttpRequest httpRequest = httpRequestFactory.Create(expectedUri, HttpMethod.Post, "text/xml", "text/json");
             var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
-            var actualHttpWebRequest = httpWebRequestAdapter.HttpWebRequest;
+            var actualHttpWebRequest = (HttpWebRequest)httpWebRequestAdapter.HttpWebRequest;
 
-            Assert.AreEqual(expectedUri, actualHttpWebRequest.RequestUri);
-            Assert.AreEqual(expectedMethod, actualHttpWebRequest.Method);
-            Assert.AreEqual(expectedAccept, actualHttpWebRequest.Accept);
-            Assert.AreEqual(expectedContentType, actualHttpWebRequest.ContentType);
-            Assert.IsTrue(actualHttpWebRequest.ClientCertificates.Contains(expectedCertificate));
+            return actualHttpWebRequest.RequestUri.ToString();
         }
 
-        [Test]
-        public void CanCreateHttpPostAndGetRequest()
+        [TestCase("http://test.com/", HttpMethod.Get, "text/html", null, ExpectedResult = HttpMethod.Get)]
+        [TestCase("http://test.com/", HttpMethod.Post, "text/html", "text/json", ExpectedResult = HttpMethod.Post)]
+        public HttpMethod CreateShouldReturnHttpRequestWithCorrectHttpMethod(string uriString, HttpMethod httpMethod, string accept, string contentType)
         {
-// ReSharper disable InconsistentNaming
+            IHttpRequest httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
 
-            //Request 1
-            var expectedUri_1 = new Uri("http://test.com");
-            var expectedMethod_1 = "POST";
-            var expectedResponseMime_1 = "text/xml";
-            var expectedRequestMime_1 = "text/json";
+            var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
+            var actualHttpWebRequest = (HttpWebRequest)httpWebRequestAdapter.HttpWebRequest;
 
-            //Request 2
-            var expectedUri_2 = new Uri("http://test.com");
-            var expectedMethod_2 = "GET";
-            var expectedResponseMime_2 = "text/html";
-            var expectedRequestMime_2 = null as string;
+            return (HttpMethod)Enum.Parse(typeof(HttpMethod), actualHttpWebRequest.Method, true);
+        }
 
-            var expectedCertificate = new X509Certificate();
+        [TestCase("http://test.com/", HttpMethod.Get, "text/html", null, ExpectedResult = "text/html")]
+        [TestCase("http://test.com/", HttpMethod.Post, "text/html", "text/json", ExpectedResult = "text/html")]
+        public string CreateShouldReturnHttpRequestWithCorrectAccept(string uriString, HttpMethod httpMethod, string accept, string contentType)
+        {
+            IHttpRequest httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
 
-            var httpRequestFactory = new HttpRequestFactoryWithCertificate(expectedCertificate);
+            var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
+            var actualHttpWebRequest = (HttpWebRequest)httpWebRequestAdapter.HttpWebRequest;
 
+            return actualHttpWebRequest.Accept;
+        }
 
-            IHttpRequest httpRequest_1 = httpRequestFactory.Create(expectedUri_1
-                                                                  , HttpMethod.Post
-                                                                  , expectedResponseMime_1
-                                                                  , expectedRequestMime_1);
+        [TestCase("http://test.com/", HttpMethod.Get, "text/html", null, ExpectedResult = null)]
+        [TestCase("http://test.com/", HttpMethod.Post, "text/html", "text/json", ExpectedResult = "text/json")]
+        public string CreateShouldReturnHttpRequestWithCorrectContentType(string uriString, HttpMethod httpMethod, string accept, string contentType)
+        {
+            IHttpRequest httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
 
-            IHttpRequest httpRequest_2 = httpRequestFactory.Create(expectedUri_2
-                                                                  , HttpMethod.Get
-                                                                  , expectedResponseMime_2
-                                                                  , expectedRequestMime_2);
+            var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
+            var actualHttpWebRequest = (HttpWebRequest)httpWebRequestAdapter.HttpWebRequest;
 
-            var httpWebRequestAdapter_1 = (HttpWebRequestAdapter)httpRequest_1;
-            var actualHttpWebRequest_1 = httpWebRequestAdapter_1.HttpWebRequest;
+            return actualHttpWebRequest.ContentType;
+        }
 
-            var httpWebRequestAdapter_2 = (HttpWebRequestAdapter)httpRequest_2;
-            var actualHttpWebRequest_2 = httpWebRequestAdapter_2.HttpWebRequest;
+        [TestCase("http://test.com/", HttpMethod.Get, "text/html", null, ExpectedResult = 1)]
+        [TestCase("http://test.com/", HttpMethod.Post, "text/html", "text/json", ExpectedResult = 1)]
+        public int CreateShouldReturnHttpRequestWithCorrectClientCertificateCount(string uriString, HttpMethod httpMethod, string accept, string contentType)
+        {
+            IHttpRequest httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
 
-// ReSharper restore InconsistentNaming
+            var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
+            var actualHttpWebRequest = (HttpWebRequest)httpWebRequestAdapter.HttpWebRequest;
 
-            //Request 1
-            Assert.AreEqual(expectedUri_1, actualHttpWebRequest_1.RequestUri);
-            Assert.AreEqual(expectedMethod_1, actualHttpWebRequest_1.Method);
-            Assert.AreEqual(expectedResponseMime_1, actualHttpWebRequest_1.Accept);
-            Assert.AreEqual(expectedRequestMime_1, actualHttpWebRequest_1.ContentType);
-            Assert.IsTrue(actualHttpWebRequest_1.ClientCertificates.Contains(expectedCertificate));
+            return actualHttpWebRequest.ClientCertificates.Count;
+        }
 
-            //Request 2
-            Assert.AreEqual(expectedUri_2, actualHttpWebRequest_2.RequestUri);
-            Assert.AreEqual(expectedMethod_2, actualHttpWebRequest_2.Method);
-            Assert.AreEqual(expectedResponseMime_2, actualHttpWebRequest_2.Accept);
-            Assert.AreEqual(expectedRequestMime_2, actualHttpWebRequest_2.ContentType);
-            Assert.IsTrue(actualHttpWebRequest_2.ClientCertificates.Contains(expectedCertificate));
+        [TestCase("http://test.com/", HttpMethod.Post, "text/xml", "text/json", "http://test.com/", HttpMethod.Get, "text/html", null)]
+        public void TwoCreatesShouldReturnHttpRequestsWithCorrectUri(string uriString1, HttpMethod httpMethod1, string accept1, string contentType1,
+                                                                     string uriString2, HttpMethod httpMethod2, string accept2, string contentType2)
+        {
+            IHttpRequest httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
+            IHttpRequest httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
 
+            var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
+            var actualHttpWebRequest1 = (HttpWebRequest)httpWebRequestAdapter1.HttpWebRequest;
+
+            var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;
+            var actualHttpWebRequest2 = (HttpWebRequest)httpWebRequestAdapter2.HttpWebRequest;
+
+            Assert.AreEqual(uriString1, actualHttpWebRequest1.RequestUri.ToString());
+            Assert.AreEqual(uriString2, actualHttpWebRequest2.RequestUri.ToString());
+        }
+
+        [TestCase("http://test.com/", HttpMethod.Post, "text/xml", "text/json", "http://test.com/", HttpMethod.Get, "text/html", null)]
+        public void TwoCreatesShouldReturnHttpRequestsWithCorrectHttpMethod(string uriString1, HttpMethod httpMethod1, string accept1, string contentType1,
+                                                                            string uriString2, HttpMethod httpMethod2, string accept2, string contentType2)
+        {
+            IHttpRequest httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
+            IHttpRequest httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
+
+            var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
+            var actualHttpWebRequest1 = (HttpWebRequest)httpWebRequestAdapter1.HttpWebRequest;
+
+            var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;
+            var actualHttpWebRequest2 = (HttpWebRequest)httpWebRequestAdapter2.HttpWebRequest;
+
+            var actualHttpMethod1 = (HttpMethod)Enum.Parse(typeof(HttpMethod), actualHttpWebRequest1.Method, true);
+            var actualHttpMethod2 = (HttpMethod)Enum.Parse(typeof(HttpMethod), actualHttpWebRequest2.Method, true);
+
+            Assert.AreEqual(httpMethod1, actualHttpMethod1);
+            Assert.AreEqual(httpMethod2, actualHttpMethod2);
+        }
+
+        [TestCase("http://test.com/", HttpMethod.Post, "text/xml", "text/json", "http://test.com/", HttpMethod.Get, "text/html", null)]
+        public void TwoCreatesShouldReturnHttpRequestsWithCorrectAccept(string uriString1, HttpMethod httpMethod1, string accept1, string contentType1,
+                                                                        string uriString2, HttpMethod httpMethod2, string accept2, string contentType2)
+        {
+            IHttpRequest httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
+            IHttpRequest httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
+
+            var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
+            var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;
+
+            var actualHttpWebRequest1 = (HttpWebRequest)httpWebRequestAdapter1.HttpWebRequest;
+            var actualHttpWebRequest2 = (HttpWebRequest)httpWebRequestAdapter2.HttpWebRequest;
+
+            Assert.AreEqual(accept1, actualHttpWebRequest1.Accept);
+            Assert.AreEqual(accept2, actualHttpWebRequest2.Accept);
+        }
+
+        [TestCase("http://test.com/", HttpMethod.Post, "text/xml", "text/json", "http://test.com/", HttpMethod.Get, "text/html", null)]
+        public void TwoCreatesShouldReturnHttpRequestsWithCorrectContentType(string uriString1, HttpMethod httpMethod1, string accept1, string contentType1,
+                                                                             string uriString2, HttpMethod httpMethod2, string accept2, string contentType2)
+        {
+            IHttpRequest httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
+            IHttpRequest httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
+
+            var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
+            var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;
+
+            var actualHttpWebRequest1 = (HttpWebRequest)httpWebRequestAdapter1.HttpWebRequest;
+            var actualHttpWebRequest2 = (HttpWebRequest)httpWebRequestAdapter2.HttpWebRequest;
+
+            Assert.AreEqual(contentType1, actualHttpWebRequest1.ContentType);
+            Assert.AreEqual(contentType2, actualHttpWebRequest2.ContentType);
+        }
+
+        [TestCase("http://test.com/", HttpMethod.Post, "text/xml", "text/json", "http://test.com/", HttpMethod.Get, "text/html", null)]
+        public void TwoCreatesShouldReturnHttpRequestsWithCorrectClientCertificateCount(string uriString1, HttpMethod httpMethod1, string accept1, string contentType1,
+                                                                                        string uriString2, HttpMethod httpMethod2, string accept2, string contentType2)
+        {
+            IHttpRequest httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
+            IHttpRequest httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
+
+            var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
+            var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;
+
+            var actualHttpWebRequest1 = (HttpWebRequest)httpWebRequestAdapter1.HttpWebRequest;
+            var actualHttpWebRequest2 = (HttpWebRequest)httpWebRequestAdapter2.HttpWebRequest;
+
+            Assert.AreEqual(1, actualHttpWebRequest1.ClientCertificates.Count);
+            Assert.AreEqual(1, actualHttpWebRequest2.ClientCertificates.Count);
         }
     }
 }

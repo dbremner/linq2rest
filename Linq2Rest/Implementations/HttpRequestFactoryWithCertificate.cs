@@ -1,11 +1,11 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="HttpRequestFactoryWithCertificate.cs">
+// <copyright file="HttpRequestFactoryWithCertificate.cs" company="INTEGRIS Health" developer="Mark Rucker">
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 //   All other rights reserved.
 // </copyright>
 // <summary>
-//   Defines the public interface for an HTTP request.
+//   Defines a factory that creates IHttpRequest with a certificate attached to them.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -39,6 +39,7 @@ namespace Linq2Rest.Implementations
         /// <param name="responseMimeType">The Mime type we accept in response</param>
         /// <param name="requestMimeType">The Mime type we are sending in request</param>
         /// <returns>The HttpRequest we are creating</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
         public IHttpRequest Create(Uri uri, HttpMethod method, string responseMimeType, string requestMimeType = null)
         {
             var httpWebRequest = HttpWebRequestAdapter.CreateHttpWebRequest(uri, method, responseMimeType, requestMimeType);

@@ -1,11 +1,11 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="HttpWebRequestAdapter.cs">
+// <copyright file="HttpWebRequestAdapter.cs" company="INTEGRIS Health" developer="Mark Rucker">
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
 //   All other rights reserved.
 // </copyright>
 // <summary>
-//   Defines the public interface for an HTTP request.
+//   Defines an adapter to wrap HttpWebRequest to conform it to IHttpRequest
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
