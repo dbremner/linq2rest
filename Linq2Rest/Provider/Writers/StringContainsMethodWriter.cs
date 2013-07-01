@@ -23,7 +23,7 @@ namespace Linq2Rest.Provider.Writers
 			Contract.Assert(expression.Method != null);
 
 			return expression.Method.DeclaringType == typeof(string)
-				   && expression.Method.Name == "Substring";
+				   && expression.Method.Name == "Contains";
 		}
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
