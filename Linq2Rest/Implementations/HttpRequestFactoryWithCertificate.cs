@@ -39,8 +39,7 @@ namespace Linq2Rest.Implementations
         /// <param name="responseMimeType">The Mime type we accept in response</param>
         /// <param name="requestMimeType">The Mime type we are sending in request</param>
         /// <returns>The HttpRequest we are creating</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
-        public IHttpRequest Create(Uri uri, HttpMethod method, string responseMimeType, string requestMimeType = null)
+        public IHttpRequest Create(Uri uri, HttpMethod method, string responseMimeType, string requestMimeType)
         {
             var httpWebRequest = HttpWebRequestAdapter.CreateHttpWebRequest(uri, method, responseMimeType, requestMimeType);
 
