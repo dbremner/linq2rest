@@ -129,7 +129,7 @@ namespace Linq2Rest.Tests.Provider
 		[Test]
 		public void WhenApplyingContainsQueryThenCallsRestServiceWithFilter()
 		{
-			VerifyCall(x => x.Content.Contains("blah"), "http://localhost/?$filter=substringof('blah',+Content)");
+            VerifyCall(x => x.Content.Contains("blah"), "http://localhost/?$filter=substringof('blah',+Content)");
 		}
 
 		[Test]
@@ -186,14 +186,14 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		[Ignore("For some reason the URI comparison fails for the same URIs.")]
 		public void WhenApplyingEqualsQueryOnDateTimeOffsetThenCallsRestServiceWithFilter()
 		{
-			var result = _provider.Query
+			var result = _provider
+                .Query
 				.Count(x => x.PointInTime == new DateTimeOffset(2012, 5, 6, 18, 10, 0, TimeSpan.FromHours(2)));
 
-			var uri = new Uri("http://localhost/?$filter=PointInTime+eq+datetimeoffset'2012-05-06T18:10:00%2B02:00'");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			const string uri = "http://localhost/?$filter=PointInTime+eq+datetimeoffset'2012-05-06T18:10:00+02:00'";
+            _mockClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == uri)), Times.Once());
 		}
 
 		[Test]
@@ -406,7 +406,6 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		[Ignore("For some reason the URI comparison fails for the same URIs.")]
 		public void WhenApplyingPostQueryInMiddleThenCallsRestServiceOnceWithFullQuery()
 		{
 			var result = _provider.Query
@@ -414,7 +413,7 @@ namespace Linq2Rest.Tests.Provider
 				.Post(new SimpleDto { ID = 1 })
 				.Count(x => x.ID != 0);
 
-			var uri = new Uri("http://localhost/?$filter=(Value+lt+3)+and+(ID+ne+0)");
+			var uri = new Uri("http://localhost/?$filter=(Value+le+3)+and+(ID+ne+0)");
 			_mockClient.Verify(x => x.Post(uri, It.IsAny<Stream>()), Times.Once());
 		}
 
@@ -430,7 +429,6 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		[Ignore("For some reason the URI comparison fails for the same URIs.")]
 		public void WhenApplyingPutQueryInMiddleThenCallsRestServiceOnceWithFullQuery()
 		{
 			var result = _provider.Query
@@ -438,7 +436,7 @@ namespace Linq2Rest.Tests.Provider
 				.Put(new SimpleDto { ID = 1 })
 				.Count(x => x.ID != 0);
 
-			var uri = new Uri("http://localhost/?$filter=(Value+lt+3)+and+(ID+ne+0)");
+			var uri = new Uri("http://localhost/?$filter=(Value+le+3)+and+(ID+ne+0)");
 			_mockClient.Verify(x => x.Put(uri, It.IsAny<Stream>()), Times.Once());
 		}
 
@@ -684,7 +682,6 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		[Ignore("Stupid URL comparison.")]
 		public void WhenBaseUriHasQueryParametersThenTheyArePreservedInTheRequest()
 		{
 			var client = new Mock<IRestClient>();
@@ -694,15 +691,13 @@ namespace Linq2Rest.Tests.Provider
 				.Returns(() => _singleResponse.ToStream());
 			var provider = new RestContext<SimpleDto>(client.Object, new TestSerializerFactory());
 
-			Expression<Func<SimpleDto, bool>> expression = x => x.Value == 5;
-			var result =
-				provider
-					.Query
-					.Where(expression)
-					.ToArray();
+		    var result = provider
+				.Query
+				.Where(x => x.Value == 5)
+				.ToArray();
 
 			var uri = new Uri("http://localhost/?abc=123&$filter=Value+eq+5");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			client.Verify(x => x.Get(uri), Times.Once());
 		}
 
 		[Test]
