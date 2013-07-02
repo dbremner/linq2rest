@@ -127,15 +127,9 @@ namespace Linq2Rest.Tests.Provider
 		}
 
 		[Test]
-		[Ignore("For some reason the URI comparison fails for the same URIs.")]
 		public void WhenApplyingContainsQueryThenCallsRestServiceWithFilter()
 		{
-			var result = _provider.Query
-				.Where(x => x.Content.Contains("blah"))
-				.ToArray();
-
-			var uri = new Uri("http://localhost/?$filter=substringof('blah',+Content)");
-			_mockClient.Verify(x => x.Get(uri), Times.Once());
+			VerifyCall(x => x.Content.Contains("blah"), "http://localhost/?$filter=substringof('blah',+Content)");
 		}
 
 		[Test]
