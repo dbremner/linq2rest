@@ -2,7 +2,7 @@
 // <copyright file="HttpRequestFactoryTests.cs" company="INTEGRIS Health" developer="Mark Rucker">
 //   Copyright © Reimers.dk 2012
 //   This source is subject to the Microsoft Public License (Ms-PL).
-//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 //   All other rights reserved.
 // </copyright>
 // <summary>
@@ -12,13 +12,13 @@
 
 namespace Linq2Rest.Tests.Implementations
 {
-    using System;
-    using System.Net;
-    using Linq2Rest.Implementations;
-    using Linq2Rest.Provider;
-    using NUnit.Framework;
+	using System;
+	using System.Net;
+	using Linq2Rest.Implementations;
+	using Linq2Rest.Provider;
+	using NUnit.Framework;
 
-    [TestFixture]
+	[TestFixture]
     public class HttpRequestFactoryTests
     {
         [SetUp]

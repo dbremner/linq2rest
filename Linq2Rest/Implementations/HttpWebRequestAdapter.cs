@@ -1,7 +1,7 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="HttpWebRequestAdapter.cs" company="INTEGRIS Health" developer="Mark Rucker">
 //   This source is subject to the Microsoft Public License (Ms-PL).
-//   Please see http://go.microsoft.com/fwlink/?LinkID=131993] for details.
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 //   All other rights reserved.
 // </copyright>
 // <summary>
@@ -22,17 +22,17 @@ namespace Linq2Rest.Implementations
     /// </summary>
     class HttpWebRequestAdapter: IHttpRequest
     {
-        /// <summary>
-        /// The HttpWebRequest we are adapting to IHttpRequest
-        /// </summary>
-        public HttpWebRequest HttpWebRequest { get; private set; }
-
 		public HttpWebRequestAdapter(HttpWebRequest httpWebRequest)
         {
             HttpWebRequest = httpWebRequest;
         }
 
-        public Stream GetRequestStream()
+		/// <summary>
+		/// The HttpWebRequest we are adapting to IHttpRequest
+		/// </summary>
+		public HttpWebRequest HttpWebRequest { get; private set; }
+
+		public Stream GetRequestStream()
         {
             return HttpWebRequest.GetRequestStream();
         }
