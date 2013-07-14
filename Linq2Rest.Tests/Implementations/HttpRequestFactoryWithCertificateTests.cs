@@ -21,14 +21,14 @@ namespace Linq2Rest.Tests.Implementations
 	[TestFixture]
 	class HttpRequestFactoryWithCertificateTests
 	{
-		private const string AcceptMimeType = "text/html";
-
 		[SetUp]
 		public void SetupFixture()
 		{
 			_uri = new Uri("http://test.com/");
 			_httpRequestFactory = new HttpRequestFactoryWithCertificate(new X509Certificate());
 		}
+
+		private const string AcceptMimeType = "text/html";
 
 		private IHttpRequestFactory _httpRequestFactory;
 		private Uri _uri;
@@ -37,7 +37,7 @@ namespace Linq2Rest.Tests.Implementations
 		[TestCase(HttpMethod.Post, "text/json", ExpectedResult = "http://test.com/")]
 		public string CreateShouldReturnHttpRequestWithCorrectUri(HttpMethod httpMethod, string contentType)
 		{
-			IHttpRequest httpRequest = _httpRequestFactory.Create(_uri, httpMethod, AcceptMimeType, contentType);
+			var httpRequest = _httpRequestFactory.Create(_uri, httpMethod, AcceptMimeType, contentType);
 
 			var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
 			var actualHttpWebRequest = httpWebRequestAdapter.HttpWebRequest;
@@ -49,7 +49,7 @@ namespace Linq2Rest.Tests.Implementations
 		[TestCase(HttpMethod.Post, "text/json", ExpectedResult = HttpMethod.Post)]
 		public HttpMethod CreateShouldReturnHttpRequestWithCorrectHttpMethod(HttpMethod httpMethod, string contentType)
 		{
-			IHttpRequest httpRequest = _httpRequestFactory.Create(_uri, httpMethod, AcceptMimeType, contentType);
+			var httpRequest = _httpRequestFactory.Create(_uri, httpMethod, AcceptMimeType, contentType);
 
 			var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
 			var actualHttpWebRequest = httpWebRequestAdapter.HttpWebRequest;
@@ -61,7 +61,7 @@ namespace Linq2Rest.Tests.Implementations
 		[TestCase(HttpMethod.Post, "text/json", ExpectedResult = AcceptMimeType)]
 		public string CreateShouldReturnHttpRequestWithCorrectAccept(HttpMethod httpMethod, string contentType)
 		{
-			IHttpRequest httpRequest = _httpRequestFactory.Create(_uri, httpMethod, AcceptMimeType, contentType);
+			var httpRequest = _httpRequestFactory.Create(_uri, httpMethod, AcceptMimeType, contentType);
 
 			var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
 			var actualHttpWebRequest = httpWebRequestAdapter.HttpWebRequest;
@@ -73,7 +73,7 @@ namespace Linq2Rest.Tests.Implementations
 		[TestCase(HttpMethod.Post, "text/json", ExpectedResult = "text/json")]
 		public string CreateShouldReturnHttpRequestWithCorrectContentType(HttpMethod httpMethod, string contentType)
 		{
-			IHttpRequest httpRequest = _httpRequestFactory.Create(_uri, httpMethod, AcceptMimeType, contentType);
+			var httpRequest = _httpRequestFactory.Create(_uri, httpMethod, AcceptMimeType, contentType);
 
 			var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
 			var actualHttpWebRequest = httpWebRequestAdapter.HttpWebRequest;
@@ -85,7 +85,7 @@ namespace Linq2Rest.Tests.Implementations
 		[TestCase(HttpMethod.Post, "text/json", ExpectedResult = 1)]
 		public int CreateShouldReturnHttpRequestWithCorrectClientCertificateCount(HttpMethod httpMethod, string contentType)
 		{
-			IHttpRequest httpRequest = _httpRequestFactory.Create(_uri, httpMethod, AcceptMimeType, contentType);
+			var httpRequest = _httpRequestFactory.Create(_uri, httpMethod, AcceptMimeType, contentType);
 
 			var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
 			var actualHttpWebRequest = httpWebRequestAdapter.HttpWebRequest;
@@ -98,8 +98,8 @@ namespace Linq2Rest.Tests.Implementations
 			HttpMethod httpMethod1, string accept1, string contentType1,
 			HttpMethod httpMethod2, string accept2, string contentType2)
 		{
-			IHttpRequest httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
-			IHttpRequest httpRequest2 = _httpRequestFactory.Create(_uri, httpMethod2, accept2, contentType2);
+			var httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
+			var httpRequest2 = _httpRequestFactory.Create(_uri, httpMethod2, accept2, contentType2);
 
 			var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
 			var actualHttpWebRequest1 = httpWebRequestAdapter1.HttpWebRequest;
@@ -116,8 +116,8 @@ namespace Linq2Rest.Tests.Implementations
 			HttpMethod httpMethod1, string accept1, string contentType1,
 			HttpMethod httpMethod2, string accept2, string contentType2)
 		{
-			IHttpRequest httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
-			IHttpRequest httpRequest2 = _httpRequestFactory.Create(_uri, httpMethod2, accept2, contentType2);
+			var httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
+			var httpRequest2 = _httpRequestFactory.Create(_uri, httpMethod2, accept2, contentType2);
 
 			var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
 			var actualHttpWebRequest1 = httpWebRequestAdapter1.HttpWebRequest;
@@ -137,8 +137,8 @@ namespace Linq2Rest.Tests.Implementations
 			HttpMethod httpMethod1, string accept1, string contentType1,
 			HttpMethod httpMethod2, string accept2, string contentType2)
 		{
-			IHttpRequest httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
-			IHttpRequest httpRequest2 = _httpRequestFactory.Create(_uri, httpMethod2, accept2, contentType2);
+			var httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
+			var httpRequest2 = _httpRequestFactory.Create(_uri, httpMethod2, accept2, contentType2);
 
 			var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
 			var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;
@@ -155,8 +155,8 @@ namespace Linq2Rest.Tests.Implementations
 			HttpMethod httpMethod1, string accept1, string contentType1,
 			HttpMethod httpMethod2, string accept2, string contentType2)
 		{
-			IHttpRequest httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
-			IHttpRequest httpRequest2 = _httpRequestFactory.Create(_uri, httpMethod2, accept2, contentType2);
+			var httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
+			var httpRequest2 = _httpRequestFactory.Create(_uri, httpMethod2, accept2, contentType2);
 
 			var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
 			var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;
@@ -173,8 +173,8 @@ namespace Linq2Rest.Tests.Implementations
 			HttpMethod httpMethod1, string accept1, string contentType1,
 			HttpMethod httpMethod2, string accept2, string contentType2)
 		{
-			IHttpRequest httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
-			IHttpRequest httpRequest2 = _httpRequestFactory.Create(_uri, httpMethod2, accept2, contentType2);
+			var httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
+			var httpRequest2 = _httpRequestFactory.Create(_uri, httpMethod2, accept2, contentType2);
 
 			var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
 			var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;
