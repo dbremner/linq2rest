@@ -24,6 +24,14 @@ namespace Linq2Rest.Tests.Provider
 	[TestFixture]
 	public class RestContextTests
 	{
+		private RestContext<SimpleDto> _provider;
+		private RestContext<ComplexDto> _complexProvider;
+		private RestContext<CollectionDto> _collectionProvider;
+		private Mock<IRestClient> _mockClient;
+		private Mock<IRestClient> _mockComplexClient;
+		private Mock<IRestClient> _mockCollectionClient;
+		private string _singleResponse;
+
 		[SetUp]
 		public void TestSetup()
 		{
@@ -62,23 +70,6 @@ namespace Linq2Rest.Tests.Provider
 				.Returns("[{\"Value\" : 2, \"Content\" : \"blah\", \"Children\" : [{\"ID\" : 1, \"Name\" : \"Foo\"}, {\"ID\" : 2, \"Name\" : \"Bar\"}]}]".ToStream());
 
 			_collectionProvider = new RestContext<CollectionDto>(_mockCollectionClient.Object, serializerFactory);
-		}
-
-		private RestContext<SimpleDto> _provider;
-		private RestContext<ComplexDto> _complexProvider;
-		private RestContext<CollectionDto> _collectionProvider;
-		private Mock<IRestClient> _mockClient;
-		private Mock<IRestClient> _mockComplexClient;
-		private Mock<IRestClient> _mockCollectionClient;
-		private string _singleResponse;
-
-		private void VerifyCall(Expression<Func<SimpleDto, bool>> selection, string expectedUri)
-		{
-			var result = _provider.Query
-				.Where(selection)
-				.Count();
-
-			_mockClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == expectedUri)), Times.Once());
 		}
 
 		[Test]
@@ -182,7 +173,7 @@ namespace Linq2Rest.Tests.Provider
 		[Test]
 		public void WhenApplyingEqualityExpressionForFlagsEnumThenCallsRestServiceWithFilterParameter()
 		{
-			VerifyCall(x => x.Choice == Choice.That, "http://localhost/?$filter=Choice+eq+That");
+			VerifyCall(x => x.Choice == Choice.That, "http://localhost/?$filter=Choice+eq+'That'");
 		}
 
 		[Test]
@@ -839,6 +830,15 @@ namespace Linq2Rest.Tests.Provider
 
 			var uri = new Uri("http://localhost/?$filter=Value+eq+5");
 			_mockClient.Verify(x => x.Get(uri), Times.Once());
+		}
+
+		private void VerifyCall(Expression<Func<SimpleDto, bool>> selection, string expectedUri)
+		{
+			var result = _provider.Query
+				.Where(selection)
+				.Count();
+
+			_mockClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == expectedUri)), Times.Once());
 		}
 	}
 }

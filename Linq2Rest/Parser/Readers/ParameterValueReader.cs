@@ -66,7 +66,7 @@ namespace Linq2Rest.Parser.Readers
 
 			if (type.IsEnum)
 			{
-				var enumValue = Enum.Parse(type, token, true);
+				var enumValue = Enum.Parse(type, token.Replace("'", string.Empty), true);
 				return Expression.Constant(enumValue);
 			}
 
