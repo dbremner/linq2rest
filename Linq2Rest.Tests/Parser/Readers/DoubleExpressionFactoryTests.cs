@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class DoubleExpressionFactoryTests
 	{
+		private DoubleExpressionFactory _factory;
+
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new DoubleExpressionFactory();
 		}
-
-		private DoubleExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesDoubleParameterThenReturnedExpressionContainsDouble()

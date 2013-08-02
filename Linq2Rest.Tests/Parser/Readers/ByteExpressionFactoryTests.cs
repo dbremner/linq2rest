@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
     public class ByteExpressionFactoryTests
     {
+		private ByteExpressionFactory _factory;
+
 		[SetUp]
         public void Setup()
         {
             _factory = new ByteExpressionFactory();
         }
-
-		private ByteExpressionFactory _factory;
 
 		[Test]
         public void WhenFilterIncludesByteParameterInHexFormatThenReturnedExpressionContainsByte()

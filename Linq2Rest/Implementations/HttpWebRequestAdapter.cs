@@ -18,41 +18,29 @@ namespace Linq2Rest.Implementations
 	using Provider;
 
 	/// <summary>
-    /// Takes a System.Net.HttpWebRequest and wraps it in an IHttpRequest Implementation
-    /// </summary>
-    class HttpWebRequestAdapter: IHttpRequest
-    {
+	/// Takes a System.Net.HttpWebRequest and wraps it in an IHttpRequest Implementation.
+	/// </summary>
+	internal class HttpWebRequestAdapter : IHttpRequest
+	{
 		public HttpWebRequestAdapter(HttpWebRequest httpWebRequest)
-        {
-            HttpWebRequest = httpWebRequest;
-        }
+		{
+			HttpWebRequest = httpWebRequest;
+		}
 
 		/// <summary>
-		/// The HttpWebRequest we are adapting to IHttpRequest
+		/// The HttpWebRequest we are adapting to IHttpRequest.
 		/// </summary>
 		public HttpWebRequest HttpWebRequest { get; private set; }
 
-		public Stream GetRequestStream()
-        {
-            return HttpWebRequest.GetRequestStream();
-        }
-
-        public Stream GetResponseStream()
-        {
-			var response = HttpWebRequest.GetResponse();
-			var stream = response.GetResponseStream();
-			return stream;
-        }
-
 		/// <summary>
-		/// Creates a basic HttpWebRequest that can then be built off of depending on what other functionality is needed
+		/// Creates a basic HttpWebRequest that can then be built off of depending on what other functionality is needed.
 		/// </summary>
-		/// <param name="uri">The uri to send the request to</param>
-		/// <param name="method">The Http Request Method</param>
-		/// <param name="requestMimeType">The MIME type of the data we are sending</param>
-		/// <param name="responseMimeType">The MIME we accept in response</param>
-		/// <returns>Returns an HttpWebRequest initialized with the given parameters</returns>
-        public static HttpWebRequest CreateHttpWebRequest(Uri uri, HttpMethod method, string responseMimeType, string requestMimeType)
+		/// <param name="uri">The uri to send the request to.</param>
+		/// <param name="method">The Http Request Method.</param>
+		/// <param name="requestMimeType">The MIME type of the data we are sending.</param>
+		/// <param name="responseMimeType">The MIME we accept in response.</param>
+		/// <returns>Returns an HttpWebRequest initialized with the given parameters.</returns>
+		public static HttpWebRequest CreateHttpWebRequest(Uri uri, HttpMethod method, string responseMimeType, string requestMimeType)
 		{
 			Contract.Requires(uri != null);
 			Contract.Requires(responseMimeType != null);
@@ -73,5 +61,17 @@ namespace Linq2Rest.Implementations
 
 			return httpWebRequest;
 		}
-    }
+
+		public Stream GetRequestStream()
+		{
+			return HttpWebRequest.GetRequestStream();
+		}
+
+		public Stream GetResponseStream()
+		{
+			var response = HttpWebRequest.GetResponse();
+			var stream = response.GetResponseStream();
+			return stream;
+		}
+	}
 }

@@ -46,20 +46,19 @@ namespace Linq2Rest.Provider
         Delete
     }
 
-
     /// <summary>
-    /// Defines the public interface for an HttpRequest
+    /// Defines the public interface for an HttpRequest.
     /// </summary>
     [ContractClass(typeof(HttpRequestContracts))]
     public interface IHttpRequest
     {
         /// <summary>
-        /// Gets a System.IO.Stream object to write request data
+        /// Gets a System.IO.Stream object to write request data.
         /// </summary>
         Stream GetRequestStream();
 
         /// <summary>
-        /// Gets a System.IO.Stream object containing the response to the request
+        /// Gets a System.IO.Stream object containing the response to the request.
         /// </summary>
         Stream GetResponseStream();
     }

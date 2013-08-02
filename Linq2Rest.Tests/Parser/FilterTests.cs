@@ -20,6 +20,8 @@ namespace Linq2Rest.Tests.Parser
 	[TestFixture]
 	public class FilterTests
 	{
+		private FakeItem[] _collection;
+
 		[SetUp]
 		public void TestSetup()
 		{
@@ -54,8 +56,6 @@ namespace Linq2Rest.Tests.Parser
 						}
 				};
 		}
-
-		private FakeItem[] _collection;
 
 		[Test]
 		public void WhenApplyingSerializedExpressionThenCreatesSameResultAsOriginalExpression()

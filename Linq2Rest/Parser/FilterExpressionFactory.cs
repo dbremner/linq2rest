@@ -352,6 +352,21 @@ namespace Linq2Rest.Parser
 			return false;
 		}
 
+		private static Expression GetBooleanExpression(string filter, IFormatProvider formatProvider)
+		{
+			var booleanExpression = ParameterValueReader.Read(typeof(bool), filter, formatProvider) as ConstantExpression;
+			return booleanExpression != null && booleanExpression.Value != null
+				? booleanExpression
+				: null;
+		}
+
+		private static Expression GetParameterExpression(string filter, Type type, IFormatProvider formatProvider)
+		{
+			return type != null
+				? ParameterValueReader.Read(type, filter, formatProvider)
+				: GetBooleanExpression(filter, formatProvider);
+		}
+
 		private Expression CreateExpression<T>(string filter, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)
 		{
 			Contract.Requires(filter != null);
@@ -407,28 +422,13 @@ namespace Linq2Rest.Parser
 				?? GetFunctionExpression<T>(filter, sourceParameter, lambdaParameters, type, formatProvider)
 				?? GetParameterExpression(filter, type, formatProvider)
 				?? GetBooleanExpression(filter, formatProvider);
-			
+
 			if (expression == null)
 			{
 				throw new InvalidOperationException("Could not create expression from: " + filter);
 			}
 
 			return expression;
-		}
-
-		private static Expression GetBooleanExpression(string filter, IFormatProvider formatProvider)
-		{
-			var booleanExpression = ParameterValueReader.Read(typeof(bool), filter, formatProvider) as ConstantExpression;
-			return booleanExpression != null && booleanExpression.Value != null
-				? booleanExpression
-				: null;
-		}
-
-		private static Expression GetParameterExpression(string filter, Type type, IFormatProvider formatProvider)
-		{
-			return type != null
-				? ParameterValueReader.Read(type, filter, formatProvider)
-				: GetBooleanExpression(filter, formatProvider);
 		}
 
 		private Expression GetTokenExpression<T>(ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider, ICollection<TokenSet> tokens)

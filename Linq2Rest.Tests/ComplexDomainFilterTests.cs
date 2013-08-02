@@ -21,6 +21,8 @@ namespace Linq2Rest.Tests
 	[TestFixture]
 	public class ComplexDomainFilterTests
 	{
+		private TypeInstanceData[] _model;
+
 		[SetUp]
 		public void Setup()
 		{
@@ -60,8 +62,6 @@ namespace Linq2Rest.Tests
 						         }
 				         };
 		}
-
-		private TypeInstanceData[] _model;
 
 		[TestCase("Properties/any(pi: pi/DefinitionName eq 'Status' and pi/DefinitionName eq 'Approved')", 0)]
 		[TestCase("Properties/any(pi: pi/Values/any(v: v/StringNonUnicodeValue eq 'AAAAAApproved'))", 0)]
