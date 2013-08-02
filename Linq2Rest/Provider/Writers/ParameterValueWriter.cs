@@ -62,13 +62,13 @@ namespace Linq2Rest.Provider.Writers
 
 			if (type.IsEnum)
 			{
-				return value.ToString();
+				return string.Format("'{0}'", value);
 			}
 #else
 			var type = value.GetType();
 			if (type.GetTypeInfo().IsEnum)
 			{
-				return value.ToString();
+				return string.Format("'{0}'", value);
 			}
 #endif
 			var writer = ValueWriters.FirstOrDefault(x => x.Handles == type);
@@ -77,7 +77,7 @@ namespace Linq2Rest.Provider.Writers
 			{
 				return writer.Write(value);
 			}
-			
+
 #if !NETFX_CORE
 			if (typeof(Nullable<>).IsAssignableFrom(type))
 			{
