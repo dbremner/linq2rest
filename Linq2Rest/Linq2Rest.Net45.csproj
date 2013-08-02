@@ -179,10 +179,10 @@
     <Compile Include="Parser\SortExpressionFactory.cs" />
     <Compile Include="Provider\ExpressionProcessor.cs" />
     <Compile Include="Provider\ExpressionWriter.cs" />
+    <Compile Include="Provider\HttpRequestExtensions.cs" />
     <Compile Include="Provider\IExpressionProcessor.cs" />
     <Compile Include="Provider\IExpressionWriter.cs" />
     <Compile Include="Provider\IHttpRequest.cs" />
-    <Compile Include="Provider\IHttpRequestExtensions.cs" />
     <Compile Include="Provider\IHttpRequestFactory.cs" />
     <Compile Include="Provider\IRestClient.cs" />
     <Compile Include="Provider\ISerializer.cs" />

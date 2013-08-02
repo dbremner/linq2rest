@@ -21,7 +21,6 @@ namespace Linq2Rest.Tests.Parser
 	public class ParameterParserTests
 	{
 		private ParameterParser<FakeItem> _parser;
-
 		private FakeItem[] _items;
 		private FakeItem[] _nestedItems;
 
@@ -79,26 +78,6 @@ namespace Linq2Rest.Tests.Parser
 				};
 		}
 
-		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection)
-		{
-			return GetFilteredItems(useModelFilter, collection, _items);
-		}
-
-		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection, FakeItem[] items)
-		{
-			var filteredItems = useModelFilter
-				? GetModelFilter(collection).Filter(items)
-				: items.Filter(collection);
-			return filteredItems.ToArray();
-		}
-
-		private IModelFilter<FakeItem> GetModelFilter(NameValueCollection parameters)
-		{
-			var filter = _parser.Parse(parameters);
-			return filter;
-		}
-
-		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
 		public void WhenRequestContainsAnyFilterParameterThenReturnedModelFilterFilteringCollectionByValue(bool useModelFilter)
@@ -109,7 +88,6 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(1, filteredItems.Count());
 		}
 
-		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
 		public void WhenRequestContainsFilterParameterAndApplyingAsExtensionMethodThenReturnedModelFilterFilteringByValue(bool useModelFilter)
@@ -120,7 +98,6 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(1, filteredItems.Count());
 		}
 
-		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
 		public void WhenRequestContainsFilterParameterAndSortThenReturnedModelFilterFilteringAndSortedByValue(bool useModelFilter)
@@ -133,7 +110,6 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(1, filteredItems.OfType<FakeItem>().ElementAt(2).IntValue);
 		}
 
-		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
 		public void WhenRequestContainsFilterParameterThenReturnedModelFilterFilteringByValue(bool useModelFilter)
@@ -144,7 +120,6 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(1, filteredItems.Count());
 		}
 
-		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
 		public void WhenRequestContainsFilterSortSkipAndTopThenReturnedModelFilterFilteringFindsItem(bool useModelFilter)
@@ -162,7 +137,6 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(1, filteredItems.Length);
 		}
 
-		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
 		public void WhenRequestContainsMathFunctionFilterParameterThenReturnedModelFilterFilteringByValue(bool useModelFilter)
@@ -173,7 +147,6 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(2, filteredItems.Count());
 		}
 
-		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
 		public void WhenRequestContainsNoSystemParametersThenReturnedModelFilterWithoutFiltering(bool useModelFilter)
@@ -184,7 +157,6 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(3, filteredItems.Count());
 		}
 
-		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
 		public void WhenRequestContainsSkipParameterThenReturnedModelFilterSkippingItems(bool useModelFilter)
@@ -195,7 +167,6 @@ namespace Linq2Rest.Tests.Parser
 			Assert.AreEqual(1, filteredItems.Count());
 		}
 
-		[Test]
 		[TestCase(true)]
 		[TestCase(false)]
 		public void WhenRequestContainsTopParameterThenReturnedModelFilterWithTopItems(bool useModelFilter)
@@ -204,6 +175,25 @@ namespace Linq2Rest.Tests.Parser
 			var filteredItems = GetFilteredItems(useModelFilter, collection);
 
 			Assert.AreEqual(1, filteredItems.Count());
+		}
+
+		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection)
+		{
+			return GetFilteredItems(useModelFilter, collection, _items);
+		}
+
+		private object[] GetFilteredItems(bool useModelFilter, NameValueCollection collection, FakeItem[] items)
+		{
+			var filteredItems = useModelFilter
+				? GetModelFilter(collection).Filter(items)
+				: items.Filter(collection);
+			return filteredItems.ToArray();
+		}
+
+		private IModelFilter<FakeItem> GetModelFilter(NameValueCollection parameters)
+		{
+			var filter = _parser.Parse(parameters);
+			return filter;
 		}
 	}
 }

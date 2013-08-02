@@ -21,17 +21,17 @@ namespace Linq2Rest.Tests.Implementations
 	[TestFixture]
 	class HttpRequestFactoryWithCertificateTests
 	{
+		private const string AcceptMimeType = "text/html";
+
+		private IHttpRequestFactory _httpRequestFactory;
+		private Uri _uri;
+
 		[SetUp]
 		public void SetupFixture()
 		{
 			_uri = new Uri("http://test.com/");
 			_httpRequestFactory = new HttpRequestFactoryWithCertificate(new X509Certificate());
 		}
-
-		private const string AcceptMimeType = "text/html";
-
-		private IHttpRequestFactory _httpRequestFactory;
-		private Uri _uri;
 
 		[TestCase(HttpMethod.Get, null, ExpectedResult = "http://test.com/")]
 		[TestCase(HttpMethod.Post, "text/json", ExpectedResult = "http://test.com/")]

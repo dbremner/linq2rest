@@ -21,11 +21,11 @@ namespace Linq2Rest.Implementations
 	/// </summary>
 	public class JsonRestClient : RestClientBase
 	{
-        /// <summary>
+		/// <summary>
 		/// Initializes a new instance of the <see cref="JsonRestClient"/> class.
 		/// </summary>
 		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
-        public JsonRestClient(Uri uri): this(uri, new HttpRequestFactory())
+		public JsonRestClient(Uri uri) : this(uri, new HttpRequestFactory())
 		{
 			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 		}
@@ -34,13 +34,13 @@ namespace Linq2Rest.Implementations
 		/// Initializes a new instance of the <see cref="JsonRestClient"/> class.
 		/// </summary>
 		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
-		/// <param name="httpRequestFactory">The factory to use to create our HTTP Requests </param>
-        public JsonRestClient(Uri uri, IHttpRequestFactory httpRequestFactory)
+		/// <param name="httpRequestFactory">The factory to use to create our HTTP Requests.</param>
+		public JsonRestClient(Uri uri, IHttpRequestFactory httpRequestFactory)
 			: base(uri, StringConstants.JsonMimeType, httpRequestFactory)
 		{
 			Contract.Requires<ArgumentNullException>(uri != null);
 			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
-            Contract.Requires<ArgumentException>(httpRequestFactory != null);
+			Contract.Requires<ArgumentException>(httpRequestFactory != null);
 		}
 	}
 }

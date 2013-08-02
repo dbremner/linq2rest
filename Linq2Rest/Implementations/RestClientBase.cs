@@ -41,7 +41,7 @@ namespace Linq2Rest.Implementations
 		/// </summary>
 		/// <param name="uri">The base <see cref="Uri"/> for the REST service.</param>
 		/// <param name="acceptHeader">The accept header to use in web requests.</param>
-		/// <param name="httpRequestFactory">The factory used to create Linq2Rest.Provider.IHttpRequest implementations </param>
+		/// <param name="httpRequestFactory">The factory used to create Linq2Rest.Provider.IHttpRequest implementations.</param>
 		protected RestClientBase(Uri uri, string acceptHeader, IHttpRequestFactory httpRequestFactory)
 		{
 			Contract.Requires<ArgumentNullException>(uri != null);
@@ -140,7 +140,7 @@ namespace Linq2Rest.Implementations
 
 		private Stream GetResponseStream(Uri uri, HttpMethod method, Stream requestStream = null)
 		{
-			IHttpRequest request = _httpRequestFactory.Create(uri, method, _acceptHeader, _acceptHeader);
+			var request = _httpRequestFactory.Create(uri, method, _acceptHeader, _acceptHeader);
 
 			if (requestStream != null)
 			{

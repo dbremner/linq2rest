@@ -20,13 +20,13 @@ namespace Linq2Rest.Tests.Implementations
 	[TestFixture]
 	public class JsonDataContractSerializerFactoryTests
 	{
+		private JsonDataContractSerializerFactory _factory;
+
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new JsonDataContractSerializerFactory(Type.EmptyTypes);
 		}
-
-		private JsonDataContractSerializerFactory _factory;
 
 		[Test]
 		public void CreatedSerializerCanDeserializeDataContractType()
