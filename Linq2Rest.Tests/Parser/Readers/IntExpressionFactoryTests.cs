@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class IntExpressionFactoryTests
 	{
-		private IntExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new IntExpressionFactory();
 		}
+
+		private IntExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesIntParameterThenReturnedExpressionContainsInt()

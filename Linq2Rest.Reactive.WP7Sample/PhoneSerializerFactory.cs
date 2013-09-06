@@ -15,7 +15,7 @@ namespace Linq2Rest.Reactive.WP8.Sample
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Runtime.Serialization.Json;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	public class PhoneSerializerFactory : ISerializerFactory
 	{

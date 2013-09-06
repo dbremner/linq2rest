@@ -37,8 +37,8 @@ namespace Linq2Rest.Provider.Writers
 			Contract.Assume(argumentExpression != null);
 
 			return string.Format(
-				"startswith({0}, {1})",
-				expressionWriter(obj),
+				"startswith({0}, {1})", 
+				expressionWriter(obj), 
 				expressionWriter(argumentExpression));
 		}
 	}

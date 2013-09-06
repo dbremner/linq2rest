@@ -15,17 +15,9 @@ namespace Linq2Rest.Provider.Writers
 	using System;
 	using System.Xml;
 
-	internal class DateTimeValueWriter : IValueWriter
+	internal class DateTimeValueWriter : ValueWriterBase<DateTime>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(DateTime);
-			}
-		}
-
-		public string Write(object value)
+		public override string Write(object value)
 		{
 			var dateTimeValue = (DateTime)value;
 

@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class DateTimeValueWriterTests
 	{
+		private DateTimeValueWriter _writer;
+
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new DateTimeValueWriter();
 		}
-
-		private DateTimeValueWriter _writer;
 
 		[Test]
 		public void WhenWritingDateTimeValueThenWritesString()

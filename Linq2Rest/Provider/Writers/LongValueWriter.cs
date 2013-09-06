@@ -12,16 +12,7 @@
 
 namespace Linq2Rest.Provider.Writers
 {
-	using System;
-
-	internal class LongValueWriter : IntegerValueWriter
+	internal class LongValueWriter : IntegerValueWriter<long>
 	{
-		public override Type Handles
-		{
-			get
-			{
-				return typeof(long);
-			}
-		}
 	}
 }

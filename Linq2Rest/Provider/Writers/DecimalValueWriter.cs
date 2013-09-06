@@ -14,14 +14,7 @@ namespace Linq2Rest.Provider.Writers
 {
 	using System;
 
-	internal class DecimalValueWriter : RationalValueWriter
+	internal class DecimalValueWriter : RationalValueWriter<decimal>
 	{
-		public override Type Handles
-		{
-			get
-			{
-				return typeof(decimal);
-			}
-		}
 	}
 }

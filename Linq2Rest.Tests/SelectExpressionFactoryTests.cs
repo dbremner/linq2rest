@@ -29,8 +29,8 @@ namespace Linq2Rest.Tests
 
 			_items = new[]
 				{
-					new FakeItem { IntValue = 2, DoubleValue = 5 },
-					new FakeItem { IntValue = 1, DoubleValue = 4 },
+					new FakeItem { IntValue = 2, DoubleValue = 5 }, 
+					new FakeItem { IntValue = 1, DoubleValue = 4 }, 
 					new FakeItem { IntValue = 3, DoubleValue = 4 }
 				};
 		}

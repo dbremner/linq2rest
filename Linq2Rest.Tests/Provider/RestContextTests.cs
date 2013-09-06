@@ -16,22 +16,14 @@ namespace Linq2Rest.Tests.Provider
 	using System.IO;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using Fakes;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class RestContextTests
 	{
-		private RestContext<SimpleDto> _provider;
-		private RestContext<ComplexDto> _complexProvider;
-		private RestContext<CollectionDto> _collectionProvider;
-		private Mock<IRestClient> _mockClient;
-		private Mock<IRestClient> _mockComplexClient;
-		private Mock<IRestClient> _mockCollectionClient;
-		private string _singleResponse;
-
 		[SetUp]
 		public void TestSetup()
 		{
@@ -71,6 +63,14 @@ namespace Linq2Rest.Tests.Provider
 
 			_collectionProvider = new RestContext<CollectionDto>(_mockCollectionClient.Object, serializerFactory);
 		}
+
+		private RestContext<SimpleDto> _provider;
+		private RestContext<ComplexDto> _complexProvider;
+		private RestContext<CollectionDto> _collectionProvider;
+		private Mock<IRestClient> _mockClient;
+		private Mock<IRestClient> _mockComplexClient;
+		private Mock<IRestClient> _mockCollectionClient;
+		private string _singleResponse;
 
 		[Test]
 		public void WhenAnyExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()

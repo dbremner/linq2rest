@@ -15,8 +15,8 @@ namespace Linq2Rest.Reactive.Tests
 	using System;
 	using System.Reactive.Linq;
 	using System.Threading;
-	using Fakes;
-	using Implementations;
+	using Linq2Rest.Reactive.Implementations;
+	using Linq2Rest.Reactive.Tests.Fakes;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -29,7 +29,7 @@ namespace Linq2Rest.Reactive.Tests
 		{
 			// Tests against the sample OData service.
 			_customerContext = new RestObservable<NorthwindCustomer>(
-				new AsyncJsonRestClientFactory(new Uri("http://services.odata.org/Northwind/Northwind.svc/Customers")),
+				new AsyncJsonRestClientFactory(new Uri("http://services.odata.org/Northwind/Northwind.svc/Customers")), 
 				new TestODataSerializerFactory());
 		}
 
@@ -42,8 +42,8 @@ namespace Linq2Rest.Reactive.Tests
 				.Create()
 				.Where(x => x.CompanyName.EndsWith("Futterkiste"))
 				.Subscribe(
-					x => waitHandle.Set(),
-					e => Console.WriteLine(e.Message),
+					x => waitHandle.Set(), 
+					e => Console.WriteLine(e.Message), 
 					() => waitHandle.Set());
 
 			var result = waitHandle.WaitOne(5000);

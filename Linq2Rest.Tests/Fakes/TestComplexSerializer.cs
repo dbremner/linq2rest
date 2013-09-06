@@ -17,7 +17,7 @@ namespace Linq2Rest.Tests.Fakes
 	using System.IO;
 	using System.Runtime.Serialization.Json;
 	using Linq2Rest.Provider;
-	using Provider;
+	using Linq2Rest.Tests.Provider;
 
 	public class TestComplexSerializer : ISerializer<ComplexDto>
 	{

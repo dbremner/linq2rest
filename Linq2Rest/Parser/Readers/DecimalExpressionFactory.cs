@@ -16,17 +16,9 @@ namespace Linq2Rest.Parser.Readers
 	using System.Globalization;
 	using System.Linq.Expressions;
 
-	internal class DecimalExpressionFactory : IValueExpressionFactory
+	internal class DecimalExpressionFactory : ValueExpressionFactoryBase<decimal>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(decimal);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			decimal number;
 			if (decimal.TryParse(token.Trim('M', 'm'), NumberStyles.Any, CultureInfo.InvariantCulture, out number))

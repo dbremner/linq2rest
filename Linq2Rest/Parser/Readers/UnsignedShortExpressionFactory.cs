@@ -15,17 +15,9 @@ namespace Linq2Rest.Parser.Readers
 	using System;
 	using System.Linq.Expressions;
 
-	internal class UnsignedShortExpressionFactory : IValueExpressionFactory
+	internal class UnsignedShortExpressionFactory : ValueExpressionFactoryBase<ushort>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(ushort);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			ushort number;
 			if (ushort.TryParse(token, out number))

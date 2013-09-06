@@ -1,8 +1,14 @@
-﻿// Copyright ©  2012
-
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2012
+//   This source is subject to the Microsoft Public License (Ms-PL).
+//   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
+//   All other rights reserved.
+// </copyright>
+// <summary>
+//   AssemblyInfo.cs
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -25,12 +31,10 @@ using System.Runtime.InteropServices;
 [assembly: Guid("ccb20ecb-2ff1-4aa0-9d7f-3c33a7630672")]
 
 // Version information for an assembly consists of the following four values:
-//
 //      Major Version
 //      Minor Version 
 //      Build Number
 //      Revision
-//
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("3.3.0.0")]

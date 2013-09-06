@@ -12,16 +12,7 @@
 
 namespace Linq2Rest.Provider.Writers
 {
-	using System;
-
-	internal class UnsignedLongValueWriter : IntegerValueWriter
+	internal class UnsignedLongValueWriter : IntegerValueWriter<ulong>
 	{
-		public override Type Handles
-		{
-			get
-			{
-				return typeof(ulong);
-			}
-		}
 	}
 }

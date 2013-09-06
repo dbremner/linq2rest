@@ -20,7 +20,7 @@ namespace Linq2Rest
 	using System.Reflection;
 	using System.Reflection.Emit;
 	using System.Threading;
-	using Parser;
+	using Linq2Rest.Parser;
 
 	/// <summary>
 	/// Defines the RuntimeTypeProvider.
@@ -72,11 +72,11 @@ namespace Linq2Rest
 
 			var className = GetTypeKey(sourceType, dictionary);
 			return BuiltTypes.GetOrAdd(
-				className,
+				className, 
 				s =>
 				{
 					var typeBuilder = ModuleBuilder.DefineType(
-						className,
+						className, 
 						TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable);
 
 					Contract.Assume(typeBuilder != null);
@@ -108,9 +108,9 @@ namespace Linq2Rest
 			SetAttributes(propertyBuilder, field.Value);
 
 			var getAccessor = typeBuilder.DefineMethod(
-													   "get_" + field.Key,
-													   GetSetAttr,
-													   propertyType,
+													   "get_" + field.Key, 
+													   GetSetAttr, 
+													   propertyType, 
 													   Type.EmptyTypes);
 
 			var getIl = getAccessor.GetILGenerator();
@@ -119,9 +119,9 @@ namespace Linq2Rest
 			getIl.Emit(OpCodes.Ret);
 
 			var setAccessor = typeBuilder.DefineMethod(
-													   "set_" + field.Key,
-													   GetSetAttr,
-													   null,
+													   "set_" + field.Key, 
+													   GetSetAttr, 
+													   null, 
 													   new[] { propertyType });
 
 			var setIl = setAccessor.GetILGenerator();
@@ -141,7 +141,7 @@ namespace Linq2Rest
 
 			var attributeBuilders = TypeAttributeBuilders
 				.GetOrAdd(
-						  type,
+						  type, 
 						  t =>
 						  {
 							  var customAttributes = t.GetCustomAttributesData();
@@ -163,7 +163,7 @@ namespace Linq2Rest
 
 			var customAttributeBuilders = PropertyAttributeBuilders
 				.GetOrAdd(
-						  memberInfo,
+						  memberInfo, 
 						  p =>
 						  {
 							  var customAttributes = p.GetCustomAttributesData();

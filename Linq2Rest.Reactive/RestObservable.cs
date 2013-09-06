@@ -17,7 +17,7 @@ namespace Linq2Rest.Reactive
 	using System.Reactive;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	/// <summary>
 	/// Defines an observable REST query.
@@ -51,10 +51,10 @@ namespace Linq2Rest.Reactive
 			Contract.Assume(ImmediateScheduler.Instance != null);
 
 			return new InnerRestObservable<T>(
-				_restClientFactory,
-				_serializerFactory,
-				null,
-				ImmediateScheduler.Instance,
+				_restClientFactory, 
+				_serializerFactory, 
+				null, 
+				ImmediateScheduler.Instance, 
 				ImmediateScheduler.Instance);
 		}
 
@@ -69,11 +69,11 @@ namespace Linq2Rest.Reactive
 			Contract.Assume(ImmediateScheduler.Instance != null);
 
 			return new TriggeredRestObservable<T>(
-				trigger,
-				_restClientFactory,
-				_serializerFactory,
-				null,
-				ImmediateScheduler.Instance,
+				trigger, 
+				_restClientFactory, 
+				_serializerFactory, 
+				null, 
+				ImmediateScheduler.Instance, 
 				ImmediateScheduler.Instance);
 		}
 

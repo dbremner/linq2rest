@@ -14,9 +14,9 @@ namespace Linq2Rest.Tests
 {
 	using System;
 	using System.Linq;
-	using Fakes;
 	using Linq2Rest.Implementations;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Tests.Fakes;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -29,7 +29,7 @@ namespace Linq2Rest.Tests
 		{
 			// Tests against the sample OData service.
 			_customerContext = new RestContext<NorthwindCustomer>(
-				new JsonRestClient(new Uri("http://services.odata.org/Northwind/Northwind.svc/Customers")),
+				new JsonRestClient(new Uri("http://services.odata.org/Northwind/Northwind.svc/Customers")), 
 				new TestODataSerializerFactory());
 		}
 

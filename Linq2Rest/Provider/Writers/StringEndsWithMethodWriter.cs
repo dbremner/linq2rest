@@ -38,8 +38,8 @@ namespace Linq2Rest.Provider.Writers
 			Contract.Assume(argumentExpression != null);
 
 			return string.Format(
-				"endswith({0}, {1})",
-				expressionWriter(obj),
+				"endswith({0}, {1})", 
+				expressionWriter(obj), 
 				expressionWriter(argumentExpression));
 		}
 	}

@@ -94,7 +94,7 @@ namespace Linq2Rest.Tests.Parser
 		[TestCase("StringValue eq 'a \"quote\" within the text'", "x => (x.StringValue == \"a \"quote\" within the text\")")]
 		[TestCase("StringValue eq 'a 'single quote' within the text'", "x => (x.StringValue == \"a 'single quote' within the text\")")]
 		[TestCase("true", "x => True")]
-		[TestCase("ChoiceValue eq This", "x => ((Convert(x.ChoiceValue) & Convert(This)) == Convert(This))")]
+		[TestCase("ChoiceValue eq Linq2Rest.Tests.Choice'This'", "x => ((Convert(x.ChoiceValue) & Convert(This)) == Convert(This))")]
 		[TestCase("IntValue eq 1", "x => (x.IntValue == 1)")]
 		[TestCase("(IntValue eq 1) and DoubleValue lt 2", "x => ((x.IntValue == 1) AndAlso (x.DoubleValue < 2))")]
 		[TestCase("IntValue eq (10 mod 2)", "x => (x.IntValue == (10 % 2))")]

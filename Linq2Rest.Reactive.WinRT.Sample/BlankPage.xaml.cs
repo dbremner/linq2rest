@@ -9,16 +9,17 @@
 //   An empty page that can be used on its own or navigated to within a Frame.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
 namespace Linq2Rest.Reactive.WinRT.Sample
 {
 	using System;
 	using System.Reactive.Linq;
+	using Linq2Rest.Reactive.Implementations;
+	using Linq2Rest.Reactive.WinRT.Sample.Models;
+	using Linq2Rest.Reactive.WinRT.Sample.Support;
 	using Windows.UI.Core;
 	using Windows.UI.Xaml;
 	using Windows.UI.Xaml.Controls;
-	using Implementations;
-	using Models;
-	using Support;
 
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
@@ -47,13 +48,13 @@ namespace Linq2Rest.Reactive.WinRT.Sample
 			var query = search.Text;
 			new RestObservable<NetflixFilm>(
 				new AsyncJsonRestClientFactory(
-					new Uri("http://odata.netflix.com/v2/Catalog/Titles")),
+					new Uri("http://odata.netflix.com/v2/Catalog/Titles")), 
 				new ODataSerializerFactory())
 				.Create()
 				.Where(x => x.Name.Contains(query))
 				.Subscribe(
-					x => Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => AddFilm(x)),
-					ex => Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => button.IsEnabled = true),
+					x => Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => AddFilm(x)), 
+					ex => Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => button.IsEnabled = true), 
 					() => Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => button.IsEnabled = true));
 		}
 	}

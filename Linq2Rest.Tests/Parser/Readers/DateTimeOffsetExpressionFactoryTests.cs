@@ -20,13 +20,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class DateTimeOffsetExpressionFactoryTests
 	{
-		private DateTimeOffsetExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new DateTimeOffsetExpressionFactory();
 		}
+
+		private DateTimeOffsetExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesDateTimeOffsetParameterInDoubleQuotesThenReturnedExpressionContainsDateTimeOffset()

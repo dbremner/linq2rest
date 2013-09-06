@@ -12,21 +12,12 @@
 
 namespace Linq2Rest.Parser.Readers
 {
-	using System;
 	using System.Diagnostics.CodeAnalysis;
 	using System.IO;
 	using System.Linq.Expressions;
 
-	internal class StreamExpressionFactory : ByteArrayExpressionFactory
+	internal class StreamExpressionFactory : ByteArrayExpressionFactoryBase<Stream>
 	{
-		public override Type Handles
-		{
-			get
-			{
-				return typeof(Stream);
-			}
-		}
-
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Cannot dispose here.")]
 		public override ConstantExpression Convert(string token)
 		{

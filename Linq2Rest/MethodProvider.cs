@@ -285,10 +285,10 @@ namespace Linq2Rest
 			var predType = typeof(Func<,>).MakeGenericType(elemType, typeof(bool));
 
 			var allMethod = (MethodInfo)GetGenericMethod(
-														 typeof(Enumerable),
-														 name,
-														 new[] { elemType },
-														 new[] { implementationType, predType },
+														 typeof(Enumerable), 
+														 name, 
+														 new[] { elemType }, 
+														 new[] { implementationType, predType }, 
 														 BindingFlags.Static);
 
 			return allMethod;

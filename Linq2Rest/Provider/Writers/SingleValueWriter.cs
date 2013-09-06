@@ -12,16 +12,7 @@
 
 namespace Linq2Rest.Provider.Writers
 {
-	using System;
-
-	internal class SingleValueWriter : RationalValueWriter
+	internal class SingleValueWriter : RationalValueWriter<float>
 	{
-		public override Type Handles
-		{
-			get
-			{
-				return typeof(float);
-			}
-		}
 	}
 }

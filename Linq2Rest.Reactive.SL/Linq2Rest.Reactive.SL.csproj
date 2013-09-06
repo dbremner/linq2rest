@@ -247,6 +247,9 @@
     <Compile Include="..\Linq2Rest\Provider\Writers\EmptyAnyMethodWriter.cs">
       <Link>Provider\Writers\EmptyAnyMethodWriter.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\EnumValueWriter.cs">
+      <Link>Provider\Writers\EnumValueWriter.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\EqualsMethodWriter.cs">
       <Link>Provider\Writers\EqualsMethodWriter.cs</Link>
     </Compile>
@@ -336,6 +339,9 @@
     </Compile>
     <Compile Include="..\Linq2Rest\Provider\Writers\UnsignedShortValueWriter.cs">
       <Link>Provider\Writers\UnsignedShortValueWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\Provider\Writers\ValueWriterBase.cs">
+      <Link>Provider\Writers\ValueWriterBase.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest\StringConstants.cs">
       <Link>StringConstants.cs</Link>

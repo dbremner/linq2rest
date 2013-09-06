@@ -93,7 +93,7 @@ namespace Linq2Rest.Parser
 			Contract.Assume(constructorInfo != null, "Created type has default constructor.");
 
 			var selector = Expression.Lambda<Func<T, object>>(
-															  Expression.MemberInit(Expression.New(constructorInfo), bindings),
+															  Expression.MemberInit(Expression.New(constructorInfo), bindings), 
 															  sourceItem);
 
 			if (Monitor.TryEnter(_knownSelections, 1000))

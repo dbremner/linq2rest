@@ -12,16 +12,7 @@
 
 namespace Linq2Rest.Provider.Writers
 {
-	using System;
-
-	internal class DoubleValueWriter : RationalValueWriter
+	internal class DoubleValueWriter : RationalValueWriter<double>
 	{
-		public override Type Handles
-		{
-			get
-			{
-				return typeof(double);
-			}
-		}
 	}
 }

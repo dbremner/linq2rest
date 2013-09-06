@@ -12,7 +12,7 @@
 
 namespace Linq2Rest.Reactive.WinRT.Sample.Support
 {
-	using Provider;
+	using Linq2Rest.Provider;
 
 	public class ODataSerializerFactory : ISerializerFactory
 	{

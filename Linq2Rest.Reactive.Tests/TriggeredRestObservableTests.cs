@@ -19,7 +19,7 @@ namespace Linq2Rest.Reactive.Tests
 	using System.Reactive.Linq;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using Fakes;
+	using Linq2Rest.Reactive.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
 

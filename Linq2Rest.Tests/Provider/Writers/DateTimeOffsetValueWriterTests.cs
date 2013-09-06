@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class DateTimeOffsetValueWriterTests
 	{
+		private DateTimeOffsetValueWriter _writer;
+
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new DateTimeOffsetValueWriter();
 		}
-
-		private DateTimeOffsetValueWriter _writer;
 
 		[Test]
 		public void WhenWritingDateTimeValueThenWritesString()

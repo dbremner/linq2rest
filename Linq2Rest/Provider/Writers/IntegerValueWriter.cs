@@ -12,13 +12,9 @@
 
 namespace Linq2Rest.Provider.Writers
 {
-	using System;
-
-	internal abstract class IntegerValueWriter : IValueWriter
+	internal abstract class IntegerValueWriter<T> : ValueWriterBase<T>
 	{
-		public abstract Type Handles { get; }
-
-		public string Write(object value)
+		public override string Write(object value)
 		{
 			return value.ToString();
 		}

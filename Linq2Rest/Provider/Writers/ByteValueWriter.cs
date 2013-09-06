@@ -12,19 +12,9 @@
 
 namespace Linq2Rest.Provider.Writers
 {
-	using System;
-
-	internal class ByteValueWriter : IValueWriter
+	internal class ByteValueWriter : ValueWriterBase<byte>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(byte);
-			}
-		}
-
-		public string Write(object value)
+		public override string Write(object value)
 		{
 			var byteValue = (byte)value;
 

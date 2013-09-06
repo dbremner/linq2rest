@@ -15,17 +15,9 @@ namespace Linq2Rest.Parser.Readers
 	using System;
 	using System.Linq.Expressions;
 
-	internal class ShortExpressionFactory : IValueExpressionFactory
+	internal class ShortExpressionFactory : ValueExpressionFactoryBase<short>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(short);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			short number;
 			if (short.TryParse(token, out number))

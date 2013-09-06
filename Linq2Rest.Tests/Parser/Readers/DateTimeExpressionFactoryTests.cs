@@ -19,15 +19,15 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class DateTimeExpressionFactoryTests
 	{
-		private DateTimeExpressionFactory _factory;
-		private DateTime _dateTime;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new DateTimeExpressionFactory();
 			_dateTime = new DateTime(2012, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 		}
+
+		private DateTimeExpressionFactory _factory;
+		private DateTime _dateTime;
 
 		[Test]
 		public void WhenFilterIncludesDateTimeParameterInDoubleQuotesThenReturnedExpressionContainsDateTime()

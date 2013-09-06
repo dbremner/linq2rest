@@ -100,8 +100,8 @@ namespace Linq2Rest.Reactive.Implementations
 				{
 					return Task<Stream>.Factory
 						.FromAsync(
-							request.BeginGetRequestStream,
-							request.EndGetRequestStream,
+							request.BeginGetRequestStream, 
+							request.EndGetRequestStream, 
 							request)
 						.ContinueWith(s =>
 						{
@@ -117,8 +117,8 @@ namespace Linq2Rest.Reactive.Implementations
 										  {
 											  var webRequest = r.Result;
 											  return Task<WebResponse>.Factory.FromAsync(
-												  webRequest.BeginGetResponse,
-												  webRequest.EndGetResponse,
+												  webRequest.BeginGetResponse, 
+												  webRequest.EndGetResponse, 
 												  null)
 												  .ContinueWith(w => w.Result.GetResponseStream())
 												  .Result;

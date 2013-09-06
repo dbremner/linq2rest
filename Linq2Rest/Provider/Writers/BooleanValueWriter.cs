@@ -12,19 +12,9 @@
 
 namespace Linq2Rest.Provider.Writers
 {
-	using System;
-
-	internal class BooleanValueWriter : IValueWriter
+	internal class BooleanValueWriter : ValueWriterBase<bool>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(bool);
-			}
-		}
-
-		public string Write(object value)
+		public override string Write(object value)
 		{
 			var boolean = (bool)value;
 

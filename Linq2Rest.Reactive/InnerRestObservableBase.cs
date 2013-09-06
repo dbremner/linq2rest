@@ -21,7 +21,7 @@ namespace Linq2Rest.Reactive
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using System.Threading;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	internal abstract class InnerRestObservableBase<T> : IQbservable<T>
 	{
@@ -31,10 +31,10 @@ namespace Linq2Rest.Reactive
 		private IDisposable _subscribeSubscription;
 
 		internal InnerRestObservableBase(
-			IAsyncRestClientFactory restClient,
-			ISerializerFactory serializerFactory,
-			Expression expression,
-			IScheduler subscriberScheduler,
+			IAsyncRestClientFactory restClient, 
+			ISerializerFactory serializerFactory, 
+			Expression expression, 
+			IScheduler subscriberScheduler, 
 			IScheduler observerScheduler)
 		{
 			Contract.Requires(restClient != null);
@@ -54,19 +54,6 @@ namespace Linq2Rest.Reactive
 			get { return _serializerFactory; }
 		}
 
-		protected IAsyncRestClientFactory RestClient
-		{
-			get { return _restClient; }
-		}
-
-		protected IAsyncExpressionProcessor Processor { get; private set; }
-
-		protected IList<IObserver<T>> Observers { get; private set; }
-
-		protected IScheduler ObserverScheduler { get; private set; }
-
-		protected IScheduler SubscriberScheduler { get; private set; }
-
 		/// <summary>
 		/// Gets the type of the element(s) that are returned when the expression tree associated with this instance of IQbservable is executed.
 		/// </summary>
@@ -85,6 +72,19 @@ namespace Linq2Rest.Reactive
 		/// </summary>
 		public abstract IQbservableProvider Provider { get; }
 
+		protected IAsyncRestClientFactory RestClient
+		{
+			get { return _restClient; }
+		}
+
+		protected IAsyncExpressionProcessor Processor { get; private set; }
+
+		protected IList<IObserver<T>> Observers { get; private set; }
+
+		protected IScheduler ObserverScheduler { get; private set; }
+
+		protected IScheduler SubscriberScheduler { get; private set; }
+
 		/// <summary>
 		/// Notifies the provider that an observer is to receive notifications.
 		/// </summary>
@@ -102,7 +102,7 @@ namespace Linq2Rest.Reactive
 			Observers.Add(observer);
 			_subscribeSubscription = SubscriberScheduler
 				.Schedule(
-						  observer,
+						  observer, 
 						  (s, o) =>
 						  {
 							  var filter = Expression as MethodCallExpression;
@@ -115,9 +115,9 @@ namespace Linq2Rest.Reactive
 									  try
 									  {
 										  source = Processor.ProcessMethodCall(
-											  filter,
-											  parameterBuilder,
-											  GetResults,
+											  filter, 
+											  parameterBuilder, 
+											  GetResults, 
 											  GetIntermediateResults);
 									  }
 									  catch (Exception e)

@@ -71,7 +71,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 		[TestCase("false", typeof(bool?))]
 		[TestCase("1", typeof(bool?))]
 		[TestCase("0", typeof(bool?))]
-		[TestCase("'That'", typeof(Choice))]
+		[TestCase("Linq2Rest.Tests.Choice'That'", typeof(Choice))]
 		[TestCase("X'ZWFzdXJlLg=='", typeof(byte[]))]
 		[TestCase("binary'ZWFzdXJlLg=='", typeof(byte[]))]
 		[TestCase("X'ZWFzdXJlLg=='", typeof(Stream))]

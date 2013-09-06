@@ -15,17 +15,9 @@ namespace Linq2Rest.Parser.Readers
 	using System;
 	using System.Linq.Expressions;
 
-	internal class UnsignedIntExpressionFactory : IValueExpressionFactory
+	internal class UnsignedIntExpressionFactory : ValueExpressionFactoryBase<uint>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(uint);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			uint number;
 			if (uint.TryParse(token, out number))

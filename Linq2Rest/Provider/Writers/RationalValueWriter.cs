@@ -12,14 +12,11 @@
 
 namespace Linq2Rest.Provider.Writers
 {
-	using System;
 	using System.Globalization;
 
-	internal abstract class RationalValueWriter : IValueWriter
+	internal abstract class RationalValueWriter<T> : ValueWriterBase<T>
 	{
-		public abstract Type Handles { get; }
-
-		public string Write(object value)
+		public override string Write(object value)
 		{
 			return string.Format(CultureInfo.InvariantCulture, "{0}", value);
 		}

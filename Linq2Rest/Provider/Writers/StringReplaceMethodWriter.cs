@@ -40,9 +40,9 @@ namespace Linq2Rest.Provider.Writers
 			Contract.Assume(obj != null);
 
 			return string.Format(
-				"replace({0}, {1}, {2})",
-				expressionWriter(obj),
-				expressionWriter(firstArgument),
+				"replace({0}, {1}, {2})", 
+				expressionWriter(obj), 
+				expressionWriter(firstArgument), 
 				expressionWriter(secondArgument));
 		}
 	}

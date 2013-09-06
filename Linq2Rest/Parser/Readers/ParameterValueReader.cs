@@ -27,22 +27,23 @@ namespace Linq2Rest.Parser.Readers
 		{
 			ExpressionFactories = new List<IValueExpressionFactory>
 			                      	{
-										new BooleanExpressionFactory(),
-										new ByteExpressionFactory(),
-			                      		new GuidExpressionFactory(),
-										new DateTimeExpressionFactory(),
-										new TimeSpanExpressionFactory(),
-										new DateTimeOffsetExpressionFactory(),
-										new DecimalExpressionFactory(),
-										new DoubleExpressionFactory(),
-										new SingleExpressionFactory(),
-										new ByteArrayExpressionFactory(),
-										new StreamExpressionFactory(),
-										new LongExpressionFactory(),
-										new IntExpressionFactory(),
-										new ShortExpressionFactory(),
-										new UnsignedIntExpressionFactory(),
-										new UnsignedLongExpressionFactory(),
+										new EnumExpressionFactory(),
+										new BooleanExpressionFactory(), 
+										new ByteExpressionFactory(), 
+			                      		new GuidExpressionFactory(), 
+										new DateTimeExpressionFactory(), 
+										new TimeSpanExpressionFactory(), 
+										new DateTimeOffsetExpressionFactory(), 
+										new DecimalExpressionFactory(), 
+										new DoubleExpressionFactory(), 
+										new SingleExpressionFactory(), 
+										new ByteArrayExpressionFactory(), 
+										new StreamExpressionFactory(), 
+										new LongExpressionFactory(), 
+										new IntExpressionFactory(), 
+										new ShortExpressionFactory(), 
+										new UnsignedIntExpressionFactory(), 
+										new UnsignedLongExpressionFactory(), 
 										new UnsignedShortExpressionFactory()
 			                      	};
 		}
@@ -52,7 +53,7 @@ namespace Linq2Rest.Parser.Readers
 			Contract.Requires(token != null);
 			Contract.Requires(type != null);
 
-			var factory = ExpressionFactories.FirstOrDefault(x => x.Handles == type);
+			var factory = ExpressionFactories.FirstOrDefault(x => x.Handles(type));
 
 			return factory == null
 				? GetKnownConstant(type, token, formatProvider)

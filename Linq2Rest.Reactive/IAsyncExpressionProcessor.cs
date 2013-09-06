@@ -6,7 +6,7 @@
 //   All other rights reserved.
 // </copyright>
 // <summary>
-//   Defines the IAsyncExpressionProcessor type.
+//   Defines the inteface for an expression processor.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ namespace Linq2Rest.Reactive
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	/// <summary>
 	/// Defines the inteface for an expression processor.

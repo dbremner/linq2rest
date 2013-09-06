@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="HttpRequestFactoryWithCertificateTests.cs" company="INTEGRIS Health" developer="Mark Rucker">
+// <copyright file="HttpRequestFactoryWithCertificateTests.cs" company="Reimers.dk">
 //   Copyright © Reimers.dk 2012
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
@@ -21,17 +21,17 @@ namespace Linq2Rest.Tests.Implementations
 	[TestFixture]
 	class HttpRequestFactoryWithCertificateTests
 	{
-		private const string AcceptMimeType = "text/html";
-
-		private IHttpRequestFactory _httpRequestFactory;
-		private Uri _uri;
-
 		[SetUp]
 		public void SetupFixture()
 		{
 			_uri = new Uri("http://test.com/");
 			_httpRequestFactory = new HttpRequestFactoryWithCertificate(new X509Certificate());
 		}
+
+		private const string AcceptMimeType = "text/html";
+
+		private IHttpRequestFactory _httpRequestFactory;
+		private Uri _uri;
 
 		[TestCase(HttpMethod.Get, null, ExpectedResult = "http://test.com/")]
 		[TestCase(HttpMethod.Post, "text/json", ExpectedResult = "http://test.com/")]
@@ -95,7 +95,7 @@ namespace Linq2Rest.Tests.Implementations
 
 		[TestCase(HttpMethod.Post, "text/xml", "text/json", HttpMethod.Get, AcceptMimeType, null)]
 		public void TwoCreatesShouldReturnHttpRequestsWithCorrectUri(
-			HttpMethod httpMethod1, string accept1, string contentType1,
+			HttpMethod httpMethod1, string accept1, string contentType1, 
 			HttpMethod httpMethod2, string accept2, string contentType2)
 		{
 			var httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
@@ -113,7 +113,7 @@ namespace Linq2Rest.Tests.Implementations
 
 		[TestCase(HttpMethod.Post, "text/xml", "text/json", HttpMethod.Get, AcceptMimeType, null)]
 		public void TwoCreatesShouldReturnHttpRequestsWithCorrectHttpMethod(
-			HttpMethod httpMethod1, string accept1, string contentType1,
+			HttpMethod httpMethod1, string accept1, string contentType1, 
 			HttpMethod httpMethod2, string accept2, string contentType2)
 		{
 			var httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
@@ -134,7 +134,7 @@ namespace Linq2Rest.Tests.Implementations
 
 		[TestCase(HttpMethod.Post, "text/xml", "text/json", HttpMethod.Get, AcceptMimeType, null)]
 		public void TwoCreatesShouldReturnHttpRequestsWithCorrectAccept(
-			HttpMethod httpMethod1, string accept1, string contentType1,
+			HttpMethod httpMethod1, string accept1, string contentType1, 
 			HttpMethod httpMethod2, string accept2, string contentType2)
 		{
 			var httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
@@ -152,7 +152,7 @@ namespace Linq2Rest.Tests.Implementations
 
 		[TestCase(HttpMethod.Post, "text/xml", "text/json", HttpMethod.Get, AcceptMimeType, null)]
 		public void TwoCreatesShouldReturnHttpRequestsWithCorrectContentType(
-			HttpMethod httpMethod1, string accept1, string contentType1,
+			HttpMethod httpMethod1, string accept1, string contentType1, 
 			HttpMethod httpMethod2, string accept2, string contentType2)
 		{
 			var httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);
@@ -170,7 +170,7 @@ namespace Linq2Rest.Tests.Implementations
 
 		[TestCase(HttpMethod.Post, "text/xml", "text/json", HttpMethod.Get, AcceptMimeType, null)]
 		public void TwoCreatesShouldReturnHttpRequestsWithCorrectClientCertificateCount(
-			HttpMethod httpMethod1, string accept1, string contentType1,
+			HttpMethod httpMethod1, string accept1, string contentType1, 
 			HttpMethod httpMethod2, string accept2, string contentType2)
 		{
 			var httpRequest1 = _httpRequestFactory.Create(_uri, httpMethod1, accept1, contentType1);

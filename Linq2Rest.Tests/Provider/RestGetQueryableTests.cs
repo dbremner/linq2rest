@@ -14,8 +14,8 @@ namespace Linq2Rest.Tests.Provider
 {
 	using System;
 	using System.Collections;
-	using Fakes;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
 

@@ -1,11 +1,12 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="HttpRequestFactoryWithCertificate.cs" company="INTEGRIS Health" developer="Mark Rucker">
+// <copyright file="HttpRequestFactoryWithCertificate.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2012
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 //   All other rights reserved.
 // </copyright>
 // <summary>
-//   Defines a factory that creates IHttpRequest with a certificate attached to them.
+//   Creates an IHttpRequest with the given certificate attached to it.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -13,7 +14,7 @@ namespace Linq2Rest.Implementations
 {
 	using System;
 	using System.Security.Cryptography.X509Certificates;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	/// <summary>
     /// Creates an IHttpRequest with the given certificate attached to it.

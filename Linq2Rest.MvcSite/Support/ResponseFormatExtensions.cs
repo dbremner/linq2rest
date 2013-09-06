@@ -20,14 +20,14 @@ namespace Linq2Rest.MvcSite.Support
 		{
 			return new[]
 				{
-					"text/javascript",
-					"application/x-javascript",
-					"application/javascript",
-					"text/ecmascript",
-					"application/ecmascript",
-					"text/jscript",
-					"application/xhtml+xml",
-					"text/html",
+					"text/javascript", 
+					"application/x-javascript", 
+					"application/javascript", 
+					"text/ecmascript", 
+					"application/ecmascript", 
+					"text/jscript", 
+					"application/xhtml+xml", 
+					"text/html", 
 					"text/plain"
 				};
 		}
@@ -55,6 +55,7 @@ namespace Linq2Rest.MvcSite.Support
 					return ResponseFormat.Png;
 				case "text/plain":
 					return ResponseFormat.Txt;
+
 					////case "application/xml":
 					////case "text/xml":
 					////    return ResponseFormat.XML;
@@ -73,6 +74,7 @@ namespace Linq2Rest.MvcSite.Support
 					return "text/javascript";
 				case ResponseFormat.HTML:
 					return "text/html";
+
 					////case ResponseFormat.XML:
 					////    return "text/xml";
 				default:

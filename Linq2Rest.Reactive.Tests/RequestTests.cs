@@ -19,13 +19,17 @@ namespace Linq2Rest.Reactive.Tests
 	using System.Reactive.Linq;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using Fakes;
+	using Linq2Rest.Reactive.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class RequestTests
 	{
+		private Mock<IAsyncRestClient> _mockRestClient;
+		private Mock<IAsyncRestClientFactory> _mockClientFactory;
+		private RestObservable<FakeItem> _observable;
+
 		[SetUp]
 		public void Setup()
 		{
@@ -39,10 +43,6 @@ namespace Linq2Rest.Reactive.Tests
 
 			_observable = new RestObservable<FakeItem>(_mockClientFactory.Object, new TestSerializerFactory());
 		}
-
-		private Mock<IAsyncRestClient> _mockRestClient;
-		private Mock<IAsyncRestClientFactory> _mockClientFactory;
-		private RestObservable<FakeItem> _observable;
 
 		[Test]
 		public void WhenAnyExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()

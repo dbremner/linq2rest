@@ -16,17 +16,9 @@ namespace Linq2Rest.Parser.Readers
 	using System.Globalization;
 	using System.Linq.Expressions;
 
-	internal class DoubleExpressionFactory : IValueExpressionFactory
+	internal class DoubleExpressionFactory : ValueExpressionFactoryBase<double>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(double);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			double number;
 			if (double.TryParse(token.Trim('D', 'd'), NumberStyles.Any, CultureInfo.InvariantCulture, out number))

@@ -15,7 +15,7 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests.Fakes
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Runtime.Serialization.Json;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	public class TestComplexSerializer : ISerializer<FakeItem>
 	{
