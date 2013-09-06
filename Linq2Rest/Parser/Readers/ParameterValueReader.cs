@@ -78,6 +78,11 @@ namespace Linq2Rest.Parser.Readers
 
 			if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
 			{
+				if (string.Equals("null", token, StringComparison.InvariantCultureIgnoreCase))
+				{
+					return Expression.Constant(null);
+				}
+
 				var genericTypeArgument = type.GetGenericArguments()[0];
 				var value = Read(genericTypeArgument, token, formatProvider);
 				if (value != null)
