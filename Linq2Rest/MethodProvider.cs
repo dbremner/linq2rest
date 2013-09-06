@@ -49,14 +49,13 @@ namespace Linq2Rest
 			var stringType = typeof(string);
 			var datetimeType = typeof(DateTime);
 			var mathType = typeof(Math);
-			var stringComparisonType = typeof(StringComparison);
-
+			
 			InnerIgnoreCaseExpression = Expression.Constant(StringComparison.OrdinalIgnoreCase);
 
 			InnerContainsMethod = stringType.GetMethod("Contains", new[] { stringType });
-			InnerIndexOfMethod = stringType.GetMethod("IndexOf", new[] { stringType, stringComparisonType });
-			EndsWithMethod1 = stringType.GetMethod("EndsWith", new[] { stringType, stringComparisonType });
-			InnerStartsWithMethod = stringType.GetMethod("StartsWith", new[] { stringType, stringComparisonType });
+			InnerIndexOfMethod = stringType.GetMethod("IndexOf", new[] { stringType });
+			EndsWithMethod1 = stringType.GetMethod("EndsWith", new[] { stringType });
+			InnerStartsWithMethod = stringType.GetMethod("StartsWith", new[] { stringType });
 			InnerLengthProperty = stringType.GetProperty("Length", Type.EmptyTypes);
 			InnerSubstringMethod = stringType.GetMethod("Substring", new[] { typeof(int) });
 			InnerToLowerMethod = stringType.GetMethod("ToLowerInvariant", Type.EmptyTypes);
@@ -76,14 +75,6 @@ namespace Linq2Rest
 			InnerDecimalFloorMethod = mathType.GetMethod("Floor", new[] { typeof(decimal) });
 			InnerDoubleCeilingMethod = mathType.GetMethod("Ceiling", new[] { typeof(double) });
 			InnerDecimalCeilingMethod = mathType.GetMethod("Ceiling", new[] { typeof(decimal) });
-		}
-
-		public static ConstantExpression IgnoreCaseExpression
-		{
-			get
-			{
-				return InnerIgnoreCaseExpression;
-			}
 		}
 
 		public static MethodInfo IndexOfMethod

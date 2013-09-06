@@ -240,13 +240,13 @@ namespace Linq2Rest.Parser
 				case "substringof":
 					return Expression.Call(right, MethodProvider.ContainsMethod, new[] { left });
 				case "endswith":
-					return Expression.Call(left, MethodProvider.EndsWithMethod, new[] { right, MethodProvider.IgnoreCaseExpression });
+					return Expression.Call(left, MethodProvider.EndsWithMethod, new[] { right });
 				case "startswith":
-					return Expression.Call(left, MethodProvider.StartsWithMethod, new[] { right, MethodProvider.IgnoreCaseExpression });
+					return Expression.Call(left, MethodProvider.StartsWithMethod, new[] { right });
 				case "length":
 					return Expression.Property(left, MethodProvider.LengthProperty);
 				case "indexof":
-					return Expression.Call(left, MethodProvider.IndexOfMethod, new[] { right, MethodProvider.IgnoreCaseExpression });
+					return Expression.Call(left, MethodProvider.IndexOfMethod, new[] { right });
 				case "substring":
 					return Expression.Call(left, MethodProvider.SubstringMethod, new[] { right });
 				case "tolower":
