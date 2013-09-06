@@ -14,7 +14,7 @@ namespace Linq2Rest.Reactive
 {
 	using System.Diagnostics.Contracts;
 	using System.Reflection;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	internal static class ReflectionHelper
 	{

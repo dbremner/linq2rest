@@ -29,23 +29,24 @@ namespace Linq2Rest.Provider.Writers
 		{
 			ValueWriters = new List<IValueWriter>
 							{
-								new StringValueWriter(),
-								new BooleanValueWriter(),
-								new IntValueWriter(),
-								new LongValueWriter(),
-								new ShortValueWriter(),
-								new UnsignedIntValueWriter(),
-								new UnsignedLongValueWriter(),
-								new UnsignedShortValueWriter(),
-								new ByteArrayValueWriter(),
-								new StreamValueWriter(),
-								new DecimalValueWriter(),
-								new DoubleValueWriter(),
-								new SingleValueWriter(),
-								new ByteValueWriter(),
-								new GuidValueWriter(),
-								new DateTimeValueWriter(),
-								new TimeSpanValueWriter(),
+								new EnumValueWriter(),
+								new StringValueWriter(), 
+								new BooleanValueWriter(), 
+								new IntValueWriter(), 
+								new LongValueWriter(), 
+								new ShortValueWriter(), 
+								new UnsignedIntValueWriter(), 
+								new UnsignedLongValueWriter(), 
+								new UnsignedShortValueWriter(), 
+								new ByteArrayValueWriter(), 
+								new StreamValueWriter(), 
+								new DecimalValueWriter(), 
+								new DoubleValueWriter(), 
+								new SingleValueWriter(), 
+								new ByteValueWriter(), 
+								new GuidValueWriter(), 
+								new DateTimeValueWriter(), 
+								new TimeSpanValueWriter(), 
 								new DateTimeOffsetValueWriter()
 							};
 		}
@@ -64,6 +65,7 @@ namespace Linq2Rest.Provider.Writers
 			{
 				return string.Format("'{0}'", value);
 			}
+
 #else
 			var type = value.GetType();
 			if (type.GetTypeInfo().IsEnum)
@@ -71,7 +73,7 @@ namespace Linq2Rest.Provider.Writers
 				return string.Format("'{0}'", value);
 			}
 #endif
-			var writer = ValueWriters.FirstOrDefault(x => x.Handles == type);
+			var writer = ValueWriters.FirstOrDefault(x => x.Handles(type));
 
 			if (writer != null)
 			{
@@ -85,6 +87,7 @@ namespace Linq2Rest.Provider.Writers
 
 				return Write(Convert.ChangeType(value, genericParameter, CultureInfo.CurrentCulture));
 			}
+
 #else
 			var typeInfo = type.GetTypeInfo();
 			if (typeof(Nullable<>).GetTypeInfo().IsAssignableFrom(typeInfo))

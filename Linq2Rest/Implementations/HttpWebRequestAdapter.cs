@@ -1,11 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="HttpWebRequestAdapter.cs" company="INTEGRIS Health" developer="Mark Rucker">
+// <copyright file="HttpWebRequestAdapter.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2012
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 //   All other rights reserved.
 // </copyright>
 // <summary>
-//   Defines an adapter to wrap HttpWebRequest to conform it to IHttpRequest
+//   Takes a System.Net.HttpWebRequest and wraps it in an IHttpRequest Implementation.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -15,7 +16,7 @@ namespace Linq2Rest.Implementations
 	using System.Diagnostics.Contracts;
 	using System.IO;
 	using System.Net;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	/// <summary>
 	/// Takes a System.Net.HttpWebRequest and wraps it in an IHttpRequest Implementation.

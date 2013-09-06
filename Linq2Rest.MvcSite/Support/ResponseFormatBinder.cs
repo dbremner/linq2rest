@@ -21,7 +21,7 @@ namespace Linq2Rest.MvcSite.Support
 
 	public class ResponseFormatBinder : IModelBinder
 	{
-		readonly HeaderParser _headerParser = new HeaderParser();
+		private readonly HeaderParser _headerParser = new HeaderParser();
 
 		public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
 		{

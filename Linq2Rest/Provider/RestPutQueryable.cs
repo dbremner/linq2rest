@@ -29,9 +29,9 @@ namespace Linq2Rest.Provider
 			Contract.Requires<ArgumentNullException>(expression != null);
 
 			_restPutQueryProvider = new RestPutQueryProvider<T>(
-				client,
+				client, 
 				serializerFactory, 
-				new ExpressionProcessor(new ExpressionWriter()),
+				new ExpressionProcessor(new ExpressionWriter()), 
 				inputData);
 			Provider = _restPutQueryProvider;
 			Expression = expression;

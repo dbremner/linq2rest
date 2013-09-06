@@ -1,11 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IHttpRequest.cs" company="INTEGRIS Health" developer="Mark Rucker">
+// <copyright file="IHttpRequest.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2012
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 //   All other rights reserved.
 // </copyright>
 // <summary>
-//   Defines the public interface for an HTTP request.
+//   Defines the public enumeration of supported HTTP methods.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -23,22 +24,22 @@ namespace Linq2Rest.Provider
         /// <summary>
         /// Shouldn't ever be explicitly used. Here as a default.
         /// </summary>
-        None = 0,
+        None = 0, 
 
         /// <summary>
         /// Represents the GET HTTP method.
         /// </summary>
-        Get,
+        Get, 
 
         /// <summary>
         /// Represents the PUT HTTP method.
         /// </summary>
-        Put,
+        Put, 
 
         /// <summary>
         /// Represents the POST HTTP method.
         /// </summary>
-        Post,
+        Post, 
 
         /// <summary>
         /// Represents the DELETE HTTP method.

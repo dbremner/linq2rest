@@ -15,17 +15,9 @@ namespace Linq2Rest.Parser.Readers
 	using System;
 	using System.Linq.Expressions;
 
-	internal class UnsignedLongExpressionFactory : IValueExpressionFactory
+	internal class UnsignedLongExpressionFactory : ValueExpressionFactoryBase<ulong>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(ulong);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			ulong number;
 			if (ulong.TryParse(token, out number))

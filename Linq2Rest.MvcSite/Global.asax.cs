@@ -15,9 +15,9 @@ namespace Linq2Rest.MvcSite
 	using System.Web;
 	using System.Web.Mvc;
 	using System.Web.Routing;
-	using Models;
-	using Mvc;
-	using Support;
+	using Linq2Rest.Mvc;
+	using Linq2Rest.MvcSite.Models;
+	using Linq2Rest.MvcSite.Support;
 
 	public class MvcApplication : HttpApplication
 	{

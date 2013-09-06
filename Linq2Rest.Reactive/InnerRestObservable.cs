@@ -17,7 +17,7 @@ namespace Linq2Rest.Reactive
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	/// <summary>
 	/// Defines an observable REST query.
@@ -28,10 +28,10 @@ namespace Linq2Rest.Reactive
 		private readonly RestQueryableProvider _provider;
 
 		internal InnerRestObservable(
-			IAsyncRestClientFactory restClient,
-			ISerializerFactory serializerFactory,
-			Expression expression,
-			IScheduler subscriberScheduler,
+			IAsyncRestClientFactory restClient, 
+			ISerializerFactory serializerFactory, 
+			Expression expression, 
+			IScheduler subscriberScheduler, 
 			IScheduler observerScheduler)
 			: base(restClient, serializerFactory, expression, subscriberScheduler, observerScheduler)
 		{

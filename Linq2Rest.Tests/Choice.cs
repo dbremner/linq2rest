@@ -17,8 +17,8 @@ namespace Linq2Rest.Tests
 	[Flags]
 	public enum Choice
 	{
-		This = 1,
-		That = 2,
+		This = 1, 
+		That = 2, 
 		Either = This | That
 	}
 }

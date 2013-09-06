@@ -29,8 +29,8 @@ namespace Linq2Rest.Tests.Parser
 		{
 			var nameResolver = new MemberNameResolver();
 			_parser = new ParameterParser<FakeItem>(
-				new FilterExpressionFactory(),
-				new SortExpressionFactory(),
+				new FilterExpressionFactory(), 
+				new SortExpressionFactory(), 
 				new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeProvider(nameResolver)));
 
 			_items = new[]
@@ -44,37 +44,37 @@ namespace Linq2Rest.Tests.Parser
 				{
 					new FakeItem
 						{
-							IntValue = 2,
-							DoubleValue = 2,
+							IntValue = 2, 
+							DoubleValue = 2, 
 							Children =
 								{
-									new FakeChildItem { ChildStringValue = "1" },
-									new FakeChildItem { ChildStringValue = "2" },
+									new FakeChildItem { ChildStringValue = "1" }, 
+									new FakeChildItem { ChildStringValue = "2" }, 
 									new FakeChildItem { ChildStringValue = "3" }
 								}
-						},
+						}, 
 					new FakeItem
 						{
-							IntValue = 1,
-							DoubleValue = 1,
+							IntValue = 1, 
+							DoubleValue = 1, 
 							Children =
 								{
-									new FakeChildItem { ChildStringValue = "2" },
-									new FakeChildItem { ChildStringValue = "3" },
+									new FakeChildItem { ChildStringValue = "2" }, 
+									new FakeChildItem { ChildStringValue = "3" }, 
 									new FakeChildItem { ChildStringValue = "4" }
 								}
-						},
+						}, 
 					new FakeItem
 						{
-							IntValue = 3,
-							DoubleValue = 3,
+							IntValue = 3, 
+							DoubleValue = 3, 
 							Children =
 								{
-									new FakeChildItem { ChildStringValue = "3" },
-									new FakeChildItem { ChildStringValue = "4" },
+									new FakeChildItem { ChildStringValue = "3" }, 
+									new FakeChildItem { ChildStringValue = "4" }, 
 									new FakeChildItem { ChildStringValue = "5" }
 								}
-						},
+						}, 
 				};
 		}
 
@@ -126,9 +126,9 @@ namespace Linq2Rest.Tests.Parser
 		{
 			var collection = new NameValueCollection
 							 {
-								 { "$filter", "IntValue ge 1" },
-								 { "$skip", "1" },
-								 { "$top", "1" },
+								 { "$filter", "IntValue ge 1" }, 
+								 { "$skip", "1" }, 
+								 { "$top", "1" }, 
 								 { "$orderby", "IntValue desc" }
 							 };
 			var filteredItems = GetFilteredItems(useModelFilter, collection);

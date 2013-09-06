@@ -13,14 +13,17 @@
 namespace Linq2Rest.Tests.Provider
 {
 	using System.Linq;
-	using Fakes;
 	using Linq2Rest.Implementations;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Tests.Fakes;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class RestContextInMemoryTests
 	{
+		private InMemoryJsonRestClient<FakeItem> _mockClient;
+		private RestContext<FakeItem> _restContext;
+
 		[SetUp]
 		public void TestSetup()
 		{
@@ -30,61 +33,58 @@ namespace Linq2Rest.Tests.Provider
 					   {
 						   new FakeItem
 						   {
-							   StringValue = "2",
+							   StringValue = "2", 
 							   Children =
 							   {
-								   new FakeChildItem { ChildStringValue = "1" },
-								   new FakeChildItem { ChildStringValue = "2" },
+								   new FakeChildItem { ChildStringValue = "1" }, 
+								   new FakeChildItem { ChildStringValue = "2" }, 
 								   new FakeChildItem { ChildStringValue = "3" }
 							   }
-						   },
+						   }, 
 						   new FakeItem
 						   {
-							   StringValue = "1",
+							   StringValue = "1", 
 							   Children =
 							   {
-								   new FakeChildItem { ChildStringValue = "2" },
-								   new FakeChildItem { ChildStringValue = "3" },
+								   new FakeChildItem { ChildStringValue = "2" }, 
+								   new FakeChildItem { ChildStringValue = "3" }, 
 								   new FakeChildItem { ChildStringValue = "4" }
 							   }
-						   },
+						   }, 
 						   new FakeItem
 						   {
-							   StringValue = "3",
+							   StringValue = "3", 
 							   Children =
 							   {
-								   new FakeChildItem { ChildStringValue = "3" },
-								   new FakeChildItem { ChildStringValue = "4" },
+								   new FakeChildItem { ChildStringValue = "3" }, 
+								   new FakeChildItem { ChildStringValue = "4" }, 
 								   new FakeChildItem { ChildStringValue = "5" }
 							   }
-						   },
+						   }, 
 						   new FakeItem
 						   {
-							   StringValue = "4",
+							   StringValue = "4", 
 							   Children =
 							   {
-								   new FakeChildItem { ChildStringValue = "6" },
-								   new FakeChildItem { ChildStringValue = "6" },
+								   new FakeChildItem { ChildStringValue = "6" }, 
+								   new FakeChildItem { ChildStringValue = "6" }, 
 								   new FakeChildItem { ChildStringValue = "6" }
 							   }
-						   },
+						   }, 
 						   new FakeItem
 						   {
-							   StringValue = "74",
+							   StringValue = "74", 
 							   Children =
 							   {
-								   new FakeChildItem { ChildStringValue = "7" },
-								   new FakeChildItem { ChildStringValue = "7" },
+								   new FakeChildItem { ChildStringValue = "7" }, 
+								   new FakeChildItem { ChildStringValue = "7" }, 
 								   new FakeChildItem { ChildStringValue = "7" }
 							   }
-						   },
+						   }, 
 					   };
 			_mockClient = new InMemoryJsonRestClient<FakeItem>(data, knownTypes);
 			_restContext = new RestContext<FakeItem>(_mockClient, serializerFactory);
 		}
-
-		private InMemoryJsonRestClient<FakeItem> _mockClient;
-		private RestContext<FakeItem> _restContext;
 
 		[Test]
 		public void WhenFilteringWithAllUsingEqualityOnFunctionThenOnlyMatchingItemsReturned()

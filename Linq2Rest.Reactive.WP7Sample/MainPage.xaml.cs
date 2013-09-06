@@ -18,9 +18,9 @@ namespace Linq2Rest.Reactive.WP8.Sample
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using System.Threading;
+	using Linq2Rest.Reactive.WP8.Sample.Models;
+	using Linq2Rest.Reactive.WP8.Sample.Support;
 	using Microsoft.Phone.Controls;
-	using Models;
-	using Support;
 
 	public partial class MainPage : PhoneApplicationPage
 	{
@@ -37,7 +37,7 @@ namespace Linq2Rest.Reactive.WP8.Sample
 								 .Do(_ => Dispatcher.BeginInvoke(() => _packageCollection.Clear()))
 								 .Select(_ => Unit.Default);
 			_nugetObservable = new RestObservable<NugetPackage>(
-				new AsyncJsonRestClientFactory(new Uri("http://nuget.org/api/v2/Packages")),
+				new AsyncJsonRestClientFactory(new Uri("http://nuget.org/api/v2/Packages")), 
 				new ODataSerializerFactory())
 				.Poll(trigger)
 				.Where(p => p.Id.ToLower()

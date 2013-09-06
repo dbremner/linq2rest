@@ -16,19 +16,11 @@ namespace Linq2Rest.Parser.Readers
 	using System.Linq.Expressions;
 	using System.Text.RegularExpressions;
 
-	internal class GuidExpressionFactory : IValueExpressionFactory
+	internal class GuidExpressionFactory : ValueExpressionFactoryBase<Guid>
 	{
 		private static readonly Regex GuidRegex = new Regex(@"guid['\""]([a-f0-9\-]+)['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-		public Type Handles
-		{
-			get
-			{
-				return typeof(Guid);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			var match = GuidRegex.Match(token);
 			if (match.Success)

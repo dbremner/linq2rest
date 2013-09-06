@@ -18,7 +18,7 @@ namespace Linq2Rest.Provider
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
-	using Writers;
+	using Linq2Rest.Provider.Writers;
 
 	internal class ExpressionWriter : IExpressionWriter
 	{
@@ -37,7 +37,7 @@ namespace Linq2Rest.Provider
 																	new StringStartsWithMethodWriter(), 
 																	new MathRoundMethodWriter(), 
 																	new MathFloorMethodWriter(), 
-																	new MathCeilingMethodWriter(),
+																	new MathCeilingMethodWriter(), 
  																	new EmptyAnyMethodWriter(), 
 																	new AnyAllMethodWriter(), 
 																	new DefaultMethodWriter()
@@ -430,9 +430,9 @@ namespace Linq2Rest.Provider
 			if (binaryExpression.Left.NodeType == ExpressionType.Call)
 			{
 				var compareResult = ResolveCompareToOperation(
-					rootParameterName,
-					(MethodCallExpression)binaryExpression.Left,
-					operation,
+					rootParameterName, 
+					(MethodCallExpression)binaryExpression.Left, 
+					operation, 
 					binaryExpression.Right as ConstantExpression);
 				if (compareResult != null)
 				{
@@ -443,9 +443,9 @@ namespace Linq2Rest.Provider
 			if (binaryExpression.Right.NodeType == ExpressionType.Call)
 			{
 				var compareResult = ResolveCompareToOperation(
-					rootParameterName,
-					(MethodCallExpression)binaryExpression.Right,
-					operation,
+					rootParameterName, 
+					(MethodCallExpression)binaryExpression.Right, 
+					operation, 
 					binaryExpression.Left as ConstantExpression);
 				if (compareResult != null)
 				{
@@ -461,16 +461,16 @@ namespace Linq2Rest.Provider
 			var rightString = Write(binaryExpression.Right, leftType, rootParameterName);
 
 			return string.Format(
-				"{0} {1} {2}",
-				string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
-				operation,
+				"{0} {1} {2}", 
+				string.Format(isLeftComposite ? "({0})" : "{0}", leftString), 
+				operation, 
 				string.Format(isRightComposite ? "({0})" : "{0}", rightString));
 		}
 
 		private string ResolveCompareToOperation(
-			ParameterExpression rootParameterName,
-			MethodCallExpression methodCallExpression,
-			string operation,
+			ParameterExpression rootParameterName, 
+			MethodCallExpression methodCallExpression, 
+			string operation, 
 			ConstantExpression comparisonExpression)
 		{
 			if (methodCallExpression != null
@@ -480,9 +480,9 @@ namespace Linq2Rest.Provider
 				&& Equals(comparisonExpression.Value, 0))
 			{
 				return string.Format(
-					"{0} {1} {2}",
-					Write(methodCallExpression.Object, rootParameterName),
-					operation,
+					"{0} {1} {2}", 
+					Write(methodCallExpression.Object, rootParameterName), 
+					operation, 
 					Write(methodCallExpression.Arguments[0], rootParameterName));
 			}
 

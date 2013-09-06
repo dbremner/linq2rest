@@ -12,16 +12,7 @@
 
 namespace Linq2Rest.Provider.Writers
 {
-	using System;
-
-	internal class UnsignedIntValueWriter : IntegerValueWriter
+	internal class UnsignedIntValueWriter : IntegerValueWriter<uint>
 	{
-		public override Type Handles
-		{
-			get
-			{
-				return typeof(uint);
-			}
-		}
 	}
 }

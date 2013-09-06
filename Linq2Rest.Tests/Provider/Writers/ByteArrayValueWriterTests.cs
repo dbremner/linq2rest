@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class ByteArrayValueWriterTests
 	{
+		private ByteArrayValueWriter _writer;
+
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new ByteArrayValueWriter();
 		}
-
-		private ByteArrayValueWriter _writer;
 
 		[Test]
 		public void WhenWritingByteArrayThenEnclosesInSingleQuote()

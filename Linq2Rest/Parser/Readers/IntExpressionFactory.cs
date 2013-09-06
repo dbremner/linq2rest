@@ -15,17 +15,9 @@ namespace Linq2Rest.Parser.Readers
 	using System;
 	using System.Linq.Expressions;
 
-	internal class IntExpressionFactory : IValueExpressionFactory
+	internal class IntExpressionFactory : ValueExpressionFactoryBase<int>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(int);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			int number;
 			if (int.TryParse(token, out number))

@@ -82,8 +82,8 @@ namespace Linq2Rest.Reactive.WP8.Sample.Support
 				{
 					return Task<Stream>.Factory
 						.FromAsync(
-							request.BeginGetRequestStream,
-							request.EndGetRequestStream,
+							request.BeginGetRequestStream, 
+							request.EndGetRequestStream, 
 							request)
 						.ContinueWith<HttpWebRequest>(WriteRequestStream)
 						.ContinueWith<Task<WebResponse>>(GetResponse)
@@ -102,8 +102,8 @@ namespace Linq2Rest.Reactive.WP8.Sample.Support
 				return Task<WebResponse>
 					.Factory
 					.FromAsync(
-						request.BeginGetResponse,
-						request.EndGetResponse,
+						request.BeginGetResponse, 
+						request.EndGetResponse, 
 						null);
 			}
 

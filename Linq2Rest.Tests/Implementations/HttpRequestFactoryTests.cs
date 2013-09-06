@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="HttpRequestFactoryTests.cs" company="INTEGRIS Health" developer="Mark Rucker">
+// <copyright file="HttpRequestFactoryTests.cs" company="Reimers.dk">
 //   Copyright © Reimers.dk 2012
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
@@ -33,7 +33,7 @@ namespace Linq2Rest.Tests.Implementations
 		[TestCase("http://test.com/", HttpMethod.Post, "text/html", "text/json", ExpectedResult = "http://test.com/")]
 		public string CreateShouldReturnHttpRequestWithCorrectUri(string uriString, HttpMethod httpMethod, string accept, string contentType)
 		{
-			IHttpRequest httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
+			var httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
 
 			var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
 			var actualHttpWebRequest = (HttpWebRequest)httpWebRequestAdapter.HttpWebRequest;
@@ -45,7 +45,7 @@ namespace Linq2Rest.Tests.Implementations
 		[TestCase("http://test.com/", HttpMethod.Post, "text/html", "text/json", ExpectedResult = HttpMethod.Post)]
 		public HttpMethod CreateShouldReturnHttpRequestWithCorrectHttpMethod(string uriString, HttpMethod httpMethod, string accept, string contentType)
 		{
-			IHttpRequest httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
+			var httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
 
 			var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
 			var actualHttpWebRequest = (HttpWebRequest)httpWebRequestAdapter.HttpWebRequest;
@@ -57,7 +57,7 @@ namespace Linq2Rest.Tests.Implementations
 		[TestCase("http://test.com/", HttpMethod.Post, "text/html", "text/json", ExpectedResult = "text/html")]
 		public string CreateShouldReturnHttpRequestWithCorrectAccept(string uriString, HttpMethod httpMethod, string accept, string contentType)
 		{
-			IHttpRequest httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
+			var httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
 
 			var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
 			var actualHttpWebRequest = (HttpWebRequest)httpWebRequestAdapter.HttpWebRequest;
@@ -69,7 +69,7 @@ namespace Linq2Rest.Tests.Implementations
 		[TestCase("http://test.com/", HttpMethod.Post, "text/html", "text/json", ExpectedResult = "text/json")]
 		public string CreateShouldReturnHttpRequestWithCorrectContentType(string uriString, HttpMethod httpMethod, string accept, string contentType)
 		{
-			IHttpRequest httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
+			var httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
 
 			var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
 			var actualHttpWebRequest = (HttpWebRequest)httpWebRequestAdapter.HttpWebRequest;
@@ -81,7 +81,7 @@ namespace Linq2Rest.Tests.Implementations
 		[TestCase("http://test.com/", HttpMethod.Post, "text/html", "text/json", ExpectedResult = 0)]
 		public int CreateShouldReturnHttpRequestWithCorrectClientCertificateCount(string uriString, HttpMethod httpMethod, string accept, string contentType)
 		{
-			IHttpRequest httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
+			var httpRequest = _httpRequestFactory.Create(new Uri(uriString), httpMethod, accept, contentType);
 
 			var httpWebRequestAdapter = (HttpWebRequestAdapter)httpRequest;
 			var actualHttpWebRequest = (HttpWebRequest)httpWebRequestAdapter.HttpWebRequest;
@@ -91,11 +91,17 @@ namespace Linq2Rest.Tests.Implementations
 
 		[TestCase("http://test.com/", HttpMethod.Post, "text/xml", "text/json", "http://test.com/", HttpMethod.Get, "text/html", null)]
 		public void TwoCreatesShouldReturnHttpRequestsWithCorrectUri(
-			string uriString1, HttpMethod httpMethod1, string accept1, string contentType1,
-			string uriString2, HttpMethod httpMethod2, string accept2, string contentType2)
+			string uriString1,
+			HttpMethod httpMethod1,
+			string accept1,
+			string contentType1,
+			string uriString2,
+			HttpMethod httpMethod2,
+			string accept2,
+			string contentType2)
 		{
-			IHttpRequest httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
-			IHttpRequest httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
+			var httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
+			var httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
 
 			var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
 			var actualHttpWebRequest1 = (HttpWebRequest)httpWebRequestAdapter1.HttpWebRequest;
@@ -108,11 +114,18 @@ namespace Linq2Rest.Tests.Implementations
 		}
 
 		[TestCase("http://test.com/", HttpMethod.Post, "text/xml", "text/json", "http://test.com/", HttpMethod.Get, "text/html", null)]
-		public void TwoCreatesShouldReturnHttpRequestsWithCorrectHttpMethod(string uriString1, HttpMethod httpMethod1, string accept1, string contentType1,
-																			string uriString2, HttpMethod httpMethod2, string accept2, string contentType2)
+		public void TwoCreatesShouldReturnHttpRequestsWithCorrectHttpMethod(
+			string uriString1,
+			HttpMethod httpMethod1,
+			string accept1,
+			string contentType1,
+			string uriString2,
+			HttpMethod httpMethod2,
+			string accept2,
+			string contentType2)
 		{
-			IHttpRequest httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
-			IHttpRequest httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
+			var httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
+			var httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
 
 			var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
 			var actualHttpWebRequest1 = (HttpWebRequest)httpWebRequestAdapter1.HttpWebRequest;
@@ -128,11 +141,18 @@ namespace Linq2Rest.Tests.Implementations
 		}
 
 		[TestCase("http://test.com/", HttpMethod.Post, "text/xml", "text/json", "http://test.com/", HttpMethod.Get, "text/html", null)]
-		public void TwoCreatesShouldReturnHttpRequestsWithCorrectAccept(string uriString1, HttpMethod httpMethod1, string accept1, string contentType1,
-																		string uriString2, HttpMethod httpMethod2, string accept2, string contentType2)
+		public void TwoCreatesShouldReturnHttpRequestsWithCorrectAccept(
+			string uriString1,
+			HttpMethod httpMethod1,
+			string accept1,
+			string contentType1,
+			string uriString2,
+			HttpMethod httpMethod2,
+			string accept2,
+			string contentType2)
 		{
-			IHttpRequest httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
-			IHttpRequest httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
+			var httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
+			var httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
 
 			var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
 			var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;
@@ -145,11 +165,18 @@ namespace Linq2Rest.Tests.Implementations
 		}
 
 		[TestCase("http://test.com/", HttpMethod.Post, "text/xml", "text/json", "http://test.com/", HttpMethod.Get, "text/html", null)]
-		public void TwoCreatesShouldReturnHttpRequestsWithCorrectContentType(string uriString1, HttpMethod httpMethod1, string accept1, string contentType1,
-																			 string uriString2, HttpMethod httpMethod2, string accept2, string contentType2)
+		public void TwoCreatesShouldReturnHttpRequestsWithCorrectContentType(
+			string uriString1,
+			HttpMethod httpMethod1,
+			string accept1,
+			string contentType1,
+			string uriString2,
+			HttpMethod httpMethod2,
+			string accept2,
+			string contentType2)
 		{
-			IHttpRequest httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
-			IHttpRequest httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
+			var httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
+			var httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
 
 			var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
 			var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;
@@ -162,11 +189,18 @@ namespace Linq2Rest.Tests.Implementations
 		}
 
 		[TestCase("http://test.com/", HttpMethod.Post, "text/xml", "text/json", "http://test.com/", HttpMethod.Get, "text/html", null)]
-		public void TwoCreatesShouldReturnHttpRequestsWithCorrectClientCertificateCount(string uriString1, HttpMethod httpMethod1, string accept1, string contentType1,
-																						string uriString2, HttpMethod httpMethod2, string accept2, string contentType2)
+		public void TwoCreatesShouldReturnHttpRequestsWithCorrectClientCertificateCount(
+			string uriString1,
+			HttpMethod httpMethod1,
+			string accept1,
+			string contentType1,
+			string uriString2,
+			HttpMethod httpMethod2,
+			string accept2,
+			string contentType2)
 		{
-			IHttpRequest httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
-			IHttpRequest httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
+			var httpRequest1 = _httpRequestFactory.Create(new Uri(uriString1), httpMethod1, accept1, contentType1);
+			var httpRequest2 = _httpRequestFactory.Create(new Uri(uriString2), httpMethod2, accept2, contentType2);
 
 			var httpWebRequestAdapter1 = (HttpWebRequestAdapter)httpRequest1;
 			var httpWebRequestAdapter2 = (HttpWebRequestAdapter)httpRequest2;

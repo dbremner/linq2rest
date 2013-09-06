@@ -17,7 +17,7 @@ namespace Linq2Rest.Reactive
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	[ContractClass(typeof(RestQueryableProviderBaseContracts))]
 	internal abstract class RestQueryableProviderBase : IQbservableProvider
@@ -28,9 +28,9 @@ namespace Linq2Rest.Reactive
 		private readonly IScheduler _subscriberScheduler;
 
 		public RestQueryableProviderBase(
-			IAsyncRestClientFactory asyncRestClient,
-			ISerializerFactory serializerFactory,
-			IScheduler subscriberScheduler,
+			IAsyncRestClientFactory asyncRestClient, 
+			ISerializerFactory serializerFactory, 
+			IScheduler subscriberScheduler, 
 			IScheduler observerScheduler)
 		{
 			_asyncRestClient = asyncRestClient;
@@ -67,8 +67,8 @@ namespace Linq2Rest.Reactive
 							Contract.Assume(subscribeScheduler != null);
 
 							return CreateQbservable<TResult>(
-															 methodCallExpression.Arguments[0],
-															 subscribeScheduler,
+															 methodCallExpression.Arguments[0], 
+															 subscribeScheduler, 
 															 _observerScheduler);
 						}
 
@@ -83,8 +83,8 @@ namespace Linq2Rest.Reactive
 							Contract.Assume(observeScheduler != null);
 
 							return CreateQbservable<TResult>(
-															 methodCallExpression.Arguments[0],
-															 _subscriberScheduler,
+															 methodCallExpression.Arguments[0], 
+															 _subscriberScheduler, 
 															 observeScheduler);
 						}
 				}

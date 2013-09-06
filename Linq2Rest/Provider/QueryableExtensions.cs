@@ -56,8 +56,8 @@ namespace Linq2Rest.Provider
 
 			return source.Provider.CreateQuery<TSource>(
 					Expression.Call(
-						null,
-						((MethodInfo)MethodBase.GetCurrentMethod()).MakeGenericMethod(new[] { typeof(TSource) }),
+						null, 
+						((MethodInfo)MethodBase.GetCurrentMethod()).MakeGenericMethod(new[] { typeof(TSource) }), 
 						new[] { source.Expression, Expression.Constant(paths) }));
 		}
 

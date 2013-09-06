@@ -18,7 +18,7 @@ namespace Linq2Rest.Implementations
 	using System.IO;
 	using System.Linq;
 	using System.Runtime.Serialization.Json;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	/// <summary>
 	/// Defines the JsonDataContractSerializer factory.

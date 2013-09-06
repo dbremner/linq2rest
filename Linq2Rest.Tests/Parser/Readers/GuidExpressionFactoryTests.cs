@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class GuidExpressionFactoryTests
 	{
-		private GuidExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new GuidExpressionFactory();
 		}
+
+		private GuidExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesGuidParameterInDoubleQuotesThenReturnedExpressionContainsGuid()

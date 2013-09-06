@@ -15,17 +15,9 @@ namespace Linq2Rest.Provider.Writers
 	using System;
 	using System.IO;
 
-	internal class StreamValueWriter : IValueWriter
+	internal class StreamValueWriter : ValueWriterBase<Stream>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(Stream);
-			}
-		}
-
-		public string Write(object value)
+		public override string Write(object value)
 		{
 			var stream = (Stream)value;
 			if (stream.CanSeek)

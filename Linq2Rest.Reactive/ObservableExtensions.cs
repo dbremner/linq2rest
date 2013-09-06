@@ -6,7 +6,7 @@
 //   All other rights reserved.
 // </copyright>
 // <summary>
-//   Defines the ObservableExtensions type.
+//   Defines public extension methods on <see cref="IObservable{T}" />
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -48,6 +48,7 @@ namespace Linq2Rest.Reactive
 				{
 					throw new NullReferenceException();
 				}
+
 				var serialized = serializer.Serialize(inputData);
 				restObservable.SetInput(serialized);
 			}
@@ -75,6 +76,7 @@ namespace Linq2Rest.Reactive
 				{
 					throw new NullReferenceException();
 				}
+
 				var serialized = serializer.Serialize(inputData);
 				restObservable.SetInput(serialized);
 			}
@@ -123,8 +125,8 @@ namespace Linq2Rest.Reactive
 #endif
 			return restObservable.Provider.CreateQuery<TSource>(
 					Expression.Call(
-						null,
-						genericMethod,
+						null, 
+						genericMethod, 
 						new[] { restObservable.Expression, Expression.Constant(paths) }));
 		}
 

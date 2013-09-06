@@ -19,7 +19,7 @@ namespace Linq2Rest.Reactive
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using System.Threading;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	internal class TriggeredRestObservable<T> : InnerRestObservableBase<T>
 	{
@@ -29,11 +29,11 @@ namespace Linq2Rest.Reactive
 		private IDisposable _subscribeSubscription;
 
 		internal TriggeredRestObservable(
-			IObservable<Unit> trigger,
-			IAsyncRestClientFactory restClient,
-			ISerializerFactory serializerFactory,
-			Expression expression,
-			IScheduler subscriberScheduler,
+			IObservable<Unit> trigger, 
+			IAsyncRestClientFactory restClient, 
+			ISerializerFactory serializerFactory, 
+			Expression expression, 
+			IScheduler subscriberScheduler, 
 			IScheduler observerScheduler)
 			: base(restClient, serializerFactory, expression, subscriberScheduler, observerScheduler)
 		{
@@ -72,7 +72,7 @@ namespace Linq2Rest.Reactive
 			Observers.Add(observer);
 			_subscribeSubscription = SubscriberScheduler
 				.Schedule(
-					observer,
+					observer, 
 					(s, o) =>
 						{
 							_internalSubscription = _trigger
@@ -89,9 +89,9 @@ namespace Linq2Rest.Reactive
 																					 try
 																					 {
 																						 source = Processor.ProcessMethodCall(
-																							 filter,
-																							 parameterBuilder,
-																							 GetResults,
+																							 filter, 
+																							 parameterBuilder, 
+																							 GetResults, 
 																							 GetIntermediateResults);
 																					 }
 																					 catch (Exception e)

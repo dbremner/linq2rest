@@ -17,19 +17,11 @@ namespace Linq2Rest.Parser.Readers
 	using System.Text.RegularExpressions;
 	using System.Xml;
 
-	internal class DateTimeOffsetExpressionFactory : IValueExpressionFactory
+	internal class DateTimeOffsetExpressionFactory : ValueExpressionFactoryBase<DateTimeOffset>
 	{
 		private static readonly Regex DateTimeOffsetRegex = new Regex(@"datetimeoffset['\""](\d{4}\-\d{2}\-\d{2}(T\d{2}\:\d{2}\:\d{2})?[\-\+]\d{2}:\d{2})['\""]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-		public Type Handles
-		{
-			get
-			{
-				return typeof(DateTimeOffset);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			var match = DateTimeOffsetRegex.Match(token);
 			if (match.Success)

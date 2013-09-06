@@ -19,8 +19,6 @@ namespace Linq2Rest.Tests
 	[TestFixture]
 	public class ModelFilterExtensionsTests
 	{
-		private FakeItem[] _source;
-
 		[SetUp]
 		public void TestSetup()
 		{
@@ -32,6 +30,8 @@ namespace Linq2Rest.Tests
 						          }
 				          };
 		}
+
+		private FakeItem[] _source;
 
 		[TestCase("DoubleValue gt blah")]
 		[TestCase("DateValue eq 123")]

@@ -144,6 +144,7 @@
     <Compile Include="Parser\Readers\BooleanExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\ByteExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\DateTimeOffsetExpressionFactoryTests.cs" />
+    <Compile Include="Parser\Readers\EnumExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\ParameterValueReaderTests.cs" />
     <Compile Include="Parser\Readers\ByteArrayExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\DateTimeExpressionFactoryTests.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="Provider\Writers\DateTimeValueWriterTests.cs" />
     <Compile Include="Provider\Writers\DecimalValueWriterTests.cs" />
     <Compile Include="Provider\Writers\DoubleValueWriterTests.cs" />
+    <Compile Include="Provider\Writers\EnumValueWriterTests.cs" />
     <Compile Include="Provider\Writers\GuidValueWriterTests.cs" />
     <Compile Include="Provider\Writers\IntValueWriterTests.cs" />
     <Compile Include="Provider\Writers\LongValueWriterTests.cs" />

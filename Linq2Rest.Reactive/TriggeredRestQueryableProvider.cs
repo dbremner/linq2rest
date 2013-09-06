@@ -18,17 +18,17 @@ namespace Linq2Rest.Reactive
 	using System.Reactive;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	internal class TriggeredRestQueryableProvider : RestQueryableProviderBase
 	{
 		private readonly IObservable<Unit> _trigger;
 
 		public TriggeredRestQueryableProvider(
-			IObservable<Unit> trigger,
-			IAsyncRestClientFactory asyncRestClient,
-			ISerializerFactory serializerFactory,
-			IScheduler subscriberScheduler,
+			IObservable<Unit> trigger, 
+			IAsyncRestClientFactory asyncRestClient, 
+			ISerializerFactory serializerFactory, 
+			IScheduler subscriberScheduler, 
 			IScheduler observerScheduler)
 			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)
 		{

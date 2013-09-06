@@ -44,8 +44,8 @@ namespace Linq2Rest.Parser
 		/// <param name="sortExpressionFactory">The <see cref="ISortExpressionFactory"/> to use.</param>
 		/// <param name="selectExpressionFactory">The <see cref="ISelectExpressionFactory{T}"/> to use.</param>
 		public ParameterParser(
-			IFilterExpressionFactory filterExpressionFactory,
-			ISortExpressionFactory sortExpressionFactory,
+			IFilterExpressionFactory filterExpressionFactory, 
+			ISortExpressionFactory sortExpressionFactory, 
 			ISelectExpressionFactory<T> selectExpressionFactory)
 		{
 			Contract.Requires<ArgumentNullException>(filterExpressionFactory != null);
@@ -75,10 +75,10 @@ namespace Linq2Rest.Parser
 			var selectFunction = _selectExpressionFactory.Create(selects);
 
 			var modelFilter = new ModelFilter<T>(
-				filterExpression,
-				selectFunction,
-				sortDescriptions,
-				string.IsNullOrWhiteSpace(skip) ? -1 : Convert.ToInt32(skip),
+				filterExpression, 
+				selectFunction, 
+				sortDescriptions, 
+				string.IsNullOrWhiteSpace(skip) ? -1 : Convert.ToInt32(skip), 
 				string.IsNullOrWhiteSpace(top) ? -1 : Convert.ToInt32(top));
 			return modelFilter;
 		}

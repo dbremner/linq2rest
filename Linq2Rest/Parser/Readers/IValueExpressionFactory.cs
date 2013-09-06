@@ -19,7 +19,7 @@ namespace Linq2Rest.Parser.Readers
 	[ContractClass(typeof(ValueExpressionFactoryContracts))]
 	internal interface IValueExpressionFactory
 	{
-		Type Handles { get; }
+		bool Handles(Type type);
 
 		ConstantExpression Convert(string token);
 	}
@@ -27,13 +27,10 @@ namespace Linq2Rest.Parser.Readers
 	[ContractClassFor(typeof(IValueExpressionFactory))]
 	internal abstract class ValueExpressionFactoryContracts : IValueExpressionFactory
 	{
-		public Type Handles
+		public bool Handles(Type type)
 		{
-			get
-			{
-				Contract.Ensures(Contract.Result<Type>() != null);
-				throw new NotImplementedException();
-			}
+			Contract.Requires(type != null);
+			throw new NotImplementedException();
 		}
 
 		public ConstantExpression Convert(string token)

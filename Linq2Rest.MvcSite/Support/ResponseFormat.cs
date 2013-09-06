@@ -20,37 +20,37 @@ namespace Linq2Rest.MvcSite.Support
 		/// <summary>
 		///		Unknown format.
 		/// </summary>
-		Unknown,
+		Unknown, 
 
 		/// <summary>
 		/// 	Plain text response.
 		/// </summary>
-		Txt,
+		Txt, 
 
 		/// <summary>
 		/// 	JSON response.
 		/// </summary>
-		JS,
+		JS, 
 
 		/// <summary>
 		/// 	XML response.
 		/// </summary>
-		XML,
+		XML, 
 
 		/// <summary>
 		/// 	KML response.
 		/// </summary>
-		KML,
+		KML, 
 
 		/// <summary>
 		/// 	HTML response.
 		/// </summary>
-		HTML,
+		HTML, 
 
 		/// <summary>
 		/// 	PNG image response.
 		/// </summary>
-		Png,
+		Png, 
 
 		/// <summary>
 		/// 	GIF image response.

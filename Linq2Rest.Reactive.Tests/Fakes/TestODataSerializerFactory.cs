@@ -12,7 +12,7 @@
 
 namespace Linq2Rest.Reactive.Tests.Fakes
 {
-	using Provider;
+	using Linq2Rest.Provider;
 
 	public class TestODataSerializerFactory : ISerializerFactory
 	{

@@ -9,24 +9,26 @@
 		<th>Value </th>
 	</tr>
 	@foreach (var item in Model)
- {
+	{
 		<tr>
 			<td>
 				@try
-	{
+				{
 					<span>@item.Content</span>
-	}
-	catch { }
+				}
+				catch
+				{
+				}
 			</td>
 			<td>
 				@try
-	{
+				{
 					<span>@item.Value</span>
-	}
-	catch
-	{
-	}
+				}
+				catch
+				{
+				}
 			</td>
 		</tr>
- }
+	}
 </table>

@@ -29,9 +29,9 @@ namespace Linq2Rest.Provider
 			Contract.Requires<ArgumentNullException>(expression != null);
 
 			_restPostQueryProvider = new RestPostQueryProvider<T>(
-				client,
+				client, 
 				serializerFactory, 
-				new ExpressionProcessor(new ExpressionWriter()),
+				new ExpressionProcessor(new ExpressionWriter()), 
 				inputData);
 			Provider = _restPostQueryProvider;
 			Expression = expression;

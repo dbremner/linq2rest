@@ -52,9 +52,9 @@ namespace Linq2Rest.Provider.Writers
 			Contract.Assume(secondArgument != null);
 
 			return string.Format(
-				"substring({0}, {1}, {2})",
-				expressionWriter(obj),
-				expressionWriter(firstArgument),
+				"substring({0}, {1}, {2})", 
+				expressionWriter(obj), 
+				expressionWriter(firstArgument), 
 				expressionWriter(secondArgument));
 		}
 	}

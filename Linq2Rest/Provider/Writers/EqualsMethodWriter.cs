@@ -29,8 +29,8 @@ namespace Linq2Rest.Provider.Writers
 			Contract.Assume(expression.Arguments.Count > 0);
 
 			return string.Format(
-				"{0} eq {1}",
-				expressionWriter(expression.Object),
+				"{0} eq {1}", 
+				expressionWriter(expression.Object), 
 				expressionWriter(expression.Arguments[0]));
 		}
 	}

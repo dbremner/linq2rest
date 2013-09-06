@@ -16,7 +16,7 @@ namespace Linq2Rest.Reactive.WinRT.Sample.Support
 	using System.IO;
 	using System.Linq;
 	using System.Runtime.Serialization.Json;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	public class ODataSerializer<T> : ISerializer<T>
 	{

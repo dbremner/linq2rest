@@ -57,7 +57,7 @@ namespace Linq2Rest.Parser
 
 			var processingString = false;
 
-			for (int i = 0; i < blocks.Length; i++)
+			for (var i = 0; i < blocks.Length; i++)
 			{
 				if (blocks[i].IsStringStart())
 				{
@@ -183,8 +183,8 @@ namespace Linq2Rest.Parser
 
 			return new FunctionTokenSet
 			{
-				Operation = functionName,
-				Left = functionCollection,
+				Operation = functionName, 
+				Left = functionCollection, 
 				Right = functionContent
 			};
 		}
@@ -206,15 +206,15 @@ namespace Linq2Rest.Parser
 			{
 				return new FunctionTokenSet
 				{
-					Operation = functionName,
+					Operation = functionName, 
 					Left = functionContent
 				};
 			}
 
 			return new FunctionTokenSet
 			{
-				Operation = functionName,
-				Left = functionContentMatch.Groups[1].Value,
+				Operation = functionName, 
+				Left = functionContentMatch.Groups[1].Value, 
 				Right = functionContentMatch.Groups[2].Value
 			};
 		}

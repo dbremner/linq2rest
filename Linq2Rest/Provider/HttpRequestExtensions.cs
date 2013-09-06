@@ -1,11 +1,12 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="HttpRequestExtensions.cs" company="INTEGRIS Health" developer="Mark Rucker">
+// <copyright file="HttpRequestExtensions.cs" company="Reimers.dk">
+//   Copyright © Reimers.dk 2012
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 //   All other rights reserved.
 // </copyright>
 // <summary>
-//   Defines public extension methods for IHttpRequest.
+//   Extensions on the IHttpRequest interface (aka Extension Interface Pattern).
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -29,7 +30,7 @@ namespace Linq2Rest.Provider
 			Contract.Requires(httpRequest != null);
 			Contract.Requires(inputStream != null);
 
-			Stream requestStream = httpRequest.GetRequestStream();
+			var requestStream = httpRequest.GetRequestStream();
 
 			inputStream.CopyTo(requestStream);
 			requestStream.Close();

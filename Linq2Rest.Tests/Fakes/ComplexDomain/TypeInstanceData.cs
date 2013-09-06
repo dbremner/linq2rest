@@ -19,7 +19,6 @@ namespace Linq2Rest.Tests.Fakes.ComplexDomain
 	/// </summary>
 	public class TypeInstanceData
 	{
-		#region Properties
 
 		/// <summary>
 		/// The unique id of this object, given by the user who created it.
@@ -51,7 +50,5 @@ namespace Linq2Rest.Tests.Fakes.ComplexDomain
 		/// The name of the user which last updated this object.
 		/// </summary>
 		public string LastUpdatedBy { get; set; }
-
-		#endregion
 	}
 }

@@ -14,7 +14,7 @@ namespace Linq2Rest.Mvc
 {
 	using System.Diagnostics.Contracts;
 	using System.Web.Mvc;
-	using Parser;
+	using Linq2Rest.Parser;
 
 	/// <summary>
 	/// Defines the default model binder to bind an <see cref="IModelFilter{T}"/>.

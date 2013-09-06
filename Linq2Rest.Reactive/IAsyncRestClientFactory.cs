@@ -6,7 +6,7 @@
 //   All other rights reserved.
 // </copyright>
 // <summary>
-//   Defines the public interface for the async REST client factory.
+//   Defines the public enumeration of supported HTTP methods.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -24,17 +24,17 @@ namespace Linq2Rest.Reactive
 		/// <summary>
 		/// Represents the GET HTTP method.
 		/// </summary>
-		Get,
+		Get, 
 
 		/// <summary>
 		/// Represents the PUT HTTP method.
 		/// </summary>
-		Put,
+		Put, 
 
 		/// <summary>
 		/// Represents the POST HTTP method.
 		/// </summary>
-		Post,
+		Post, 
 
 		/// <summary>
 		/// Represents the DELETE HTTP method.

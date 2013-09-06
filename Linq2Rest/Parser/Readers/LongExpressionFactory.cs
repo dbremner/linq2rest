@@ -15,17 +15,9 @@ namespace Linq2Rest.Parser.Readers
 	using System;
 	using System.Linq.Expressions;
 
-	internal class LongExpressionFactory : IValueExpressionFactory
+	internal class LongExpressionFactory : ValueExpressionFactoryBase<long>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(long);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			long number;
 			if (long.TryParse(token, out number))

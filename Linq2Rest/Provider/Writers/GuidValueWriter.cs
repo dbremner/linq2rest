@@ -14,17 +14,9 @@ namespace Linq2Rest.Provider.Writers
 {
 	using System;
 
-	internal class GuidValueWriter : IValueWriter
+	internal class GuidValueWriter : ValueWriterBase<Guid>
 	{
-		public Type Handles
-		{
-			get
-			{
-				return typeof(Guid);
-			}
-		}
-
-		public string Write(object value)
+		public override string Write(object value)
 		{
 			return string.Format("guid'{0}'", value);
 		}

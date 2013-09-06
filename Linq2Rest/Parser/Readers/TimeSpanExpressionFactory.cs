@@ -17,19 +17,11 @@ namespace Linq2Rest.Parser.Readers
 	using System.Text.RegularExpressions;
 	using System.Xml;
 
-	internal class TimeSpanExpressionFactory : IValueExpressionFactory
+	internal class TimeSpanExpressionFactory : ValueExpressionFactoryBase<TimeSpan>
 	{
 		private static readonly Regex TimeSpanRegex = new Regex(@"^time['\""](P.+)['\""]$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-		public Type Handles
-		{
-			get
-			{
-				return typeof(TimeSpan);
-			}
-		}
-
-		public ConstantExpression Convert(string token)
+		public override ConstantExpression Convert(string token)
 		{
 			var match = TimeSpanRegex.Match(token);
 			if (match.Success)

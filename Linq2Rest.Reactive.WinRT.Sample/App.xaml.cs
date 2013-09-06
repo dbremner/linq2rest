@@ -20,7 +20,7 @@ namespace Linq2Rest.Reactive.WinRT.Sample
 	/// <summary>
 	/// Provides application-specific behavior to supplement the default Application class.
 	/// </summary>
-	sealed partial class App : Application
+	public sealed partial class App : Application
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="App"/> class. 

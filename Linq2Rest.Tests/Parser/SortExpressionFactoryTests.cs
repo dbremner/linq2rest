@@ -24,8 +24,8 @@ namespace Linq2Rest.Tests.Parser
 		{
 			_items = new[]
 					 {
-						 new FakeItem { IntValue = 2, DoubleValue = 5, StringValue = "aa" },
-						 new FakeItem { IntValue = 1, DoubleValue = 4, StringValue = "a" },
+						 new FakeItem { IntValue = 2, DoubleValue = 5, StringValue = "aa" }, 
+						 new FakeItem { IntValue = 1, DoubleValue = 4, StringValue = "a" }, 
 						 new FakeItem { IntValue = 3, DoubleValue = 4, StringValue = "aaa" }
 					 };
 		}

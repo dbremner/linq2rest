@@ -18,7 +18,7 @@ namespace Linq2Rest.Reactive.Tests
 	using System.Reactive.Linq;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using Fakes;
+	using Linq2Rest.Reactive.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
 
@@ -30,7 +30,7 @@ namespace Linq2Rest.Reactive.Tests
 		{
 			Assert.DoesNotThrow(
 								() => new RestObservable<FakeItem>(
-									new FakeAsyncRestClientFactory(),
+									new FakeAsyncRestClientFactory(), 
 									new TestSerializerFactory()));
 		}
 
@@ -50,7 +50,7 @@ namespace Linq2Rest.Reactive.Tests
 						   {
 							   Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
 							   waitHandle.Set();
-						   },
+						   }, 
 						   () =>
 						   {
 							   Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
@@ -244,7 +244,7 @@ namespace Linq2Rest.Reactive.Tests
 				.Subscribe(
 					x =>
 					{
-					},
+					}, 
 					() =>
 					{
 						var observerThreadId = Thread.CurrentThread.ManagedThreadId;

@@ -12,16 +12,7 @@
 
 namespace Linq2Rest.Provider.Writers
 {
-	using System;
-
-	internal class ShortValueWriter : IntegerValueWriter
+	internal class ShortValueWriter : IntegerValueWriter<short>
 	{
-		public override Type Handles
-		{
-			get
-			{
-				return typeof(short);
-			}
-		}
 	}
 }

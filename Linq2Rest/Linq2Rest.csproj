@@ -155,11 +155,13 @@
     <Compile Include="Parser\ParameterParser.cs" />
     <Compile Include="Parser\Readers\BooleanExpressionFactory.cs" />
     <Compile Include="Parser\Readers\ByteArrayExpressionFactory.cs" />
+    <Compile Include="Parser\Readers\ByteArrayExpressionFactoryBase.cs" />
     <Compile Include="Parser\Readers\ByteExpressionFactory.cs" />
     <Compile Include="Parser\Readers\DateTimeExpressionFactory.cs" />
     <Compile Include="Parser\Readers\DateTimeOffsetExpressionFactory.cs" />
     <Compile Include="Parser\Readers\DecimalExpressionFactory.cs" />
     <Compile Include="Parser\Readers\DoubleExpressionFactory.cs" />
+    <Compile Include="Parser\Readers\EnumExpressionFactory.cs" />
     <Compile Include="Parser\Readers\GuidExpressionFactory.cs" />
     <Compile Include="Parser\Readers\IntExpressionFactory.cs" />
     <Compile Include="Parser\Readers\IValueExpressionFactory.cs" />
@@ -172,6 +174,7 @@
     <Compile Include="Parser\Readers\UnsignedIntExpressionFactory.cs" />
     <Compile Include="Parser\Readers\UnsignedLongExpressionFactory.cs" />
     <Compile Include="Parser\Readers\UnsignedShortExpressionFactory.cs" />
+    <Compile Include="Parser\Readers\ValueExpressionFactoryBase.cs" />
     <Compile Include="Parser\SelectExpressionFactory.cs" />
     <Compile Include="Parser\TokenOperatorExtensions.cs" />
     <Compile Include="Parser\TokenSet.cs" />
@@ -213,6 +216,7 @@
     <Compile Include="Provider\Writers\DefaultMethodWriter.cs" />
     <Compile Include="Provider\Writers\DoubleValueWriter.cs" />
     <Compile Include="Provider\Writers\EmptyAnyMethodWriter.cs" />
+    <Compile Include="Provider\Writers\EnumValueWriter.cs" />
     <Compile Include="Provider\Writers\EqualsMethodWriter.cs" />
     <Compile Include="Provider\Writers\GuidValueWriter.cs" />
     <Compile Include="Provider\IHttpRequestFactory.cs" />
@@ -244,6 +248,7 @@
     <Compile Include="Provider\Writers\UnsignedIntValueWriter.cs" />
     <Compile Include="Provider\Writers\UnsignedLongValueWriter.cs" />
     <Compile Include="Provider\Writers\UnsignedShortValueWriter.cs" />
+    <Compile Include="Provider\Writers\ValueWriterBase.cs" />
     <Compile Include="RuntimeTypeProvider.cs" />
     <Compile Include="StringConstants.cs" />
     <Compile Include="UntypedQueryable.cs" />

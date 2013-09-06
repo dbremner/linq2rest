@@ -19,7 +19,7 @@ namespace Linq2Rest.Implementations
 	using System.Linq;
 	using System.Xml;
 	using System.Xml.Serialization;
-	using Provider;
+	using Linq2Rest.Provider;
 
 	/// <summary>
 	/// Defines the XmlSerializer factory.

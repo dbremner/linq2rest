@@ -14,8 +14,8 @@ namespace Linq2Rest.Tests
 {
 	using System.Collections.Specialized;
 	using System.Linq;
-	using Fakes.ComplexDomain;
 	using Linq2Rest.Parser;
+	using Linq2Rest.Tests.Fakes.ComplexDomain;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -30,34 +30,34 @@ namespace Linq2Rest.Tests
 				         {
 					         new TypeInstanceData
 						         {
-							         UserDefinedId = "OneInstance",
-							         DefinitionFullName = "All\\Hardware\\CPU\\SNB",
+							         UserDefinedId = "OneInstance", 
+							         DefinitionFullName = "All\\Hardware\\CPU\\SNB", 
 							         Properties = new[]
 								                      {
-									                      CreatePropertyInstanceData("Status", "Approved"),
-									                      CreatePropertyInstanceData("Frequency", "20"),
-								                      },
+									                      CreatePropertyInstanceData("Status", "Approved"), 
+									                      CreatePropertyInstanceData("Frequency", "20"), 
+								                      }, 
 							         IsDeleted = false
-						         },
+						         }, 
 					         new TypeInstanceData
 						         {
-							         UserDefinedId = "OneInstance",
-							         DefinitionFullName = "All\\Hardware\\CPU\\SNB",
+							         UserDefinedId = "OneInstance", 
+							         DefinitionFullName = "All\\Hardware\\CPU\\SNB", 
 							         Properties = new[]
 								                      {
-									                      CreatePropertyInstanceData("Status", "Approved"),
-									                      CreatePropertyInstanceData("Frequency", "30"),
-								                      },
+									                      CreatePropertyInstanceData("Status", "Approved"), 
+									                      CreatePropertyInstanceData("Frequency", "30"), 
+								                      }, 
 							         IsDeleted = false
-						         },
+						         }, 
 					         new TypeInstanceData
 						         {
-							         UserDefinedId = "SecondInstance",
-							         DefinitionFullName = "All\\Hardware\\CPU\\SNB",
+							         UserDefinedId = "SecondInstance", 
+							         DefinitionFullName = "All\\Hardware\\CPU\\SNB", 
 							         Properties = new[]
 								                      {
 									                      CreatePropertyInstanceData("Status", "Not Approved")
-								                      },
+								                      }, 
 							         IsDeleted = false
 						         }
 				         };
@@ -92,12 +92,12 @@ namespace Linq2Rest.Tests
 		{
 			return new PropertyInstanceData
 				       {
-					       DefinitionName = definitionName,
+					       DefinitionName = definitionName, 
 					       Values = new[]
 						                {
 							                new PropertyInstanceValueData()
 								                {
-									                ValueType = ValueTypeDefinitionData.StringNonUnicode,
+									                ValueType = ValueTypeDefinitionData.StringNonUnicode, 
 									                StringNonUnicodeValue = value
 								                }
 						                }

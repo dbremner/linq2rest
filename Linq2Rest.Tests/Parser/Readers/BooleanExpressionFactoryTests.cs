@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class BooleanExpressionFactoryTests
 	{
-		private BooleanExpressionFactory _factory;
-
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new BooleanExpressionFactory();
 		}
+
+		private BooleanExpressionFactory _factory;
 
 		[TestCase("1", true)]
 		[TestCase("0", false)]

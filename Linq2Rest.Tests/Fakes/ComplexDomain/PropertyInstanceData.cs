@@ -19,8 +19,6 @@ namespace Linq2Rest.Tests.Fakes.ComplexDomain
 	/// </summary>
 	public class PropertyInstanceData
 	{
-		#region Properties
-
 		/// <summary>
 		/// The property definition name that this instance belongs to.
 		/// </summary>
@@ -30,10 +28,6 @@ namespace Linq2Rest.Tests.Fakes.ComplexDomain
 		/// The values for this instance.
 		/// </summary>
 		public PropertyInstanceValueData[] Values { get; set; }
-
-		#endregion
-
-		#region Equals
 
 		/// <summary>
 		/// Overriden. Determines whether the specified Object is equal to the current object.
@@ -95,7 +89,5 @@ namespace Linq2Rest.Tests.Fakes.ComplexDomain
 		{
 			return DefinitionName.GetHashCode();
 		}
-
-		#endregion
 	}
 }

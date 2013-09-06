@@ -12,7 +12,7 @@
 
 namespace Linq2Rest.Reactive.WP8.Sample.Support
 {
-	using Provider;
+	using Linq2Rest.Provider;
 
 	public class ODataSerializerFactory : ISerializerFactory
 	{
