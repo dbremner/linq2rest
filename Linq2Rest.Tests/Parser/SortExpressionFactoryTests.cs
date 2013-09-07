@@ -19,6 +19,9 @@ namespace Linq2Rest.Tests.Parser
 	[TestFixture]
 	public class SortExpressionFactoryTests
 	{
+		private FakeItem[] _items;
+		private SortExpressionFactory _factory;
+
 		[SetUp]
 		public void TestSetup()
 		{
@@ -29,9 +32,6 @@ namespace Linq2Rest.Tests.Parser
 						 new FakeItem { IntValue = 3, DoubleValue = 4, StringValue = "aaa" }
 					 };
 		}
-
-		private FakeItem[] _items;
-		private SortExpressionFactory _factory;
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()

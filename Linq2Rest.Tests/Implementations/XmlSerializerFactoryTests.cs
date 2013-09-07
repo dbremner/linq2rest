@@ -20,13 +20,13 @@ namespace Linq2Rest.Tests.Implementations
 	[TestFixture]
 	public class XmlSerializerFactoryTests
 	{
+		private XmlSerializerFactory _factory;
+
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new XmlSerializerFactory(Type.EmptyTypes);
 		}
-
-		private XmlSerializerFactory _factory;
 
 		[Test]
 		public void CreatedSerializerCanDeserializeListOfType()

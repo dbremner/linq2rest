@@ -18,7 +18,7 @@ namespace Linq2Rest.Tests.Implementations
 	using NUnit.Framework;
 
 	[TestFixture]
-	class HttpWebRequestAdapterTests
+	public class HttpWebRequestAdapterTests
 	{
 		[Test]
 		public void HttpWebRequestAdapterShouldReturnUnderlyingRequestStream()

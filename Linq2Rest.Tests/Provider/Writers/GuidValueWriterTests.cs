@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class GuidValueWriterTests
 	{
+		private GuidValueWriter _writer;
+
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new GuidValueWriter();
 		}
-
-		private GuidValueWriter _writer;
 
 		[Test]
 		public void WhenWritingGuidThenEnclosesInSingleQuote()

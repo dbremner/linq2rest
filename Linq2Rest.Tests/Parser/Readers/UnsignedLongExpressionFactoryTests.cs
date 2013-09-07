@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class UnsignedLongExpressionFactoryTests
 	{
+		private UnsignedLongExpressionFactory _factory;
+
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new UnsignedLongExpressionFactory();
 		}
-
-		private UnsignedLongExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesUnsignedLongParameterThenReturnedExpressionContainsUnsignedLong()

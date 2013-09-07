@@ -20,13 +20,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class TimeSpanExpressionFactoryTests
 	{
+		private TimeSpanExpressionFactory _factory;
+
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new TimeSpanExpressionFactory();
 		}
-
-		private TimeSpanExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesTimeSpanParameterInDoubleQuotesThenReturnedExpressionContainsTimeSpan()

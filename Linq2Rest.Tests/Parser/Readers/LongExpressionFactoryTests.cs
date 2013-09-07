@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class LongExpressionFactoryTests
 	{
+		private LongExpressionFactory _factory;
+
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new LongExpressionFactory();
 		}
-
-		private LongExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesLongParameterThenReturnedExpressionContainsLong()

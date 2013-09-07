@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class DoubleValueWriterTests
 	{
+		private DoubleValueWriter _writer;
+
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new DoubleValueWriter();
 		}
-
-		private DoubleValueWriter _writer;
 
 		[Test]
 		public void WhenWritingDoubleValueThenWritesString()

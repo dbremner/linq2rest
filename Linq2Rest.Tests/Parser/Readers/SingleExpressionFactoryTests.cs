@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class SingleExpressionFactoryTests
 	{
+		private SingleExpressionFactory _factory;
+
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new SingleExpressionFactory();
 		}
-
-		private SingleExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesSingleParameterThenReturnedExpressionContainsSingle()

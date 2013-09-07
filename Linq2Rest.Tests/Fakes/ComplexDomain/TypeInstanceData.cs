@@ -19,7 +19,6 @@ namespace Linq2Rest.Tests.Fakes.ComplexDomain
 	/// </summary>
 	public class TypeInstanceData
 	{
-
 		/// <summary>
 		/// The unique id of this object, given by the user who created it.
 		/// </summary>

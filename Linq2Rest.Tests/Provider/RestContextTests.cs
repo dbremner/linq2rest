@@ -24,6 +24,14 @@ namespace Linq2Rest.Tests.Provider
 	[TestFixture]
 	public class RestContextTests
 	{
+		private RestContext<SimpleDto> _provider;
+		private RestContext<ComplexDto> _complexProvider;
+		private RestContext<CollectionDto> _collectionProvider;
+		private Mock<IRestClient> _mockClient;
+		private Mock<IRestClient> _mockComplexClient;
+		private Mock<IRestClient> _mockCollectionClient;
+		private string _singleResponse;
+
 		[SetUp]
 		public void TestSetup()
 		{
@@ -63,14 +71,6 @@ namespace Linq2Rest.Tests.Provider
 
 			_collectionProvider = new RestContext<CollectionDto>(_mockCollectionClient.Object, serializerFactory);
 		}
-
-		private RestContext<SimpleDto> _provider;
-		private RestContext<ComplexDto> _complexProvider;
-		private RestContext<CollectionDto> _collectionProvider;
-		private Mock<IRestClient> _mockClient;
-		private Mock<IRestClient> _mockComplexClient;
-		private Mock<IRestClient> _mockCollectionClient;
-		private string _singleResponse;
 
 		[Test]
 		public void WhenAnyExpressionRequiresEagerEvaluationThenCallsRestServiceWithExistingFilterParameter()
@@ -183,8 +183,8 @@ namespace Linq2Rest.Tests.Provider
                 .Query
 				.Count(x => x.PointInTime == new DateTimeOffset(2012, 5, 6, 18, 10, 0, TimeSpan.FromHours(2)));
 
-			const string uri = "http://localhost/?$filter=PointInTime+eq+datetimeoffset'2012-05-06T18:10:00+02:00'";
-            _mockClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == uri)), Times.Once());
+			const string Uri = "http://localhost/?$filter=PointInTime+eq+datetimeoffset'2012-05-06T18:10:00+02:00'";
+            _mockClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == Uri)), Times.Once());
 		}
 
 		[Test]
