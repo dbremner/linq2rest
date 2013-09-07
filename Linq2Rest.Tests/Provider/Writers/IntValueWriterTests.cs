@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class IntValueWriterTests
 	{
+		private IntValueWriter _writer;
+
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new IntValueWriter();
 		}
-
-		private IntValueWriter _writer;
 
 		[Test]
 		public void WhenWritingIntValueThenWritesString()

@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class TimeSpanValueWriterTests
 	{
+		private TimeSpanValueWriter _writer;
+
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new TimeSpanValueWriter();
 		}
-
-		private TimeSpanValueWriter _writer;
 
 		[Test]
 		public void WhenWritingShortTimeSpanValueThenWritesString()

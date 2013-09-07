@@ -16,12 +16,10 @@ namespace Linq2Rest
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
-	using System.Linq.Expressions;
 	using System.Reflection;
 
 	internal static class MethodProvider
 	{
-		private static readonly ConstantExpression InnerIgnoreCaseExpression;
 		private static readonly MethodInfo InnerContainsMethod;
 		private static readonly MethodInfo InnerIndexOfMethod;
 		private static readonly MethodInfo EndsWithMethod1;
@@ -50,8 +48,6 @@ namespace Linq2Rest
 			var datetimeType = typeof(DateTime);
 			var mathType = typeof(Math);
 			
-			InnerIgnoreCaseExpression = Expression.Constant(StringComparison.OrdinalIgnoreCase);
-
 			InnerContainsMethod = stringType.GetMethod("Contains", new[] { stringType });
 			InnerIndexOfMethod = stringType.GetMethod("IndexOf", new[] { stringType });
 			EndsWithMethod1 = stringType.GetMethod("EndsWith", new[] { stringType });

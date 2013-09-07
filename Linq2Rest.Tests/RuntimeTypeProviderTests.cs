@@ -20,13 +20,13 @@ namespace Linq2Rest.Tests
 	[TestFixture]
 	public class RuntimeTypeProviderTests
 	{
+		private RuntimeTypeProvider _typeProvider;
+
 		[SetUp]
 		public void Setup()
 		{
 			_typeProvider = new RuntimeTypeProvider(new MemberNameResolver());
 		}
-
-		private RuntimeTypeProvider _typeProvider;
 
 		[Test]
 		public void WhenCreatingDynamicTypeThenTransfersCustomAttributesWithDefaultConstructor()

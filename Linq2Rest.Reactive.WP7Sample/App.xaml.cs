@@ -112,8 +112,6 @@ namespace Linq2Rest.Reactive.WP8.Sample
 			}
 		}
 
-		#region Phone application initialization
-
 		// Do not add any additional code to this method
 		private void InitializePhoneApplication()
 		{
@@ -146,7 +144,5 @@ namespace Linq2Rest.Reactive.WP8.Sample
 			// Remove this handler since it is no longer needed
 			RootFrame.Navigated -= CompleteInitializePhoneApplication;
 		}
-
-		#endregion
 	}
 }

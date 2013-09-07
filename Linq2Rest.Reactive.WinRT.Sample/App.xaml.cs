@@ -62,7 +62,7 @@ namespace Linq2Rest.Reactive.WinRT.Sample
 		/// </summary>
 		/// <param name="sender">The source of the suspend request.</param>
 		/// <param name="e">Details about the suspend request.</param>
-		void OnSuspending(object sender, SuspendingEventArgs e)
+		private void OnSuspending(object sender, SuspendingEventArgs e)
 		{
 			// TODO: Save application state and stop any background activity
 		}

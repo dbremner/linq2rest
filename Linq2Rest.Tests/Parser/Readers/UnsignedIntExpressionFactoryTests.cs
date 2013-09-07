@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class UnsignedIntExpressionFactoryTests
 	{
+		private UnsignedIntExpressionFactory _factory;
+
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new UnsignedIntExpressionFactory();
 		}
-
-		private UnsignedIntExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesUnsignedIntParameterThenReturnedExpressionContainsUnsignedInt()

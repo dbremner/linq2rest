@@ -19,8 +19,6 @@ namespace Linq2Rest.Tests.Fakes.ComplexDomain
 	/// </summary>
 	public class PropertyInstanceValueData
 	{
-		#region Properties
-
 		/// <summary>
 		/// The value type.
 		/// </summary>
@@ -55,10 +53,6 @@ namespace Linq2Rest.Tests.Fakes.ComplexDomain
 		/// The string value .
 		/// </summary>
 		public string StringNonUnicodeValue { get; set; }
-
-		#endregion
-
-		#region Equals
 
 		/// <summary>
 		/// Overriden. Determines whether the specified Object is equal to the current object.
@@ -150,7 +144,5 @@ namespace Linq2Rest.Tests.Fakes.ComplexDomain
 					return base.GetHashCode();
 			}
 		}
-
-		#endregion
 	}
 }

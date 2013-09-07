@@ -18,13 +18,13 @@ namespace Linq2Rest.Tests.Provider.Writers
 	[TestFixture]
 	public class UnsignedIntValueWriterTests
 	{
+		private UnsignedIntValueWriter _writer;
+
 		[SetUp]
 		public void Setup()
 		{
 			_writer = new UnsignedIntValueWriter();
 		}
-
-		private UnsignedIntValueWriter _writer;
 
 		[Test]
 		public void WhenWritingUnsignedIntValueThenWritesString()

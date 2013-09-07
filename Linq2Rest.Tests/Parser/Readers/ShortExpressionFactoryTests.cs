@@ -19,13 +19,13 @@ namespace Linq2Rest.Tests.Parser.Readers
 	[TestFixture]
 	public class ShortExpressionFactoryTests
 	{
+		private ShortExpressionFactory _factory;
+
 		[SetUp]
 		public void Setup()
 		{
 			_factory = new ShortExpressionFactory();
 		}
-
-		private ShortExpressionFactory _factory;
 
 		[Test]
 		public void WhenFilterIncludesShortParameterThenReturnedExpressionContainsShort()
