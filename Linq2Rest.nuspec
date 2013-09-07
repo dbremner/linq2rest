@@ -6,11 +6,13 @@
 	<title>Linq2Rest</title>
 	<authors>Jacob Reimers</authors>
 	<owners>Jacob Reimers</owners>
+	<copyright>Jacob Reimers (Reimers.dk)</copyright>
 	<licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
 	<projectUrl>https://bitbucket.org/jjrdk/linq2rest</projectUrl>
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>Open source OData client and server component.</summary>
 	<description>Parses OData system query parameters to create a LINQ query that can be used to filter a model set. Also exposes a LINQ provider for web services supporting the OData query parameters. Use extension method Filter (in Linq2Rest namespace) on any IEnumerable source.</description>
-	<releaseNotes>Added support for more HTTP verbs. Now supports GET, POST, PUT and DELETE. Added better support for Entity Framework.</releaseNotes>
+	<releaseNotes>Removed case insensitive text search to improve support for EntityFramework querying.</releaseNotes>
 	<tags>OData LINQ REST</tags>
 	<references>
 	  <reference file="Linq2Rest.dll" />
