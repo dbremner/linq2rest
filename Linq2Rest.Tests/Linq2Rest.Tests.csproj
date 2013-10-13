@@ -121,7 +121,10 @@
     <Compile Include="Fakes\ComplexDomain\PropertyInstanceValueData.cs" />
     <Compile Include="Fakes\ComplexDomain\TypeInstanceData.cs" />
     <Compile Include="Fakes\ComplexDomain\ValueTypeDefinitionData.cs" />
+    <Compile Include="Fakes\DataPoint.cs" />
+    <Compile Include="Fakes\IDataPoint.cs" />
     <Compile Include="Fakes\InMemoryJsonRestClient.cs" />
+    <Compile Include="Fakes\QualityFlags.cs" />
     <Compile Include="Implementations\HttpRequestFactoryTests.cs" />
     <Compile Include="Implementations\HttpRequestFactoryWithCertificateTests.cs" />
     <Compile Include="Implementations\HttpWebRequestAdapterTests.cs" />

@@ -14,6 +14,8 @@ namespace Linq2Rest.Tests
 {
 	using System;
 	using System.Collections.Specialized;
+	using System.Linq;
+	using Linq2Rest.Tests.Fakes;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -83,6 +85,30 @@ namespace Linq2Rest.Tests
 				                 };
 
 			Assert.Throws<FormatException>(() => _source.Filter(parameters));
+		}
+
+		[Test]
+		public void WhenFilteringOnInterfaceThenReturnsResults()
+		{
+			var points = new object[]
+						   {
+							   new DataPoint { Flags = new QualityFlags(100) }
+						   };
+			var nc = new NameValueCollection { { "$filter", "Flags/Value gt 64" } };
+			
+			CollectionAssert.IsNotEmpty(points.Cast<IDataPoint>().Filter(nc));
+		}
+
+		[Test]
+		public void WhenFilteringOnConcreteTypeThenReturnsResults()
+		{
+			var points = new object[]
+						   {
+							   new DataPoint { Flags = new QualityFlags(100) }
+						   };
+			var nc = new NameValueCollection { { "$filter", "Flags/Value gt 64" } };
+
+			CollectionAssert.IsNotEmpty(points.Cast<DataPoint>().Filter(nc));
 		}
 	}
 }

@@ -120,7 +120,10 @@
     <Compile Include="ComplexDomainFilterTests.cs" />
     <Compile Include="FakeChildItem.cs" />
     <Compile Include="FakeGrandChildItem.cs" />
+    <Compile Include="Fakes\DataPoint.cs" />
+    <Compile Include="Fakes\IDataPoint.cs" />
     <Compile Include="Fakes\InMemoryJsonRestClient.cs" />
+    <Compile Include="Fakes\QualityFlags.cs" />
     <Compile Include="Implementations\HttpRequestFactoryTests.cs" />
     <Compile Include="Implementations\HttpWebRequestAdapterTests.cs" />
     <Compile Include="Implementations\JsonContextTests.cs" />
