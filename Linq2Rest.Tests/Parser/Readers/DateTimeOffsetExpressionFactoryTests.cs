@@ -31,7 +31,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 		[Test]
 		public void WhenFilterIncludesDateTimeOffsetParameterInDoubleQuotesThenReturnedExpressionContainsDateTimeOffset()
 		{
-			var dateTimeOffset = new DateTimeOffset(2012, 5, 6, 18, 10, 0, TimeSpan.FromHours(2));
+			var dateTimeOffset = new DateTimeOffset(2012, 5, 6, 18, 10, 0, 100, TimeSpan.FromHours(2));
 			var parameter = string.Format("datetimeoffset\"{0}\"", XmlConvert.ToString(dateTimeOffset));
 
 			var expression = _factory.Convert(parameter);
@@ -42,7 +42,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 		[Test]
 		public void WhenFilterIncludesDateTimeOffsetParameterThenReturnedExpressionContainsDateTimeOffset()
 		{
-			var dateTimeOffset = new DateTimeOffset(2012, 5, 6, 18, 10, 0, TimeSpan.FromHours(2));
+			var dateTimeOffset = new DateTimeOffset(2012, 5, 6, 18, 10, 0, 100, TimeSpan.FromHours(2));
 			var parameter = string.Format("datetimeoffset'{0}'", XmlConvert.ToString(dateTimeOffset));
 
 			var expression = _factory.Convert(parameter);
