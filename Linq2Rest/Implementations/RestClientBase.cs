@@ -68,7 +68,7 @@ namespace Linq2Rest.Implementations
 		{
 			var stream = GetResponseStream(uri, HttpMethod.Get);
 
-			Contract.Assume(stream != null);
+			Contract.Assert(stream != null);
 
 			return stream;
 		}
@@ -83,7 +83,7 @@ namespace Linq2Rest.Implementations
 		{
 			var stream = GetResponseStream(uri, HttpMethod.Post, input);
 
-			Contract.Assume(stream != null);
+			Contract.Assert(stream != null);
 
 			return stream;
 		}
@@ -98,7 +98,7 @@ namespace Linq2Rest.Implementations
 		{
 			var stream = GetResponseStream(uri, HttpMethod.Put, input);
 
-			Contract.Assume(stream != null);
+			Contract.Assert(stream != null);
 
 			return stream;
 		}
@@ -112,7 +112,7 @@ namespace Linq2Rest.Implementations
 		{
 			var stream = GetResponseStream(uri, HttpMethod.Delete, null);
 
-			Contract.Assume(stream != null);
+			Contract.Assert(stream != null);
 
 			return stream;
 		}
