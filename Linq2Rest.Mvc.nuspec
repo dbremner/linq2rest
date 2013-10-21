@@ -2,12 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest.Mvc</id>
+		<title>Linq2Rest for ASP.NET MVC</title>
 		<version>3.3.1.0</version>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
 		<copyright>Jacob Reimers (Reimers.dk)</copyright>
 		<licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
 		<projectUrl>https://bitbucket.org/jjrdk/linq2rest</projectUrl>
+		<iconUrl>https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2013/Sep/07/linq2rest-logo-4047795347-2_avatar.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>ASP.NET MVC extensions for Linq2Rest to support binding a Linq2Rest ModelFilter using a ModelBinder. Use ModelFilterBinder as default model binder for IModelFilter{T}.</description>
 		<tags>OData LINQ REST ASP.NET MVC</tags>

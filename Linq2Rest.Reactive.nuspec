@@ -8,6 +8,7 @@
 		<owners>Jacob Reimers</owners>
 		<licenseUrl>http://www.opensource.org/licenses/MS-PL</licenseUrl>
 		<projectUrl>https://bitbucket.org/jjrdk/linq2rest</projectUrl>
+		<iconUrl>https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2013/Sep/07/linq2rest-logo-4047795347-2_avatar.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Generates OData style Rx Observables from LINQ queries against a REST service.</description>
 		<releaseNotes>Added support for observing GET, POST, PUT and DELETE operations. Added support for WP8. Updated to use Rx v. 2.1.30214.0.</releaseNotes>
