@@ -31,6 +31,8 @@ namespace Linq2Rest.Provider
 #if !NETFX_CORE
 			Contract.Requires(serviceBase.Scheme == Uri.UriSchemeHttp || serviceBase.Scheme == Uri.UriSchemeHttps);
 #endif
+			Contract.Ensures(((System.Collections.ICollection)this.OrderByParameter).Count == 0);
+			Contract.Ensures(serviceBase == this._serviceBase);
 
 			_serviceBase = serviceBase;
 			OrderByParameter = new List<string>();
@@ -105,6 +107,9 @@ namespace Linq2Rest.Provider
 
 		private static string BuildParameter(string name, string value)
 		{
+			Contract.Ensures(Contract.Result<string>() != null);
+			Contract.Ensures(0 <= Contract.Result<string>().Length); 
+
 			return name + "=" + value;
 		}
 

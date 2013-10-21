@@ -29,7 +29,7 @@ namespace Linq2Rest.Provider.Writers
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
 			Contract.Assert(expression.Method != null);
-			Contract.Assume(expression.Arguments != null);
+			Contract.Assert(expression.Arguments != null);
 			Contract.Assume(expression.Arguments.Count > 1);
 
 			var firstArg = expressionWriter(expression.Arguments[0]);
@@ -39,7 +39,7 @@ namespace Linq2Rest.Provider.Writers
 			if (lambdaParameter != null)
 			{
 				var first = lambdaParameter.Parameters.First();
-				parameter = first.Name ?? first.ToString();
+				parameter = first.Name;
 			}
 
 			var predicate = expressionWriter(expression.Arguments[1]);

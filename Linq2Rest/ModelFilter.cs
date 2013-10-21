@@ -43,6 +43,8 @@ namespace Linq2Rest
 				? model.AsQueryable().Where(_filterExpression)
 				: model.AsQueryable();
 
+			Contract.Assume(result != null);
+
 			if (_sortDescriptions != null && _sortDescriptions.Any())
 			{
 				var isFirst = true;

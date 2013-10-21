@@ -71,6 +71,9 @@ namespace Linq2Rest.Reactive.Implementations
 		/// <param name="input">The input as a <see cref="Stream"/>.</param>
 		public void SetInput(Stream input)
 		{
+			Contract.Ensures(this._input != null);
+			Contract.Ensures(input == this._input);
+
 			_input = input;
 		}
 
@@ -86,6 +89,9 @@ namespace Linq2Rest.Reactive.Implementations
 #if !NETFX_CORE
 				Contract.Requires(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 #endif
+				Contract.Ensures(uri == this._uri);
+				Contract.Ensures(method == this._method);
+				Contract.Ensures(input == this._input);
 
 				_uri = uri;
 				_method = method;

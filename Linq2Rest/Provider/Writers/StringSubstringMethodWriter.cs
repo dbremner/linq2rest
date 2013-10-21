@@ -28,7 +28,7 @@ namespace Linq2Rest.Provider.Writers
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
-			Contract.Assume(expression.Arguments != null);
+			Contract.Assert(expression.Arguments != null);
 			Contract.Assume(expression.Arguments.Count > 0);
 
 			var obj = expression.Object;
