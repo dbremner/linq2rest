@@ -13,6 +13,8 @@
 namespace Linq2Rest
 {
 	using System;
+	using System.Collections.Concurrent;
+	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.IO;
 	using System.Linq;
@@ -23,14 +25,19 @@ namespace Linq2Rest
 
 	internal static class GeneralExtensions
 	{
+		private static readonly ConcurrentDictionary<Type, PropertyInfo[]> KnownProperties = new ConcurrentDictionary<Type, PropertyInfo[]>();
+		private static readonly ConcurrentDictionary<Type, bool> KnownAnonymousTypes = new ConcurrentDictionary<Type, bool>();
+
 		public static bool IsAnonymousType(this Type type)
 		{
 			Contract.Requires<ArgumentNullException>(type != null);
 
-			return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
-				&& type.IsGenericType
-				&& type.Name.Contains("AnonymousType") && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
-				&& (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
+			return KnownAnonymousTypes.GetOrAdd(
+				type,
+				t => Attribute.IsDefined(t, typeof(CompilerGeneratedAttribute), false)
+						&& t.IsGenericType
+						&& t.Name.Contains("AnonymousType") && (t.Name.StartsWith("<>") || t.Name.StartsWith("VB$"))
+						&& (t.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic);
 		}
 
 		public static string Capitalize(this string input)
@@ -45,6 +52,50 @@ namespace Linq2Rest
 			Contract.Requires(input != null);
 
 			return new MemoryStream(Encoding.UTF8.GetBytes(input ?? string.Empty));
+		}
+
+		public static PropertyInfo[] GetPublicProperties(this Type type)
+		{
+			Contract.Requires<ArgumentNullException>(type != null);
+
+			return KnownProperties.GetOrAdd(
+				type,
+				t =>
+				{
+					if (t.IsInterface)
+					{
+						var propertyInfos = new List<PropertyInfo>();
+
+						var considered = new List<Type>();
+						var queue = new Queue<Type>();
+						considered.Add(t);
+						queue.Enqueue(t);
+						while (queue.Count > 0)
+						{
+							var subType = queue.Dequeue();
+							foreach (var subInterface in subType.GetInterfaces()
+								.Where(x => !considered.Contains(x)))
+							{
+								considered.Add(subInterface);
+								queue.Enqueue(subInterface);
+							}
+
+							var typeProperties = subType.GetProperties(
+								BindingFlags.FlattenHierarchy
+								| BindingFlags.Public
+								| BindingFlags.Instance);
+
+							var newPropertyInfos = typeProperties
+								.Where(x => !propertyInfos.Contains(x));
+
+							propertyInfos.InsertRange(0, newPropertyInfos);
+						}
+
+						return propertyInfos.ToArray();
+					}
+
+					return t.GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance);
+				});
 		}
 
 		public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, Expression keySelector)
