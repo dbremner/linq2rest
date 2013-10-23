@@ -99,11 +99,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+      <HintPath>..\packages\Moq.4.1.1309.1617\lib\NET40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -123,6 +123,7 @@
     <Compile Include="Fakes\DataPoint.cs" />
     <Compile Include="Fakes\IDataPoint.cs" />
     <Compile Include="Fakes\InMemoryJsonRestClient.cs" />
+    <Compile Include="Fakes\ITimeSeriesValue.cs" />
     <Compile Include="Fakes\QualityFlags.cs" />
     <Compile Include="Implementations\HttpRequestFactoryTests.cs" />
     <Compile Include="Implementations\HttpWebRequestAdapterTests.cs" />

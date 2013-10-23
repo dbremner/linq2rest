@@ -114,7 +114,8 @@ namespace Linq2Rest.Parser
 
 			foreach (var propertyName in propertyChain)
 			{
-				var property = parentType.GetProperty(propertyName);
+				string name = propertyName;
+				var property = parentType.GetPublicProperties().FirstOrDefault(x => x.Name == name);
 				if (property != null)
 				{
 					parentType = property.PropertyType;
