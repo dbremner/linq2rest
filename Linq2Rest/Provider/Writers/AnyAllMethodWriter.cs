@@ -39,7 +39,7 @@ namespace Linq2Rest.Provider.Writers
 			if (lambdaParameter != null)
 			{
 				var first = lambdaParameter.Parameters.First();
-				parameter = first.Name;
+				parameter = first.Name ?? first.ToString();
 			}
 
 			var predicate = expressionWriter(expression.Arguments[1]);

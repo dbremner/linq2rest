@@ -373,7 +373,6 @@ namespace Linq2Rest.Parser
 			Contract.Requires(filter != null);
 			Contract.Requires(sourceParameter != null);
 			Contract.Requires(lambdaParameters != null);
-			Contract.Ensures(Contract.Result<Expression>() != null);
 
 			if (string.IsNullOrWhiteSpace(filter))
 			{
