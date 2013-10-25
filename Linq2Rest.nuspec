@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest</id>
-		<version>3.3.1.0</version>
+		<version>3.3.2.0</version>
 		<title>Linq2Rest</title>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
@@ -41,5 +41,11 @@
 			  target="lib\Net45" />
 		<file src="Linq2Rest\bin\v4.5\Release\CodeContracts\Linq2Rest.Contracts.dll"
 			  target="lib\Net45\CodeContracts" />
+		<file src="Linq2Rest\bin\v4.5.1\Release\Linq2Rest.dll"
+			  target="lib\Net451" />
+		<file src="Linq2Rest\bin\v4.5.1\Release\Linq2Rest.xml"
+			  target="lib\Net451" />
+		<file src="Linq2Rest\bin\v4.5.1\Release\CodeContracts\Linq2Rest.Contracts.dll"
+			  target="lib\Net451\CodeContracts" />
 	</files>
 </package>
