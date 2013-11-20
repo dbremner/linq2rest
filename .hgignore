@@ -15,3 +15,4 @@ Bin
 TestResult.xml
 *.Moles.dll
 *.snk
+*.ide
