@@ -49,27 +49,22 @@ namespace Linq2Rest.Parser
 				return tokens;
 			}
 
-			var blocks = expression.Split(new[] { ' ' });
+			var blocks = GetBlocks(expression);
+			//var blocks = expression.Split(new[] { ' ' });
 
 			var openGroups = 0;
 			var startExpression = 0;
 			var currentTokens = new TokenSet();
 
-			var processingString = false;
-
-			for (var i = 0; i < blocks.Length; i++)
+			for (var i = 0; i < blocks.Count; i++)
 			{
-				if (blocks[i].IsStringStart())
-				{
-					processingString = true;
-				}
 
 				var netEnclosed = blocks[i].Count(c => c == '(') - blocks[i].Count(c => c == ')');
 				openGroups += netEnclosed;
 
 				if (openGroups == 0)
 				{
-					if (!processingString && blocks[i].IsOperation())
+					if (blocks[i].IsOperation())
 					{
 						var expression1 = startExpression;
 
@@ -107,11 +102,6 @@ namespace Linq2Rest.Parser
 							}
 						}
 					}
-				}
-
-				if (blocks[i].IsStringEnd())
-				{
-					processingString = false;
 				}
 			}
 
@@ -268,5 +258,47 @@ namespace Linq2Rest.Parser
 
 			return hasOrphan;
 		}
+
+		/// <summary>
+		/// Splits <paramref name="str"/> by spaces where the spaces are not contained in single-quoted strings. 
+		/// Empty blocks excluded from returned list.
+		/// </summary>
+		private static IList<string> GetBlocks(string str) {
+			if (string.IsNullOrEmpty(str)) return new List<string>();
+			
+			var blocks = new List<string>(str.Length / 5); //rough guess at the # of blocks for inital capacity of list
+			var blockStartPos = 0;
+			var sqCount = 0;
+			var inStr = false;
+			var pos = 0;
+			
+			for (; pos < str.Length; pos++) {
+				if (str[pos] == '\'') {
+					sqCount++;
+					if (!inStr) {
+						inStr = true; //starting a string
+					}
+					else if (sqCount % 2 == 0 && (str.Length == (pos + 1) || str[(pos + 1)] != '\'')) {
+						//if we're at an even number of single quotes so far and the next character
+						//is not a single quote, then we've reached the end of the string
+						inStr = false;
+					}
+				}
+				else if (str[pos] == ' ' && !inStr) { 
+					if (pos > 0 && str[pos - 1] != ' ') {
+						//we've reached the end of block if the current character is a space and the previous character wasn't
+						blocks.Add(str.Substring(blockStartPos, pos - blockStartPos));
+					}
+					blockStartPos = pos + 1;
+				}
+			}
+			
+			if (str[pos - 1] != ' ') { //if we've ended on a space, we've already added the last block
+				blocks.Add(str.Substring(blockStartPos));
+			}
+			
+			return blocks;
+		}
+
 	}
 }
