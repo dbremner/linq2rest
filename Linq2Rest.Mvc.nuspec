@@ -3,7 +3,7 @@
 	<metadata>
 		<id>Linq2Rest.Mvc</id>
 		<title>Linq2Rest for ASP.NET MVC</title>
-		<version>3.3.2.0</version>
+		<version>3.3.3.0</version>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
 		<copyright>Jacob Reimers (Reimers.dk)</copyright>
@@ -19,7 +19,7 @@
 		</references>
 		<dependencies>
 			<dependency id="Linq2Rest"
-						version="3.3.2.0" />
+						version="3.3.3.0" />
 		</dependencies>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System" />
