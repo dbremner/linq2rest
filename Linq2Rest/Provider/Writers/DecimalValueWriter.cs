@@ -16,5 +16,12 @@ namespace Linq2Rest.Provider.Writers
 
 	internal class DecimalValueWriter : RationalValueWriter<decimal>
 	{
+		protected override string Suffix
+		{
+			get
+			{
+				return "m";
+			}
+		}
 	}
 }
