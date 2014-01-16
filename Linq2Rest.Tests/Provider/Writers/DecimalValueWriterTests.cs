@@ -31,7 +31,7 @@ namespace Linq2Rest.Tests.Provider.Writers
 		{
 			var result = _writer.Write(1.23m);
 
-			Assert.AreEqual("1.23", result);
+			Assert.AreEqual("1.23m", result);
 		}
 	}
 }
