@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5D2
 		Linq2Rest.nuspec = Linq2Rest.nuspec
 		Linq2Rest.Reactive.nuspec = Linq2Rest.Reactive.nuspec
 		RestorePackages.ps1 = RestorePackages.ps1
+		tasks.ps1 = tasks.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{3D0F6A66-F765-4D71-939D-CFF866B8D157}"
