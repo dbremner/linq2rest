@@ -174,23 +174,6 @@
     <CodeAnalysisRuleSet>..\Linq2Rest.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.Reactive.Core">
-      <HintPath>..\packages\Rx-Core.2.1.30214.0\lib\WP8\System.Reactive.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\packages\Rx-Interfaces.2.1.30214.0\lib\WP8\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Linq">
-      <HintPath>..\packages\Rx-Linq.2.1.30214.0\lib\WP8\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices">
-      <HintPath>..\packages\Rx-PlatformServices.2.1.30214.0\lib\WP8\System.Reactive.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Providers">
-      <HintPath>..\packages\Rx-Providers.2.1.30214.0\lib\WP8\System.Reactive.Providers.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\Linq2Rest.Reactive\AsyncExpressionProcessor.cs">
       <Link>AsyncExpressionProcessor.cs</Link>
     </Compile>
@@ -394,6 +377,23 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Settings.StyleCop" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.2.2\lib\windowsphone8\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.2.2\lib\windowsphone8\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.2\lib\windowsphone8\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.2.2\lib\windowsphone8\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Providers">
+      <HintPath>..\packages\Rx-Providers.2.2.2\lib\windowsphone8\System.Reactive.Providers.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
