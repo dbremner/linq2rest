@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest.Reactive</id>
-		<version>3.3.3.0</version>
+		<version>3.3.4.0</version>
 		<title>Reactive Extensions for Linq2Rest</title>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
@@ -11,36 +11,36 @@
 		<iconUrl>https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2013/Sep/07/linq2rest-logo-4047795347-2_avatar.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Generates OData style Rx Observables from LINQ queries against a REST service.</description>
-		<releaseNotes>Added support for observing GET, POST, PUT and DELETE operations. Added support for WP8. Updated to use Rx v. 2.1.30214.0.</releaseNotes>
+		<releaseNotes>Added support for observing GET, POST, PUT and DELETE operations. Added support for WP8. Updated to use Rx v. 2.2.2.</releaseNotes>
 		<copyright>Jacob Reimers (Reimers.dk)</copyright>
 		<tags>OData LINQ REST Rx Reactive SL5 WP8 WinRT</tags>
 		<dependencies>
 			<group>
 				<dependency id="Rx-Providers"
-							version="2.1.30214.0" />
+							version="2.2.2" />
 				<dependency id="Linq2Rest"
-							version="3.3.3.0" />
+							version="3.3.4.0" />
 			</group>
 			<group targetFramework="net45">
 				<dependency id="Rx-Providers"
-							version="2.1.30214.0" />
+							version="2.2.2" />
 				<dependency id="Linq2Rest"
-							version="3.3.3.0" />
+							version="3.3.4.0" />
 			</group>
 
 			<group targetFramework="SL5">
 				<dependency id="Rx-Providers"
-							version="2.1.30214.0" />
+							version="2.2.2" />
 				<dependency id="System.Threading.Tasks"
 							version="3.0.1" />
 			</group>
 			<group targetFramework="wp8">
 				<dependency id="Rx-Providers"
-							version="2.1.30214.0" />
+							version="2.2.2" />
 			</group>
 			<group targetFramework="NetCore45">
 				<dependency id="Rx-Providers"
-							version="2.1.30214.0" />
+							version="2.2.2" />
 			</group>
 		</dependencies>
 		<frameworkAssemblies>
