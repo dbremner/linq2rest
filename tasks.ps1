@@ -17,7 +17,7 @@ task CleanUpMsBuildPath -depends PublishPackage {
 }
 
 task Compile -depends UpdatePackages { 
-	$options = "/p:configuration=$configuration;platform=$platform"
+	$options = "/p:configuration=$configuration;platform=$platform;VisualStudioVersion=12.0"
 	exec { C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe .\Linq2Rest.sln $options }
 	'Executed Compile!'
 }
@@ -25,7 +25,7 @@ task Compile -depends UpdatePackages {
 task UpdatePackages -depends Clean {
 	$packageConfigs = Get-ChildItem -Path .\ -Include "packages.config" -Recurse
 	foreach($config in $packageConfigs){
-        #Write-Host $config.DirectoryName
+        Write-Host $config.DirectoryName
 		.\.nuget\nuget.exe i $config.FullName -o packages -source https://nuget.org/api/v2/
 	}
 }
