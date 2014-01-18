@@ -13,6 +13,7 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+	using System.Diagnostics.CodeAnalysis;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
@@ -105,6 +106,7 @@ namespace Linq2Rest.Reactive
 		}
 	}
 
+	[SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Contract class.")]
 	[ContractClassFor(typeof(RestQueryableProviderBase))]
 	internal abstract class RestQueryableProviderBaseContracts : RestQueryableProviderBase
 	{

@@ -13,6 +13,7 @@
 namespace Linq2Rest.Provider.Writers
 {
 	using System;
+	using System.Diagnostics.CodeAnalysis;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 
@@ -35,6 +36,7 @@ namespace Linq2Rest.Provider.Writers
 		}
 	}
 
+	[SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Contract class.")]
 	[ContractClassFor(typeof(MathMethodWriter))]
 	internal abstract class MathMethodWriterContracts : MathMethodWriter
 	{

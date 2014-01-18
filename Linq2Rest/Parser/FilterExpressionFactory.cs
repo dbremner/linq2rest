@@ -395,7 +395,7 @@ namespace Linq2Rest.Parser
 
 			if (stringMatch.Success)
 			{
-				return Expression.Constant(stringMatch.Groups[1].Value.Replace("''","'"), typeof(string)); //single quote are escape as double quotes in odata strings
+				return Expression.Constant(stringMatch.Groups[1].Value.Replace("''", "'"), typeof(string));
 			}
 
 			if (NegateRx.IsMatch(filter))
