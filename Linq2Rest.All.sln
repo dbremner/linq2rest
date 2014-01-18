@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest", "Linq2Rest\Linq2Rest.csproj", "{FEF6620A-87C8-43B4-92BD-5FAAD183CBC7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq2Rest.Tests", "Linq2Rest.Tests\Linq2Rest.Tests.csproj", "{0D3564AF-F8C9-42A4-8A01-A4C95526FA28}"
@@ -19,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B5D2
 		Linq2Rest.Mvc.nuspec = Linq2Rest.Mvc.nuspec
 		Linq2Rest.nuspec = Linq2Rest.nuspec
 		Linq2Rest.Reactive.nuspec = Linq2Rest.Reactive.nuspec
+		packages.config = packages.config
 		psake.psm1 = psake.psm1
 		RestorePackages.ps1 = RestorePackages.ps1
 		tasks.ps1 = tasks.ps1
