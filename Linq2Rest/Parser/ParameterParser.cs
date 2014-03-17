@@ -30,11 +30,18 @@ namespace Linq2Rest.Parser
 		/// Initializes a new instance of the <see cref="ParameterParser{T}"/> class.
 		/// </summary>
 		public ParameterParser()
+			: this(new MemberNameResolver())
 		{
-			_filterExpressionFactory = new FilterExpressionFactory();
-			_sortExpressionFactory = new SortExpressionFactory();
-			var nameResolver = new MemberNameResolver();
-			_selectExpressionFactory = new SelectExpressionFactory<T>(nameResolver, new RuntimeTypeProvider(nameResolver));
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ParameterParser{T}"/> class.
+		/// </summary>
+		/// <param name="memberNameResolver">The <see cref="IMemberNameResolver"/> to use for name resolution.</param>
+		public ParameterParser(IMemberNameResolver memberNameResolver)
+			: this(new FilterExpressionFactory(memberNameResolver), new SortExpressionFactory(memberNameResolver), new SelectExpressionFactory<T>(memberNameResolver, new RuntimeTypeProvider(memberNameResolver)))
+		{
+			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
 		}
 
 		/// <summary>
@@ -44,8 +51,8 @@ namespace Linq2Rest.Parser
 		/// <param name="sortExpressionFactory">The <see cref="ISortExpressionFactory"/> to use.</param>
 		/// <param name="selectExpressionFactory">The <see cref="ISelectExpressionFactory{T}"/> to use.</param>
 		public ParameterParser(
-			IFilterExpressionFactory filterExpressionFactory, 
-			ISortExpressionFactory sortExpressionFactory, 
+			IFilterExpressionFactory filterExpressionFactory,
+			ISortExpressionFactory sortExpressionFactory,
 			ISelectExpressionFactory<T> selectExpressionFactory)
 		{
 			Contract.Requires<ArgumentNullException>(filterExpressionFactory != null);
@@ -75,10 +82,10 @@ namespace Linq2Rest.Parser
 			var selectFunction = _selectExpressionFactory.Create(selects);
 
 			var modelFilter = new ModelFilter<T>(
-				filterExpression, 
-				selectFunction, 
-				sortDescriptions, 
-				string.IsNullOrWhiteSpace(skip) ? -1 : Convert.ToInt32(skip), 
+				filterExpression,
+				selectFunction,
+				sortDescriptions,
+				string.IsNullOrWhiteSpace(skip) ? -1 : Convert.ToInt32(skip),
 				string.IsNullOrWhiteSpace(top) ? -1 : Convert.ToInt32(top));
 			return modelFilter;
 		}

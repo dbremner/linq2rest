@@ -32,14 +32,16 @@ namespace Linq2Rest.Reactive
 			IObservable<Unit> trigger, 
 			IAsyncRestClientFactory restClient, 
 			ISerializerFactory serializerFactory, 
+			IMemberNameResolver memberNameResolver,
 			Expression expression, 
 			IScheduler subscriberScheduler, 
 			IScheduler observerScheduler)
-			: base(restClient, serializerFactory, expression, subscriberScheduler, observerScheduler)
+			: base(restClient, serializerFactory, memberNameResolver, expression, subscriberScheduler, observerScheduler)
 		{
 			Contract.Requires(restClient != null);
 			Contract.Requires(trigger != null);
 			Contract.Requires(serializerFactory != null);
+			Contract.Requires(memberNameResolver != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
 

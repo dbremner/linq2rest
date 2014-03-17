@@ -27,11 +27,7 @@ namespace Linq2Rest.Tests.Parser
 		[TestFixtureSetUp]
 		public void TestFixtureSetup()
 		{
-			var nameResolver = new MemberNameResolver();
-			_parser = new ParameterParser<FakeItem>(
-				new FilterExpressionFactory(), 
-				new SortExpressionFactory(), 
-				new SelectExpressionFactory<FakeItem>(nameResolver, new RuntimeTypeProvider(nameResolver)));
+			_parser = new ParameterParser<FakeItem>();
 
 			_items = new[]
 				{

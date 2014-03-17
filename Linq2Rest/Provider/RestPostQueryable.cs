@@ -16,12 +16,18 @@ namespace Linq2Rest.Provider
 	using System.Diagnostics.Contracts;
 	using System.IO;
 	using System.Linq.Expressions;
+	using Linq2Rest.Parser;
 
 	internal class RestPostQueryable<T> : RestQueryableBase<T>
 	{
 		private readonly RestPostQueryProvider<T> _restPostQueryProvider;
 
 		public RestPostQueryable(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Stream inputData)
+			: this(client, serializerFactory, new MemberNameResolver(), expression, inputData)
+		{
+		}
+
+		public RestPostQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, Expression expression, Stream inputData)
 			: base(client, serializerFactory)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
@@ -29,9 +35,9 @@ namespace Linq2Rest.Provider
 			Contract.Requires<ArgumentNullException>(expression != null);
 
 			_restPostQueryProvider = new RestPostQueryProvider<T>(
-				client, 
-				serializerFactory, 
-				new ExpressionProcessor(new ExpressionWriter()), 
+				client,
+				serializerFactory,
+				new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver),
 				inputData);
 			Provider = _restPostQueryProvider;
 			Expression = expression;

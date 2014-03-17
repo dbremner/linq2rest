@@ -10,7 +10,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Parser
+namespace Linq2Rest
 {
 	using System;
 	using System.Diagnostics.Contracts;
@@ -28,16 +28,33 @@ namespace Linq2Rest.Parser
 		/// <param name="member">The <see cref="MemberInfo"/> to resolve the name of.</param>
 		/// <returns>The resolved name.</returns>
 		string ResolveName(MemberInfo member);
+
+		/// <summary>
+		/// Returns the resolved <see cref="MemberInfo"/> for an alias.
+		/// </summary>
+		/// <param name="type">The <see cref="Type"/> the alias relates to.</param>
+		/// <param name="alias">The name of the alias.</param>
+		/// <returns>The <see cref="MemberInfo"/> which is aliased.</returns>
+		MemberInfo ResolveAlias(Type type, string alias);
 	}
 
 	[ContractClassFor(typeof(IMemberNameResolver))]
 	internal abstract class MemberNameResolverContracts : IMemberNameResolver
 	{
+		[Pure]
 		public string ResolveName(MemberInfo member)
 		{
 			Contract.Requires<ArgumentNullException>(member != null);
 			Contract.Ensures(Contract.Result<string>() != null);
 
+			throw new NotImplementedException();
+		}
+
+		[Pure]
+		public MemberInfo ResolveAlias(Type type, string alias)
+		{
+			Contract.Requires<ArgumentNullException>(type != null);
+			Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(alias));
 			throw new NotImplementedException();
 		}
 	}

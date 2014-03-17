@@ -28,19 +28,21 @@ namespace Linq2Rest.Reactive
 		private readonly RestQueryableProvider _provider;
 
 		internal InnerRestObservable(
-			IAsyncRestClientFactory restClient, 
-			ISerializerFactory serializerFactory, 
-			Expression expression, 
-			IScheduler subscriberScheduler, 
+			IAsyncRestClientFactory restClient,
+			ISerializerFactory serializerFactory,
+			IMemberNameResolver memberNameResolver,
+			Expression expression,
+			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
-			: base(restClient, serializerFactory, expression, subscriberScheduler, observerScheduler)
+			: base(restClient, serializerFactory, memberNameResolver, expression, subscriberScheduler, observerScheduler)
 		{
 			Contract.Requires(restClient != null);
 			Contract.Requires(serializerFactory != null);
+			Contract.Requires(memberNameResolver != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
 
-			_provider = new RestQueryableProvider(restClient, serializerFactory, subscriberScheduler, observerScheduler);
+			_provider = new RestQueryableProvider(restClient, serializerFactory, memberNameResolver, subscriberScheduler, observerScheduler);
 		}
 
 		/// <summary>

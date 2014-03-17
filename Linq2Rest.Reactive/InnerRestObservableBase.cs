@@ -32,16 +32,18 @@ namespace Linq2Rest.Reactive
 
 		internal InnerRestObservableBase(
 			IAsyncRestClientFactory restClient, 
-			ISerializerFactory serializerFactory, 
+			ISerializerFactory serializerFactory,
+			IMemberNameResolver memberNameResolver,
 			Expression expression, 
 			IScheduler subscriberScheduler, 
 			IScheduler observerScheduler)
 		{
 			Contract.Requires(restClient != null);
 			Contract.Requires(serializerFactory != null);
+			Contract.Requires(memberNameResolver != null);
 
 			Observers = new List<IObserver<T>>();
-			Processor = new AsyncExpressionProcessor(new ExpressionWriter());
+			Processor = new AsyncExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver);
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
 			SubscriberScheduler = subscriberScheduler ?? CurrentThreadScheduler.Instance;

@@ -22,11 +22,15 @@ namespace Linq2Rest.Provider
 	internal class ExpressionProcessor : IExpressionProcessor
 	{
 		private readonly IExpressionWriter _writer;
+		private readonly IMemberNameResolver _memberNameResolver;
 
-		public ExpressionProcessor(IExpressionWriter writer)
+		public ExpressionProcessor(IExpressionWriter writer, IMemberNameResolver memberNameResolver)
 		{
 			Contract.Requires(writer != null);
+			Contract.Requires(memberNameResolver != null);
+
 			_writer = writer;
+			_memberNameResolver = memberNameResolver;
 		}
 
 		public object ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IEnumerable<T>> resultLoader, Func<Type, ParameterBuilder, IEnumerable> intermediateResultLoader)
@@ -182,38 +186,6 @@ namespace Linq2Rest.Provider
 			return null;
 		}
 
-		private static object ResolveProjection(ParameterBuilder builder, LambdaExpression lambdaExpression)
-		{
-			Contract.Requires(lambdaExpression != null);
-
-			var selectFunction = lambdaExpression.Body as NewExpression;
-
-			if (selectFunction != null)
-			{
-				var members = selectFunction.Members.Select(x => x.Name)
-											.ToArray();
-				var args = selectFunction.Arguments.OfType<MemberExpression>()
-										 .Select(x => x.Member.Name)
-										 .ToArray();
-				if (members.Intersect(args).Count() != members.Length)
-				{
-					throw new InvalidOperationException("Projection into new member names is not supported.");
-				}
-
-				builder.SelectParameter = string.Join(",", args);
-			}
-
-			var propertyExpression = lambdaExpression.Body as MemberExpression;
-			if (propertyExpression != null)
-			{
-				builder.SelectParameter = string.IsNullOrWhiteSpace(builder.SelectParameter)
-					? propertyExpression.Member.Name
-					: builder.SelectParameter + "," + propertyExpression.Member.Name;
-			}
-
-			return null;
-		}
-
 		private static object InvokeEager(MethodCallExpression methodCall, object source)
 		{
 			Contract.Requires(source != null);
@@ -249,6 +221,37 @@ namespace Linq2Rest.Provider
 			if (expression is ConstantExpression)
 			{
 				return (expression as ConstantExpression).Value;
+			}
+
+			return null;
+		}
+
+		private object ResolveProjection(ParameterBuilder builder, LambdaExpression lambdaExpression)
+		{
+			Contract.Requires(lambdaExpression != null);
+
+			var selectFunction = lambdaExpression.Body as NewExpression;
+
+			if (selectFunction != null)
+			{
+				var members = selectFunction.Members.Select(_memberNameResolver.ResolveName).ToArray();
+				var args = selectFunction.Arguments.OfType<MemberExpression>()
+										 .Select(x => new { RawName = x.Member.Name, ResolvedName = _memberNameResolver.ResolveName(x.Member) })
+										 .ToArray();
+				if (members.Intersect(args.Select(x => x.RawName)).Count() != members.Length)
+				{
+					throw new InvalidOperationException("Projection into new member names is not supported.");
+				}
+
+				builder.SelectParameter = string.Join(",", args.Select(x => x.ResolvedName));
+			}
+
+			var propertyExpression = lambdaExpression.Body as MemberExpression;
+			if (propertyExpression != null)
+			{
+				builder.SelectParameter = string.IsNullOrWhiteSpace(builder.SelectParameter)
+					? _memberNameResolver.ResolveName(propertyExpression.Member)
+					: builder.SelectParameter + "," + _memberNameResolver.ResolveName(propertyExpression.Member);
 			}
 
 			return null;

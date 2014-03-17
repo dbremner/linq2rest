@@ -22,10 +22,10 @@ namespace Linq2Rest
 	using System.Reflection;
 	using System.Runtime.CompilerServices;
 	using System.Text;
+	using Linq2Rest.Parser;
 
 	internal static class GeneralExtensions
 	{
-		private static readonly ConcurrentDictionary<Type, PropertyInfo[]> KnownProperties = new ConcurrentDictionary<Type, PropertyInfo[]>();
 		private static readonly ConcurrentDictionary<Type, bool> KnownAnonymousTypes = new ConcurrentDictionary<Type, bool>();
 
 		public static bool IsAnonymousType(this Type type)
@@ -42,60 +42,34 @@ namespace Linq2Rest
 
 		public static string Capitalize(this string input)
 		{
-			Contract.Requires(!string.IsNullOrEmpty(input));
+			Contract.Requires(!String.IsNullOrEmpty(input));
 
-			return char.ToUpperInvariant(input[0]) + input.Substring(1);
+			return Char.ToUpperInvariant(input[0]) + input.Substring(1);
 		}
 
 		public static Stream ToStream(this string input)
 		{
 			Contract.Requires(input != null);
 
-			return new MemoryStream(Encoding.UTF8.GetBytes(input ?? string.Empty));
+			return new MemoryStream(Encoding.UTF8.GetBytes(input ?? String.Empty));
 		}
 
-		public static PropertyInfo[] GetPublicProperties(this Type type)
+		public static Tuple<Type, Expression> CreateMemberExpression<T>(this IMemberNameResolver memberNameResolver, ParameterExpression parameter, IEnumerable<string> propertyChain, Type parentType, Expression propertyExpression)
 		{
-			Contract.Requires<ArgumentNullException>(type != null);
-
-			return KnownProperties.GetOrAdd(
-				type,
-				t =>
+			foreach (var propertyName in propertyChain)
+			{
+				string name = propertyName;
+				var member = memberNameResolver.ResolveAlias(parentType, name);
+				if (member != null)
 				{
-					if (t.IsInterface)
-					{
-						var propertyInfos = new List<PropertyInfo>();
+					parentType = GetMemberType(member);
+					propertyExpression = propertyExpression == null
+											 ? Expression.MakeMemberAccess(parameter, member)
+											 : Expression.MakeMemberAccess(propertyExpression, member);
+				}
+			}
 
-						var considered = new List<Type>();
-						var queue = new Queue<Type>();
-						considered.Add(t);
-						queue.Enqueue(t);
-						while (queue.Count > 0)
-						{
-							var subType = queue.Dequeue();
-							foreach (var subInterface in subType.GetInterfaces()
-								.Where(x => !considered.Contains(x)))
-							{
-								considered.Add(subInterface);
-								queue.Enqueue(subInterface);
-							}
-
-							var typeProperties = subType.GetProperties(
-								BindingFlags.FlattenHierarchy
-								| BindingFlags.Public
-								| BindingFlags.Instance);
-
-							var newPropertyInfos = typeProperties
-								.Where(x => !propertyInfos.Contains(x));
-
-							propertyInfos.InsertRange(0, newPropertyInfos);
-						}
-
-						return propertyInfos.ToArray();
-					}
-
-					return t.GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance);
-				});
+			return new Tuple<Type, Expression>(parentType, propertyExpression);
 		}
 
 		public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, Expression keySelector)
@@ -156,6 +130,19 @@ namespace Linq2Rest
 			orderbyMethod = orderbyMethod.MakeGenericMethod(typeof(T), propertyType);
 
 			return (IOrderedQueryable<T>)orderbyMethod.Invoke(null, new object[] { source, keySelector });
+		}
+
+		private static Type GetMemberType(MemberInfo member)
+		{
+			switch (member.MemberType)
+			{
+				case MemberTypes.Field:
+					return ((FieldInfo)member).FieldType;
+				case MemberTypes.Property:
+					return ((PropertyInfo)member).PropertyType;
+				default:
+					throw new InvalidOperationException(member.MemberType + " is not resolvable");
+			}
 		}
 	}
 }

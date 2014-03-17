@@ -21,12 +21,18 @@ namespace Linq2Rest.Provider
 		private readonly RestGetQueryProvider<T> _restGetQueryProvider;
 
 		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory)
+			: this(client, serializerFactory, new MemberNameResolver())
+		{
+		}
+
+		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver)
 			: base(client, serializerFactory)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
 
-			_restGetQueryProvider = new RestGetQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter()));
+			_restGetQueryProvider = new RestGetQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver));
 			Provider = _restGetQueryProvider;
 			Expression = Expression.Constant(this);
 		}

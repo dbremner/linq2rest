@@ -43,6 +43,15 @@ namespace Linq2Rest.Provider
 																	new DefaultMethodWriter()
 																};
 
+		private readonly IMemberNameResolver _memberNameResolver;
+
+		public ExpressionWriter(IMemberNameResolver memberNameResolver)
+		{
+			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
+
+			_memberNameResolver = memberNameResolver;
+		}
+
 		public string Write(Expression expression)
 		{
 			return expression == null ? null : Write(expression, expression.Type, GetRootParameterName(expression));
@@ -365,24 +374,30 @@ namespace Linq2Rest.Provider
 				return ParameterValueWriter.Write(memberValue);
 			}
 
-			var pathPrefixes = new List<string>();
+			var pathPrefixes = new List<MemberInfo>();
 
 			var currentMemberExpression = memberExpression;
-			while (currentMemberExpression != null)
+			while (true)
 			{
-				pathPrefixes.Add(currentMemberExpression.Member.Name);
-				if (currentMemberExpression.Expression is ParameterExpression
-					&& rootParameterName != null
-					&& ((ParameterExpression)currentMemberExpression.Expression).Name != rootParameterName.Name)
+				pathPrefixes.Add(currentMemberExpression.Member);
+				
+				var currentMember = currentMemberExpression.Expression as MemberExpression;
+				if (currentMember == null)
 				{
-					pathPrefixes.Add(((ParameterExpression)currentMemberExpression.Expression).Name);
+					break;
 				}
 
-				currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
+				currentMemberExpression = currentMember;
 			}
 
 			pathPrefixes.Reverse();
-			var prefix = string.Join("/", pathPrefixes);
+			var prefix = string.Join("/", pathPrefixes.Select(_memberNameResolver.ResolveName));
+			if (rootParameterName != null
+				&& currentMemberExpression.Expression is ParameterExpression
+				&& ((ParameterExpression)currentMemberExpression.Expression).Name != rootParameterName.Name)
+			{
+				prefix = string.Format("{0}/{1}", ((ParameterExpression)currentMemberExpression.Expression).Name, prefix);
+			}
 
 			if (!IsMemberOfParameter(memberExpression))
 			{
@@ -430,9 +445,9 @@ namespace Linq2Rest.Provider
 			if (binaryExpression.Left.NodeType == ExpressionType.Call)
 			{
 				var compareResult = ResolveCompareToOperation(
-					rootParameterName, 
-					(MethodCallExpression)binaryExpression.Left, 
-					operation, 
+					rootParameterName,
+					(MethodCallExpression)binaryExpression.Left,
+					operation,
 					binaryExpression.Right as ConstantExpression);
 				if (compareResult != null)
 				{
@@ -443,9 +458,9 @@ namespace Linq2Rest.Provider
 			if (binaryExpression.Right.NodeType == ExpressionType.Call)
 			{
 				var compareResult = ResolveCompareToOperation(
-					rootParameterName, 
-					(MethodCallExpression)binaryExpression.Right, 
-					operation, 
+					rootParameterName,
+					(MethodCallExpression)binaryExpression.Right,
+					operation,
 					binaryExpression.Left as ConstantExpression);
 				if (compareResult != null)
 				{
@@ -461,16 +476,16 @@ namespace Linq2Rest.Provider
 			var rightString = Write(binaryExpression.Right, leftType, rootParameterName);
 
 			return string.Format(
-				"{0} {1} {2}", 
-				string.Format(isLeftComposite ? "({0})" : "{0}", leftString), 
-				operation, 
+				"{0} {1} {2}",
+				string.Format(isLeftComposite ? "({0})" : "{0}", leftString),
+				operation,
 				string.Format(isRightComposite ? "({0})" : "{0}", rightString));
 		}
 
 		private string ResolveCompareToOperation(
-			ParameterExpression rootParameterName, 
-			MethodCallExpression methodCallExpression, 
-			string operation, 
+			ParameterExpression rootParameterName,
+			MethodCallExpression methodCallExpression,
+			string operation,
 			ConstantExpression comparisonExpression)
 		{
 			if (methodCallExpression != null
@@ -480,9 +495,9 @@ namespace Linq2Rest.Provider
 				&& Equals(comparisonExpression.Value, 0))
 			{
 				return string.Format(
-					"{0} {1} {2}", 
-					Write(methodCallExpression.Object, rootParameterName), 
-					operation, 
+					"{0} {1} {2}",
+					Write(methodCallExpression.Object, rootParameterName),
+					operation,
 					Write(methodCallExpression.Arguments[0], rootParameterName));
 			}
 

@@ -115,6 +115,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AliasItem.cs" />
     <Compile Include="ChildFakeItem.cs" />
     <Compile Include="Choice.cs" />
     <Compile Include="ComplexDomainFilterTests.cs" />
