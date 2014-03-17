@@ -39,4 +39,29 @@ namespace Linq2Rest.Tests.Provider
 		[DataMember(IsRequired = false)]
 		public Choice Choice { get; set; }
 	}
+
+	[DataContract]
+	public class AliasDto
+	{
+		[DataMember(Name = "ID", IsRequired = false)]
+		public int AliasID { get; set; }
+
+		[DataMember(Name = "Content")]
+		public string AliasContent { get; set; }
+
+		[DataMember(Name = "Value")]
+		public double AliasValue { get; set; }
+
+		[DataMember(Name = "Date", IsRequired = false)]
+		public DateTime AliasDate { get; set; }
+
+		[DataMember(Name = "Duration", IsRequired = false)]
+		public TimeSpan AliasDuration { get; set; }
+
+		[DataMember(Name = "PointInTime", IsRequired = false)]
+		public DateTimeOffset AliasPointInTime { get; set; }
+
+		[DataMember(Name = "Choice", IsRequired = false)]
+		public Choice AliasChoice { get; set; }
+	}
 }

@@ -40,6 +40,7 @@ namespace Linq2Rest.Provider.Writers
 	[ContractClassFor(typeof(MathMethodWriter))]
 	internal abstract class MathMethodWriterContracts : MathMethodWriter
 	{
+		[Pure]
 		protected override string MethodName
 		{
 			get

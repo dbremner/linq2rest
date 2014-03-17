@@ -23,6 +23,17 @@ namespace Linq2Rest.Parser
 	/// </summary>
 	public class SortExpressionFactory : ISortExpressionFactory
 	{
+		private readonly IMemberNameResolver _nameResolver;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SortExpressionFactory"/> class.
+		/// </summary>
+		/// <param name="nameResolver">The <see cref="IMemberNameResolver"/> for name resolution.</param>
+		public SortExpressionFactory(IMemberNameResolver nameResolver)
+		{
+			_nameResolver = nameResolver;
+		}
+
 		/// <summary>
 		/// Creates an enumeration of sort descriptions from its string representation.
 		/// </summary>
@@ -48,7 +59,7 @@ namespace Linq2Rest.Parser
 					   select new SortDescription<T>(property, direction);
 		}
 
-		private static Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
+		private Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter)
 		{
 			if (string.IsNullOrWhiteSpace(propertyToken))
 			{
@@ -56,19 +67,11 @@ namespace Linq2Rest.Parser
 			}
 
 			var parentType = typeof(T);
-			Expression propertyExpression = null;
+			
 			var propertyChain = propertyToken.Split('/');
-			foreach (var propertyName in propertyChain)
-			{
-				var property = parentType.GetProperty(propertyName);
-				if (property != null)
-				{
-					parentType = property.PropertyType;
-					propertyExpression = propertyExpression == null
-											? Expression.Property(parameter, property)
-											: Expression.Property(propertyExpression, property);
-				}
-			}
+			var result = _nameResolver.CreateMemberExpression<T>(parameter, propertyChain, parentType, null);
+			var propertyExpression = result.Item2;
+			parentType = result.Item1;
 
 			if (propertyExpression == null)
 			{

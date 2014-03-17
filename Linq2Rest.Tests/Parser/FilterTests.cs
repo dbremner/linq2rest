@@ -62,7 +62,7 @@ namespace Linq2Rest.Tests.Parser
 		{
 			Func<FakeItem, bool> original = x => (x.ChoiceValue & Choice.That) == Choice.That && x.IntValue >= 3;
 
-			var factory = new FilterExpressionFactory();
+			var factory = new FilterExpressionFactory(new MemberNameResolver());
 			var deserialized = factory.Create<FakeItem>("ChoiceValue eq Linq2Rest.Tests.Choice'That' And IntValue ge 3");
 
 			var originalResult = _collection.Where(original).ToArray();

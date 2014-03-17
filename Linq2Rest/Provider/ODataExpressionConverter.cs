@@ -16,6 +16,7 @@ namespace Linq2Rest.Provider
 	using System.Diagnostics.CodeAnalysis;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
+	using Linq2Rest.Parser;
 
 	/// <summary>
 	/// Converts LINQ expressions to OData queries.
@@ -29,7 +30,7 @@ namespace Linq2Rest.Provider
 		/// </summary>
 		public ODataExpressionConverter()
 		{
-			_writer = new ExpressionWriter();
+			_writer = new ExpressionWriter(new MemberNameResolver());
 		}
 
 		/// <summary>

@@ -35,7 +35,7 @@ namespace Linq2Rest.Reactive.Tests
 		{
 			_mockRestClient = new Mock<IAsyncRestClient>();
 			_mockRestClient.Setup(x => x.Download())
-				.Returns(() => Task<Stream>.Factory.StartNew(() => GeneralExtensions.ToStream("[]")));
+				.Returns(() => Task<Stream>.Factory.StartNew(() => "[]".ToStream()));
 
 			_mockClientFactory = new Mock<IAsyncRestClientFactory>();
 			_mockClientFactory.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
@@ -57,7 +57,7 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne(2000);
 
-			var requestUri = new Uri("http://localhost/?$filter=IntValue+le+3");
+			var requestUri = new Uri("http://localhost/?$filter=Number+le+3");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
@@ -153,7 +153,7 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var requestUri = new Uri("http://localhost/?$filter=(IntValue+le+3)+and+(StringValue+eq+'blah')");
+			var requestUri = new Uri("http://localhost/?$filter=(Number+le+3)+and+(StringValue+eq+'blah')");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
@@ -218,7 +218,7 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var requestUri = new Uri("http://localhost/?$filter=IntValue+le+3");
+			var requestUri = new Uri("http://localhost/?$filter=Number+le+3");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 
@@ -239,7 +239,7 @@ namespace Linq2Rest.Reactive.Tests
 
 			waitHandle.WaitOne();
 
-			var requestUri = new Uri("http://localhost/?$filter=IntValue+le+3");
+			var requestUri = new Uri("http://localhost/?$filter=Number+le+3");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 

@@ -234,6 +234,12 @@
     <Compile Include="..\Linq2Rest.Reactive\TriggeredRestQueryableProvider.cs">
       <Link>TriggeredRestQueryableProvider.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest\IMemberNameResolver.cs">
+      <Link>IMemberNameResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Linq2Rest\MemberNameResolver.cs">
+      <Link>MemberNameResolver.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\ExpressionWriter.cs">
       <Link>Provider\ExpressionWriter.cs</Link>
     </Compile>

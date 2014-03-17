@@ -27,6 +27,7 @@ namespace Linq2Rest.Reactive
 	{
 		private readonly IAsyncRestClientFactory _restClientFactory;
 		private readonly ISerializerFactory _serializerFactory;
+		private readonly IMemberNameResolver _memberNameResolver;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RestObservable{T}"/> class.
@@ -34,12 +35,27 @@ namespace Linq2Rest.Reactive
 		/// <param name="restClientFactory">An <see cref="IAsyncRestClientFactory"/> to perform requests.</param>
 		/// <param name="serializerFactory">An <see cref="ISerializerFactory"/> to perform deserialization.</param>
 		public RestObservable(IAsyncRestClientFactory restClientFactory, ISerializerFactory serializerFactory)
+			: this(restClientFactory, serializerFactory, new MemberNameResolver())
 		{
 			Contract.Requires<ArgumentNullException>(restClientFactory != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RestObservable{T}"/> class.
+		/// </summary>
+		/// <param name="restClientFactory">An <see cref="IAsyncRestClientFactory"/> to perform requests.</param>
+		/// <param name="serializerFactory">An <see cref="ISerializerFactory"/> to perform deserialization.</param>
+		/// <param name="memberNameResolver">An <see cref="IMemberNameResolver"/> for member name resolution.</param>
+		public RestObservable(IAsyncRestClientFactory restClientFactory, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver)
+		{
+			Contract.Requires<ArgumentNullException>(restClientFactory != null);
+			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
 
 			_restClientFactory = restClientFactory;
 			_serializerFactory = serializerFactory;
+			_memberNameResolver = memberNameResolver;
 		}
 
 		/// <summary>
@@ -51,10 +67,11 @@ namespace Linq2Rest.Reactive
 			Contract.Assume(ImmediateScheduler.Instance != null);
 
 			return new InnerRestObservable<T>(
-				_restClientFactory, 
-				_serializerFactory, 
-				null, 
-				ImmediateScheduler.Instance, 
+				_restClientFactory,
+				_serializerFactory,
+				_memberNameResolver,
+				null,
+				ImmediateScheduler.Instance,
 				ImmediateScheduler.Instance);
 		}
 
@@ -69,11 +86,12 @@ namespace Linq2Rest.Reactive
 			Contract.Assume(ImmediateScheduler.Instance != null);
 
 			return new TriggeredRestObservable<T>(
-				trigger, 
-				_restClientFactory, 
-				_serializerFactory, 
-				null, 
-				ImmediateScheduler.Instance, 
+				trigger,
+				_restClientFactory,
+				_serializerFactory,
+				_memberNameResolver,
+				null,
+				ImmediateScheduler.Instance,
 				ImmediateScheduler.Instance);
 		}
 
@@ -82,6 +100,7 @@ namespace Linq2Rest.Reactive
 		{
 			Contract.Invariant(_restClientFactory != null);
 			Contract.Invariant(_serializerFactory != null);
+			Contract.Invariant(_memberNameResolver != null);
 		}
 	}
 }

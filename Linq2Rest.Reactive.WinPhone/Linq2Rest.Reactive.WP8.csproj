@@ -228,6 +228,9 @@
     <Compile Include="..\Linq2Rest.Reactive\TriggeredRestQueryableProvider.cs">
       <Link>TriggeredRestQueryableProvider.cs</Link>
     </Compile>
+    <Compile Include="..\Linq2Rest\IMemberNameResolver.cs">
+      <Link>IMemberNameResolver.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest\Provider\ExpressionWriter.cs">
       <Link>Provider\ExpressionVisitor.cs</Link>
     </Compile>
@@ -372,6 +375,7 @@
     <Compile Include="..\Linq2Rest\StringConstants.cs">
       <Link>StringConstants.cs</Link>
     </Compile>
+    <Compile Include="MemberNameResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

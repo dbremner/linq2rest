@@ -23,14 +23,15 @@ namespace Linq2Rest.Reactive
 	internal class TriggeredRestQueryableProvider : RestQueryableProviderBase
 	{
 		private readonly IObservable<Unit> _trigger;
+		private readonly IMemberNameResolver _memberNameResolver;
 
 		public TriggeredRestQueryableProvider(
-			IObservable<Unit> trigger, 
-			IAsyncRestClientFactory asyncRestClient, 
-			ISerializerFactory serializerFactory, 
-			IScheduler subscriberScheduler, 
+			IObservable<Unit> trigger,
+			IAsyncRestClientFactory asyncRestClient,
+			ISerializerFactory serializerFactory,
+			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
-			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)
+			: this(trigger, asyncRestClient, serializerFactory, new MemberNameResolver(), subscriberScheduler, observerScheduler)
 		{
 			Contract.Requires(trigger != null);
 			Contract.Requires(asyncRestClient != null);
@@ -41,14 +42,35 @@ namespace Linq2Rest.Reactive
 			_trigger = trigger;
 		}
 
+		public TriggeredRestQueryableProvider(
+			IObservable<Unit> trigger,
+			IAsyncRestClientFactory asyncRestClient,
+			ISerializerFactory serializerFactory,
+			IMemberNameResolver memberNameResolver,
+			IScheduler subscriberScheduler,
+			IScheduler observerScheduler)
+			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)
+		{
+			Contract.Requires(trigger != null);
+			Contract.Requires(asyncRestClient != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(subscriberScheduler != null);
+			Contract.Requires(memberNameResolver != null);
+			Contract.Requires(observerScheduler != null);
+
+			_trigger = trigger;
+			_memberNameResolver = memberNameResolver;
+		}
+
 		protected override IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
 		{
-			return new TriggeredRestObservable<TResult>(_trigger, AsyncRestClient, SerializerFactory, expression, subscriberScheduler, observerScheduler);
+			return new TriggeredRestObservable<TResult>(_trigger, AsyncRestClient, SerializerFactory, _memberNameResolver, expression, subscriberScheduler, observerScheduler);
 		}
 
 		[ContractInvariantMethod]
 		private void Invariants()
 		{
+			Contract.Invariant(_memberNameResolver != null);
 			Contract.Invariant(_trigger != null);
 		}
 	}

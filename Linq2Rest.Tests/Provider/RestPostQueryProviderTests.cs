@@ -15,6 +15,7 @@ namespace Linq2Rest.Tests.Provider
 	using System;
 	using System.IO;
 	using System.Linq.Expressions;
+	using Linq2Rest.Parser;
 	using Linq2Rest.Provider;
 	using Linq2Rest.Tests.Fakes;
 	using Moq;
@@ -34,7 +35,8 @@ namespace Linq2Rest.Tests.Provider
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
 			_mockClient.Setup(x => x.Post(It.IsAny<Uri>(), It.IsAny<Stream>())).Returns("[]".ToStream());
-			_provider = new RestPostQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory(), new ExpressionProcessor(new ExpressionWriter()), _inputData);
+			var memberNameResolver = new MemberNameResolver();
+			_provider = new RestPostQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory(), new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver), _inputData);
 		}
 
 		[Test]

@@ -29,6 +29,17 @@ namespace Linq2Rest.Parser
 	{
 		private static readonly Regex StringRx = new Regex(@"^[""'](.*?)[""']$", RegexOptions.Compiled);
 		private static readonly Regex NegateRx = new Regex(@"^-[^\d]*", RegexOptions.Compiled);
+		private readonly IMemberNameResolver _memberNameResolver;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FilterExpressionFactory"/> class.
+		/// </summary>
+		/// <param name="memberNameResolver">An <see cref="IMemberNameResolver"/> for name resolution.
+		/// </param>
+		public FilterExpressionFactory(IMemberNameResolver memberNameResolver)
+		{
+			_memberNameResolver = memberNameResolver;
+		}
 
 		/// <summary>
 		/// Creates a filter expression from its string representation.
@@ -78,80 +89,6 @@ namespace Linq2Rest.Parser
 				default:
 					return null;
 			}
-		}
-
-		private static Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters)
-		{
-			Contract.Requires(propertyToken != null);
-			Contract.Requires(parameter != null);
-			Contract.Requires(lambdaParameters != null);
-
-			if (!propertyToken.IsImpliedBoolean())
-			{
-				var token = propertyToken.GetTokens().FirstOrDefault();
-				if (token != null)
-				{
-					return GetPropertyExpression<T>(token.Left, parameter, lambdaParameters) ?? GetPropertyExpression<T>(token.Right, parameter, lambdaParameters);
-				}
-			}
-
-			var parentType = parameter.Type;
-			Expression propertyExpression = null;
-
-			var propertyChain = propertyToken.Split('/');
-
-			Contract.Assert(propertyChain != null);
-
-			if (propertyChain.Any() && lambdaParameters.Any(p => p.Name == propertyChain.First()))
-			{
-				var lambdaParameter = lambdaParameters.First(p => p.Name == propertyChain.First());
-
-				Contract.Assume(lambdaParameter != null);
-
-				parentType = lambdaParameter.Type;
-				propertyExpression = lambdaParameter;
-			}
-
-			foreach (var propertyName in propertyChain)
-			{
-				string name = propertyName;
-				var property = parentType.GetPublicProperties().FirstOrDefault(x => x.Name == name);
-				if (property != null)
-				{
-					parentType = property.PropertyType;
-					propertyExpression = propertyExpression == null
-					? Expression.Property(parameter, property)
-					: Expression.Property(propertyExpression, property);
-				}
-			}
-
-			return propertyExpression;
-		}
-
-		private static Type GetExpressionType<T>(TokenSet set, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters)
-		{
-			Contract.Requires(parameter != null);
-			Contract.Requires(lambdaParameters != null);
-
-			if (set == null)
-			{
-				return null;
-			}
-
-			if (Regex.IsMatch(set.Left, @"^\(.*\)$") && set.Operation.IsCombinationOperation())
-			{
-				return null;
-			}
-
-			var property = GetPropertyExpression<T>(set.Left, parameter, lambdaParameters) ?? GetPropertyExpression<T>(set.Right, parameter, lambdaParameters);
-			if (property != null)
-			{
-				return property.Type;
-			}
-
-			var type = GetExpressionType<T>(set.Left.GetArithmeticToken(), parameter, lambdaParameters);
-
-			return type ?? GetExpressionType<T>(set.Right.GetArithmeticToken(), parameter, lambdaParameters);
 		}
 
 		private static Expression GetOperation(string token, Expression left, Expression right)
@@ -366,6 +303,74 @@ namespace Linq2Rest.Parser
 			return type != null
 				? ParameterValueReader.Read(type, filter, formatProvider)
 				: GetBooleanExpression(filter, formatProvider);
+		}
+
+		private Type GetExpressionType<T>(TokenSet set, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters)
+		{
+			Contract.Requires(parameter != null);
+			Contract.Requires(lambdaParameters != null);
+
+			if (set == null)
+			{
+				return null;
+			}
+
+			if (Regex.IsMatch(set.Left, @"^\(.*\)$") && set.Operation.IsCombinationOperation())
+			{
+				return null;
+			}
+
+			var property = GetPropertyExpression<T>(set.Left, parameter, lambdaParameters) ?? GetPropertyExpression<T>(set.Right, parameter, lambdaParameters);
+			if (property != null)
+			{
+				return property.Type;
+			}
+
+			var type = GetExpressionType<T>(set.Left.GetArithmeticToken(), parameter, lambdaParameters);
+
+			return type ?? GetExpressionType<T>(set.Right.GetArithmeticToken(), parameter, lambdaParameters);
+		}
+
+		private Expression GetPropertyExpression<T>(string propertyToken, ParameterExpression parameter, ICollection<ParameterExpression> lambdaParameters)
+		{
+			Contract.Requires(propertyToken != null);
+			Contract.Requires(parameter != null);
+			Contract.Requires(lambdaParameters != null);
+
+			if (string.IsNullOrWhiteSpace(propertyToken))
+			{
+				return null;
+			}
+
+			if (!propertyToken.IsImpliedBoolean())
+			{
+				var token = propertyToken.GetTokens().FirstOrDefault();
+				if (token != null)
+				{
+					return GetPropertyExpression<T>(token.Left, parameter, lambdaParameters) ?? GetPropertyExpression<T>(token.Right, parameter, lambdaParameters);
+				}
+			}
+
+			var parentType = parameter.Type;
+			Expression propertyExpression = null;
+
+			var propertyChain = propertyToken.Split('/');
+
+			Contract.Assert(propertyChain != null);
+
+			if (propertyChain.Any() && lambdaParameters.Any(p => p.Name == propertyChain.First()))
+			{
+				var lambdaParameter = lambdaParameters.First(p => p.Name == propertyChain.First());
+
+				Contract.Assume(lambdaParameter != null);
+
+				parentType = lambdaParameter.Type;
+				propertyExpression = lambdaParameter;
+			}
+
+			propertyExpression = _memberNameResolver.CreateMemberExpression<T>(parameter, propertyChain, parentType, propertyExpression).Item2;
+
+			return propertyExpression;
 		}
 
 		private Expression CreateExpression<T>(string filter, ParameterExpression sourceParameter, ICollection<ParameterExpression> lambdaParameters, Type type, IFormatProvider formatProvider)

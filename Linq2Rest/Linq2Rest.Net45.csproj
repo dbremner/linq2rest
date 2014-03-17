@@ -130,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GeneralExtensions.cs" />
+    <Compile Include="IMemberNameResolver.cs" />
     <Compile Include="IModelFilter.cs" />
     <Compile Include="Implementations\HttpRequestFactory.cs" />
     <Compile Include="Implementations\HttpRequestFactoryWithCertificate.cs" />
@@ -142,18 +143,17 @@
     <Compile Include="Implementations\XmlRestClient.cs" />
     <Compile Include="Implementations\XmlSerializerFactory.cs" />
     <Compile Include="IRuntimeTypeProvider.cs" />
+    <Compile Include="MemberNameResolver.cs" />
     <Compile Include="MethodProvider.cs" />
     <Compile Include="ModelFilterExtensions.cs" />
     <Compile Include="Parser\ExpressionTokenizer.cs" />
     <Compile Include="Parser\FilterExpressionFactory.cs" />
     <Compile Include="Parser\FunctionTokenSet.cs" />
     <Compile Include="Parser\IFilterExpressionFactory.cs" />
-    <Compile Include="Parser\IMemberNameResolver.cs" />
     <Compile Include="Parser\IParameterParser.cs" />
     <Compile Include="Parser\ISelectExpressionFactory.cs" />
     <Compile Include="ModelFilter.cs" />
     <Compile Include="Parser\ISortExpressionFactory.cs" />
-    <Compile Include="Parser\MemberNameResolver.cs" />
     <Compile Include="Parser\ParameterParser.cs" />
     <Compile Include="Parser\Readers\BooleanExpressionFactory.cs" />
     <Compile Include="Parser\Readers\ByteArrayExpressionFactory.cs" />

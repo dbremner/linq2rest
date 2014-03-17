@@ -32,12 +32,15 @@ namespace Linq2Rest.Reactive
 	internal class AsyncExpressionProcessor : IAsyncExpressionProcessor
 	{
 		private readonly IExpressionWriter _writer;
+		private readonly IMemberNameResolver _memberNameResolver;
 
-		public AsyncExpressionProcessor(IExpressionWriter writer)
+		public AsyncExpressionProcessor(IExpressionWriter writer, IMemberNameResolver memberNameResolver)
 		{
 			Contract.Requires(writer != null);
+			Contract.Requires(memberNameResolver != null);
 
 			_writer = writer;
+			_memberNameResolver = memberNameResolver;
 		}
 
 		public IObservable<T> ProcessMethodCall<T>(MethodCallExpression methodCall, ParameterBuilder builder, Func<ParameterBuilder, IObservable<IEnumerable<T>>> resultLoader, Func<Type, ParameterBuilder, IObservable<IEnumerable>> intermediateResultLoader)
@@ -146,7 +149,7 @@ namespace Linq2Rest.Reactive
 								if (selectFunction != null)
 								{
 									var members = selectFunction.Members.Select(x => x.Name).ToArray();
-									var args = selectFunction.Arguments.OfType<MemberExpression>().Select(x => x.Member.Name).ToArray();
+									var args = selectFunction.Arguments.OfType<MemberExpression>().Select(x => _memberNameResolver.ResolveName(x.Member)).ToArray();
 									if (members.Intersect(args).Count() != members.Length)
 									{
 										throw new InvalidOperationException("Projection into new member names is not supported.");
@@ -159,8 +162,8 @@ namespace Linq2Rest.Reactive
 								if (propertyExpression != null)
 								{
 									builder.SelectParameter = string.IsNullOrWhiteSpace(builder.SelectParameter)
-																? propertyExpression.Member.Name
-																: builder.SelectParameter + "," + propertyExpression.Member.Name;
+																? _memberNameResolver.ResolveName(propertyExpression.Member)
+																: builder.SelectParameter + "," + _memberNameResolver.ResolveName(propertyExpression.Member);
 								}
 							}
 						}

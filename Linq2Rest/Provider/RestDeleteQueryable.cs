@@ -15,18 +15,25 @@ namespace Linq2Rest.Provider
 	using System;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
+	using Linq2Rest.Parser;
 
 	internal class RestDeleteQueryable<T> : RestQueryableBase<T>
 	{
 		private readonly RestDeleteQueryProvider<T> _restDeleteQueryProvider;
 
 		public RestDeleteQueryable(IRestClient client, ISerializerFactory serializerFactory)
+			: this(client, serializerFactory, new MemberNameResolver())
+		{
+		}
+
+		public RestDeleteQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver)
 			: base(client, serializerFactory)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
 
-			_restDeleteQueryProvider = new RestDeleteQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter()));
+			_restDeleteQueryProvider = new RestDeleteQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver));
 			Provider = _restDeleteQueryProvider;
 			Expression = Expression.Constant(this);
 		}
