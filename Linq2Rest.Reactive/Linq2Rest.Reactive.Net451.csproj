@@ -144,7 +144,7 @@
     <Compile Include="Implementations\AsyncXmlRestClientFactory.cs" />
     <Compile Include="InnerRestObservable.cs" />
     <Compile Include="InnerRestObservableBase.cs" />
-    <Compile Include="InteralObservableExtensions.cs" />
+    <Compile Include="InternalObservableExtensions.cs" />
     <Compile Include="ObservableExtensions.cs" />
     <Compile Include="ObserverPublisher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
