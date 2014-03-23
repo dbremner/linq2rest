@@ -377,6 +377,7 @@
     </Compile>
     <Compile Include="MemberNameResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Provider\ExpressionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

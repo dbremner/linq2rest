@@ -65,15 +65,16 @@ namespace Linq2Rest.Provider
 		/// Expands the specified source.
 		/// </summary>
 		/// <typeparam name="TSource"></typeparam>
-		/// <param name="source">The source.</param>
+		/// <param name="source">The source <see cref="IQueryable"/>.</param>
+		/// <param name="memberNameResolver">The <see cref="IMemberNameResolver"/> to resolve names.</param>
 		/// <param name="properties">The paths to expand.</param>
 		/// <returns>An <see cref="IQueryable{T}"/> for continued querying.</returns>
-		public static IQueryable<TSource> Expand<TSource>(this IQueryable<TSource> source, params Expression<Func<TSource, object>>[] properties)
+		public static IQueryable<TSource> Expand<TSource>(this IQueryable<TSource> source, IMemberNameResolver memberNameResolver, params Expression<Func<TSource, object>>[] properties)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 			Contract.Assume(properties != null);
 
-			var propertyNames = string.Join(",", properties.Where(x => x != null).Select(ResolvePropertyName));
+			var propertyNames = string.Join(",", properties.Where(x => x != null).Select(property => ResolvePropertyName(property, memberNameResolver)));
 
 			return Expand(source, propertyNames);
 		}
@@ -95,7 +96,7 @@ namespace Linq2Rest.Provider
 			{
 				var serializer = restQueryable.SerializerFactory.Create<TInput>();
 				var stream = serializer.Serialize(input);
-				return new RestPostQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, source.Expression, stream);
+				return new RestPostQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, source.Expression, stream, typeof(TResult));
 			}
 
 			return source;
@@ -118,7 +119,7 @@ namespace Linq2Rest.Provider
 			{
 				var serializer = restQueryable.SerializerFactory.Create<TInput>();
 				var stream = serializer.Serialize(input);
-				return new RestPutQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, source.Expression, stream);
+				return new RestPutQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, source.Expression, stream, typeof(TResult));
 			}
 
 			return source;
@@ -135,13 +136,13 @@ namespace Linq2Rest.Provider
 			var restQueryable = source as RestQueryableBase<TResult>;
 			if (restQueryable != null)
 			{
-				return new RestDeleteQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, source.Expression);
+				return new RestDeleteQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, source.Expression, typeof(TResult));
 			}
 
 			return source;
 		}
 
-		private static string ResolvePropertyName<TSource>(Expression<Func<TSource, object>> property)
+		private static string ResolvePropertyName<TSource>(Expression<Func<TSource, object>> property, IMemberNameResolver memberNameResolver)
 		{
 			Contract.Requires(property != null);
 
@@ -156,7 +157,9 @@ namespace Linq2Rest.Provider
 			var currentMemberExpression = body as MemberExpression;
 			while (currentMemberExpression != null)
 			{
-				pathPrefixes.Add(currentMemberExpression.Member.Name);
+				var member = currentMemberExpression.Member;
+				var alias = memberNameResolver.ResolveName(member);
+				pathPrefixes.Add(alias);
 				currentMemberExpression = currentMemberExpression.Expression as MemberExpression;
 			}
 

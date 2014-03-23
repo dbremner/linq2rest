@@ -25,9 +25,10 @@ namespace Linq2Rest.Provider
 	{
 		private readonly Uri _serviceBase;
 
-		public ParameterBuilder(Uri serviceBase)
+		public ParameterBuilder(Uri serviceBase, Type sourceType)
 		{
 			Contract.Requires(serviceBase != null);
+			Contract.Requires(sourceType != null);
 #if !NETFX_CORE
 			Contract.Requires(serviceBase.Scheme == Uri.UriSchemeHttp || serviceBase.Scheme == Uri.UriSchemeHttps);
 #endif
@@ -35,6 +36,7 @@ namespace Linq2Rest.Provider
 			Contract.Ensures(serviceBase == this._serviceBase);
 
 			_serviceBase = serviceBase;
+			SourceType = sourceType;
 			OrderByParameter = new List<string>();
 		}
 
@@ -49,6 +51,8 @@ namespace Linq2Rest.Provider
 		public string TakeParameter { get; set; }
 
 		public string ExpandParameter { get; set; }
+
+		public Type SourceType { get; private set; }
 
 		public Uri GetFullUri()
 		{

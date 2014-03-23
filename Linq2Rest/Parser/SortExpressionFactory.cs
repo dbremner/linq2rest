@@ -69,7 +69,7 @@ namespace Linq2Rest.Parser
 			var parentType = typeof(T);
 			
 			var propertyChain = propertyToken.Split('/');
-			var result = _nameResolver.CreateMemberExpression<T>(parameter, propertyChain, parentType, null);
+			var result = _nameResolver.CreateMemberExpression(parameter, propertyChain, parentType, null);
 			var propertyExpression = result.Item2;
 			parentType = result.Item1;
 

@@ -20,7 +20,7 @@ namespace Linq2Rest.Reactive
 	using System.Reactive.Linq;
 	using Linq2Rest.Provider;
 
-	internal class TriggeredRestQueryableProvider : RestQueryableProviderBase
+	internal class TriggeredRestQueryableProvider<TSource> : RestQueryableProviderBase<TSource>
 	{
 		private readonly IObservable<Unit> _trigger;
 		private readonly IMemberNameResolver _memberNameResolver;
@@ -64,7 +64,7 @@ namespace Linq2Rest.Reactive
 
 		protected override IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
 		{
-			return new TriggeredRestObservable<TResult>(_trigger, AsyncRestClient, SerializerFactory, _memberNameResolver, expression, subscriberScheduler, observerScheduler);
+			return new TriggeredRestObservable<TResult, TSource>(_trigger, AsyncRestClient, SerializerFactory, _memberNameResolver, expression, subscriberScheduler, observerScheduler);
 		}
 
 		[ContractInvariantMethod]

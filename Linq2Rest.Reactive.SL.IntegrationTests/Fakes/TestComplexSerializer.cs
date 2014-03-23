@@ -12,8 +12,10 @@
 
 namespace Linq2Rest.Reactive.SL.IntegrationTests.Fakes
 {
+	using System;
 	using System.Collections.Generic;
 	using System.IO;
+	using System.Reflection;
 	using System.Runtime.Serialization.Json;
 	using Linq2Rest.Provider;
 
@@ -30,6 +32,28 @@ namespace Linq2Rest.Reactive.SL.IntegrationTests.Fakes
 		public IEnumerable<FakeItem> DeserializeList(Stream input)
 		{
 			return (List<FakeItem>)_innerListSerializer.ReadObject(input);
+		}
+
+		/// <summary>
+		/// Deserializes a single item.
+		/// </summary>
+		/// <param name="input">The serialized item.</param>
+		/// <param name="sourceType">The <see cref="Type"/> which provides alias information.</param>
+		/// <returns>An instance of the serialized item.</returns>
+		public FakeItem Deserialize(Stream input, Type sourceType)
+		{
+			return Deserialize(input);
+		}
+
+		/// <summary>
+		/// Deserializes a list of items.
+		/// </summary>
+		/// <param name="input">The serialized items.</param>
+		/// <param name="sourceType">The <see cref="Type"/> which provides alias information.</param>
+		/// <returns>An list of the serialized items.</returns>
+		public IEnumerable<FakeItem> DeserializeList(Stream input, Type sourceType)
+		{
+			return DeserializeList(input);
 		}
 
 		public Stream Serialize(FakeItem item)

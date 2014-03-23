@@ -20,25 +20,25 @@ namespace Linq2Rest.Provider
 	{
 		private readonly RestGetQueryProvider<T> _restGetQueryProvider;
 
-		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory)
-			: this(client, serializerFactory, new MemberNameResolver())
+		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, Type sourceType)
+			: this(client, serializerFactory, new MemberNameResolver(), sourceType)
 		{
 		}
 
-		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver)
+		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, Type sourceType)
 			: base(client, serializerFactory)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
 
-			_restGetQueryProvider = new RestGetQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver));
+			_restGetQueryProvider = new RestGetQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver), sourceType);
 			Provider = _restGetQueryProvider;
 			Expression = Expression.Constant(this);
 		}
 
-		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, Expression expression)
-			: this(client, serializerFactory)
+		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Type sourceType)
+			: this(client, serializerFactory, sourceType)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);

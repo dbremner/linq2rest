@@ -15,6 +15,7 @@ namespace Linq2Rest.Tests.Mvc
 	using System;
 	using System.Linq;
 	using Linq2Rest.Mvc.Provider;
+	using Moq;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -27,38 +28,39 @@ namespace Linq2Rest.Tests.Mvc
 			var source = new[] { new Tuple<string, int>("test", 1), };
 			var anonymousType = source.Select(x => new { Title = x.Item1, Value = x.Item2 }).First();
 
-			var serializerType = typeof(RuntimeAnonymousTypeSerializer<>).MakeGenericType(anonymousType.GetType());
-			var serializer = Activator.CreateInstance(serializerType);
+			var typeArguments = anonymousType.GetType();
+			var serializerType = typeof(RuntimeAnonymousTypeSerializer<,>).MakeGenericType(typeArguments, typeArguments);
+			var serializer = Activator.CreateInstance(serializerType, new MemberNameResolver());
 
 			var deserializeMethod = serializerType
 				.GetMethods()
-				.First(m => m.Name == "Deserialize" && m.ReturnType == anonymousType.GetType());
+				.First(m => m.Name == "Deserialize" && m.ReturnType == typeArguments);
 
 			var stream = Json.ToStream();
 			dynamic result = deserializeMethod.Invoke(serializer, new object[] { stream });
 
 			Assert.AreEqual("blah", result.Title);
 		}
-		
+
 		[Test]
 		public void WhenDeserializingEmptyArrayResponseThenReturnsEmptyList()
 		{
 			const string Json = "[]";
-
-			var serializer = new RuntimeAnonymousTypeSerializer<FakeItem>();
+			var mockResolver = new Mock<IMemberNameResolver>();
+			var serializer = new RuntimeAnonymousTypeSerializer<FakeItem, FakeItem>(mockResolver.Object);
 			var result = serializer.DeserializeList(Json.ToStream()).ToList();
-			
+
 			Assert.IsEmpty(result);
 		}
-		
+
 		[Test]
 		public void WhenDeserializingNullResponseThenReturnsEmptyList()
 		{
 			const string Json = "null";
-
-			var serializer = new RuntimeAnonymousTypeSerializer<FakeItem>();
+			var mockResolver = new Mock<IMemberNameResolver>();
+			var serializer = new RuntimeAnonymousTypeSerializer<FakeItem, FakeItem>(mockResolver.Object);
 			var result = serializer.DeserializeList(Json.ToStream()).ToList();
-			
+
 			Assert.IsEmpty(result);
 		}
 	}

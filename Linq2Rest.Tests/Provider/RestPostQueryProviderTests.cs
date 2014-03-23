@@ -31,12 +31,13 @@ namespace Linq2Rest.Tests.Provider
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
+			var mockResolver = new Mock<IMemberNameResolver>();
 			_inputData = "[]".ToStream();
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
 			_mockClient.Setup(x => x.Post(It.IsAny<Uri>(), It.IsAny<Stream>())).Returns("[]".ToStream());
 			var memberNameResolver = new MemberNameResolver();
-			_provider = new RestPostQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory(), new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver), _inputData);
+			_provider = new RestPostQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory(mockResolver.Object), new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver), _inputData, typeof(FakeItem));
 		}
 
 		[Test]

@@ -38,7 +38,7 @@ namespace Linq2Rest.Reactive
 		/// <returns>An <see cref="IObservable{T}"/> instance.</returns>
 		public static IObservable<T> Post<T, TInput>(this IObservable<T> source, Func<TInput> input)
 		{
-			var restObservable = source as InnerRestObservableBase<T>;
+			var restObservable = source as InnerRestObservableBase<T, T>;
 			if (restObservable != null)
 			{
 				restObservable.ChangeMethod(HttpMethod.Post);
@@ -66,7 +66,7 @@ namespace Linq2Rest.Reactive
 		/// <returns>An <see cref="IObservable{T}"/> instance.</returns>
 		public static IObservable<T> Put<T, TInput>(this IObservable<T> source, Func<TInput> input)
 		{
-			var restObservable = source as InnerRestObservableBase<T>;
+			var restObservable = source as InnerRestObservableBase<T, T>;
 			if (restObservable != null)
 			{
 				restObservable.ChangeMethod(HttpMethod.Put);
@@ -92,7 +92,7 @@ namespace Linq2Rest.Reactive
 		/// <returns>An <see cref="IObservable{T}"/> instance.</returns>
 		public static IObservable<T> Delete<T>(this IObservable<T> source)
 		{
-			var restObservable = source as InnerRestObservableBase<T>;
+			var restObservable = source as InnerRestObservableBase<T, T>;
 			if (restObservable != null)
 			{
 				restObservable.ChangeMethod(HttpMethod.Delete);
@@ -105,14 +105,15 @@ namespace Linq2Rest.Reactive
 		/// Expands the specified source.
 		/// </summary>
 		/// <typeparam name="TSource"></typeparam>
+		/// <typeparam name="TAlias">The <see cref="Type"/> to derive aliases from.</typeparam>
 		/// <param name="source">The source.</param>
 		/// <param name="paths">The paths to expand in the format "Child1, Child2/GrandChild2".</param>
 		/// <returns>An <see cref="IObservable{T}"/> for continued querying.</returns>
-		public static IObservable<TSource> Expand<TSource>(this IObservable<TSource> source, string paths)
+		public static IObservable<TSource> Expand<TSource, TAlias>(this IObservable<TSource> source, string paths)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 
-			var restObservable = source as InnerRestObservable<TSource>;
+			var restObservable = source as InnerRestObservable<TSource, TAlias>;
 			if (restObservable == null)
 			{
 				return source;
@@ -134,17 +135,18 @@ namespace Linq2Rest.Reactive
 		/// Expands the specified source.
 		/// </summary>
 		/// <typeparam name="TSource"></typeparam>
+		/// <typeparam name="TAlias">The <see cref="Type"/> to derive aliases from.</typeparam>
 		/// <param name="source">The source.</param>
 		/// <param name="properties">The paths to expand.</param>
 		/// <returns>An <see cref="IObservable{T}"/> for continued querying.</returns>
-		public static IObservable<TSource> Expand<TSource>(this IObservable<TSource> source, params Expression<Func<TSource, object>>[] properties)
+		public static IObservable<TSource> Expand<TSource, TAlias>(this IObservable<TSource> source, params Expression<Func<TAlias, object>>[] properties)
 		{
 			Contract.Requires<ArgumentNullException>(source != null);
 			Contract.Assume(properties != null);
 
 			var propertyNames = string.Join(",", properties.Where(x => x != null).Select(ResolvePropertyName));
 
-			return Expand(source, propertyNames);
+			return Expand<TSource, TAlias>(source, propertyNames);
 		}
 
 		private static string ResolvePropertyName<TSource>(Expression<Func<TSource, object>> property)

@@ -19,6 +19,7 @@ namespace Linq2Rest.Mvc.Provider
 	using System.IO;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Reflection;
 	using System.Web.Script.Serialization;
 	using Linq2Rest.Provider;
 
@@ -26,10 +27,23 @@ namespace Linq2Rest.Mvc.Provider
 	/// Serializes simples annymous type structures.
 	/// </summary>
 	/// <typeparam name="T">The <see cref="Type"/> to serialize.</typeparam>
-	public class RuntimeAnonymousTypeSerializer<T> : ISerializer<T>
+	/// <typeparam name="TSource">The <see cref="Type"/> to load alias data from.</typeparam>
+	public class RuntimeAnonymousTypeSerializer<T, TSource> : ISerializer<T>
 	{
+		private readonly IMemberNameResolver _nameResolver;
+		private readonly Type _sourceType = typeof(TSource);
 		private readonly Type _elementType = typeof(T);
+		private readonly Type _deserializedType = typeof(Dictionary<string, object>);
 		private readonly JavaScriptSerializer _innerSerializer = new JavaScriptSerializer();
+
+		/// <summary>
+		/// a
+		/// </summary>
+		/// <param name="nameResolver">The <see cref="IMemberNameResolver"/> used to resolve name aliasing.</param>
+		public RuntimeAnonymousTypeSerializer(IMemberNameResolver nameResolver)
+		{
+			_nameResolver = nameResolver;
+		}
 
 		/// <summary>
 		/// Deserializes a single item.
@@ -39,9 +53,9 @@ namespace Linq2Rest.Mvc.Provider
 		public T Deserialize(Stream input)
 		{
 			var content = new StreamReader(input).ReadToEnd();
-			var selectorFunction = CreateSelector(typeof(IDictionary<string, object>));
-			var dictionary = _innerSerializer.DeserializeObject(content);
 
+			var dictionary = (Dictionary<string, object>)_innerSerializer.DeserializeObject(content);
+			var selectorFunction = CreateSelector(dictionary);
 			return selectorFunction(dictionary);
 		}
 
@@ -71,6 +85,21 @@ namespace Linq2Rest.Mvc.Provider
 			return ms;
 		}
 
+		private static Type GetMemberType(MemberInfo member)
+		{
+			switch (member.MemberType)
+			{
+				case MemberTypes.Field:
+					return ((FieldInfo)member).FieldType;
+				case MemberTypes.Method:
+					return ((MethodInfo)member).ReturnType;
+				case MemberTypes.Property:
+					return ((PropertyInfo)member).PropertyType;
+				default:
+					throw new ArgumentOutOfRangeException("member", "Cannot handle " + member.MemberType);
+			}
+		}
+
 		private IEnumerable<T> ReadToAnonymousType(string response)
 		{
 			var deserializeObject = _innerSerializer.DeserializeObject(response);
@@ -81,7 +110,7 @@ namespace Linq2Rest.Mvc.Provider
 				return new List<T>();
 			}
 
-			var objectEnumerable = enumerable.OfType<object>().ToArray();
+			var objectEnumerable = enumerable.OfType<Dictionary<string, object>>().ToArray();
 
 			if (objectEnumerable.Length == 0)
 			{
@@ -89,41 +118,40 @@ namespace Linq2Rest.Mvc.Provider
 			}
 
 			var first = objectEnumerable[0];
-			var deserializedType = first.GetType();
-			var selectorFunction = CreateSelector(deserializedType);
+
+			var selectorFunction = CreateSelector(first);
 
 			Contract.Assume(selectorFunction != null, "Compiled above.");
 
 			return objectEnumerable.Select(selectorFunction).ToList();
 		}
 
-		private Func<object, T> CreateSelector(Type deserializedType)
+		private Func<object, T> CreateSelector(IDictionary<string, object> deserializedObject)
 		{
 			var objectParameter = Expression.Parameter(typeof(object), "x");
-			var fields = _elementType.GetProperties();
+			var keys = deserializedObject.Keys;
 
-			var bindings = fields
-				.Select(
-						p =>
-						{
-							var arguments = new[] { Expression.Constant(p.Name) };
+			var properties = typeof(T).GetProperties();
 
-							var indexExpression = Expression.MakeIndex(
-										   Expression.Convert(objectParameter, deserializedType), 
-										   deserializedType.GetProperty("Item"), 
-										   arguments);
-
-							return Expression.Convert(
-										 Expression.Call(
-														 AnonymousTypeSerializerHelper.InnerChangeTypeMethod, 
-														 indexExpression, 
-														 Expression.Constant(p.PropertyType)), 
-										 p.PropertyType);
-						})
+			var bindings = (from key in keys
+							let alias = _nameResolver.ResolveAlias(_sourceType, key)
+							where properties.Any(p => p.Name == alias.Name)
+							let member = _nameResolver.ResolveName(alias)
+							let memberType = GetMemberType(alias)
+							let arguments = new[] { Expression.Constant(member) }
+							let indexExpression = Expression.MakeIndex(
+								Expression.Convert(objectParameter, _deserializedType),
+								_deserializedType.GetProperty("Item"),
+								arguments)
+							select Expression.Convert(
+								Expression.Call(
+									AnonymousTypeSerializerHelper.InnerChangeTypeMethod,
+									indexExpression,
+									Expression.Constant(memberType)),
+								memberType))
 				.ToArray();
 
-			var constructorInfos = _elementType.GetConstructors().ToArray();
-			var constructorInfo = constructorInfos.FirstOrDefault();
+			var constructorInfo = _elementType.GetConstructors().FirstOrDefault();
 
 			var selector =
 				Expression.Lambda<Func<object, T>>(

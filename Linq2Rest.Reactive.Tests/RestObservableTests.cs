@@ -222,7 +222,7 @@ namespace Linq2Rest.Reactive.Tests
 
 			new RestObservable<FakeItem>(mockClientFactory.Object, new TestSerializerFactory())
 				.Create()
-				.Expand(i => i.Children, i => i.MoreChildren)
+				.Expand<FakeItem, FakeItem>(i => i.Children, i => i.MoreChildren)
 				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
 
 			waitHandle.WaitOne(5000);

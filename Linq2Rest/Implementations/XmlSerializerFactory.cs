@@ -17,6 +17,7 @@ namespace Linq2Rest.Implementations
 	using System.Diagnostics.Contracts;
 	using System.IO;
 	using System.Linq;
+	using System.Reflection;
 	using System.Xml;
 	using System.Xml.Serialization;
 	using Linq2Rest.Provider;
@@ -47,6 +48,17 @@ namespace Linq2Rest.Implementations
 		public ISerializer<T> Create<T>()
 		{
 			return new XmlSerializer<T>(_knownTypes.Where(x => x != null).ToArray());
+		}
+
+		/// <summary>
+		/// Creates an instance of an <see cref="ISerializer{T}"/>.
+		/// </summary>
+		/// <typeparam name="T">The item type for the serializer.</typeparam>
+		/// <typeparam name="TSource">The item type to provide alias metadata for the serializer.</typeparam>
+		/// <returns>An instance of an <see cref="ISerializer{T}"/>.</returns>
+		public ISerializer<T> Create<T, TSource>()
+		{
+			return Create<T>();
 		}
 
 		[ContractInvariantMethod]

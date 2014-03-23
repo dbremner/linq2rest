@@ -29,11 +29,12 @@ namespace Linq2Rest.Tests.Provider
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
+			var mockResolver = new Mock<IMemberNameResolver>();
 			Expression<Func<FakeItem, bool>> expression = x => true;
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
 			_mockClient.Setup(x => x.Delete(It.IsAny<Uri>())).Returns("[]".ToStream());
-			_deleteQueryable = new RestDeleteQueryable<FakeItem>(_mockClient.Object, new TestSerializerFactory(), expression);
+			_deleteQueryable = new RestDeleteQueryable<FakeItem>(_mockClient.Object, new TestSerializerFactory(mockResolver.Object), expression, typeof(FakeItem));
 		}
 
 		[Test]

@@ -14,7 +14,6 @@ namespace Linq2Rest.Tests.Provider
 {
 	using System;
 	using System.Linq.Expressions;
-	using Linq2Rest.Parser;
 	using Linq2Rest.Provider;
 	using Linq2Rest.Tests.Fakes;
 	using Moq;
@@ -29,10 +28,11 @@ namespace Linq2Rest.Tests.Provider
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
+			var mockResolver = new Mock<IMemberNameResolver>();
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
 			var memberNameResolver = new MemberNameResolver();
-			_provider = new RestGetQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory(), new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver));
+			_provider = new RestGetQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory(mockResolver.Object), new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver), typeof(FakeItem));
 		}
 
 		[Test]

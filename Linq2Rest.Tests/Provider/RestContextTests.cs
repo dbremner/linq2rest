@@ -38,9 +38,11 @@ namespace Linq2Rest.Tests.Provider
 			[SetUp]
 			public void TestSetup()
 			{
+				var mockResolver = new Mock<IMemberNameResolver>();
+
 				_singleResponse = "[{\"Value\" : 2, \"Content\" : \"blah\" }]";
 				var baseUri = new Uri("http://localhost");
-				var serializerFactory = new TestSerializerFactory();
+				var serializerFactory = new TestSerializerFactory(mockResolver.Object);
 
 				_mockClient = new Mock<IRestClient>();
 				_mockClient.SetupGet(x => x.ServiceBase)
@@ -249,8 +251,9 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingExpandsOnSubPropertyUsingExpressionQueryThenCallsRestServiceWithFilter()
 			{
+				var nameResolver = new MemberNameResolver();
 				var result = _provider.Query
-					.Expand(x => x.Date.Year)
+					.Expand(nameResolver, x => x.Date.Year)
 					.ToArray();
 
 				var uri = new Uri("http://localhost/?$expand=Date/Year");
@@ -271,8 +274,9 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingExpandsUsingExpressionQueryThenCallsRestServiceWithFilter()
 			{
+				var nameResolver = new MemberNameResolver();
 				var result = _provider.Query
-					.Expand(x => x.Value)
+					.Expand(nameResolver, x => x.Value)
 					.ToArray();
 
 				var uri = new Uri("http://localhost/?$expand=Value");
@@ -282,8 +286,9 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingExpandsUsingMultipleExpressionQueryThenCallsRestServiceWithFilter()
 			{
+				var nameResolver = new MemberNameResolver();
 				var result = _provider.Query
-					.Expand(x => x.Value, x => x.Content)
+					.Expand(nameResolver, x => x.Value, x => x.Content)
 					.ToArray();
 
 				var uri = new Uri("http://localhost/?$expand=Value,Content");
@@ -683,13 +688,14 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenBaseUriHasQueryParametersThenTheyArePreservedInTheRequest()
 			{
+				var mockResolver = new Mock<IMemberNameResolver>();
 				var client = new Mock<IRestClient>();
 				client.SetupGet(x => x.ServiceBase)
 					.Returns(new Uri("http://localhost?abc=123"));
 				client.Setup(x => x.Get(It.IsAny<Uri>()))
 					.Callback<Uri>(u => Console.WriteLine(u.ToString()))
 					.Returns(() => _singleResponse.ToStream());
-				var provider = new RestContext<SimpleDto>(client.Object, new TestSerializerFactory());
+				var provider = new RestContext<SimpleDto>(client.Object, new TestSerializerFactory(mockResolver.Object));
 
 				var result = provider
 					.Query
@@ -866,9 +872,10 @@ namespace Linq2Rest.Tests.Provider
 			[SetUp]
 			public void TestSetup()
 			{
+				var resolver = new MemberNameResolver();
 				_singleResponse = "[{\"Value\" : 2, \"Content\" : \"blah\" }]";
 				var baseUri = new Uri("http://localhost");
-				var serializerFactory = new TestSerializerFactory();
+				var serializerFactory = new TestSerializerFactory(resolver);
 
 				_mockClient = new Mock<IRestClient>();
 				_mockClient.SetupGet(x => x.ServiceBase)
@@ -887,21 +894,22 @@ namespace Linq2Rest.Tests.Provider
 					.Returns(() => _singleResponse.ToStream());
 
 				_provider = new RestContext<AliasDto>(_mockClient.Object, serializerFactory);
-
+				
 				_mockComplexClient = new Mock<IRestClient>();
 				_mockComplexClient.SetupGet(x => x.ServiceBase)
 					.Returns(baseUri);
 				_mockComplexClient.Setup(x => x.Get(It.IsAny<Uri>()))
 					.Callback<Uri>(u => Console.WriteLine(u.ToString()))
 					.Returns("[{\"Value\" : 2, \"Content\" : \"blah\", \"Child\" : {\"ID\" : 2, \"Name\" : \"Foo\"}}]".ToStream());
-				_complexProvider = new RestContext<ComplexDto>(_mockComplexClient.Object, serializerFactory);
-
+				
 				_mockCollectionClient = new Mock<IRestClient>();
 				_mockCollectionClient.SetupGet(x => x.ServiceBase)
 					.Returns(baseUri);
 				_mockCollectionClient.Setup(x => x.Get(It.IsAny<Uri>()))
 					.Callback<Uri>(u => Console.WriteLine(u.ToString()))
 					.Returns("[{\"Value\" : 2, \"Content\" : \"blah\", \"Children\" : [{\"ID\" : 1, \"Name\" : \"Foo\"}, {\"ID\" : 2, \"Name\" : \"Bar\"}]}]".ToStream());
+
+				_complexProvider = new RestContext<ComplexDto>(_mockComplexClient.Object, serializerFactory);
 
 				_collectionProvider = new RestContext<CollectionDto>(_mockCollectionClient.Object, serializerFactory);
 			}
@@ -1077,8 +1085,9 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingExpandsOnSubPropertyUsingExpressionQueryThenCallsRestServiceWithFilter()
 			{
+				var nameResolver = new MemberNameResolver();
 				var result = _provider.Query
-					.Expand(x => x.AliasDate.Year)
+					.Expand(nameResolver, x => x.AliasDate.Year)
 					.ToArray();
 
 				var uri = new Uri("http://localhost/?$expand=Date/Year");
@@ -1099,8 +1108,9 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingExpandsUsingExpressionQueryThenCallsRestServiceWithFilter()
 			{
+				var nameResolver = new MemberNameResolver();
 				var result = _provider.Query
-					.Expand(x => x.AliasValue)
+					.Expand(nameResolver, x => x.AliasValue)
 					.ToArray();
 
 				var uri = new Uri("http://localhost/?$expand=Value");
@@ -1110,8 +1120,9 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingExpandsUsingMultipleExpressionQueryThenCallsRestServiceWithFilter()
 			{
+				var nameResolver = new MemberNameResolver();
 				var result = _provider.Query
-					.Expand(x => x.AliasValue, x => x.AliasContent)
+					.Expand(nameResolver, x => x.AliasValue, x => x.AliasContent)
 					.ToArray();
 
 				var uri = new Uri("http://localhost/?$expand=Value,Content");
@@ -1511,13 +1522,15 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenBaseUriHasQueryParametersThenTheyArePreservedInTheRequest()
 			{
+				var mockResolver = new Mock<IMemberNameResolver>();
+
 				var client = new Mock<IRestClient>();
 				client.SetupGet(x => x.ServiceBase)
 					.Returns(new Uri("http://localhost?abc=123"));
 				client.Setup(x => x.Get(It.IsAny<Uri>()))
 					.Callback<Uri>(u => Console.WriteLine(u.ToString()))
 					.Returns(() => _singleResponse.ToStream());
-				var provider = new RestContext<AliasDto>(client.Object, new TestSerializerFactory());
+				var provider = new RestContext<AliasDto>(client.Object, new TestSerializerFactory(mockResolver.Object));
 
 				var result = provider
 					.Query
@@ -1564,7 +1577,7 @@ namespace Linq2Rest.Tests.Provider
 				var parameter = Expression.Parameter(typeof(AliasDto), "x");
 				var trueExpression =
 					Expression.IsTrue(
-						Expression.LessThanOrEqual(Expression.Property(parameter, "Value"), Expression.Constant(3d)));
+						Expression.LessThanOrEqual(Expression.Property(parameter, "AliasValue"), Expression.Constant(3d)));
 
 				var result =
 					_provider

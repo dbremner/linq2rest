@@ -16,22 +16,30 @@ namespace Linq2Rest.Provider
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using System.Linq.Expressions;
 
 	internal class RestGetQueryProvider<T> : RestQueryProvider<T>
 	{
-		public RestGetQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor)
-			: base(client, serializerFactory, expressionProcessor)
+		public RestGetQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, Type sourceType)
+			: base(client, serializerFactory, expressionProcessor, sourceType)
 		{
 			Contract.Requires(client != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(expressionProcessor != null);
+			Contract.Requires(sourceType != null);
+		}
+
+		protected override Func<IRestClient, ISerializerFactory, Expression, Type, IQueryable<TResult>> CreateQueryable<TResult>()
+		{
+			return InnerCreateQueryable<TResult>;
 		}
 
 		protected override IEnumerable<T> GetResults(ParameterBuilder builder)
 		{
 			var fullUri = builder.GetFullUri();
 			var response = Client.Get(fullUri);
-			var serializer = SerializerFactory.Create<T>();
+			var serializer = GetSerializer(builder.SourceType);
 			var resultSet = serializer.DeserializeList(response);
 
 			Contract.Assume(resultSet != null);
@@ -43,12 +51,17 @@ namespace Linq2Rest.Provider
 		{
 			var fullUri = builder.GetFullUri();
 			var response = Client.Get(fullUri);
-			var genericMethod = CreateMethod.MakeGenericMethod(type);
-			var serializer = genericMethod.Invoke(SerializerFactory, null);
+
+			var serializer = GetSerializer(type, builder.SourceType);
 			var deserializeListMethod = serializer.GetType().GetMethod("DeserializeList");
 			var resultSet = (IEnumerable)deserializeListMethod.Invoke(serializer, new object[] { response });
 
 			return resultSet;
+		}
+
+		private IQueryable<TResult> InnerCreateQueryable<TResult>(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Type sourceType)
+		{
+			return new RestGetQueryable<TResult>(client, serializerFactory, expression, sourceType);
 		}
 	}
 }

@@ -22,7 +22,6 @@ namespace Linq2Rest
 	using System.Reflection;
 	using System.Runtime.CompilerServices;
 	using System.Text;
-	using Linq2Rest.Parser;
 
 	internal static class GeneralExtensions
 	{
@@ -54,11 +53,11 @@ namespace Linq2Rest
 			return new MemoryStream(Encoding.UTF8.GetBytes(input ?? String.Empty));
 		}
 
-		public static Tuple<Type, Expression> CreateMemberExpression<T>(this IMemberNameResolver memberNameResolver, ParameterExpression parameter, IEnumerable<string> propertyChain, Type parentType, Expression propertyExpression)
+		public static Tuple<Type, Expression> CreateMemberExpression(this IMemberNameResolver memberNameResolver, ParameterExpression parameter, IEnumerable<string> propertyChain, Type parentType, Expression propertyExpression)
 		{
 			foreach (var propertyName in propertyChain)
 			{
-				string name = propertyName;
+				var name = propertyName;
 				var member = memberNameResolver.ResolveAlias(parentType, name);
 				if (member != null)
 				{
@@ -70,6 +69,21 @@ namespace Linq2Rest
 			}
 
 			return new Tuple<Type, Expression>(parentType, propertyExpression);
+		}
+
+		public static Tuple<Type, string> GetNameFromAlias(this IMemberNameResolver memberNameResolver, MemberInfo alias, Type sourceType)
+		{
+			Contract.Requires(sourceType != null);
+			Contract.Requires(alias != null);
+			Contract.Ensures(Contract.Result<Tuple<Type, string>>() != null);
+
+			var source = sourceType.GetMembers()
+				.Select(x => new { Original = x, Name = memberNameResolver.ResolveName(x) })
+				.FirstOrDefault(x => x.Original.Name == alias.Name);
+
+			return source != null
+					   ? new Tuple<Type, string>(GetMemberType(source.Original), source.Name)
+					   : new Tuple<Type, string>(GetMemberType(alias), alias.Name);
 		}
 
 		public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, Expression keySelector)
@@ -140,6 +154,8 @@ namespace Linq2Rest
 					return ((FieldInfo)member).FieldType;
 				case MemberTypes.Property:
 					return ((PropertyInfo)member).PropertyType;
+				case MemberTypes.Method:
+					return ((MethodInfo)member).ReturnType;
 				default:
 					throw new InvalidOperationException(member.MemberType + " is not resolvable");
 			}

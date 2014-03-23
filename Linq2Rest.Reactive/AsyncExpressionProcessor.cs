@@ -122,7 +122,7 @@ namespace Linq2Rest.Reactive
 							return InvokeEager<T>(methodCall, result);
 						}
 
-						var newFilter = _writer.Write(methodCall.Arguments[1]);
+						var newFilter = _writer.Write(methodCall.Arguments[1], builder.SourceType);
 
 						builder.FilterParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 													? newFilter
@@ -145,26 +145,7 @@ namespace Linq2Rest.Reactive
 							var lambdaExpression = unaryExpression.Operand as LambdaExpression;
 							if (lambdaExpression != null)
 							{
-								var selectFunction = lambdaExpression.Body as NewExpression;
-								if (selectFunction != null)
-								{
-									var members = selectFunction.Members.Select(x => x.Name).ToArray();
-									var args = selectFunction.Arguments.OfType<MemberExpression>().Select(x => _memberNameResolver.ResolveName(x.Member)).ToArray();
-									if (members.Intersect(args).Count() != members.Length)
-									{
-										throw new InvalidOperationException("Projection into new member names is not supported.");
-									}
-
-									builder.SelectParameter = string.Join(",", args);
-								}
-
-								var propertyExpression = lambdaExpression.Body as MemberExpression;
-								if (propertyExpression != null)
-								{
-									builder.SelectParameter = string.IsNullOrWhiteSpace(builder.SelectParameter)
-																? _memberNameResolver.ResolveName(propertyExpression.Member)
-																: builder.SelectParameter + "," + _memberNameResolver.ResolveName(propertyExpression.Member);
-								}
+								ResolveProjection(builder, lambdaExpression, builder.SourceType);
 							}
 						}
 					}
@@ -179,7 +160,7 @@ namespace Linq2Rest.Reactive
 							return InvokeEager<T>(methodCall, result);
 						}
 
-						builder.TakeParameter = _writer.Write(methodCall.Arguments[1]);
+						builder.TakeParameter = _writer.Write(methodCall.Arguments[1], builder.SourceType);
 					}
 
 					break;
@@ -192,7 +173,7 @@ namespace Linq2Rest.Reactive
 							return InvokeEager<T>(methodCall, result);
 						}
 
-						builder.SkipParameter = _writer.Write(methodCall.Arguments[1]);
+						builder.SkipParameter = _writer.Write(methodCall.Arguments[1], builder.SourceType);
 					}
 
 					break;
@@ -219,7 +200,7 @@ namespace Linq2Rest.Reactive
 
 			ProcessMethodCallInternal(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
-			var processResult = _writer.Write(methodCall.Arguments[1]);
+			var processResult = _writer.Write(methodCall.Arguments[1], builder.SourceType);
 			var currentParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 									? processResult
 									: string.Format("({0}) and ({1})", builder.FilterParameter, processResult);
@@ -320,6 +301,40 @@ namespace Linq2Rest.Reactive
 										  });
 
 			return observable;
+		}
+
+		private void ResolveProjection(ParameterBuilder builder, LambdaExpression lambdaExpression, Type sourceType)
+		{
+			Contract.Requires(lambdaExpression != null);
+
+			var selectFunction = lambdaExpression.Body as NewExpression;
+
+			if (selectFunction != null)
+			{
+				var properties = sourceType.GetProperties();
+				var members = selectFunction.Members
+					.Select(x => properties.FirstOrDefault(y => y.Name == x.Name) ?? x)
+										 .Select(x => _memberNameResolver.ResolveName(x))
+										 .ToArray();
+				var args = selectFunction.Arguments.OfType<MemberExpression>()
+										 .Select(x => properties.FirstOrDefault(y => y.Name == x.Member.Name) ?? x.Member)
+										 .Select(x => _memberNameResolver.ResolveName(x))
+										 .ToArray();
+				if (members.Intersect(args).Count() != members.Length)
+				{
+					throw new InvalidOperationException("Projection into new member names is not supported.");
+				}
+
+				builder.SelectParameter = string.Join(",", args);
+			}
+
+			var propertyExpression = lambdaExpression.Body as MemberExpression;
+			if (propertyExpression != null)
+			{
+				builder.SelectParameter = string.IsNullOrWhiteSpace(builder.SelectParameter)
+					? _memberNameResolver.ResolveName(propertyExpression.Member)
+					: builder.SelectParameter + "," + _memberNameResolver.ResolveName(propertyExpression.Member);
+			}
 		}
 
 		[ContractInvariantMethod]

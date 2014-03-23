@@ -15,31 +15,30 @@ namespace Linq2Rest.Provider
 	using System;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
-	using Linq2Rest.Parser;
 
 	internal class RestDeleteQueryable<T> : RestQueryableBase<T>
 	{
 		private readonly RestDeleteQueryProvider<T> _restDeleteQueryProvider;
 
-		public RestDeleteQueryable(IRestClient client, ISerializerFactory serializerFactory)
-			: this(client, serializerFactory, new MemberNameResolver())
+		public RestDeleteQueryable(IRestClient client, ISerializerFactory serializerFactory, Type sourceType)
+			: this(client, serializerFactory, new MemberNameResolver(), sourceType)
 		{
 		}
 
-		public RestDeleteQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver)
+		public RestDeleteQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, Type sourceType)
 			: base(client, serializerFactory)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
 
-			_restDeleteQueryProvider = new RestDeleteQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver));
+			_restDeleteQueryProvider = new RestDeleteQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver), sourceType);
 			Provider = _restDeleteQueryProvider;
 			Expression = Expression.Constant(this);
 		}
 
-		public RestDeleteQueryable(IRestClient client, ISerializerFactory serializerFactory, Expression expression)
-			: this(client, serializerFactory)
+		public RestDeleteQueryable(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Type sourceType)
+			: this(client, serializerFactory, sourceType)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);

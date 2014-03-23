@@ -16,22 +16,29 @@ namespace Linq2Rest.Provider
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using System.Linq.Expressions;
 
 	internal class RestDeleteQueryProvider<T> : RestQueryProvider<T>
 	{
-		public RestDeleteQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor)
-			: base(client, serializerFactory, expressionProcessor)
+		public RestDeleteQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, Type sourceType)
+			: base(client, serializerFactory, expressionProcessor, sourceType)
 		{
 			Contract.Requires(client != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(expressionProcessor != null);
 		}
 
+		protected override Func<IRestClient, ISerializerFactory, Expression, Type, IQueryable<TResult>> CreateQueryable<TResult>()
+		{
+			return InnerCreateQueryable<TResult>;
+		}
+
 		protected override IEnumerable<T> GetResults(ParameterBuilder builder)
 		{
 			var fullUri = builder.GetFullUri();
 			var response = Client.Delete(fullUri);
-			var serializer = SerializerFactory.Create<T>();
+			var serializer = GetSerializer(builder.SourceType);
 			var resultSet = serializer.DeserializeList(response);
 
 			Contract.Assume(resultSet != null);
@@ -43,11 +50,16 @@ namespace Linq2Rest.Provider
 		{
 			var fullUri = builder.GetFullUri();
 			var response = Client.Delete(fullUri);
-			var genericMethod = CreateMethod.MakeGenericMethod(type);
-			dynamic serializer = genericMethod.Invoke(SerializerFactory, null);
+
+			dynamic serializer = GetSerializer(type, builder.SourceType);
 			var resultSet = serializer.DeserializeList(response);
 
 			return resultSet;
+		}
+
+		private IQueryable<TResult> InnerCreateQueryable<TResult>(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Type sourceType)
+		{
+			return new RestDeleteQueryable<TResult>(client, serializerFactory, expression, sourceType);
 		}
 	}
 }

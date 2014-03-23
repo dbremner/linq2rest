@@ -66,7 +66,7 @@ namespace Linq2Rest.Reactive
 		{
 			Contract.Assume(ImmediateScheduler.Instance != null);
 
-			return new InnerRestObservable<T>(
+			return new InnerRestObservable<T, T>(
 				_restClientFactory,
 				_serializerFactory,
 				_memberNameResolver,
@@ -85,7 +85,7 @@ namespace Linq2Rest.Reactive
 			Contract.Requires<ArgumentNullException>(trigger != null);
 			Contract.Assume(ImmediateScheduler.Instance != null);
 
-			return new TriggeredRestObservable<T>(
+			return new TriggeredRestObservable<T, T>(
 				trigger,
 				_restClientFactory,
 				_serializerFactory,
