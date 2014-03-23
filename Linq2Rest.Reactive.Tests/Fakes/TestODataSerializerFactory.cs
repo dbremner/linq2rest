@@ -20,5 +20,10 @@ namespace Linq2Rest.Reactive.Tests.Fakes
 		{
 			return new TestODataSerializer<T>();
 		}
+
+		public ISerializer<T> Create<T, TSource>()
+		{
+			return Create<T>();
+		}
 	}
 }

@@ -20,16 +20,9 @@ namespace Linq2Rest.Provider
 
 	internal abstract class RestQueryProviderBase : IQueryProvider, IDisposable
 	{
-		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
-
-		protected static MethodInfo CreateMethod
-		{
-			get
-			{
-				return InnerCreateMethod;
-			}
-		}
-
+		protected readonly static MethodInfo CreateMethodInfo = typeof(ISerializerFactory).GetMethods().First(x => x.Name == "Create" && x.GetGenericArguments().Length == 1).GetGenericMethodDefinition();
+		protected readonly static MethodInfo AliasCreateMethodInfo = typeof(ISerializerFactory).GetMethods().First(x => x.Name == "Create" && x.GetGenericArguments().Length == 2).GetGenericMethodDefinition();
+		
 		public void Dispose()
 		{
 			Dispose(true);

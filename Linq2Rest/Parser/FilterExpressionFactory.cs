@@ -368,7 +368,7 @@ namespace Linq2Rest.Parser
 				propertyExpression = lambdaParameter;
 			}
 
-			propertyExpression = _memberNameResolver.CreateMemberExpression<T>(parameter, propertyChain, parentType, propertyExpression).Item2;
+			propertyExpression = _memberNameResolver.CreateMemberExpression(parameter, propertyChain, parentType, propertyExpression).Item2;
 
 			return propertyExpression;
 		}

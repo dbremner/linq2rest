@@ -108,7 +108,6 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\NugetPackage.cs" />
-    <Compile Include="PhoneSerializerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleDto.cs" />
     <Compile Include="Support\AsyncJsonRestClientFactory.cs" />

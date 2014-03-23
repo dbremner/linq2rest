@@ -14,6 +14,7 @@ namespace Linq2Rest.Tests.Fakes
 {
 	using System.Collections.Generic;
 	using System.IO;
+	using System.Reflection;
 	using System.Runtime.Serialization.Json;
 	using Linq2Rest.Provider;
 

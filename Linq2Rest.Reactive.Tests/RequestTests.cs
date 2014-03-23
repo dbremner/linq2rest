@@ -117,11 +117,15 @@ namespace Linq2Rest.Reactive.Tests
 			_observable
 				.Create()
 				.Select(x => new { x.StringValue, x.IntValue })
-				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+				.Subscribe(x => waitHandle.Set(), e =>
+				{
+					Console.WriteLine(e.Message);
+					waitHandle.Set();
+				}, () => waitHandle.Set());
 
 			waitHandle.WaitOne();
 
-			var requestUri = new Uri("http://localhost/?$select=StringValue,IntValue");
+			var requestUri = new Uri("http://localhost/?$select=StringValue,Number");
 			_mockClientFactory.Verify(x => x.Create(requestUri), Times.Once());
 		}
 

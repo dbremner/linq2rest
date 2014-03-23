@@ -34,7 +34,7 @@ namespace Linq2Rest.Provider
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 
-			_getQueryable = new RestGetQueryable<T>(client, serializerFactory);
+			_getQueryable = new RestGetQueryable<T>(client, serializerFactory, typeof(T));
 		}
 
 		/// <summary>

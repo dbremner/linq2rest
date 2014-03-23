@@ -23,24 +23,51 @@ namespace Linq2Rest.Provider
 	[ContractClass(typeof(RestQueryProviderContracts<>))]
 	internal abstract class RestQueryProvider<T> : RestQueryProviderBase
 	{
+		private readonly ISerializerFactory _serializerFactory;
 		private readonly IExpressionProcessor _expressionProcessor;
 		private readonly ParameterBuilder _parameterBuilder;
 
-		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor)
+		public RestQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, Type sourceType)
 		{
 			Contract.Requires(client != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(expressionProcessor != null);
-
+			
 			Client = client;
-			SerializerFactory = serializerFactory;
+			_serializerFactory = serializerFactory;
 			_expressionProcessor = expressionProcessor;
-			_parameterBuilder = new ParameterBuilder(client.ServiceBase);
+			_parameterBuilder = new ParameterBuilder(client.ServiceBase, sourceType ?? typeof(T));
 		}
 
 		protected IRestClient Client { get; private set; }
-		
-		protected ISerializerFactory SerializerFactory { get; private set; }
+
+		protected abstract Func<IRestClient, ISerializerFactory, Expression, Type, IQueryable<TResult>> CreateQueryable<TResult>();
+
+		protected ISerializer<T> GetSerializer(Type aliasType)
+		{
+			if (aliasType == null)
+			{
+				return _serializerFactory.Create<T>();
+			}
+
+			var method = AliasCreateMethodInfo.MakeGenericMethod(typeof(T), aliasType);
+
+			return (ISerializer<T>)method.Invoke(_serializerFactory, null);
+		}
+
+		protected object GetSerializer(Type itemType, Type aliasType)
+		{
+			if (aliasType == null)
+			{
+				var method = CreateMethodInfo.MakeGenericMethod(itemType);
+
+				return method.Invoke(_serializerFactory, null);
+			}
+
+			var aliasMethod = AliasCreateMethodInfo.MakeGenericMethod(itemType, aliasType);
+
+			return aliasMethod.Invoke(_serializerFactory, null);
+		}
 
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Cannot dispose here.")]
 		public override IQueryable CreateQuery(Expression expression)
@@ -50,7 +77,7 @@ namespace Linq2Rest.Provider
 				throw new ArgumentNullException("expression");
 			}
 
-			return new RestGetQueryable<T>(Client, SerializerFactory, expression);
+			return CreateQueryable<T>()(Client, _serializerFactory, expression, _parameterBuilder.SourceType); // new RestGetQueryable<T>(Client, _serializerFactory, expression);
 		}
 
 		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Cannot dispose here.")]
@@ -61,7 +88,7 @@ namespace Linq2Rest.Provider
 				throw new ArgumentNullException("expression");
 			}
 
-			return new RestGetQueryable<TResult>(Client, SerializerFactory, expression);
+			return CreateQueryable<TResult>()(Client, _serializerFactory, expression, _parameterBuilder.SourceType); // new RestGetQueryable<TResult>(Client, _serializerFactory, expression);
 		}
 
 		public override object Execute(Expression expression)
@@ -99,7 +126,7 @@ namespace Linq2Rest.Provider
 		private void Invariants()
 		{
 			Contract.Invariant(Client != null);
-			Contract.Invariant(SerializerFactory != null);
+			Contract.Invariant(_serializerFactory != null);
 			Contract.Invariant(_expressionProcessor != null);
 			Contract.Invariant(_parameterBuilder != null);
 		}
@@ -109,8 +136,8 @@ namespace Linq2Rest.Provider
 	[ContractClassFor(typeof(RestQueryProvider<>))]
 	internal abstract class RestQueryProviderContracts<T> : RestQueryProvider<T>
 	{
-		protected RestQueryProviderContracts(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor)
-			: base(client, serializerFactory, expressionProcessor)
+		protected RestQueryProviderContracts(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, Type sourceType)
+			: base(client, serializerFactory, expressionProcessor, sourceType)
 		{
 		}
 

@@ -21,7 +21,7 @@ namespace Linq2Rest.Reactive
 	using System.Threading;
 	using Linq2Rest.Provider;
 
-	internal class TriggeredRestObservable<T> : InnerRestObservableBase<T>
+	internal class TriggeredRestObservable<T, TSource> : InnerRestObservableBase<T, TSource>
 	{
 		private readonly IQbservableProvider _provider;
 		private readonly IObservable<Unit> _trigger;
@@ -46,7 +46,7 @@ namespace Linq2Rest.Reactive
 			Contract.Requires(observerScheduler != null);
 
 			_trigger = trigger;
-			_provider = new TriggeredRestQueryableProvider(trigger, restClient, serializerFactory, subscriberScheduler, observerScheduler);
+			_provider = new TriggeredRestQueryableProvider<TSource>(trigger, restClient, serializerFactory, subscriberScheduler, observerScheduler);
 		}
 
 		/// <summary>
@@ -82,7 +82,7 @@ namespace Linq2Rest.Reactive
 									x =>
 										{
 											var filter = Expression as MethodCallExpression;
-											var parameterBuilder = new ParameterBuilder(RestClient.ServiceBase);
+											var parameterBuilder = new ParameterBuilder(RestClient.ServiceBase, typeof(TSource));
 											IObservable<T> source = null;
 											using (var waitHandle = new ManualResetEventSlim(false))
 											{

@@ -17,25 +17,30 @@ namespace Linq2Rest.Reactive
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.IO;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
+	using System.Reflection;
 	using System.Threading;
 	using Linq2Rest.Provider;
 
-	internal abstract class InnerRestObservableBase<T> : IQbservable<T>
+	internal abstract class InnerRestObservableBase<T, TSource> : IQbservable<T>
 	{
+		protected readonly static MethodInfo CreateMethodInfo = typeof(ISerializerFactory).GetMethods().First(x => x.Name == "Create" && x.GetGenericArguments().Length == 1).GetGenericMethodDefinition();
+		protected readonly static MethodInfo AliasCreateMethodInfo = typeof(ISerializerFactory).GetMethods().First(x => x.Name == "Create" && x.GetGenericArguments().Length == 2).GetGenericMethodDefinition();
+
 		private readonly IAsyncRestClientFactory _restClient;
 		private readonly ISerializerFactory _serializerFactory;
 		private IDisposable _internalSubscription;
 		private IDisposable _subscribeSubscription;
 
 		internal InnerRestObservableBase(
-			IAsyncRestClientFactory restClient, 
+			IAsyncRestClientFactory restClient,
 			ISerializerFactory serializerFactory,
 			IMemberNameResolver memberNameResolver,
-			Expression expression, 
-			IScheduler subscriberScheduler, 
+			Expression expression,
+			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
 		{
 			Contract.Requires(restClient != null);
@@ -104,11 +109,11 @@ namespace Linq2Rest.Reactive
 			Observers.Add(observer);
 			_subscribeSubscription = SubscriberScheduler
 				.Schedule(
-						  observer, 
+						  observer,
 						  (s, o) =>
 						  {
 							  var filter = Expression as MethodCallExpression;
-							  var parameterBuilder = new ParameterBuilder(RestClient.ServiceBase);
+							  var parameterBuilder = new ParameterBuilder(RestClient.ServiceBase, typeof(TSource));
 							  IObservable<T> source = null;
 							  using (var waitHandle = new ManualResetEventSlim(false))
 							  {
@@ -117,9 +122,9 @@ namespace Linq2Rest.Reactive
 									  try
 									  {
 										  source = Processor.ProcessMethodCall(
-											  filter, 
-											  parameterBuilder, 
-											  GetResults, 
+											  filter,
+											  parameterBuilder,
+											  GetResults,
 											  GetIntermediateResults);
 									  }
 									  catch (Exception e)
@@ -157,7 +162,7 @@ namespace Linq2Rest.Reactive
 			var client = RestClient.Create(builder.GetFullUri());
 
 			return Observable.FromAsync(client.Download)
-				.Select(x => ReadIntermediateResponse(type, x));
+				.Select(x => ReadIntermediateResponse(type, builder.SourceType, x));
 		}
 
 		protected IObservable<IEnumerable<T>> GetResults(ParameterBuilder builder)
@@ -168,14 +173,14 @@ namespace Linq2Rest.Reactive
 			var client = RestClient.Create(fullUri);
 
 			return Observable.FromAsync(client.Download)
-				.Select(ReadResponse);
+				.Select(x => ReadResponse(x, builder.SourceType));
 		}
 
-		protected IEnumerable ReadIntermediateResponse(Type type, Stream response)
+		private IEnumerable ReadIntermediateResponse(Type type, Type aliasType, Stream response)
 		{
 			var genericMethod = ReflectionHelper.CreateMethod.MakeGenericMethod(type);
 #if !SILVERLIGHT
-			dynamic serializer = genericMethod.Invoke(SerializerFactory, null);
+			dynamic serializer = GetSerializer(type, aliasType);
 			var resultSet = serializer.DeserializeList(response);
 #else
 			var serializer = genericMethod.Invoke(_serializerFactory, null);
@@ -185,11 +190,37 @@ namespace Linq2Rest.Reactive
 			return resultSet as IEnumerable;
 		}
 
-		private IEnumerable<T> ReadResponse(Stream stream)
+		private ISerializer<T> GetSerializer(Type aliasType)
+		{
+			if (aliasType == null)
+			{
+				return _serializerFactory.Create<T>();
+			}
+
+			var method = AliasCreateMethodInfo.MakeGenericMethod(typeof(T), aliasType);
+
+			return (ISerializer<T>)method.Invoke(_serializerFactory, null);
+		}
+
+		private object GetSerializer(Type itemType, Type aliasType)
+		{
+			if (aliasType == null)
+			{
+				var method = CreateMethodInfo.MakeGenericMethod(itemType);
+
+				return method.Invoke(_serializerFactory, null);
+			}
+
+			var aliasMethod = AliasCreateMethodInfo.MakeGenericMethod(typeof(T), aliasType);
+
+			return aliasMethod.Invoke(_serializerFactory, null);
+		}
+
+		private IEnumerable<T> ReadResponse(Stream stream, Type sourceType)
 		{
 			Contract.Requires(stream != null);
 
-			var serializer = SerializerFactory.Create<T>();
+			dynamic serializer = GetSerializer(sourceType);
 
 			return serializer.DeserializeList(stream);
 		}

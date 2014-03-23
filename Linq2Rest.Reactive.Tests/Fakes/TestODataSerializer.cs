@@ -12,6 +12,7 @@
 
 namespace Linq2Rest.Reactive.Tests.Fakes
 {
+	using System;
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Linq;

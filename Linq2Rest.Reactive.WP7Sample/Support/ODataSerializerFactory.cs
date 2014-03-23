@@ -20,5 +20,10 @@ namespace Linq2Rest.Reactive.WP8.Sample.Support
 		{
 			return new ODataSerializer<T>();
 		}
+
+		public ISerializer<T> Create<T, TSource>()
+		{
+			return Create<T>();
+		}
 	}
 }

@@ -22,13 +22,13 @@ namespace Linq2Rest.Reactive.WP8.Sample.Support
     {
         private readonly DataContractJsonSerializer _innerSerializer = new DataContractJsonSerializer(typeof(ODataResponse<T>));
 
-        public T Deserialize(Stream input)
+		public T Deserialize(Stream input)
         {
             var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
             return response.Result.Results.FirstOrDefault();
         }
 
-        public IEnumerable<T> DeserializeList(Stream input)
+		public IEnumerable<T> DeserializeList(Stream input)
         {
             var response = (ODataResponse<T>)_innerSerializer.ReadObject(input);
             return response.Result.Results;

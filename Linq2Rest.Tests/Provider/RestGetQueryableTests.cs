@@ -28,10 +28,11 @@ namespace Linq2Rest.Tests.Provider
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
+			var mockResolver = new Mock<IMemberNameResolver>();
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
 			_mockClient.Setup(x => x.Get(It.IsAny<Uri>())).Returns("[]".ToStream());
-			_getQueryable = new RestGetQueryable<FakeItem>(_mockClient.Object, new TestSerializerFactory());
+			_getQueryable = new RestGetQueryable<FakeItem>(_mockClient.Object, new TestSerializerFactory(mockResolver.Object), typeof(FakeItem));
 		}
 
 		[Test]

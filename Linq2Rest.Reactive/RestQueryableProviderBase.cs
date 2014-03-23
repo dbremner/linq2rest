@@ -20,8 +20,8 @@ namespace Linq2Rest.Reactive
 	using System.Reactive.Linq;
 	using Linq2Rest.Provider;
 
-	[ContractClass(typeof(RestQueryableProviderBaseContracts))]
-	internal abstract class RestQueryableProviderBase : IQbservableProvider
+	[ContractClass(typeof(RestQueryableProviderBaseContracts<>))]
+	internal abstract class RestQueryableProviderBase<TSource> : IQbservableProvider
 	{
 		private readonly IAsyncRestClientFactory _asyncRestClient;
 		private readonly IScheduler _observerScheduler;
@@ -107,8 +107,8 @@ namespace Linq2Rest.Reactive
 	}
 
 	[SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Contract class.")]
-	[ContractClassFor(typeof(RestQueryableProviderBase))]
-	internal abstract class RestQueryableProviderBaseContracts : RestQueryableProviderBase
+	[ContractClassFor(typeof(RestQueryableProviderBase<>))]
+	internal abstract class RestQueryableProviderBaseContracts<TSource> : RestQueryableProviderBase<TSource>
 	{
 		protected RestQueryableProviderBaseContracts(IAsyncRestClientFactory asyncRestClient, ISerializerFactory serializerFactory, IScheduler subscriberScheduler, IScheduler observerScheduler)
 			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)

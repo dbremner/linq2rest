@@ -17,13 +17,15 @@ namespace Linq2Rest.Provider
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.IO;
+	using System.Linq;
+	using System.Linq.Expressions;
 
 	internal class RestPutQueryProvider<T> : RestQueryProvider<T>
 	{
 		private readonly Stream _inputData;
 
-		public RestPutQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, Stream inputData)
-			: base(client, serializerFactory, expressionProcessor)
+		public RestPutQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, Stream inputData, Type sourceType)
+			: base(client, serializerFactory, expressionProcessor, sourceType)
 		{
 			Contract.Requires(client != null);
 			Contract.Requires(serializerFactory != null);
@@ -33,11 +35,16 @@ namespace Linq2Rest.Provider
 			_inputData = inputData;
 		}
 
+		protected override Func<IRestClient, ISerializerFactory, Expression, Type, IQueryable<TResult>> CreateQueryable<TResult>()
+		{
+			return InnerCreateQueryable<TResult>;
+		}
+
 		protected override IEnumerable<T> GetResults(ParameterBuilder builder)
 		{
 			var fullUri = builder.GetFullUri();
 			var response = Client.Put(fullUri, _inputData);
-			var serializer = SerializerFactory.Create<T>();
+			var serializer = GetSerializer(builder.SourceType);
 			var resultSet = serializer.DeserializeList(response);
 
 			Contract.Assume(resultSet != null);
@@ -49,11 +56,16 @@ namespace Linq2Rest.Provider
 		{
 			var fullUri = builder.GetFullUri();
 			var response = Client.Put(fullUri, _inputData);
-			var genericMethod = CreateMethod.MakeGenericMethod(type);
-			dynamic serializer = genericMethod.Invoke(SerializerFactory, null);
+
+			dynamic serializer = GetSerializer(type, builder.SourceType);
 			var resultSet = serializer.DeserializeList(response);
 
 			return resultSet;
+		}
+		
+		private IQueryable<TResult> InnerCreateQueryable<TResult>(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Type sourceType)
+		{
+			return new RestGetQueryable<TResult>(client, serializerFactory, expression, sourceType);
 		}
 
 		[ContractInvariantMethod]

@@ -26,6 +26,14 @@ namespace Linq2Rest
 		private static readonly Dictionary<MemberInfo, string> KnownMemberNames = new Dictionary<MemberInfo, string>();
 		private static readonly Dictionary<string, MemberInfo> KnownAliasNames = new Dictionary<string, MemberInfo>();
 
+		public string ResolveName(Type type, string alias)
+		{
+			var members = type.GetMembers();
+			var name = members.Select(ResolveName).FirstOrDefault(x => x == alias);
+
+			return name;
+		}
+
 		public MemberInfo ResolveAlias(Type type, string alias)
 		{
 			var key = type.AssemblyQualifiedName + alias;

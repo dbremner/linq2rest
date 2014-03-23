@@ -22,10 +22,11 @@ namespace Linq2Rest.Reactive
 	/// <summary>
 	/// Defines an observable REST query.
 	/// </summary>
-	/// <typeparam name="T">The <see cref="Type"/> of object returned by the REST service.</typeparam>
-	internal class InnerRestObservable<T> : InnerRestObservableBase<T>
+	/// <typeparam name="TItem">The <see cref="Type"/> of object returned by the REST service.</typeparam>
+	/// <typeparam name="TSource">The <see cref="Type"/> of source item to derive aliasing from.</typeparam>
+	internal class InnerRestObservable<TItem, TSource> : InnerRestObservableBase<TItem, TSource>
 	{
-		private readonly RestQueryableProvider _provider;
+		private readonly RestQueryableProvider<TSource> _provider;
 
 		internal InnerRestObservable(
 			IAsyncRestClientFactory restClient,
@@ -42,7 +43,7 @@ namespace Linq2Rest.Reactive
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
 
-			_provider = new RestQueryableProvider(restClient, serializerFactory, memberNameResolver, subscriberScheduler, observerScheduler);
+			_provider = new RestQueryableProvider<TSource>(restClient, serializerFactory, memberNameResolver, subscriberScheduler, observerScheduler);
 		}
 
 		/// <summary>

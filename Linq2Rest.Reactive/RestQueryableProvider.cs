@@ -18,24 +18,25 @@ namespace Linq2Rest.Reactive
 	using System.Reactive.Linq;
 	using Linq2Rest.Provider;
 
-	internal class RestQueryableProvider : RestQueryableProviderBase
+	internal class RestQueryableProvider<TSource> : RestQueryableProviderBase<TSource>
 	{
 		private readonly IMemberNameResolver _memberNameResolver;
 
 		public RestQueryableProvider(IAsyncRestClientFactory asyncRestClient, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IScheduler subscriberScheduler, IScheduler observerScheduler)
 			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)
 		{
-			_memberNameResolver = memberNameResolver;
 			Contract.Requires(asyncRestClient != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(memberNameResolver != null);
 			Contract.Requires(observerScheduler != null);
+
+			_memberNameResolver = memberNameResolver;
 		}
 
 		protected override IQbservable<TResult> CreateQbservable<TResult>(Expression expression, IScheduler subscriberScheduler, IScheduler observerScheduler)
 		{
-			return new InnerRestObservable<TResult>(AsyncRestClient, SerializerFactory, _memberNameResolver, expression, subscriberScheduler, observerScheduler);
+			return new InnerRestObservable<TResult, TSource>(AsyncRestClient, SerializerFactory, _memberNameResolver, expression, subscriberScheduler, observerScheduler);
 		}
 
 		[ContractInvariantMethod]

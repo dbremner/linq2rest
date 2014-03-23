@@ -69,7 +69,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						var newFilter = _writer.Write(methodCall.Arguments[1]);
+						var newFilter = _writer.Write(methodCall.Arguments[1], builder.SourceType);
 
 						builder.FilterParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 													? newFilter
@@ -97,7 +97,8 @@ namespace Linq2Rest.Provider
 							var lambdaExpression = unaryExpression.Operand as LambdaExpression;
 							if (lambdaExpression != null)
 							{
-								return ResolveProjection(builder, lambdaExpression);
+								var sourceType = builder.SourceType;
+								return ResolveProjection(builder, lambdaExpression, sourceType);
 							}
 						}
 					}
@@ -107,13 +108,16 @@ namespace Linq2Rest.Provider
 				case "ThenBy":
 					Contract.Assume(methodCall.Arguments.Count >= 2);
 					{
-						var result = ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
+						var methodCallExpression = methodCall.Arguments[0] as MethodCallExpression;
+						var result = ProcessMethodCall(methodCallExpression, builder, resultLoader, intermediateResultLoader);
 						if (result != null)
 						{
 							return InvokeEager(methodCall, result);
 						}
 
-						var item = _writer.Write(methodCall.Arguments[1]);
+						var sourceType = builder.SourceType;
+						var sortProperty = methodCall.Arguments[1];
+						var item = _writer.Write(sortProperty, sourceType);
 						builder.OrderByParameter.Add(item);
 					}
 
@@ -128,7 +132,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						var visit = _writer.Write(methodCall.Arguments[1]);
+						var visit = _writer.Write(methodCall.Arguments[1], builder.SourceType);
 						builder.OrderByParameter.Add(visit + " desc");
 					}
 
@@ -142,7 +146,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						builder.TakeParameter = _writer.Write(methodCall.Arguments[1]);
+						builder.TakeParameter = _writer.Write(methodCall.Arguments[1], builder.SourceType);
 					}
 
 					break;
@@ -155,7 +159,7 @@ namespace Linq2Rest.Provider
 							return InvokeEager(methodCall, result);
 						}
 
-						builder.SkipParameter = _writer.Write(methodCall.Arguments[1]);
+						builder.SkipParameter = _writer.Write(methodCall.Arguments[1], builder.SourceType);
 					}
 
 					break;
@@ -206,7 +210,6 @@ namespace Linq2Rest.Provider
 
 			var parameters = new object[] { results.AsQueryable() }
 				.Concat(methodCall.Arguments.Where((x, i) => i > 0).Select(GetExpressionValue))
-				.Where(x => x != null)
 				.ToArray();
 			return parameters;
 		}
@@ -226,7 +229,7 @@ namespace Linq2Rest.Provider
 			return null;
 		}
 
-		private object ResolveProjection(ParameterBuilder builder, LambdaExpression lambdaExpression)
+		private object ResolveProjection(ParameterBuilder builder, LambdaExpression lambdaExpression, Type sourceType)
 		{
 			Contract.Requires(lambdaExpression != null);
 
@@ -234,16 +237,21 @@ namespace Linq2Rest.Provider
 
 			if (selectFunction != null)
 			{
-				var members = selectFunction.Members.Select(_memberNameResolver.ResolveName).ToArray();
-				var args = selectFunction.Arguments.OfType<MemberExpression>()
-										 .Select(x => new { RawName = x.Member.Name, ResolvedName = _memberNameResolver.ResolveName(x.Member) })
+				var properties = sourceType.GetProperties();
+				var members = selectFunction.Members
+					.Select(x => properties.FirstOrDefault(y => y.Name == x.Name) ?? x)
+										 .Select(x => _memberNameResolver.ResolveName(x))
 										 .ToArray();
-				if (members.Intersect(args.Select(x => x.RawName)).Count() != members.Length)
+				var args = selectFunction.Arguments.OfType<MemberExpression>()
+										 .Select(x => properties.FirstOrDefault(y => y.Name == x.Member.Name) ?? x.Member)
+										 .Select(x => _memberNameResolver.ResolveName(x))
+										 .ToArray();
+				if (members.Intersect(args).Count() != members.Length)
 				{
 					throw new InvalidOperationException("Projection into new member names is not supported.");
 				}
 
-				builder.SelectParameter = string.Join(",", args.Select(x => x.ResolvedName));
+				builder.SelectParameter = string.Join(",", args);
 			}
 
 			var propertyExpression = lambdaExpression.Body as MemberExpression;
@@ -267,7 +275,7 @@ namespace Linq2Rest.Provider
 
 			ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
 
-			var processResult = _writer.Write(methodCall.Arguments[1]);
+			var processResult = _writer.Write(methodCall.Arguments[1], builder.SourceType);
 			var currentParameter = string.IsNullOrWhiteSpace(builder.FilterParameter)
 									? processResult
 									: string.Format("({0}) and ({1})", builder.FilterParameter, processResult);
@@ -283,8 +291,7 @@ namespace Linq2Rest.Provider
 
 			Contract.Assume(nonGenericMethod != null);
 
-			var method = nonGenericMethod
-				.MakeGenericMethod(genericArguments);
+			var method = nonGenericMethod.MakeGenericMethod(genericArguments);
 
 			var list = resultLoader(builder);
 
@@ -305,7 +312,9 @@ namespace Linq2Rest.Provider
 
 			Contract.Assume(methodCall.Arguments.Count >= 1);
 
-			ProcessMethodCall(methodCall.Arguments[0] as MethodCallExpression, builder, resultLoader, intermediateResultLoader);
+			var methodCallExpression = methodCall.Arguments[0] as MethodCallExpression;
+			ProcessMethodCall(methodCallExpression, builder, resultLoader, intermediateResultLoader);
+
 			var results = resultLoader(builder);
 
 			Contract.Assume(results != null);
@@ -337,6 +346,7 @@ namespace Linq2Rest.Provider
 			}
 
 			var genericArgument = innerMethod.Method.ReturnType.GetGenericArguments()[0];
+			
 			var type = typeof(T);
 			var list = type != genericArgument
 			 ? intermediateResultLoader(genericArgument, builder)

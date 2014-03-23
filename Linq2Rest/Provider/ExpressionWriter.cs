@@ -19,6 +19,9 @@ namespace Linq2Rest.Provider
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using Linq2Rest.Provider.Writers;
+#if SILVERLIGHT
+	using Linq2Rest.Reactive.Provider;
+#endif
 
 	internal class ExpressionWriter : IExpressionWriter
 	{
@@ -52,9 +55,16 @@ namespace Linq2Rest.Provider
 			_memberNameResolver = memberNameResolver;
 		}
 
-		public string Write(Expression expression)
+		//public string Write(Expression expression)
+		//{
+		//	var sourceType = expression.ResolveSourceType();
+
+		//	return Write(expression, sourceType);
+		//}
+
+		public string Write(Expression expression, Type sourceType)
 		{
-			return expression == null ? null : Write(expression, expression.Type, GetRootParameterName(expression));
+			return expression == null ? null : Write(expression, expression.Type, GetRootParameterName(expression), sourceType);
 		}
 
 		private static Type GetUnconvertedType(Expression expression)
@@ -239,12 +249,12 @@ namespace Linq2Rest.Provider
 			return null;
 		}
 
-		private string Write(Expression expression, ParameterExpression rootParameterName)
+		private string Write(Expression expression, ParameterExpression rootParameterName, Type sourceType)
 		{
-			return expression == null ? null : Write(expression, expression.Type, rootParameterName);
+			return expression == null ? null : Write(expression, expression.Type, rootParameterName, sourceType);
 		}
 
-		private string Write(Expression expression, Type type, ParameterExpression rootParameter)
+		private string Write(Expression expression, Type type, ParameterExpression rootParameter, Type sourceType)
 		{
 			Contract.Requires(expression != null);
 			Contract.Requires(type != null);
@@ -278,25 +288,25 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Or:
 				case ExpressionType.OrElse:
 				case ExpressionType.Subtract:
-					return WriteBinaryExpression(expression, rootParameter);
+					return WriteBinaryExpression(expression, rootParameter, sourceType);
 				case ExpressionType.Negate:
-					return WriteNegate(expression, rootParameter);
+					return WriteNegate(expression, rootParameter, sourceType);
 				case ExpressionType.Not:
 #if !SILVERLIGHT
 				case ExpressionType.IsFalse:
 #endif
-					return WriteFalse(expression, rootParameter);
+					return WriteFalse(expression, rootParameter, sourceType);
 #if !SILVERLIGHT
 				case ExpressionType.IsTrue:
-					return WriteTrue(expression, rootParameter);
+					return WriteTrue(expression, rootParameter, sourceType);
 #endif
 				case ExpressionType.Convert:
 				case ExpressionType.Quote:
-					return WriteConversion(expression, rootParameter);
+					return WriteConversion(expression, rootParameter, sourceType);
 				case ExpressionType.MemberAccess:
-					return WriteMemberAccess(expression, rootParameter);
+					return WriteMemberAccess(expression, rootParameter, sourceType);
 				case ExpressionType.Call:
-					return WriteCall(expression, rootParameter);
+					return WriteCall(expression, rootParameter, sourceType);
 				case ExpressionType.New:
 				case ExpressionType.ArrayIndex:
 				case ExpressionType.ArrayLength:
@@ -305,23 +315,23 @@ namespace Linq2Rest.Provider
 					var newValue = GetValue(expression);
 					return ParameterValueWriter.Write(newValue);
 				case ExpressionType.Lambda:
-					return WriteLambda(expression, rootParameter);
+					return WriteLambda(expression, rootParameter, sourceType);
 				default:
 					throw new InvalidOperationException("Expression is not recognized or supported");
 			}
 		}
 
-		private string WriteLambda(Expression expression, ParameterExpression rootParameter)
+		private string WriteLambda(Expression expression, ParameterExpression rootParameter, Type sourceType)
 		{
 			var lambdaExpression = expression as LambdaExpression;
 
 			Contract.Assume(lambdaExpression != null);
 
 			var body = lambdaExpression.Body;
-			return Write(body, rootParameter);
+			return Write(body, rootParameter, sourceType);
 		}
 
-		private string WriteFalse(Expression expression, ParameterExpression rootParameterName)
+		private string WriteFalse(Expression expression, ParameterExpression rootParameterName, Type sourceType)
 		{
 			var unaryExpression = expression as UnaryExpression;
 
@@ -329,10 +339,10 @@ namespace Linq2Rest.Provider
 
 			var operand = unaryExpression.Operand;
 
-			return string.Format("not({0})", Write(operand, rootParameterName));
+			return string.Format("not({0})", Write(operand, rootParameterName, sourceType));
 		}
 
-		private string WriteTrue(Expression expression, ParameterExpression rootParameterName)
+		private string WriteTrue(Expression expression, ParameterExpression rootParameterName, Type sourceType)
 		{
 			var unaryExpression = expression as UnaryExpression;
 
@@ -340,29 +350,29 @@ namespace Linq2Rest.Provider
 
 			var operand = unaryExpression.Operand;
 
-			return Write(operand, rootParameterName);
+			return Write(operand, rootParameterName, sourceType);
 		}
 
-		private string WriteConversion(Expression expression, ParameterExpression rootParameterName)
+		private string WriteConversion(Expression expression, ParameterExpression rootParameterName, Type sourceType)
 		{
 			var unaryExpression = expression as UnaryExpression;
 
 			Contract.Assume(unaryExpression != null);
 
 			var operand = unaryExpression.Operand;
-			return Write(operand, rootParameterName);
+			return Write(operand, rootParameterName, sourceType);
 		}
 
-		private string WriteCall(Expression expression, ParameterExpression rootParameterName)
+		private string WriteCall(Expression expression, ParameterExpression rootParameterName, Type sourceType)
 		{
 			var methodCallExpression = expression as MethodCallExpression;
 
 			Contract.Assume(methodCallExpression != null);
 
-			return GetMethodCall(methodCallExpression, rootParameterName);
+			return GetMethodCall(methodCallExpression, rootParameterName, sourceType);
 		}
 
-		private string WriteMemberAccess(Expression expression, ParameterExpression rootParameterName)
+		private string WriteMemberAccess(Expression expression, ParameterExpression rootParameterName, Type sourceType)
 		{
 			var memberExpression = expression as MemberExpression;
 
@@ -380,7 +390,7 @@ namespace Linq2Rest.Provider
 			while (true)
 			{
 				pathPrefixes.Add(currentMemberExpression.Member);
-				
+
 				var currentMember = currentMemberExpression.Expression as MemberExpression;
 				if (currentMember == null)
 				{
@@ -391,7 +401,7 @@ namespace Linq2Rest.Provider
 			}
 
 			pathPrefixes.Reverse();
-			var prefix = string.Join("/", pathPrefixes.Select(_memberNameResolver.ResolveName));
+			var prefix = string.Join("/", pathPrefixes.Select(x => _memberNameResolver.GetNameFromAlias(x, sourceType)).Select(x => x.Item2));
 			if (rootParameterName != null
 				&& currentMemberExpression.Expression is ParameterExpression
 				&& ((ParameterExpression)currentMemberExpression.Expression).Name != rootParameterName.Name)
@@ -406,7 +416,7 @@ namespace Linq2Rest.Provider
 				{
 					Contract.Assume(collapsedExpression != null);
 
-					return Write(collapsedExpression, rootParameterName);
+					return Write(collapsedExpression, rootParameterName, sourceType);
 				}
 
 				memberExpression = (MemberExpression)collapsedExpression;
@@ -420,10 +430,10 @@ namespace Linq2Rest.Provider
 
 			return string.IsNullOrWhiteSpace(memberCall)
 					   ? prefix
-					   : string.Format("{0}({1})", memberCall, Write(innerExpression, rootParameterName));
+					   : string.Format("{0}({1})", memberCall, Write(innerExpression, rootParameterName, sourceType));
 		}
 
-		private string WriteNegate(Expression expression, ParameterExpression rootParameterName)
+		private string WriteNegate(Expression expression, ParameterExpression rootParameterName, Type sourceType)
 		{
 			var unaryExpression = expression as UnaryExpression;
 
@@ -431,10 +441,10 @@ namespace Linq2Rest.Provider
 
 			var operand = unaryExpression.Operand;
 
-			return string.Format("-{0}", Write(operand, rootParameterName));
+			return string.Format("-{0}", Write(operand, rootParameterName, sourceType));
 		}
 
-		private string WriteBinaryExpression(Expression expression, ParameterExpression rootParameterName)
+		private string WriteBinaryExpression(Expression expression, ParameterExpression rootParameterName, Type sourceType)
 		{
 			var binaryExpression = expression as BinaryExpression;
 
@@ -448,7 +458,8 @@ namespace Linq2Rest.Provider
 					rootParameterName,
 					(MethodCallExpression)binaryExpression.Left,
 					operation,
-					binaryExpression.Right as ConstantExpression);
+					binaryExpression.Right as ConstantExpression,
+					sourceType);
 				if (compareResult != null)
 				{
 					return compareResult;
@@ -461,7 +472,8 @@ namespace Linq2Rest.Provider
 					rootParameterName,
 					(MethodCallExpression)binaryExpression.Right,
 					operation,
-					binaryExpression.Left as ConstantExpression);
+					binaryExpression.Left as ConstantExpression,
+					sourceType);
 				if (compareResult != null)
 				{
 					return compareResult;
@@ -472,8 +484,8 @@ namespace Linq2Rest.Provider
 			var isRightComposite = CompositeExpressionTypes.Any(x => x == binaryExpression.Right.NodeType);
 
 			var leftType = GetUnconvertedType(binaryExpression.Left);
-			var leftString = Write(binaryExpression.Left, rootParameterName);
-			var rightString = Write(binaryExpression.Right, leftType, rootParameterName);
+			var leftString = Write(binaryExpression.Left, rootParameterName, sourceType);
+			var rightString = Write(binaryExpression.Right, leftType, rootParameterName, sourceType);
 
 			return string.Format(
 				"{0} {1} {2}",
@@ -486,7 +498,8 @@ namespace Linq2Rest.Provider
 			ParameterExpression rootParameterName,
 			MethodCallExpression methodCallExpression,
 			string operation,
-			ConstantExpression comparisonExpression)
+			ConstantExpression comparisonExpression,
+			Type sourceType)
 		{
 			if (methodCallExpression != null
 				&& methodCallExpression.Method.Name == "CompareTo"
@@ -496,15 +509,15 @@ namespace Linq2Rest.Provider
 			{
 				return string.Format(
 					"{0} {1} {2}",
-					Write(methodCallExpression.Object, rootParameterName),
+					Write(methodCallExpression.Object, rootParameterName, sourceType),
 					operation,
-					Write(methodCallExpression.Arguments[0], rootParameterName));
+					Write(methodCallExpression.Arguments[0], rootParameterName, sourceType));
 			}
 
 			return null;
 		}
 
-		private string GetMethodCall(MethodCallExpression expression, ParameterExpression rootParameterName)
+		private string GetMethodCall(MethodCallExpression expression, ParameterExpression rootParameterName, Type sourceType)
 		{
 			Contract.Requires(expression != null);
 
@@ -514,7 +527,7 @@ namespace Linq2Rest.Provider
 				throw new NotSupportedException(expression + " is not supported");
 			}
 
-			return methodCallWriter.Handle(expression, e => Write(e, rootParameterName));
+			return methodCallWriter.Handle(expression, e => Write(e, rootParameterName, sourceType));
 		}
 	}
 }
