@@ -178,11 +178,11 @@ namespace Linq2Rest.Reactive
 
 		private IEnumerable ReadIntermediateResponse(Type type, Type aliasType, Stream response)
 		{
-			var genericMethod = ReflectionHelper.CreateMethod.MakeGenericMethod(type);
 #if !SILVERLIGHT
 			dynamic serializer = GetSerializer(type, aliasType);
 			var resultSet = serializer.DeserializeList(response);
 #else
+			var genericMethod = ReflectionHelper.CreateMethod.MakeGenericMethod(type);
 			var serializer = genericMethod.Invoke(_serializerFactory, null);
 			var deserializeListMethod = serializer.GetType().GetMethod("DeserializeList");
 			var resultSet = deserializeListMethod.Invoke(serializer, new object[] { response });
@@ -211,7 +211,7 @@ namespace Linq2Rest.Reactive
 				return method.Invoke(_serializerFactory, null);
 			}
 
-			var aliasMethod = AliasCreateMethodInfo.MakeGenericMethod(typeof(T), aliasType);
+			var aliasMethod = AliasCreateMethodInfo.MakeGenericMethod(itemType, aliasType);
 
 			return aliasMethod.Invoke(_serializerFactory, null);
 		}
@@ -220,7 +220,7 @@ namespace Linq2Rest.Reactive
 		{
 			Contract.Requires(stream != null);
 
-			dynamic serializer = GetSerializer(sourceType);
+			var serializer = GetSerializer(sourceType);
 
 			return serializer.DeserializeList(stream);
 		}

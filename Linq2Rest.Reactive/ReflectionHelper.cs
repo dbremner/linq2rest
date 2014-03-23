@@ -13,13 +13,14 @@
 namespace Linq2Rest.Reactive
 {
 	using System.Diagnostics.Contracts;
+	using System.Linq;
 	using System.Reflection;
 	using Linq2Rest.Provider;
 
 	internal static class ReflectionHelper
 	{
 #if !NETFX_CORE
-		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethod("Create");
+		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethods().First(x => x.Name == "Create" && x.GetGenericArguments().Length == 1);
 #else
 		private static readonly MethodInfo InnerCreateMethod =
 	        typeof(ISerializerFactory)
@@ -30,12 +31,12 @@ namespace Linq2Rest.Reactive
 		public static MethodInfo CreateMethod
 		{
 			get
-            {
+			{
 #if !NETFX_CORE
 				Contract.Ensures(Contract.Result<MethodInfo>() != null);
 #endif
 
-                return InnerCreateMethod;
+				return InnerCreateMethod;
 			}
 		}
 	}

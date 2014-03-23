@@ -218,7 +218,15 @@ namespace Linq2Rest.Reactive.Tests
 				.Create()
 				.Where(x => x.IntValue <= 3)
 				.GroupBy(x => x.StringValue)
-				.Subscribe(x => waitHandle.Set(), () => waitHandle.Set());
+				.Subscribe(
+					x => waitHandle.Set(),
+					e =>
+					{
+						Console.WriteLine(e.Message);
+						Console.WriteLine(e.StackTrace);
+						waitHandle.Set();
+					},
+					() => waitHandle.Set());
 
 			waitHandle.WaitOne();
 

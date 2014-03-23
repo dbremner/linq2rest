@@ -19,12 +19,12 @@ namespace Linq2Rest.Reactive
 	using System.Reactive.Linq;
 	using System.Reflection;
 
-	internal static class InteralObservableExtensions
+	internal static class InternalObservableExtensions
 	{
 		private static readonly MethodInfo InnerToObservableMethod;
 		private static readonly MethodInfo InnerToQbservableMethod;
 
-		static InteralObservableExtensions()
+		static InternalObservableExtensions()
 		{
 #if !NETFX_CORE
 			var qbservableMethods = typeof(Qbservable).GetMethods(BindingFlags.Static | BindingFlags.Public);

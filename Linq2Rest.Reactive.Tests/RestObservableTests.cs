@@ -30,7 +30,7 @@ namespace Linq2Rest.Reactive.Tests
 		{
 			Assert.DoesNotThrow(
 								() => new RestObservable<FakeItem>(
-									new FakeAsyncRestClientFactory(), 
+									new FakeAsyncRestClientFactory(),
 									new TestSerializerFactory()));
 		}
 
@@ -50,7 +50,7 @@ namespace Linq2Rest.Reactive.Tests
 						   {
 							   Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
 							   waitHandle.Set();
-						   }, 
+						   },
 						   () =>
 						   {
 							   Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
@@ -105,7 +105,15 @@ namespace Linq2Rest.Reactive.Tests
 				.Create()
 				.Where(x => x.StringValue == "blah")
 				.GroupBy(x => x.StringValue)
-				.Subscribe(x => { }, () => waitHandle.Set());
+				.Subscribe(
+					x => { },
+					e =>
+						{
+							Console.WriteLine(e.Message);
+							Console.WriteLine(e.StackTrace);
+							waitHandle.Set();
+						},
+					() => waitHandle.Set());
 
 			var result = waitHandle.WaitOne();
 
@@ -244,7 +252,7 @@ namespace Linq2Rest.Reactive.Tests
 				.Subscribe(
 					x =>
 					{
-					}, 
+					},
 					() =>
 					{
 						var observerThreadId = Thread.CurrentThread.ManagedThreadId;
