@@ -47,26 +47,11 @@ namespace Linq2Rest
 				.Select(
 					x =>
 					{
-						var attributes = x.GetCustomAttributes(true);
-						var dataMember = attributes.OfType<DataMemberAttribute>()
-							.FirstOrDefault();
-						if (dataMember != null && dataMember.Name == alias)
+						if (HasAliasAttribute(alias, x))
 						{
-							return x;
-						}
-
-						var xmlElement = attributes.OfType<XmlElementAttribute>()
-							.FirstOrDefault();
-						if (xmlElement != null && xmlElement.ElementName == alias)
-						{
-							return x;
-						}
-
-						var xmlAttribute = attributes.OfType<XmlAttributeAttribute>()
-							.FirstOrDefault();
-						if (xmlAttribute != null && xmlAttribute.AttributeName == alias)
-						{
-							return x;
+							return x.MemberType == MemberTypes.Field
+								? CheckFrontingProperty(x, alias)
+								: x;
 						}
 
 						if (x.Name == alias)
@@ -79,6 +64,41 @@ namespace Linq2Rest
 				.FirstOrDefault(x => x != null);
 
 			return member;
+		}
+
+		private static bool HasAliasAttribute(string alias, MemberInfo x)
+		{
+			var attributes = x.GetCustomAttributes(true);
+			var dataMember = attributes.OfType<DataMemberAttribute>()
+				.FirstOrDefault();
+			if (dataMember != null && dataMember.Name == alias)
+			{
+				return true;
+			}
+
+			var xmlElement = attributes.OfType<XmlElementAttribute>()
+				.FirstOrDefault();
+			if (xmlElement != null && xmlElement.ElementName == alias)
+			{
+				return true;
+			}
+
+			var xmlAttribute = attributes.OfType<XmlAttributeAttribute>()
+				.FirstOrDefault();
+			if (xmlAttribute != null && xmlAttribute.AttributeName == alias)
+			{
+				return true;
+			}
+			return false;
+		}
+
+		private static MemberInfo CheckFrontingProperty(MemberInfo field, string alias)
+		{
+			var declaringType = field.DeclaringType;
+			var correspondingProperty = declaringType.GetProperties()
+				.FirstOrDefault(x => string.Equals(x.Name, field.Name.Replace("_", string.Empty), StringComparison.InvariantCultureIgnoreCase));
+
+			return correspondingProperty ?? field;
 		}
 
 		private static IEnumerable<MemberInfo> GetMembers(Type type)
@@ -147,7 +167,9 @@ namespace Linq2Rest
 				return propertyInfos.ToArray();
 			}
 
-			return type.GetMembers(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			var members = type.GetMembers(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+			return members;
 #endif
 		}
 
