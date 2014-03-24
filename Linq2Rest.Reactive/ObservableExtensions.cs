@@ -120,7 +120,7 @@ namespace Linq2Rest.Reactive
 			}
 
 #if !NETFX_CORE
-			var genericMethod = ((MethodInfo)MethodBase.GetCurrentMethod()).MakeGenericMethod(new[] { typeof(TSource) });
+			var genericMethod = ((MethodInfo)MethodBase.GetCurrentMethod()).MakeGenericMethod(new[] { typeof(TSource), typeof(TAlias) });
 #else
 			var genericMethod = CreateGenericMethod<TSource>();
 #endif
