@@ -18,6 +18,15 @@ namespace Linq2Rest.Provider.Writers
 
 	internal class DefaultMethodWriter : IMethodCallWriter
 	{
+		private readonly ParameterValueWriter _valueWriter;
+
+		public DefaultMethodWriter(ParameterValueWriter valueWriter)
+		{
+			Contract.Requires(valueWriter != null);
+
+			_valueWriter = valueWriter;
+		}
+
 		public bool CanHandle(MethodCallExpression expression)
 		{
 			return true;
@@ -25,7 +34,7 @@ namespace Linq2Rest.Provider.Writers
 
 		public string Handle(MethodCallExpression expression, Func<Expression, string> expressionWriter)
 		{
-			return ParameterValueWriter.Write(GetValue(expression));
+			return _valueWriter.Write(GetValue(expression));
 		}
 
 		private static object GetValue(Expression input)

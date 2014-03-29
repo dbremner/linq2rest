@@ -19,6 +19,9 @@ namespace Linq2Rest.Reactive
 
 	internal static class ReflectionHelper
 	{
+		private readonly static MethodInfo CreateMethodInfo = typeof(ISerializerFactory).GetMethods().First(x => x.Name == "Create" && x.GetGenericArguments().Length == 1).GetGenericMethodDefinition();
+		private readonly static MethodInfo AliasCreateMethodInfo = typeof(ISerializerFactory).GetMethods().First(x => x.Name == "Create" && x.GetGenericArguments().Length == 2).GetGenericMethodDefinition();
+
 #if !NETFX_CORE
 		private static readonly MethodInfo InnerCreateMethod = typeof(ISerializerFactory).GetMethods().First(x => x.Name == "Create" && x.GetGenericArguments().Length == 1);
 #else
@@ -27,6 +30,30 @@ namespace Linq2Rest.Reactive
             .GetTypeInfo()
             .GetDeclaredMethod("Create");
 #endif
+
+		public static MethodInfo GenericCreateMethod
+		{
+			get
+			{
+#if !NETFX_CORE
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
+#endif
+
+				return CreateMethodInfo;
+			}
+		}
+
+		public static MethodInfo AliasGenericCreateMethod
+		{
+			get
+			{
+#if !NETFX_CORE
+				Contract.Ensures(Contract.Result<MethodInfo>() != null);
+#endif
+
+				return AliasCreateMethodInfo;
+			}
+		}
 
 		public static MethodInfo CreateMethod
 		{

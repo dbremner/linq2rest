@@ -13,11 +13,14 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
+	using System.Linq;
 	using System.Reactive;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Provider.Writers;
 
 	/// <summary>
 	/// Defines an observable REST query.
@@ -28,6 +31,7 @@ namespace Linq2Rest.Reactive
 		private readonly IAsyncRestClientFactory _restClientFactory;
 		private readonly ISerializerFactory _serializerFactory;
 		private readonly IMemberNameResolver _memberNameResolver;
+		private readonly IEnumerable<IValueWriter> _valueWriters;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RestObservable{T}"/> class.
@@ -35,7 +39,7 @@ namespace Linq2Rest.Reactive
 		/// <param name="restClientFactory">An <see cref="IAsyncRestClientFactory"/> to perform requests.</param>
 		/// <param name="serializerFactory">An <see cref="ISerializerFactory"/> to perform deserialization.</param>
 		public RestObservable(IAsyncRestClientFactory restClientFactory, ISerializerFactory serializerFactory)
-			: this(restClientFactory, serializerFactory, new MemberNameResolver())
+			: this(restClientFactory, serializerFactory, new MemberNameResolver(), Enumerable.Empty<IValueWriter>())
 		{
 			Contract.Requires<ArgumentNullException>(restClientFactory != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
@@ -47,15 +51,18 @@ namespace Linq2Rest.Reactive
 		/// <param name="restClientFactory">An <see cref="IAsyncRestClientFactory"/> to perform requests.</param>
 		/// <param name="serializerFactory">An <see cref="ISerializerFactory"/> to perform deserialization.</param>
 		/// <param name="memberNameResolver">An <see cref="IMemberNameResolver"/> for member name resolution.</param>
-		public RestObservable(IAsyncRestClientFactory restClientFactory, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver)
+		/// <param name="valueWriters">Custom value writers.</param>
+		public RestObservable(IAsyncRestClientFactory restClientFactory, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters)
 		{
 			Contract.Requires<ArgumentNullException>(restClientFactory != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
+			Contract.Requires<ArgumentNullException>(valueWriters != null);
 
 			_restClientFactory = restClientFactory;
 			_serializerFactory = serializerFactory;
 			_memberNameResolver = memberNameResolver;
+			_valueWriters = valueWriters.ToArray();
 		}
 
 		/// <summary>
@@ -69,7 +76,8 @@ namespace Linq2Rest.Reactive
 			return new InnerRestObservable<T, T>(
 				_restClientFactory,
 				_serializerFactory,
-				_memberNameResolver,
+				_memberNameResolver, 
+				_valueWriters,
 				null,
 				ImmediateScheduler.Instance,
 				ImmediateScheduler.Instance);
@@ -90,6 +98,7 @@ namespace Linq2Rest.Reactive
 				_restClientFactory,
 				_serializerFactory,
 				_memberNameResolver,
+				_valueWriters,
 				null,
 				ImmediateScheduler.Instance,
 				ImmediateScheduler.Instance);

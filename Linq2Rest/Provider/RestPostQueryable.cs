@@ -13,30 +13,38 @@
 namespace Linq2Rest.Provider
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.IO;
+	using System.Linq;
 	using System.Linq.Expressions;
+	using Linq2Rest.Provider.Writers;
 
 	internal class RestPostQueryable<T> : RestQueryableBase<T>
 	{
 		private readonly RestPostQueryProvider<T> _restPostQueryProvider;
 
 		public RestPostQueryable(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Stream inputData, Type sourceType)
-			: this(client, serializerFactory, new MemberNameResolver(), expression, inputData, sourceType)
+			: this(client, serializerFactory, new MemberNameResolver(), new IntValueWriter[0], expression, inputData, sourceType)
 		{
 		}
 
-		public RestPostQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, Expression expression, Stream inputData, Type sourceType)
-			: base(client, serializerFactory)
+		public RestPostQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters, Expression expression, Stream inputData, Type sourceType)
+			: base(client, serializerFactory, memberNameResolver, valueWriters)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 			Contract.Requires<ArgumentNullException>(expression != null);
+			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
+			Contract.Requires<ArgumentNullException>(valueWriters != null);
+			Contract.Requires<ArgumentNullException>(inputData != null);
 
 			_restPostQueryProvider = new RestPostQueryProvider<T>(
 				client,
 				serializerFactory,
-				new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver),
+				new ExpressionProcessor(new ExpressionWriter(memberNameResolver, ValueWriters), memberNameResolver),
+				memberNameResolver,
+				ValueWriters,
 				inputData,
 				sourceType);
 			Provider = _restPostQueryProvider;

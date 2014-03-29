@@ -19,11 +19,24 @@ namespace Linq2Rest.Provider.Writers
 	using System.Reflection;
 #endif
 
+	/// <summary>
+	/// Interface for handling writing values to OData format.
+	/// </summary>
 	[ContractClass(typeof(ValueWriterContracts))]
-	internal interface IValueWriter
+	public interface IValueWriter
 	{
+		/// <summary>
+		/// Get whether a <see cref="Type"/> is handled.
+		/// </summary>
+		/// <param name="type">The <see cref="Type"/> to check.</param>
+		/// <returns></returns>
 		bool Handles(Type type);
 
+		/// <summary>
+		/// Writes the passed value to an OData style string representation.
+		/// </summary>
+		/// <param name="value">The value to write.</param>
+		/// <returns>The OData style representation of the passed value.</returns>
 		string Write(object value);
 	}
 
@@ -40,6 +53,7 @@ namespace Linq2Rest.Provider.Writers
 		public string Write(object value)
 		{
 			Contract.Requires(value != null);
+			Contract.Ensures(Contract.Result<string>() != null);
 
 			throw new NotImplementedException();
 		}

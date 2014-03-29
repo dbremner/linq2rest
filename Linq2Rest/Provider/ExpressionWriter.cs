@@ -25,42 +25,38 @@ namespace Linq2Rest.Provider
 
 	internal class ExpressionWriter : IExpressionWriter
 	{
-		private static readonly ExpressionType[] CompositeExpressionTypes = new[] { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
-		private readonly IMethodCallWriter[] _methodCallWriters = new IMethodCallWriter[]
-																{
-																	new EqualsMethodWriter(), 
-																	new StringReplaceMethodWriter(), 
-																	new StringTrimMethodWriter(), 
-																	new StringToLowerMethodWriter(), 
-																	new StringToUpperMethodWriter(), 
-																	new StringSubstringMethodWriter(), 
-																	new StringContainsMethodWriter(), 
-																	new StringIndexOfMethodWriter(), 
-																	new StringEndsWithMethodWriter(), 
-																	new StringStartsWithMethodWriter(), 
-																	new MathRoundMethodWriter(), 
-																	new MathFloorMethodWriter(), 
-																	new MathCeilingMethodWriter(), 
- 																	new EmptyAnyMethodWriter(), 
-																	new AnyAllMethodWriter(), 
-																	new DefaultMethodWriter()
-																};
+		private static readonly ExpressionType[] CompositeExpressionTypes = { ExpressionType.Or, ExpressionType.OrElse, ExpressionType.And, ExpressionType.AndAlso };
+		private readonly ParameterValueWriter _valueWriter;
+		private readonly IMethodCallWriter[] _methodCallWriters;
 
 		private readonly IMemberNameResolver _memberNameResolver;
 
-		public ExpressionWriter(IMemberNameResolver memberNameResolver)
+		public ExpressionWriter(IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters)
 		{
 			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
 
+			_valueWriter = new ParameterValueWriter(valueWriters ?? new IntValueWriter[0]);
 			_memberNameResolver = memberNameResolver;
+			_methodCallWriters = new IMethodCallWriter[]
+								 {
+									 new EqualsMethodWriter(),
+									 new StringReplaceMethodWriter(),
+									 new StringTrimMethodWriter(),
+									 new StringToLowerMethodWriter(),
+									 new StringToUpperMethodWriter(),
+									 new StringSubstringMethodWriter(),
+									 new StringContainsMethodWriter(),
+									 new StringIndexOfMethodWriter(),
+									 new StringEndsWithMethodWriter(),
+									 new StringStartsWithMethodWriter(),
+									 new MathRoundMethodWriter(),
+									 new MathFloorMethodWriter(),
+									 new MathCeilingMethodWriter(),
+									 new EmptyAnyMethodWriter(),
+									 new AnyAllMethodWriter(),
+									 new DefaultMethodWriter(_valueWriter)
+								 };
 		}
-
-		//public string Write(Expression expression)
-		//{
-		//	var sourceType = expression.ResolveSourceType();
-
-		//	return Write(expression, sourceType);
-		//}
 
 		public string Write(Expression expression, Type sourceType)
 		{
@@ -270,7 +266,7 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Constant:
 					{
 						var value = GetValue(Expression.Convert(expression, type));
-						return ParameterValueWriter.Write(value);
+						return _valueWriter.Write(value);
 					}
 
 				case ExpressionType.Add:
@@ -313,7 +309,7 @@ namespace Linq2Rest.Provider
 				case ExpressionType.Conditional:
 				case ExpressionType.Coalesce:
 					var newValue = GetValue(expression);
-					return ParameterValueWriter.Write(newValue);
+					return _valueWriter.Write(newValue);
 				case ExpressionType.Lambda:
 					return WriteLambda(expression, rootParameter, sourceType);
 				default:
@@ -381,7 +377,7 @@ namespace Linq2Rest.Provider
 			if (memberExpression.Expression == null)
 			{
 				var memberValue = GetValue(memberExpression);
-				return ParameterValueWriter.Write(memberValue);
+				return _valueWriter.Write(memberValue);
 			}
 
 			var pathPrefixes = new List<MemberInfo>();

@@ -13,6 +13,7 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 	using System.Reactive;
@@ -20,6 +21,7 @@ namespace Linq2Rest.Reactive
 	using System.Reactive.Linq;
 	using System.Threading;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Provider.Writers;
 
 	internal class TriggeredRestObservable<T, TSource> : InnerRestObservableBase<T, TSource>
 	{
@@ -33,15 +35,17 @@ namespace Linq2Rest.Reactive
 			IAsyncRestClientFactory restClient, 
 			ISerializerFactory serializerFactory, 
 			IMemberNameResolver memberNameResolver,
+			IEnumerable<IValueWriter> valueWriters,
 			Expression expression, 
 			IScheduler subscriberScheduler, 
 			IScheduler observerScheduler)
-			: base(restClient, serializerFactory, memberNameResolver, expression, subscriberScheduler, observerScheduler)
+			: base(restClient, serializerFactory, memberNameResolver, valueWriters, expression, subscriberScheduler, observerScheduler)
 		{
 			Contract.Requires(restClient != null);
 			Contract.Requires(trigger != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(memberNameResolver != null);
+			Contract.Requires(valueWriters != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
 

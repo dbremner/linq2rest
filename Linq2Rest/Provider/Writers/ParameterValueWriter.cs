@@ -21,37 +21,39 @@ namespace Linq2Rest.Provider.Writers
 	using System.Reflection;
 #endif
 
-	internal static class ParameterValueWriter
+	internal class ParameterValueWriter
 	{
-		private static readonly IList<IValueWriter> ValueWriters;
+		private readonly IList<IValueWriter> _valueWriters;
 
-		static ParameterValueWriter()
+		public ParameterValueWriter(IEnumerable<IValueWriter> valueWriters)
 		{
-			ValueWriters = new List<IValueWriter>
-							{
-								new EnumValueWriter(),
-								new StringValueWriter(), 
-								new BooleanValueWriter(), 
-								new IntValueWriter(), 
-								new LongValueWriter(), 
-								new ShortValueWriter(), 
-								new UnsignedIntValueWriter(), 
-								new UnsignedLongValueWriter(), 
-								new UnsignedShortValueWriter(), 
-								new ByteArrayValueWriter(), 
-								new StreamValueWriter(), 
-								new DecimalValueWriter(), 
-								new DoubleValueWriter(), 
-								new SingleValueWriter(), 
-								new ByteValueWriter(), 
-								new GuidValueWriter(), 
-								new DateTimeValueWriter(), 
-								new TimeSpanValueWriter(), 
-								new DateTimeOffsetValueWriter()
-							};
+			_valueWriters = valueWriters.Concat(
+				new IValueWriter[]
+				{
+					new EnumValueWriter(),
+					new StringValueWriter(),
+					new BooleanValueWriter(),
+					new IntValueWriter(),
+					new LongValueWriter(),
+					new ShortValueWriter(),
+					new UnsignedIntValueWriter(),
+					new UnsignedLongValueWriter(),
+					new UnsignedShortValueWriter(),
+					new ByteArrayValueWriter(),
+					new StreamValueWriter(),
+					new DecimalValueWriter(),
+					new DoubleValueWriter(),
+					new SingleValueWriter(),
+					new ByteValueWriter(),
+					new GuidValueWriter(),
+					new DateTimeValueWriter(),
+					new TimeSpanValueWriter(),
+					new DateTimeOffsetValueWriter()
+				})
+				.ToList();
 		}
 
-		public static string Write(object value)
+		public string Write(object value)
 		{
 			if (value == null)
 			{
@@ -73,7 +75,7 @@ namespace Linq2Rest.Provider.Writers
 				return string.Format("'{0}'", value);
 			}
 #endif
-			var writer = ValueWriters.FirstOrDefault(x => x.Handles(type));
+			var writer = _valueWriters.FirstOrDefault(x => x.Handles(type));
 
 			if (writer != null)
 			{

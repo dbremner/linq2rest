@@ -14,9 +14,10 @@ namespace Linq2Rest.Tests.Provider
 {
 	using System;
 	using System.IO;
+	using System.Linq;
 	using System.Linq.Expressions;
-	using Linq2Rest.Parser;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Provider.Writers;
 	using Linq2Rest.Tests.Fakes;
 	using Moq;
 	using NUnit.Framework;
@@ -31,13 +32,12 @@ namespace Linq2Rest.Tests.Provider
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
-			var mockResolver = new Mock<IMemberNameResolver>();
 			_inputData = "[]".ToStream();
 			_mockClient = new Mock<IRestClient>();
 			_mockClient.SetupGet(x => x.ServiceBase).Returns(new Uri("http://localhost"));
 			_mockClient.Setup(x => x.Post(It.IsAny<Uri>(), It.IsAny<Stream>())).Returns("[]".ToStream());
 			var memberNameResolver = new MemberNameResolver();
-			_provider = new RestPostQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory(mockResolver.Object), new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver), _inputData, typeof(FakeItem));
+			_provider = new RestPostQueryProvider<FakeItem>(_mockClient.Object, new TestSerializerFactory(memberNameResolver), new ExpressionProcessor(new ExpressionWriter(memberNameResolver, Enumerable.Empty<IValueWriter>()), memberNameResolver), memberNameResolver, Enumerable.Empty<IValueWriter>(), _inputData, typeof(FakeItem));
 		}
 
 		[Test]

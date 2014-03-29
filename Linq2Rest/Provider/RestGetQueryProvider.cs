@@ -18,11 +18,12 @@ namespace Linq2Rest.Provider
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using Linq2Rest.Provider.Writers;
 
 	internal class RestGetQueryProvider<T> : RestQueryProvider<T>
 	{
-		public RestGetQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, Type sourceType)
-			: base(client, serializerFactory, expressionProcessor, sourceType)
+		public RestGetQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters, Type sourceType)
+			: base(client, serializerFactory, expressionProcessor, memberNameResolver, valueWriters, sourceType)
 		{
 			Contract.Requires(client != null);
 			Contract.Requires(serializerFactory != null);
@@ -30,7 +31,7 @@ namespace Linq2Rest.Provider
 			Contract.Requires(sourceType != null);
 		}
 
-		protected override Func<IRestClient, ISerializerFactory, Expression, Type, IQueryable<TResult>> CreateQueryable<TResult>()
+		protected override Func<IRestClient, ISerializerFactory, IMemberNameResolver, IEnumerable<IValueWriter>, Expression, Type, IQueryable<TResult>> CreateQueryable<TResult>()
 		{
 			return InnerCreateQueryable<TResult>;
 		}
@@ -59,9 +60,15 @@ namespace Linq2Rest.Provider
 			return resultSet;
 		}
 
-		private IQueryable<TResult> InnerCreateQueryable<TResult>(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Type sourceType)
+		private IQueryable<TResult> InnerCreateQueryable<TResult>(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters, Expression expression, Type sourceType)
 		{
-			return new RestGetQueryable<TResult>(client, serializerFactory, expression, sourceType);
+			return new RestGetQueryable<TResult>(
+				client,
+				serializerFactory,
+				memberNameResolver,
+				valueWriters,
+				sourceType,
+				expression);
 		}
 	}
 }

@@ -21,14 +21,13 @@ namespace Linq2Rest.Reactive
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
-	using System.Reflection;
 	using System.Threading;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Provider.Writers;
 
 	internal abstract class InnerRestObservableBase<T, TSource> : IQbservable<T>
 	{
-		protected readonly static MethodInfo CreateMethodInfo = typeof(ISerializerFactory).GetMethods().First(x => x.Name == "Create" && x.GetGenericArguments().Length == 1).GetGenericMethodDefinition();
-		protected readonly static MethodInfo AliasCreateMethodInfo = typeof(ISerializerFactory).GetMethods().First(x => x.Name == "Create" && x.GetGenericArguments().Length == 2).GetGenericMethodDefinition();
+		public IEnumerable<IValueWriter> ValueWriters { get; set; }
 
 		private readonly IAsyncRestClientFactory _restClient;
 		private readonly ISerializerFactory _serializerFactory;
@@ -39,6 +38,7 @@ namespace Linq2Rest.Reactive
 			IAsyncRestClientFactory restClient,
 			ISerializerFactory serializerFactory,
 			IMemberNameResolver memberNameResolver,
+			IEnumerable<IValueWriter> valueWriters,
 			Expression expression,
 			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
@@ -46,9 +46,13 @@ namespace Linq2Rest.Reactive
 			Contract.Requires(restClient != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(memberNameResolver != null);
+			Contract.Requires(valueWriters != null);
+			Contract.Requires(subscriberScheduler != null);
+			Contract.Requires(observerScheduler != null);
 
+			ValueWriters = valueWriters.ToArray();
 			Observers = new List<IObserver<T>>();
-			Processor = new AsyncExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver);
+			Processor = new AsyncExpressionProcessor(new ExpressionWriter(memberNameResolver, ValueWriters), memberNameResolver);
 			_restClient = restClient;
 			_serializerFactory = serializerFactory;
 			SubscriberScheduler = subscriberScheduler ?? CurrentThreadScheduler.Instance;
@@ -197,7 +201,7 @@ namespace Linq2Rest.Reactive
 				return _serializerFactory.Create<T>();
 			}
 
-			var method = AliasCreateMethodInfo.MakeGenericMethod(typeof(T), aliasType);
+			var method = ReflectionHelper.AliasGenericCreateMethod.MakeGenericMethod(typeof(T), aliasType);
 
 			return (ISerializer<T>)method.Invoke(_serializerFactory, null);
 		}
@@ -206,12 +210,12 @@ namespace Linq2Rest.Reactive
 		{
 			if (aliasType == null)
 			{
-				var method = CreateMethodInfo.MakeGenericMethod(itemType);
+				var method = ReflectionHelper.GenericCreateMethod.MakeGenericMethod(itemType);
 
 				return method.Invoke(_serializerFactory, null);
 			}
 
-			var aliasMethod = AliasCreateMethodInfo.MakeGenericMethod(itemType, aliasType);
+			var aliasMethod = ReflectionHelper.AliasGenericCreateMethod.MakeGenericMethod(itemType, aliasType);
 
 			return aliasMethod.Invoke(_serializerFactory, null);
 		}
@@ -254,6 +258,8 @@ namespace Linq2Rest.Reactive
 			Contract.Invariant(_restClient != null);
 			Contract.Invariant(_serializerFactory != null);
 			Contract.Invariant(Observers != null);
+			Contract.Invariant(SubscriberScheduler != null);
+			Contract.Invariant(ObserverScheduler != null);
 		}
 	}
 }

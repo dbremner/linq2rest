@@ -13,11 +13,13 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Provider.Writers;
 
 	/// <summary>
 	/// Defines an observable REST query.
@@ -32,18 +34,20 @@ namespace Linq2Rest.Reactive
 			IAsyncRestClientFactory restClient,
 			ISerializerFactory serializerFactory,
 			IMemberNameResolver memberNameResolver,
+			IEnumerable<IValueWriter> valueWriters,
 			Expression expression,
 			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
-			: base(restClient, serializerFactory, memberNameResolver, expression, subscriberScheduler, observerScheduler)
+			: base(restClient, serializerFactory, memberNameResolver, valueWriters, expression, subscriberScheduler, observerScheduler)
 		{
 			Contract.Requires(restClient != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(memberNameResolver != null);
+			Contract.Requires(valueWriters != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
 
-			_provider = new RestQueryableProvider<TSource>(restClient, serializerFactory, memberNameResolver, subscriberScheduler, observerScheduler);
+			_provider = new RestQueryableProvider<TSource>(restClient, serializerFactory, memberNameResolver, ValueWriters, subscriberScheduler, observerScheduler);
 		}
 
 		/// <summary>
