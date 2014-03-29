@@ -15,6 +15,7 @@ namespace Linq2Rest.Tests
 	using System.Collections.Specialized;
 	using System.Linq;
 	using Linq2Rest.Parser;
+	using Linq2Rest.Parser.Readers;
 	using Linq2Rest.Tests.Fakes.ComplexDomain;
 	using NUnit.Framework;
 
@@ -81,7 +82,7 @@ namespace Linq2Rest.Tests
 		[TestCase("Properties/any(pi: pi/DefinitionName eq 'Status' and pi/Values/any(c: c/StringNonUnicodeValue eq 'Approved'))", "x => x.Properties.Any(pi => ((pi.DefinitionName == \"Status\") AndAlso pi.Values.Any(c => (c.StringNonUnicodeValue == \"Approved\"))))")]
 		public void WhenParsingInputThenCreatesExpectedExpression(string input, string expected)
 		{
-			var filterFactory = new FilterExpressionFactory(new MemberNameResolver());
+			var filterFactory = new FilterExpressionFactory(new MemberNameResolver(), Enumerable.Empty<IValueExpressionFactory>());
 
 			var expression = filterFactory.Create<TypeInstanceData>(input);
 

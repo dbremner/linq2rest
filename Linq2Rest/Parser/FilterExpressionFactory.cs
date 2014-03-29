@@ -30,14 +30,19 @@ namespace Linq2Rest.Parser
 		private static readonly Regex StringRx = new Regex(@"^[""'](.*?)[""']$", RegexOptions.Compiled);
 		private static readonly Regex NegateRx = new Regex(@"^-[^\d]*", RegexOptions.Compiled);
 		private readonly IMemberNameResolver _memberNameResolver;
+		private readonly ParameterValueReader _valueReader;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FilterExpressionFactory"/> class.
 		/// </summary>
-		/// <param name="memberNameResolver">An <see cref="IMemberNameResolver"/> for name resolution.
-		/// </param>
-		public FilterExpressionFactory(IMemberNameResolver memberNameResolver)
+		/// <param name="memberNameResolver">An <see cref="IMemberNameResolver"/> for name resolution.</param>
+		/// <param name="expressionFactories">The custom <see cref="IValueExpressionFactory"/> to use for value conversion.</param>
+		public FilterExpressionFactory(IMemberNameResolver memberNameResolver, IEnumerable<IValueExpressionFactory> expressionFactories)
 		{
+			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
+			Contract.Requires<ArgumentNullException>(expressionFactories != null);
+
+			_valueReader = new ParameterValueReader(expressionFactories);
 			_memberNameResolver = memberNameResolver;
 		}
 
@@ -290,18 +295,18 @@ namespace Linq2Rest.Parser
 			return false;
 		}
 
-		private static Expression GetBooleanExpression(string filter, IFormatProvider formatProvider)
+		private Expression GetBooleanExpression(string filter, IFormatProvider formatProvider)
 		{
-			var booleanExpression = ParameterValueReader.Read(typeof(bool), filter, formatProvider) as ConstantExpression;
+			var booleanExpression = _valueReader.Read(typeof(bool), filter, formatProvider) as ConstantExpression;
 			return booleanExpression != null && booleanExpression.Value != null
 				? booleanExpression
 				: null;
 		}
 
-		private static Expression GetParameterExpression(string filter, Type type, IFormatProvider formatProvider)
+		private Expression GetParameterExpression(string filter, Type type, IFormatProvider formatProvider)
 		{
 			return type != null
-				? ParameterValueReader.Read(type, filter, formatProvider)
+				? _valueReader.Read(type, filter, formatProvider)
 				: GetBooleanExpression(filter, formatProvider);
 		}
 

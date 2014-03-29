@@ -17,6 +17,7 @@ namespace Linq2Rest.Tests.Parser
 	using System.Linq;
 	using System.Threading;
 	using Linq2Rest.Parser;
+	using Linq2Rest.Parser.Readers;
 	using NUnit.Framework;
 
 	public class FilterExpressionFactoryTests
@@ -30,7 +31,7 @@ namespace Linq2Rest.Tests.Parser
 			public void Setup()
 			{
 				Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
-				_factory = new FilterExpressionFactory(new MemberNameResolver());
+				_factory = new FilterExpressionFactory(new MemberNameResolver(), Enumerable.Empty<IValueExpressionFactory>());
 			}
 
 			[TestCase("DateValue eq 123", typeof(FormatException))]
@@ -258,7 +259,7 @@ namespace Linq2Rest.Tests.Parser
 			public void Setup()
 			{
 				Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
-				_factory = new FilterExpressionFactory(new MemberNameResolver());
+				_factory = new FilterExpressionFactory(new MemberNameResolver(), Enumerable.Empty<IValueExpressionFactory>());
 			}
 
 			[TestCase("DateValue eq 123", typeof(FormatException))]

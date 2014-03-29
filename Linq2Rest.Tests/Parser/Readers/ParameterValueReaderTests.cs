@@ -15,6 +15,7 @@ namespace Linq2Rest.Tests.Parser.Readers
 	using System;
 	using System.Globalization;
 	using System.IO;
+	using System.Linq;
 	using Linq2Rest.Parser.Readers;
 	using NUnit.Framework;
 
@@ -89,7 +90,8 @@ namespace Linq2Rest.Tests.Parser.Readers
 		[TestCase("binary'ZWFzdXJlLg=='", typeof(Stream))]
 		public void CanConvertValidFilterValue(string token, Type type)
 		{
-			Assert.DoesNotThrow(() => ParameterValueReader.Read(type, token, CultureInfo.CurrentCulture));
+			var reader = new ParameterValueReader(Enumerable.Empty<IValueExpressionFactory>());
+			Assert.DoesNotThrow(() => reader.Read(type, token, CultureInfo.CurrentCulture));
 		}
 
 		[Test]

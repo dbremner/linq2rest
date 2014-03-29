@@ -13,8 +13,11 @@
 namespace Linq2Rest.Parser
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Collections.Specialized;
 	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using Linq2Rest.Parser.Readers;
 
 	/// <summary>
 	/// Defines the default implementation of a parameter parser.
@@ -39,7 +42,18 @@ namespace Linq2Rest.Parser
 		/// </summary>
 		/// <param name="memberNameResolver">The <see cref="IMemberNameResolver"/> to use for name resolution.</param>
 		public ParameterParser(IMemberNameResolver memberNameResolver)
-			: this(new FilterExpressionFactory(memberNameResolver), new SortExpressionFactory(memberNameResolver), new SelectExpressionFactory<T>(memberNameResolver, new RuntimeTypeProvider(memberNameResolver)))
+			: this(new FilterExpressionFactory(memberNameResolver, Enumerable.Empty<IValueExpressionFactory>()), new SortExpressionFactory(memberNameResolver), new SelectExpressionFactory<T>(memberNameResolver, new RuntimeTypeProvider(memberNameResolver)))
+		{
+			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ParameterParser{T}"/> class.
+		/// </summary>
+		/// <param name="memberNameResolver">The <see cref="IMemberNameResolver"/> to use for name resolution.</param>
+		/// <param name="valueExpressionFactories">The custom <see cref="IValueExpressionFactory"/> to use for value conversion.</param>
+		public ParameterParser(IMemberNameResolver memberNameResolver, IEnumerable<IValueExpressionFactory> valueExpressionFactories)
+			: this(new FilterExpressionFactory(memberNameResolver, valueExpressionFactories), new SortExpressionFactory(memberNameResolver), new SelectExpressionFactory<T>(memberNameResolver, new RuntimeTypeProvider(memberNameResolver)))
 		{
 			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
 		}
