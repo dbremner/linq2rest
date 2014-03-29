@@ -15,6 +15,7 @@ namespace Linq2Rest.Tests.Parser
 	using System;
 	using System.Linq;
 	using Linq2Rest.Parser;
+	using Linq2Rest.Parser.Readers;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -62,7 +63,7 @@ namespace Linq2Rest.Tests.Parser
 		{
 			Func<FakeItem, bool> original = x => (x.ChoiceValue & Choice.That) == Choice.That && x.IntValue >= 3;
 
-			var factory = new FilterExpressionFactory(new MemberNameResolver());
+			var factory = new FilterExpressionFactory(new MemberNameResolver(), Enumerable.Empty<IValueExpressionFactory>());
 			var deserialized = factory.Create<FakeItem>("ChoiceValue eq Linq2Rest.Tests.Choice'That' And IntValue ge 3");
 
 			var originalResult = _collection.Where(original).ToArray();

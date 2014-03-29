@@ -19,48 +19,50 @@ namespace Linq2Rest.Parser.Readers
 	using System.Linq.Expressions;
 	using System.Reflection;
 
-	internal static class ParameterValueReader
+	internal class ParameterValueReader
 	{
-		private static readonly IList<IValueExpressionFactory> ExpressionFactories;
+		private readonly IList<IValueExpressionFactory> _expressionFactories;
 
-		static ParameterValueReader()
+		public ParameterValueReader(IEnumerable<IValueExpressionFactory> expressionFactories)
 		{
-			ExpressionFactories = new List<IValueExpressionFactory>
-			                      	{
-										new EnumExpressionFactory(),
-										new BooleanExpressionFactory(), 
-										new ByteExpressionFactory(), 
-			                      		new GuidExpressionFactory(), 
-										new DateTimeExpressionFactory(), 
-										new TimeSpanExpressionFactory(), 
-										new DateTimeOffsetExpressionFactory(), 
-										new DecimalExpressionFactory(), 
-										new DoubleExpressionFactory(), 
-										new SingleExpressionFactory(), 
-										new ByteArrayExpressionFactory(), 
-										new StreamExpressionFactory(), 
-										new LongExpressionFactory(), 
-										new IntExpressionFactory(), 
-										new ShortExpressionFactory(), 
-										new UnsignedIntExpressionFactory(), 
-										new UnsignedLongExpressionFactory(), 
-										new UnsignedShortExpressionFactory()
-			                      	};
+			_expressionFactories = expressionFactories.Concat(
+				new IValueExpressionFactory[]
+				{
+					new EnumExpressionFactory(),
+					new BooleanExpressionFactory(),
+					new ByteExpressionFactory(),
+					new GuidExpressionFactory(),
+					new DateTimeExpressionFactory(),
+					new TimeSpanExpressionFactory(),
+					new DateTimeOffsetExpressionFactory(),
+					new DecimalExpressionFactory(),
+					new DoubleExpressionFactory(),
+					new SingleExpressionFactory(),
+					new ByteArrayExpressionFactory(),
+					new StreamExpressionFactory(),
+					new LongExpressionFactory(),
+					new IntExpressionFactory(),
+					new ShortExpressionFactory(),
+					new UnsignedIntExpressionFactory(),
+					new UnsignedLongExpressionFactory(),
+					new UnsignedShortExpressionFactory()
+				})
+				.ToList();
 		}
 
-		public static Expression Read(Type type, string token, IFormatProvider formatProvider)
+		public Expression Read(Type type, string token, IFormatProvider formatProvider)
 		{
 			Contract.Requires(token != null);
 			Contract.Requires(type != null);
 
-			var factory = ExpressionFactories.FirstOrDefault(x => x.Handles(type));
+			var factory = _expressionFactories.FirstOrDefault(x => x.Handles(type));
 
 			return factory == null
 				? GetKnownConstant(type, token, formatProvider)
 				: factory.Convert(token);
 		}
 
-		private static Expression GetKnownConstant(Type type, string token, IFormatProvider formatProvider)
+		private Expression GetKnownConstant(Type type, string token, IFormatProvider formatProvider)
 		{
 			Contract.Requires(token != null);
 			Contract.Requires(type != null);
@@ -94,7 +96,7 @@ namespace Linq2Rest.Parser.Readers
 			return GetParseExpression(token, formatProvider, type);
 		}
 
-		private static Expression GetParseExpression(string filter, IFormatProvider formatProvider, Type type)
+		private Expression GetParseExpression(string filter, IFormatProvider formatProvider, Type type)
 		{
 			Contract.Requires(type != null);
 
