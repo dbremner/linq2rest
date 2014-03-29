@@ -13,8 +13,10 @@
 namespace Linq2Rest.Provider
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq;
+	using Linq2Rest.Provider.Writers;
 
 	/// <summary>
 	/// Defines the RestContext.
@@ -27,14 +29,29 @@ namespace Linq2Rest.Provider
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RestContext{T}"/> class.
 		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="serializerFactory"></param>
+		/// <param name="client">The <see cref="IRestClient"/> to use for requests.</param>
+		/// <param name="serializerFactory">The <see cref="ISerializerFactory"/> to create <see cref="ISerializer{T}"/> to handling responses.</param>
 		public RestContext(IRestClient client, ISerializerFactory serializerFactory)
+			: this(client, serializerFactory, new MemberNameResolver(), new IntValueWriter[0])
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+		}
 
-			_getQueryable = new RestGetQueryable<T>(client, serializerFactory, typeof(T));
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RestContext{T}"/> class.
+		/// </summary>
+		/// <param name="client">The <see cref="IRestClient"/> to use for requests.</param>
+		/// <param name="serializerFactory">The <see cref="ISerializerFactory"/> to create <see cref="ISerializer{T}"/> to handling responses.</param>
+		/// <param name="memberNameResolver">The <see cref="IMemberNameResolver"/> to use for alias resolution.</param>
+		/// <param name="valueWriters">The <see cref="IEnumerable{IValueWriter}"/> for writing custom values.</param>
+		public RestContext(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters)
+		{
+			Contract.Requires<ArgumentNullException>(client != null);
+			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+			Contract.Requires<ArgumentNullException>(valueWriters != null);
+
+			_getQueryable = new RestGetQueryable<T>(client, serializerFactory, memberNameResolver, valueWriters, typeof(T));
 		}
 
 		/// <summary>

@@ -136,7 +136,7 @@ namespace Linq2Rest.Provider
 			var restQueryable = source as RestQueryableBase<TResult>;
 			if (restQueryable != null)
 			{
-				return new RestDeleteQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, source.Expression, typeof(TResult));
+				return new RestDeleteQueryable<TResult>(restQueryable.Client, restQueryable.SerializerFactory, restQueryable.MemberNameResolver, restQueryable.ValueWriters, source.Expression, typeof(TResult));
 			}
 
 			return source;

@@ -13,12 +13,14 @@
 namespace Linq2Rest.Reactive
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.CodeAnalysis;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
 	using System.Reactive.Concurrency;
 	using System.Reactive.Linq;
 	using Linq2Rest.Provider;
+	using Linq2Rest.Provider.Writers;
 
 	[ContractClass(typeof(RestQueryableProviderBaseContracts<>))]
 	internal abstract class RestQueryableProviderBase<TSource> : IQbservableProvider
@@ -29,16 +31,24 @@ namespace Linq2Rest.Reactive
 		private readonly IScheduler _subscriberScheduler;
 
 		public RestQueryableProviderBase(
-			IAsyncRestClientFactory asyncRestClient, 
-			ISerializerFactory serializerFactory, 
-			IScheduler subscriberScheduler, 
+			IAsyncRestClientFactory asyncRestClient,
+			ISerializerFactory serializerFactory,
+			IMemberNameResolver memberNameResolver,
+			IEnumerable<IValueWriter> valueWriters,
+			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
 		{
+			MemberNameResolver = memberNameResolver;
+			ValueWriters = valueWriters;
 			_asyncRestClient = asyncRestClient;
 			_serializerFactory = serializerFactory;
 			_subscriberScheduler = subscriberScheduler;
 			_observerScheduler = observerScheduler;
 		}
+
+		protected IMemberNameResolver MemberNameResolver { get; private set; }
+
+		protected IEnumerable<IValueWriter> ValueWriters { get; private set; }
 
 		protected IAsyncRestClientFactory AsyncRestClient
 		{
@@ -68,8 +78,8 @@ namespace Linq2Rest.Reactive
 							Contract.Assume(subscribeScheduler != null);
 
 							return CreateQbservable<TResult>(
-															 methodCallExpression.Arguments[0], 
-															 subscribeScheduler, 
+															 methodCallExpression.Arguments[0],
+															 subscribeScheduler,
 															 _observerScheduler);
 						}
 
@@ -84,8 +94,8 @@ namespace Linq2Rest.Reactive
 							Contract.Assume(observeScheduler != null);
 
 							return CreateQbservable<TResult>(
-															 methodCallExpression.Arguments[0], 
-															 _subscriberScheduler, 
+															 methodCallExpression.Arguments[0],
+															 _subscriberScheduler,
 															 observeScheduler);
 						}
 				}
@@ -103,6 +113,8 @@ namespace Linq2Rest.Reactive
 			Contract.Invariant(_serializerFactory != null);
 			Contract.Invariant(_subscriberScheduler != null);
 			Contract.Invariant(_observerScheduler != null);
+			Contract.Invariant(MemberNameResolver != null);
+			Contract.Invariant(ValueWriters != null);
 		}
 	}
 
@@ -110,11 +122,19 @@ namespace Linq2Rest.Reactive
 	[ContractClassFor(typeof(RestQueryableProviderBase<>))]
 	internal abstract class RestQueryableProviderBaseContracts<TSource> : RestQueryableProviderBase<TSource>
 	{
-		protected RestQueryableProviderBaseContracts(IAsyncRestClientFactory asyncRestClient, ISerializerFactory serializerFactory, IScheduler subscriberScheduler, IScheduler observerScheduler)
-			: base(asyncRestClient, serializerFactory, subscriberScheduler, observerScheduler)
+		protected RestQueryableProviderBaseContracts(
+			IAsyncRestClientFactory asyncRestClient,
+			ISerializerFactory serializerFactory,
+			IMemberNameResolver memberNameResolver,
+			IEnumerable<IValueWriter> valueWriters,
+			IScheduler subscriberScheduler,
+			IScheduler observerScheduler)
+			: base(asyncRestClient, serializerFactory, memberNameResolver, valueWriters, subscriberScheduler, observerScheduler)
 		{
 			Contract.Requires(asyncRestClient != null);
 			Contract.Requires(serializerFactory != null);
+			Contract.Requires(memberNameResolver != null);
+			Contract.Requires(valueWriters != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
 		}
@@ -123,7 +143,7 @@ namespace Linq2Rest.Reactive
 		{
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(observerScheduler != null);
-
+			Contract.Ensures(Contract.Result<IQbservable<TResult>>() != null);
 			throw new NotImplementedException();
 		}
 	}

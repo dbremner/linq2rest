@@ -13,10 +13,11 @@
 namespace Linq2Rest.Provider
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.CodeAnalysis;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
-	using Linq2Rest.Parser;
+	using Linq2Rest.Provider.Writers;
 
 	/// <summary>
 	/// Converts LINQ expressions to OData queries.
@@ -29,8 +30,18 @@ namespace Linq2Rest.Provider
 		/// Initializes a new instance of the <see cref="ODataExpressionConverter"/> class.
 		/// </summary>
 		public ODataExpressionConverter()
+			: this(new IntValueWriter[0])
 		{
-			_writer = new ExpressionWriter(new MemberNameResolver());
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ODataExpressionConverter"/> class.
+		/// </summary>
+		/// <param name="valueWriters">The custom value writers to use.</param>
+		/// <param name="memberNameResolver">The custom <see cref="IMemberNameResolver"/> to use.</param>
+		public ODataExpressionConverter(IEnumerable<IValueWriter> valueWriters, IMemberNameResolver memberNameResolver = null)
+		{
+			_writer = new ExpressionWriter(memberNameResolver ?? new MemberNameResolver(), valueWriters);
 		}
 
 		/// <summary>

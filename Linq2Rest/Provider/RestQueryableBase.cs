@@ -18,16 +18,21 @@ namespace Linq2Rest.Provider
 	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using Linq2Rest.Provider.Writers;
 
 	internal class RestQueryableBase<T> : IOrderedQueryable<T>, IDisposable
 	{
-		public RestQueryableBase(IRestClient client, ISerializerFactory serializerFactory)
+		public RestQueryableBase(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters)
 		{
 			Contract.Requires<ArgumentException>(client != null);
 			Contract.Requires<ArgumentException>(serializerFactory != null);
+			Contract.Requires<ArgumentException>(memberNameResolver != null);
+			Contract.Requires<ArgumentException>(valueWriters != null);
 
 			Client = client;
 			SerializerFactory = serializerFactory;
+			MemberNameResolver = memberNameResolver;
+			ValueWriters = valueWriters.ToArray();
 		}
 
 		/// <summary>
@@ -51,6 +56,10 @@ namespace Linq2Rest.Provider
 		internal IRestClient Client { get; private set; }
 
 		internal ISerializerFactory SerializerFactory { get; set; }
+
+		internal IMemberNameResolver MemberNameResolver { get; private set; }
+
+		internal IValueWriter[] ValueWriters { get; private set; }
 
 		public void Dispose()
 		{

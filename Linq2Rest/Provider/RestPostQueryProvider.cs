@@ -19,13 +19,14 @@ namespace Linq2Rest.Provider
 	using System.IO;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using Linq2Rest.Provider.Writers;
 
 	internal class RestPostQueryProvider<T> : RestQueryProvider<T>
 	{
 		private readonly Stream _inputData;
 
-		public RestPostQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, Stream inputData, Type sourceType)
-			: base(client, serializerFactory, expressionProcessor, sourceType)
+		public RestPostQueryProvider(IRestClient client, ISerializerFactory serializerFactory, IExpressionProcessor expressionProcessor, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters, Stream inputData, Type sourceType)
+			: base(client, serializerFactory, expressionProcessor, memberNameResolver, valueWriters, sourceType)
 		{
 			Contract.Requires(client != null);
 			Contract.Requires(serializerFactory != null);
@@ -35,7 +36,7 @@ namespace Linq2Rest.Provider
 			_inputData = inputData;
 		}
 
-		protected override Func<IRestClient, ISerializerFactory, Expression, Type, IQueryable<TResult>> CreateQueryable<TResult>()
+		protected override Func<IRestClient, ISerializerFactory, IMemberNameResolver, IEnumerable<IValueWriter>, Expression, Type, IQueryable<TResult>> CreateQueryable<TResult>()
 		{
 			return InnerCreateQueryable<TResult>;
 		}
@@ -63,9 +64,9 @@ namespace Linq2Rest.Provider
 			return resultSet;
 		}
 
-		private IQueryable<TResult> InnerCreateQueryable<TResult>(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Type sourceType)
+		private IQueryable<TResult> InnerCreateQueryable<TResult>(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters, Expression expression, Type sourceType)
 		{
-			return new RestDeleteQueryable<TResult>(client, serializerFactory, expression, sourceType);
+			return new RestDeleteQueryable<TResult>(client, serializerFactory, memberNameResolver, valueWriters, expression, sourceType);
 		}
 
 		[ContractInvariantMethod]

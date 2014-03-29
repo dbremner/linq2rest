@@ -13,37 +13,39 @@
 namespace Linq2Rest.Provider
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
+	using Linq2Rest.Provider.Writers;
 
 	internal class RestGetQueryable<T> : RestQueryableBase<T>
 	{
 		private readonly RestGetQueryProvider<T> _restGetQueryProvider;
 
-		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, Type sourceType)
-			: this(client, serializerFactory, new MemberNameResolver(), sourceType)
-		{
-		}
-
-		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, Type sourceType)
-			: base(client, serializerFactory)
+		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters, Type sourceType)
+			: base(client, serializerFactory, memberNameResolver, valueWriters)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
 			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
+			Contract.Requires<ArgumentNullException>(valueWriters != null);
 
-			_restGetQueryProvider = new RestGetQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter(memberNameResolver), memberNameResolver), sourceType);
+			_restGetQueryProvider = new RestGetQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter(MemberNameResolver, ValueWriters), MemberNameResolver), MemberNameResolver, ValueWriters, sourceType);
 			Provider = _restGetQueryProvider;
 			Expression = Expression.Constant(this);
 		}
 
-		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Type sourceType)
-			: this(client, serializerFactory, sourceType)
+		public RestGetQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters, Type sourceType, Expression expression)
+			: base(client, serializerFactory, memberNameResolver, valueWriters)
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
+			Contract.Requires<ArgumentNullException>(valueWriters != null);
 			Contract.Requires<ArgumentNullException>(expression != null);
 
+			_restGetQueryProvider = new RestGetQueryProvider<T>(client, serializerFactory, new ExpressionProcessor(new ExpressionWriter(MemberNameResolver, ValueWriters), MemberNameResolver), MemberNameResolver, ValueWriters, sourceType);
+			Provider = _restGetQueryProvider;
 			Expression = expression;
 		}
 
