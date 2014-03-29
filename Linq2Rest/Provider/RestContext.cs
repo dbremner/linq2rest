@@ -43,6 +43,20 @@ namespace Linq2Rest.Provider
 		/// </summary>
 		/// <param name="client">The <see cref="IRestClient"/> to use for requests.</param>
 		/// <param name="serializerFactory">The <see cref="ISerializerFactory"/> to create <see cref="ISerializer{T}"/> to handling responses.</param>
+		/// <param name="valueWriters">The <see cref="IEnumerable{IValueWriter}"/> for writing custom values.</param>
+		public RestContext(IRestClient client, ISerializerFactory serializerFactory, IEnumerable<IValueWriter> valueWriters)
+			: this(client, serializerFactory, new MemberNameResolver(), valueWriters)
+		{
+			Contract.Requires<ArgumentNullException>(client != null);
+			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+			Contract.Requires<ArgumentNullException>(valueWriters != null);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RestContext{T}"/> class.
+		/// </summary>
+		/// <param name="client">The <see cref="IRestClient"/> to use for requests.</param>
+		/// <param name="serializerFactory">The <see cref="ISerializerFactory"/> to create <see cref="ISerializer{T}"/> to handling responses.</param>
 		/// <param name="memberNameResolver">The <see cref="IMemberNameResolver"/> to use for alias resolution.</param>
 		/// <param name="valueWriters">The <see cref="IEnumerable{IValueWriter}"/> for writing custom values.</param>
 		public RestContext(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters)
