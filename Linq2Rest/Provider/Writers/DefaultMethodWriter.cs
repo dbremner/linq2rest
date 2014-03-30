@@ -46,5 +46,11 @@ namespace Linq2Rest.Provider.Writers
 
 			return getterLambda();
 		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_valueWriter != null);
+		}
 	}
 }

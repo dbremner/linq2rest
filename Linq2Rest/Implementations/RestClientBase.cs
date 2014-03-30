@@ -33,6 +33,7 @@ namespace Linq2Rest.Implementations
 		protected RestClientBase(Uri uri, string acceptHeader)
 			: this(uri, acceptHeader, new HttpRequestFactory())
 		{
+			Contract.Requires<ArgumentNullException>(uri != null);
 			Contract.Requires<ArgumentException>(uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 		}
 
@@ -140,6 +141,8 @@ namespace Linq2Rest.Implementations
 
 		private Stream GetResponseStream(Uri uri, HttpMethod method, Stream requestStream = null)
 		{
+			Contract.Requires(uri != null);
+
 			var request = _httpRequestFactory.Create(uri, method, _acceptHeader, _acceptHeader);
 
 			if (requestStream != null)
@@ -154,6 +157,7 @@ namespace Linq2Rest.Implementations
 		private void Invariants()
 		{
 			Contract.Invariant(_acceptHeader != null);
+			Contract.Invariant(_httpRequestFactory != null);
 		}
 	}
 }

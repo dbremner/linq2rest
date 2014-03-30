@@ -55,6 +55,9 @@ namespace Linq2Rest
 
 		public static Tuple<Type, Expression> CreateMemberExpression(this IMemberNameResolver memberNameResolver, ParameterExpression parameter, IEnumerable<string> propertyChain, Type parentType, Expression propertyExpression)
 		{
+			Contract.Requires(parentType != null);
+			Contract.Requires(propertyChain != null);
+
 			foreach (var propertyName in propertyChain)
 			{
 				var name = propertyName;
@@ -148,6 +151,8 @@ namespace Linq2Rest
 
 		private static Type GetMemberType(MemberInfo member)
 		{
+			Contract.Requires(member != null);
+
 			switch (member.MemberType)
 			{
 				case MemberTypes.Field:

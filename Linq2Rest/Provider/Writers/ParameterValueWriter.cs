@@ -14,6 +14,7 @@ namespace Linq2Rest.Provider.Writers
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
 	using System.Globalization;
 	using System.Linq;
 
@@ -27,6 +28,8 @@ namespace Linq2Rest.Provider.Writers
 
 		public ParameterValueWriter(IEnumerable<IValueWriter> valueWriters)
 		{
+			Contract.Requires(valueWriters != null);
+
 			_valueWriters = valueWriters.Concat(
 				new IValueWriter[]
 				{
@@ -101,6 +104,12 @@ namespace Linq2Rest.Provider.Writers
 #endif
 
 			return value.ToString();
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_valueWriters != null);
 		}
 	}
 }

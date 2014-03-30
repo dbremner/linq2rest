@@ -25,6 +25,8 @@ namespace Linq2Rest.Parser.Readers
 
 		public ParameterValueReader(IEnumerable<IValueExpressionFactory> expressionFactories)
 		{
+			Contract.Requires(expressionFactories != null);
+
 			_expressionFactories = expressionFactories.Concat(
 				new IValueExpressionFactory[]
 				{
@@ -132,6 +134,12 @@ namespace Linq2Rest.Parser.Readers
 			}
 
 			return null;
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_expressionFactories != null);
 		}
 	}
 }

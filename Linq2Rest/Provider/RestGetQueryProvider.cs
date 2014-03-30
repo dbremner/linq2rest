@@ -28,6 +28,7 @@ namespace Linq2Rest.Provider
 			Contract.Requires(client != null);
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(expressionProcessor != null);
+			Contract.Requires(valueWriters != null);
 			Contract.Requires(sourceType != null);
 		}
 
@@ -62,6 +63,13 @@ namespace Linq2Rest.Provider
 
 		private IQueryable<TResult> InnerCreateQueryable<TResult>(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters, Expression expression, Type sourceType)
 		{
+			Contract.Requires(client != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(memberNameResolver != null);
+			Contract.Requires(valueWriters != null);
+			Contract.Requires(expression != null);
+			Contract.Requires(sourceType != null);
+
 			return new RestGetQueryable<TResult>(
 				client,
 				serializerFactory,

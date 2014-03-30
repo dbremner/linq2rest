@@ -32,7 +32,7 @@ namespace Linq2Rest.Reactive
 			ISerializerFactory serializerFactory,
 			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
-			: this(trigger, asyncRestClient, serializerFactory, new MemberNameResolver(), new IntValueWriter[0], subscriberScheduler, observerScheduler)
+			: this(trigger, asyncRestClient, serializerFactory, new MemberNameResolver(), new IValueWriter[0], subscriberScheduler, observerScheduler)
 		{
 			Contract.Requires(trigger != null);
 			Contract.Requires(asyncRestClient != null);
@@ -58,6 +58,7 @@ namespace Linq2Rest.Reactive
 			Contract.Requires(serializerFactory != null);
 			Contract.Requires(subscriberScheduler != null);
 			Contract.Requires(memberNameResolver != null);
+			Contract.Requires(valueWriters != null);
 			Contract.Requires(observerScheduler != null);
 
 			_trigger = trigger;

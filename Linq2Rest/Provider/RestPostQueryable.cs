@@ -16,7 +16,6 @@ namespace Linq2Rest.Provider
 	using System.Collections.Generic;
 	using System.Diagnostics.Contracts;
 	using System.IO;
-	using System.Linq;
 	using System.Linq.Expressions;
 	using Linq2Rest.Provider.Writers;
 
@@ -25,19 +24,23 @@ namespace Linq2Rest.Provider
 		private readonly RestPostQueryProvider<T> _restPostQueryProvider;
 
 		public RestPostQueryable(IRestClient client, ISerializerFactory serializerFactory, Expression expression, Stream inputData, Type sourceType)
-			: this(client, serializerFactory, new MemberNameResolver(), new IntValueWriter[0], expression, inputData, sourceType)
+			: this(client, serializerFactory, new MemberNameResolver(), new IValueWriter[0], expression, inputData, sourceType)
 		{
+			Contract.Requires(client != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(expression != null);
+			Contract.Requires(inputData != null);
 		}
 
 		public RestPostQueryable(IRestClient client, ISerializerFactory serializerFactory, IMemberNameResolver memberNameResolver, IEnumerable<IValueWriter> valueWriters, Expression expression, Stream inputData, Type sourceType)
 			: base(client, serializerFactory, memberNameResolver, valueWriters)
 		{
-			Contract.Requires<ArgumentNullException>(client != null);
-			Contract.Requires<ArgumentNullException>(serializerFactory != null);
-			Contract.Requires<ArgumentNullException>(expression != null);
-			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
-			Contract.Requires<ArgumentNullException>(valueWriters != null);
-			Contract.Requires<ArgumentNullException>(inputData != null);
+			Contract.Requires(client != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(expression != null);
+			Contract.Requires(memberNameResolver != null);
+			Contract.Requires(valueWriters != null);
+			Contract.Requires(inputData != null);
 
 			_restPostQueryProvider = new RestPostQueryProvider<T>(
 				client,

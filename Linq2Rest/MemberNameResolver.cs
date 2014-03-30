@@ -43,6 +43,8 @@ namespace Linq2Rest
 
 		private static MemberInfo ResolveAliasInternal(Type type, string alias)
 		{
+			Contract.Requires(type != null);
+
 			var member = GetMembers(type)
 				.Select(
 					x =>
@@ -50,7 +52,7 @@ namespace Linq2Rest
 						if (HasAliasAttribute(alias, x))
 						{
 							return x.MemberType == MemberTypes.Field
-								? CheckFrontingProperty(x, alias)
+								? CheckFrontingProperty(x)
 								: x;
 						}
 
@@ -66,9 +68,11 @@ namespace Linq2Rest
 			return member;
 		}
 
-		private static bool HasAliasAttribute(string alias, MemberInfo x)
+		private static bool HasAliasAttribute(string alias, MemberInfo member)
 		{
-			var attributes = x.GetCustomAttributes(true);
+			Contract.Requires(member != null);
+
+			var attributes = member.GetCustomAttributes(true);
 			var dataMember = attributes.OfType<DataMemberAttribute>()
 				.FirstOrDefault();
 			if (dataMember != null && dataMember.Name == alias)
@@ -92,8 +96,10 @@ namespace Linq2Rest
 			return false;
 		}
 
-		private static MemberInfo CheckFrontingProperty(MemberInfo field, string alias)
+		private static MemberInfo CheckFrontingProperty(MemberInfo field)
 		{
+			Contract.Requires(field != null);
+
 			var declaringType = field.DeclaringType;
 			var correspondingProperty = declaringType.GetProperties()
 				.FirstOrDefault(x => string.Equals(x.Name, field.Name.Replace("_", string.Empty), StringComparison.InvariantCultureIgnoreCase));
@@ -103,6 +109,8 @@ namespace Linq2Rest
 
 		private static IEnumerable<MemberInfo> GetMembers(Type type)
 		{
+			Contract.Requires(type != null);
+
 #if NETFX_CORE
 			var typeInfo = type.GetTypeInfo();
 			if (typeInfo.IsInterface)
