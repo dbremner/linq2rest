@@ -297,6 +297,8 @@ namespace Linq2Rest.Parser
 
 		private Expression GetBooleanExpression(string filter, IFormatProvider formatProvider)
 		{
+			Contract.Requires(filter != null);
+
 			var booleanExpression = _valueReader.Read(typeof(bool), filter, formatProvider) as ConstantExpression;
 			return booleanExpression != null && booleanExpression.Value != null
 				? booleanExpression
@@ -305,6 +307,8 @@ namespace Linq2Rest.Parser
 
 		private Expression GetParameterExpression(string filter, Type type, IFormatProvider formatProvider)
 		{
+			Contract.Requires(filter != null);
+
 			return type != null
 				? _valueReader.Read(type, filter, formatProvider)
 				: GetBooleanExpression(filter, formatProvider);
@@ -581,7 +585,14 @@ namespace Linq2Rest.Parser
 				type ?? GetExpressionType<T>(functionTokens, sourceParameter, lambdaParameters),
 				formatProvider);
 
-			var right = CreateExpression<T>(functionTokens.Right, sourceParameter, lambdaParameters, GetFunctionParameterType(functionTokens.Operation) ?? left.Type, formatProvider);
+			var right = left == null
+							? null
+							: CreateExpression<T>(
+								functionTokens.Right,
+								sourceParameter,
+								lambdaParameters,
+								GetFunctionParameterType(functionTokens.Operation) ?? left.Type,
+								formatProvider);
 
 			return left == null
 				? null

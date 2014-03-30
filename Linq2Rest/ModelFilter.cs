@@ -43,7 +43,7 @@ namespace Linq2Rest
 				? model.AsQueryable().Where(_filterExpression)
 				: model.AsQueryable();
 
-			Contract.Assume(result != null);
+			Contract.Assert(result != null);
 
 			if (_sortDescriptions != null && _sortDescriptions.Any())
 			{
@@ -72,6 +72,8 @@ namespace Linq2Rest
 
 			if (_skip > 0)
 			{
+				Contract.Assume(result != null);
+
 				result = result.Skip(_skip);
 			}
 

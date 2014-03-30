@@ -38,6 +38,13 @@ namespace Linq2Rest.Reactive
 			IScheduler subscriberScheduler,
 			IScheduler observerScheduler)
 		{
+			Contract.Requires(asyncRestClient != null);
+			Contract.Requires(serializerFactory != null);
+			Contract.Requires(memberNameResolver != null);
+			Contract.Requires(valueWriters != null);
+			Contract.Requires(subscriberScheduler != null);
+			Contract.Requires(observerScheduler != null);
+
 			MemberNameResolver = memberNameResolver;
 			ValueWriters = valueWriters;
 			_asyncRestClient = asyncRestClient;

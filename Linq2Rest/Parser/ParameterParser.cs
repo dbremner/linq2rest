@@ -56,6 +56,7 @@ namespace Linq2Rest.Parser
 			: this(new FilterExpressionFactory(memberNameResolver, valueExpressionFactories), new SortExpressionFactory(memberNameResolver), new SelectExpressionFactory<T>(memberNameResolver, new RuntimeTypeProvider(memberNameResolver)))
 		{
 			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
+			Contract.Requires<ArgumentNullException>(valueExpressionFactories != null);
 		}
 
 		/// <summary>

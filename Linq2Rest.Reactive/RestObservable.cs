@@ -110,6 +110,7 @@ namespace Linq2Rest.Reactive
 			Contract.Invariant(_restClientFactory != null);
 			Contract.Invariant(_serializerFactory != null);
 			Contract.Invariant(_memberNameResolver != null);
+			Contract.Invariant(_valueWriters != null);
 		}
 	}
 }

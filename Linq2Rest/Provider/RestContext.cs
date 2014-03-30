@@ -63,6 +63,7 @@ namespace Linq2Rest.Provider
 		{
 			Contract.Requires<ArgumentNullException>(client != null);
 			Contract.Requires<ArgumentNullException>(serializerFactory != null);
+			Contract.Requires<ArgumentNullException>(memberNameResolver != null);
 			Contract.Requires<ArgumentNullException>(valueWriters != null);
 
 			_getQueryable = new RestGetQueryable<T>(client, serializerFactory, memberNameResolver, valueWriters, typeof(T));

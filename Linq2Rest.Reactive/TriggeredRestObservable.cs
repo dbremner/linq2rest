@@ -70,6 +70,11 @@ namespace Linq2Rest.Reactive
 		/// <param name="observer">The object that is to receive notifications.</param>
 		public override IDisposable Subscribe(IObserver<T> observer)
 		{
+			if (observer == null)
+			{
+				throw new ArgumentNullException("observer");
+			}
+
 			if (_internalSubscription != null)
 			{
 				_internalSubscription.Dispose();
