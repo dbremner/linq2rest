@@ -51,9 +51,13 @@ namespace Linq2Rest
 					{
 						if (HasAliasAttribute(alias, x))
 						{
+#if !NETFX_CORE
 							return x.MemberType == MemberTypes.Field
 								? CheckFrontingProperty(x)
 								: x;
+#else
+							return x is FieldInfo ? CheckFrontingProperty(x) : x;
+#endif
 						}
 
 						if (x.Name == alias)
@@ -101,8 +105,12 @@ namespace Linq2Rest
 			Contract.Requires(field != null);
 
 			var declaringType = field.DeclaringType;
+#if !NETFX_CORE
 			var correspondingProperty = declaringType.GetProperties()
-				.FirstOrDefault(x => string.Equals(x.Name, field.Name.Replace("_", string.Empty), StringComparison.InvariantCultureIgnoreCase));
+#else
+			var correspondingProperty = declaringType.GetTypeInfo().DeclaredProperties
+#endif
+				.FirstOrDefault(x => string.Equals(x.Name, field.Name.Replace("_", string.Empty), StringComparison.OrdinalIgnoreCase));
 
 			return correspondingProperty ?? field;
 		}

@@ -19,6 +19,9 @@ namespace Linq2Rest.Provider
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using Linq2Rest.Provider.Writers;
+#if NETFX_CORE
+	using Linq2Rest.Reactive.Provider;
+#endif
 #if SILVERLIGHT
 	using Linq2Rest.Reactive.Provider;
 #endif

@@ -311,7 +311,11 @@ namespace Linq2Rest.Reactive
 
 			if (selectFunction != null)
 			{
+#if !NETFX_CORE
 				var properties = sourceType.GetProperties();
+#else
+				var properties = sourceType.GetTypeInfo().DeclaredProperties;
+#endif
 				var members = selectFunction.Members
 					.Select(x => properties.FirstOrDefault(y => y.Name == x.Name) ?? x)
 										 .Select(x => _memberNameResolver.ResolveName(x))
