@@ -177,6 +177,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\Linq2Rest.Reactive.WinPhone\Provider\ExpressionExtensions.cs">
+      <Link>Provider\ExpressionExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Linq2Rest.Reactive\AsyncExpressionProcessor.cs">
       <Link>AsyncExpressionProcessor.cs</Link>
     </Compile>
@@ -201,8 +204,8 @@
     <Compile Include="..\Linq2Rest.Reactive\InnerRestObservableBase.cs">
       <Link>InnerRestObservableBase.cs</Link>
     </Compile>
-    <Compile Include="..\Linq2Rest.Reactive\InteralObservableExtensions.cs">
-      <Link>InteralObservableExtensions.cs</Link>
+    <Compile Include="..\Linq2Rest.Reactive\InternalObservableExtensions.cs">
+      <Link>InternalObservableExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Linq2Rest.Reactive\ObservableExtensions.cs">
       <Link>ObservableExtensions.cs</Link>
