@@ -53,6 +53,11 @@ namespace Linq2Rest
 			return new MemoryStream(Encoding.UTF8.GetBytes(input ?? String.Empty));
 		}
 
+		public static IEnumerable<T> Replace<T>(this IEnumerable<T> items, Func<T, bool> predicate, T replacement)
+		{
+			return items.Select(item => predicate(item) ? replacement : item);
+		}
+
 		public static Tuple<Type, Expression> CreateMemberExpression(this IMemberNameResolver memberNameResolver, ParameterExpression parameter, IEnumerable<string> propertyChain, Type parentType, Expression propertyExpression)
 		{
 			Contract.Requires(parentType != null);

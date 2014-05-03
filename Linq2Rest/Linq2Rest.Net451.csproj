@@ -146,6 +146,7 @@
     <Compile Include="Implementations\XmlDataContractSerializerFactory.cs" />
     <Compile Include="Implementations\XmlRestClient.cs" />
     <Compile Include="Implementations\XmlSerializerFactory.cs" />
+    <Compile Include="IPredicateConverter.cs" />
     <Compile Include="IRuntimeTypeProvider.cs" />
     <Compile Include="MemberNameResolver.cs" />
     <Compile Include="MethodProvider.cs" />
@@ -184,6 +185,8 @@
     <Compile Include="Parser\SelectExpressionFactory.cs" />
     <Compile Include="Parser\TokenOperatorExtensions.cs" />
     <Compile Include="Parser\TokenSet.cs" />
+    <Compile Include="PredicateConverter.cs" />
+    <Compile Include="PredicateMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser\SortDescription.cs" />
     <Compile Include="Parser\SortExpressionFactory.cs" />

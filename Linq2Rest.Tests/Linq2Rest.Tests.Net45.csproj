@@ -165,6 +165,7 @@
     <Compile Include="Parser\Readers\UnsignedIntExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\UnsignedLongExpressionFactoryTests.cs" />
     <Compile Include="Parser\Readers\UnsignedShortExpressionFactoryTests.cs" />
+    <Compile Include="PredicateMapperTests.cs" />
     <Compile Include="Provider\ChildDto.cs" />
     <Compile Include="Provider\CollectionDto.cs" />
     <Compile Include="Provider\ComplexDto.cs" />
