@@ -178,7 +178,7 @@ namespace Linq2Rest
 			protected override Expression VisitMember(MemberExpression node)
 			{
 				var memberInfo = node.Member;
-				var converter = GetConverter(memberInfo.DeclaringType);
+				var converter = GetConverter(node.Expression.Type);
 				if (converter == null)
 				{
 					return base.VisitMember(node);

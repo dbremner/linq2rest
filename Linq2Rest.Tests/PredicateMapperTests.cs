@@ -40,6 +40,7 @@ namespace Linq2Rest.Tests
 				{
 					var converter = PredicateMapper.Map<InDto, OutDto>()
 						.And<ChildInDto, ChildOutDto>();
+
 					Expression<Func<InDto, bool>> expression = x => x.Children.Any(y => y.Value == "foo");
 
 					var converted = converter.Convert<InDto, OutDto>(expression);
