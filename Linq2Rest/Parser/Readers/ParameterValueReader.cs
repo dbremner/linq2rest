@@ -64,41 +64,7 @@ namespace Linq2Rest.Parser.Readers
 				: factory.Convert(token);
 		}
 
-		private Expression GetKnownConstant(Type type, string token, IFormatProvider formatProvider)
-		{
-			Contract.Requires(token != null);
-			Contract.Requires(type != null);
-
-			if (type.IsEnum)
-			{
-				var enumValue = Enum.Parse(type, token.Replace("'", string.Empty), true);
-				return Expression.Constant(enumValue);
-			}
-
-			if (typeof(IConvertible).IsAssignableFrom(type))
-			{
-				return Expression.Constant(Convert.ChangeType(token, type, formatProvider), type);
-			}
-
-			if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
-			{
-				if (string.Equals("null", token, StringComparison.InvariantCultureIgnoreCase))
-				{
-					return Expression.Constant(null);
-				}
-
-				var genericTypeArgument = type.GetGenericArguments()[0];
-				var value = Read(genericTypeArgument, token, formatProvider);
-				if (value != null)
-				{
-					return Expression.Convert(value, type);
-				}
-			}
-
-			return GetParseExpression(token, formatProvider, type);
-		}
-
-		private Expression GetParseExpression(string filter, IFormatProvider formatProvider, Type type)
+		private static Expression GetParseExpression(string filter, IFormatProvider formatProvider, Type type)
 		{
 			Contract.Requires(type != null);
 
@@ -134,6 +100,40 @@ namespace Linq2Rest.Parser.Readers
 			}
 
 			return null;
+		}
+
+		private Expression GetKnownConstant(Type type, string token, IFormatProvider formatProvider)
+		{
+			Contract.Requires(token != null);
+			Contract.Requires(type != null);
+
+			if (type.IsEnum)
+			{
+				var enumValue = Enum.Parse(type, token.Replace("'", string.Empty), true);
+				return Expression.Constant(enumValue);
+			}
+
+			if (typeof(IConvertible).IsAssignableFrom(type))
+			{
+				return Expression.Constant(Convert.ChangeType(token, type, formatProvider), type);
+			}
+
+			if (type.IsGenericType && typeof(Nullable<>).IsAssignableFrom(type.GetGenericTypeDefinition()))
+			{
+				if (string.Equals("null", token, StringComparison.InvariantCultureIgnoreCase))
+				{
+					return Expression.Constant(null);
+				}
+
+				var genericTypeArgument = type.GetGenericArguments()[0];
+				var value = Read(genericTypeArgument, token, formatProvider);
+				if (value != null)
+				{
+					return Expression.Convert(value, type);
+				}
+			}
+
+			return GetParseExpression(token, formatProvider, type);
 		}
 
 		[ContractInvariantMethod]

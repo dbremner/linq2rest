@@ -21,7 +21,7 @@ namespace Linq2Rest.Parser
 	/// </summary>
 	/// <typeparam name="T">The <see cref="Type"/> of object to parse parameters for.</typeparam>
 	[ContractClass(typeof(ParameterParserContracts<>))]
-	public interface IParameterParser<in T>
+	public interface IParameterParser<T>
 	{
 		/// <summary>
 		/// Parses the passes parameters into a <see cref="ModelFilter{T}"/>.

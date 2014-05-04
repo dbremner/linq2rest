@@ -14,6 +14,8 @@ namespace Linq2Rest
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.Contracts;
 	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
@@ -25,9 +27,9 @@ namespace Linq2Rest
 	{
 		private readonly IList<IPredicateConverter> _converters;
 
-		private PredicateMapper(params IPredicateConverter[] converters)
+		private PredicateMapper(IPredicateConverter converter)
 		{
-			_converters = converters.ToList();
+			_converters = new List<IPredicateConverter> { converter };
 		}
 
 		/// <summary>
@@ -38,6 +40,8 @@ namespace Linq2Rest
 		/// <returns>An instance of a <see cref="PredicateMapper"/></returns>
 		public static PredicateMapper Map<TSource, TTarget>()
 		{
+			Contract.Ensures(Contract.Result<PredicateMapper>() != null);
+
 			return new PredicateMapper(new PredicateConverter<TSource, TTarget>());
 		}
 
@@ -46,9 +50,12 @@ namespace Linq2Rest
 		/// </summary>
 		/// <typeparam name="TSource">The source parameter type.</typeparam>
 		/// <typeparam name="TTarget">The target parameter type.</typeparam>
-		/// <returns>An instance of a <see cref="PredicateMapper"/></returns>
+		/// <returns>An instance of a <see cref="PredicateMapper"/>.</returns>
 		public PredicateMapper And<TSource, TTarget>()
 		{
+
+			Contract.Ensures(Contract.Result<PredicateMapper>() != null);
+
 			if (_converters.All(x => x.SourceType != typeof(TSource)))
 			{
 				_converters.Add(new PredicateConverter<TSource, TTarget>());
@@ -67,20 +74,25 @@ namespace Linq2Rest
 		/// <typeparam name="TValue">The return type for the member.</typeparam>
 		/// <returns>An instance of a <see cref="PredicateMapper"/></returns>
 		/// <exception cref="ArgumentException">Thrown if the passed expression does not map to a member.</exception>
+		[SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Deliberate API.")]
 		public PredicateMapper MapMember<TSource, TTarget, TValue>(
 			Expression<Func<TSource, TValue>> source,
 			Expression<Func<TTarget, TValue>> result)
 		{
+			Contract.Requires<ArgumentNullException>(result != null);
+			Contract.Requires<ArgumentNullException>(source != null);
+			Contract.Ensures(Contract.Result<PredicateMapper>() != null);
+
 			var memberBody = result.Body as MemberExpression;
 			if (memberBody == null)
 			{
-				throw new ArgumentException("result");
+				throw new ArgumentException("Expression should access member.", "result");
 			}
 
 			var sourceBody = source.Body as MemberExpression;
 			if (sourceBody == null)
 			{
-				throw new ArgumentException("source");
+				throw new ArgumentException("Expression should access member.", "source");
 			}
 
 			var resultMember = memberBody.Member;
@@ -111,6 +123,12 @@ namespace Linq2Rest
 
 			var expression = visitor.Visit(predicate);
 			return (Expression<Func<TTarget, bool>>)expression;
+		}
+
+		[ContractInvariantMethod]
+		private void Invariants()
+		{
+			Contract.Invariant(_converters != null);
 		}
 
 		private class InnerVisitor : ExpressionVisitor
@@ -215,24 +233,24 @@ namespace Linq2Rest
 					methodInfo.GetParameters().Select(x => x.ParameterType).ToArray());
 			}
 
-			private IPredicateConverter GetConverter(Type type)
-			{
-				var converter = _converters.FirstOrDefault(x => x.SourceType == type);
-				return converter;
-			}
-
-			private MemberInfo GetSubstitution(IPredicateConverter converter, MethodInfo method)
+			private static MemberInfo GetSubstitution(IPredicateConverter converter, MethodInfo method)
 			{
 				return converter.Substitutions.ContainsKey(method)
 						   ? converter.Substitutions[method]
 						   : GetDefaultMethodSubstitution(converter.SourceType, converter.TargetType, method);
 			}
 
-			private MemberInfo GetSubstitution(IPredicateConverter converter, MemberInfo member)
+			private static MemberInfo GetSubstitution(IPredicateConverter converter, MemberInfo member)
 			{
 				return converter.Substitutions.ContainsKey(member)
 						   ? converter.Substitutions[member]
 						   : GetDefaultMemberSubstitution(converter.TargetType, member);
+			}
+
+			private IPredicateConverter GetConverter(Type type)
+			{
+				var converter = _converters.FirstOrDefault(x => x.SourceType == type);
+				return converter;
 			}
 		}
 	}

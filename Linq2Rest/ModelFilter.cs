@@ -34,7 +34,51 @@ namespace Linq2Rest
 			_top = top;
 			_filterExpression = filterExpression;
 			_selectExpression = selectExpression;
-			_sortDescriptions = sortDescriptions;
+			_sortDescriptions = sortDescriptions ?? Enumerable.Empty<SortDescription<T>>();
+		}
+
+		/// <summary>
+		/// Gets the amount of items to take.
+		/// </summary>
+		public int TakeCount
+		{
+			get
+			{
+				return _top;
+			}
+		}
+
+		/// <summary>
+		/// Gets the filter expression.
+		/// </summary>
+		public Expression<Func<T, bool>> FilterExpression
+		{
+			get
+			{
+				return _filterExpression;
+			}
+		}
+
+		/// <summary>
+		/// Gets the amount of items to skip.
+		/// </summary>
+		public int SkipCount
+		{
+			get
+			{
+				return _skip;
+			}
+		}
+
+		/// <summary>
+		/// Gets the <see cref="SortDescription{T}"/> for the sequence.
+		/// </summary>
+		public IEnumerable<SortDescription<T>> SortDescriptions
+		{
+			get
+			{
+				return _sortDescriptions;
+			}
 		}
 
 		public IQueryable<object> Filter(IEnumerable<T> model)
@@ -45,7 +89,7 @@ namespace Linq2Rest
 
 			Contract.Assert(result != null);
 
-			if (_sortDescriptions != null && _sortDescriptions.Any())
+			if (_sortDescriptions.Any())
 			{
 				var isFirst = true;
 				foreach (var sortDescription in _sortDescriptions.Where(x => x != null))

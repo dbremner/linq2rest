@@ -1,17 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Linq2Rest" ToolsVersion="10.0">
+<RuleSet Name="Linq2Rest" ToolsVersion="12.0">
   <Include Path="basicdesignguidelinerules.ruleset" Action="Default" />
   <Include Path="globalizationrules.ruleset" Action="Default" />
   <Include Path="minimumrecommendedrules.ruleset" Action="Default" />
   <Include Path="securityrules.ruleset" Action="Default" />
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1002" Action="None" />
+    <Rule Id="CA1004" Action="None" />
     <Rule Id="CA1006" Action="None" />
     <Rule Id="CA1008" Action="None" />
     <Rule Id="CA1012" Action="None" />
     <Rule Id="CA1014" Action="None" />
     <Rule Id="CA1023" Action="None" />
     <Rule Id="CA1024" Action="None" />
+    <Rule Id="CA1026" Action="None" />
     <Rule Id="CA1028" Action="None" />
     <Rule Id="CA1031" Action="None" />
     <Rule Id="CA1300" Action="None" />
