@@ -51,11 +51,11 @@ namespace Linq2Rest.Tests
 				[Test]
 				public void CanConvertWithSubstitution()
 				{
-					var converter = PredicateMapper.Map<InDto, AliasDto>().MapMember<InDto, AliasDto, string>(x => x.Name, x => x.Alias);
+var converter = PredicateMapper.Map<InDto, AliasDto>().MapMember<InDto, AliasDto, string>(x => x.Name, x => x.Alias);
 
-					Expression<Func<InDto, bool>> expression = x => x.Name == "foo";
+Expression<Func<InDto, bool>> expression = x => x.Name == "foo";
 
-					var converted = converter.Convert<InDto, AliasDto>(expression);
+Expression<Func<AliasDto, bool>> converted = converter.Convert<InDto, AliasDto>(expression);
 
 					Assert.AreEqual("x => (x.Alias == \"foo\")", converted.ToString());
 				}

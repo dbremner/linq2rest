@@ -41,20 +41,24 @@ namespace Linq2Rest
 
 		public static string Capitalize(this string input)
 		{
-			Contract.Requires(!String.IsNullOrEmpty(input));
+			Contract.Requires(!string.IsNullOrEmpty(input));
 
-			return Char.ToUpperInvariant(input[0]) + input.Substring(1);
+			return char.ToUpperInvariant(input[0]) + input.Substring(1);
 		}
 
 		public static Stream ToStream(this string input)
 		{
 			Contract.Requires(input != null);
 
-			return new MemoryStream(Encoding.UTF8.GetBytes(input ?? String.Empty));
+			return new MemoryStream(Encoding.UTF8.GetBytes(input ?? string.Empty));
 		}
 
 		public static IEnumerable<T> Replace<T>(this IEnumerable<T> items, Func<T, bool> predicate, T replacement)
 		{
+			Contract.Requires(items != null);
+			Contract.Requires(predicate != null);
+			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
+
 			return items.Select(item => predicate(item) ? replacement : item);
 		}
 
