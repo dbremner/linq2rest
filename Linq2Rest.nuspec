@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest</id>
-		<version>4.0.0.0-beta2</version>
+		<version>4.0.0.1-beta2</version>
 		<title>Linq2Rest</title>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
@@ -13,7 +13,7 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<summary>Open source OData client and server component.</summary>
 		<description>Parses OData system query parameters to create a LINQ query that can be used to filter a model set. Also exposes a LINQ provider for web services supporting the OData query parameters. Use extension method Filter (in Linq2Rest namespace) on any IEnumerable source.</description>
-		<releaseNotes>Exposed custom value readers/writers to allow defining customized query values. Supporting type member aliasing using serialization attributes.</releaseNotes>
+		<releaseNotes>Exposed custom value readers/writers to allow defining customized query values. Supporting type member aliasing using serialization attributes. Created PredicateMapper for expression tree conversion.</releaseNotes>
 		<tags>OData LINQ REST</tags>
 		<references>
 			<reference file="Linq2Rest.dll" />
