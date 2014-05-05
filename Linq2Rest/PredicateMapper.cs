@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PredicateMapper.cs" company="Reimers.dk">
-//   Copyright © Reimers.dk 2012
+//   Copyright © Reimers.dk 2014
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 //   All other rights reserved.
@@ -117,6 +117,7 @@ namespace Linq2Rest
 		/// <typeparam name="TSource">The source parameter type.</typeparam>
 		/// <typeparam name="TTarget">The target parameter type.</typeparam>
 		/// <returns>An expression tree for the target parameter.</returns>
+		[SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters", Justification = "Explicit API.")]
 		public Expression<Func<TTarget, bool>> Convert<TSource, TTarget>(Expression<Func<TSource, bool>> predicate)
 		{
 			var visitor = new InnerVisitor(_converters);

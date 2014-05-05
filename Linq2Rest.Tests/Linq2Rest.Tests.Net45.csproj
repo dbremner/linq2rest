@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AliasItem.cs" />
+    <Compile Include="AnonymousTypeSerializerHelper.cs" />
     <Compile Include="ChildFakeItem.cs" />
     <Compile Include="Choice.cs" />
     <Compile Include="ComplexDomainFilterTests.cs" />
@@ -137,7 +138,6 @@
     <Compile Include="Implementations\XmlRestClientTests.cs" />
     <Compile Include="Implementations\XmlSerializerFactoryTests.cs" />
     <Compile Include="ModelFilterExtensionsTests.cs" />
-    <Compile Include="Mvc\RuntimeAnonymousTypeSerializerTests.cs" />
     <Compile Include="Fakes\NorthwindCustomer.cs" />
     <Compile Include="ODataCustomerServiceTests.cs" />
     <Compile Include="Fakes\ODataResponse.cs" />
@@ -198,8 +198,8 @@
     <Compile Include="Provider\Writers\UnsignedIntValueWriterTests.cs" />
     <Compile Include="Provider\Writers\UnsignedLongValueWriterTests.cs" />
     <Compile Include="Provider\Writers\UnsignedShortValueWriterTests.cs" />
+    <Compile Include="RuntimeAnonymousTypeSerializer.cs" />
     <Compile Include="RuntimeTypeProviderTests.cs" />
-    <Compile Include="Mvc\ModelFilterBinderTests.cs" />
     <Compile Include="Parser\FilterTests.cs" />
     <Compile Include="Parser\ParameterParserTests.cs" />
     <Compile Include="Parser\SelectExpressionFactoryTests.cs" />
@@ -225,10 +225,6 @@
     <None Include="Settings.StyleCop" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Linq2Rest.Mvc\Linq2Rest.Mvc.Net45.csproj">
-      <Project>{f45894f0-5d96-4d16-ad20-8c9941a022a1}</Project>
-      <Name>Linq2Rest.Mvc.Net45</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Linq2Rest\Linq2Rest.Net45.csproj">
       <Project>{f7d2a74e-5a11-4fc9-8aa4-d0d3431bbf40}</Project>
       <Name>Linq2Rest.Net45</Name>
