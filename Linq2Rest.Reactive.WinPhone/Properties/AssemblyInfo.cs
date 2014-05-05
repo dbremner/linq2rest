@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="AssemblyInfo.cs" company="Reimers.dk">
-//   Copyright © Reimers.dk 2012
+//   Copyright © Reimers.dk 2014
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 //   All other rights reserved.
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Reimers.dk")]
 [assembly: AssemblyProduct("Linq2Rest.Reactive")]
-[assembly: AssemblyCopyright("Copyright © Reimers.dk 2012")]
+[assembly: AssemblyCopyright("Copyright © Reimers.dk 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -38,6 +38,6 @@ using System.Runtime.InteropServices;
 //      Revision
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("4.0.0.0")]
-[assembly: AssemblyFileVersion("4.0.0.0")]
+[assembly: AssemblyVersion("4.0.0.1")]
+[assembly: AssemblyFileVersion("4.0.0.1")]
 [assembly: NeutralResourcesLanguage("en-US")]

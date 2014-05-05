@@ -12,7 +12,6 @@
 
 namespace Linq2Rest.Tests.Fakes
 {
-	using Linq2Rest.Mvc.Provider;
 	using Linq2Rest.Provider;
 	using Linq2Rest.Tests.Provider;
 

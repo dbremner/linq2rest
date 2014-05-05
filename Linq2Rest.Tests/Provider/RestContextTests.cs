@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="RestContextTests.cs" company="Reimers.dk">
-//   Copyright © Reimers.dk 2012
+//   Copyright © Reimers.dk 2014
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 //   All other rights reserved.
@@ -128,7 +128,7 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingContainsQueryThenCallsRestServiceWithFilter()
 			{
-				VerifyCall(x => x.Content.Contains("blah"), "http://localhost/?$filter=substringof('blah',+Content)");
+				VerifyCall(x => x.Content.Contains("blah"), "http://localhost/?$filter=substringof('blah'%2c+Content)");
 			}
 
 			[Test]
@@ -155,13 +155,13 @@ namespace Linq2Rest.Tests.Provider
 					.Where(x => x.Children.Any())
 					.ToList();
 
-				_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/any(Param_0:+true)")), Times.Once());
+				_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children%2fany(Param_0:+true)")), Times.Once());
 			}
 
 			[Test]
 			public void WhenApplyingEndsWithExpressionThenCallRestServiceWithFilterParameter()
 			{
-				VerifyCall(x => x.Content.EndsWith("text"), "http://localhost/?$filter=endswith(Content,+'text')");
+				VerifyCall(x => x.Content.EndsWith("text"), "http://localhost/?$filter=endswith(Content%2c+'text')");
 			}
 
 			[Test]
@@ -191,7 +191,7 @@ namespace Linq2Rest.Tests.Provider
 					.Query
 					.Count(x => x.PointInTime == new DateTimeOffset(2012, 5, 6, 18, 10, 0, TimeSpan.FromHours(2)));
 
-				const string Uri = "http://localhost/?$filter=PointInTime+eq+datetimeoffset'2012-05-06T18:10:00+02:00'";
+				const string Uri = "http://localhost/?$filter=PointInTime+eq+datetimeoffset'2012-05-06T18:10:00%2b02:00'";
 				_mockClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == Uri)), Times.Once());
 			}
 
@@ -302,7 +302,7 @@ namespace Linq2Rest.Tests.Provider
 					.Where(x => x.Children.All(y => y.ID == 2 + x.ID))
 					.ToList();
 
-				_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/all(y:+y/ID+eq+2+add+ID)")), Times.Once());
+				_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children%2fall(y:+y%2fID+eq+2+add+ID)")), Times.Once());
 			}
 
 			[Test]
@@ -312,7 +312,7 @@ namespace Linq2Rest.Tests.Provider
 					.Where(x => x.Children.All(y => y.ID == 2))
 					.ToList();
 
-				_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/all(y:+y/ID+eq+2)")), Times.Once());
+				_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children%2fall(y:+y%2fID+eq+2)")), Times.Once());
 			}
 
 			[Test]
@@ -322,7 +322,7 @@ namespace Linq2Rest.Tests.Provider
 					.Where(x => x.Children.Any(y => y.ID == 2))
 					.ToList();
 
-				_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children/any(y:+y/ID+eq+2)")), Times.Once());
+				_mockCollectionClient.Verify(x => x.Get(It.Is<Uri>(u => u.ToString() == "http://localhost/?$filter=Children%2fany(y:+y%2fID+eq+2)")), Times.Once());
 			}
 
 			[Test]
@@ -347,7 +347,7 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingIndexOfExpressionThenCallRestServiceWithFilterParameter()
 			{
-				VerifyCall(x => x.Content.IndexOf("text") > -1, "http://localhost/?$filter=indexof(Content,+'text')+gt+-1");
+				VerifyCall(x => x.Content.IndexOf("text") > -1, "http://localhost/?$filter=indexof(Content%2c+'text')+gt+-1");
 			}
 
 			[Test]
@@ -646,7 +646,7 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingStartsWithExpressionThenCallRestServiceWithFilterParameter()
 			{
-				VerifyCall(x => x.Content.StartsWith("text"), "http://localhost/?$filter=startswith(Content,+'text')");
+				VerifyCall(x => x.Content.StartsWith("text"), "http://localhost/?$filter=startswith(Content%2c+'text')");
 			}
 
 			[Test]
