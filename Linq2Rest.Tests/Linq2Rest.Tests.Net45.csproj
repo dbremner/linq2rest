@@ -99,7 +99,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1312.1622\lib\net40\Moq.dll</HintPath>
+      <HintPath>..\packages\Moq.4.2.1402.2112\lib\net40\Moq.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <SpecificVersion>False</SpecificVersion>
@@ -111,7 +111,6 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Mvc" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
