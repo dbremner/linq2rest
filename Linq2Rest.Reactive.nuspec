@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata>
 		<id>Linq2Rest.Reactive</id>
-		<version>4.0.0.0</version>
+		<version>4.0.1.0</version>
 		<title>Reactive Extensions for Linq2Rest</title>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
@@ -17,30 +17,23 @@
 		<dependencies>
 			<group>
 				<dependency id="Rx-Providers"
-							version="2.2.2" />
+							version="2.2.4" />
 				<dependency id="Linq2Rest"
 							version="4.0.0.0" />
 			</group>
 			<group targetFramework="net45">
 				<dependency id="Rx-Providers"
-							version="2.2.2" />
+							version="2.2.4" />
 				<dependency id="Linq2Rest"
 							version="4.0.0.0" />
 			</group>
-
-			<group targetFramework="SL5">
-				<dependency id="Rx-Providers"
-							version="2.2.2" />
-				<dependency id="System.Threading.Tasks"
-							version="3.0.1" />
-			</group>
 			<group targetFramework="wp8">
 				<dependency id="Rx-Providers"
-							version="2.2.2" />
+							version="2.2.4" />
 			</group>
 			<group targetFramework="NetCore45">
 				<dependency id="Rx-Providers"
-							version="2.2.2" />
+							version="2.2.4" />
 			</group>
 		</dependencies>
 		<frameworkAssemblies>
@@ -73,12 +66,6 @@
 			  target="lib\Net451" />
 		<file src="Linq2Rest.Reactive\bin\v4.5.1\Release\CodeContracts\Linq2Rest.Reactive.Contracts.dll"
 			  target="lib\Net451\CodeContracts" />
-		<file src="Linq2Rest.Reactive.SL\bin\Release\Linq2Rest.Reactive.dll"
-			  target="lib\SL5" />
-		<file src="Linq2Rest.Reactive.SL\bin\Release\Linq2Rest.Reactive.xml"
-			  target="lib\SL5" />
-		<file src="Linq2Rest.Reactive.SL\bin\Release\CodeContracts\Linq2Rest.Reactive.Contracts.dll"
-			  target="lib\SL5\CodeContracts" />
 		<file src="Linq2Rest.Reactive.WinPhone\bin\wp8\Release\Linq2Rest.Reactive.dll"
 			  target="lib\wp8" />
 		<file src="Linq2Rest.Reactive.WinPhone\bin\wp8\Release\Linq2Rest.Reactive.xml"
