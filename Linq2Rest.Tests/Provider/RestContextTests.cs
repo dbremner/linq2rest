@@ -38,11 +38,11 @@ namespace Linq2Rest.Tests.Provider
 			[SetUp]
 			public void TestSetup()
 			{
-				var mockResolver = new Mock<IMemberNameResolver>();
+				var nameResolver = new MemberNameResolver();
 
 				_singleResponse = "[{\"Value\" : 2, \"Content\" : \"blah\" }]";
 				var baseUri = new Uri("http://localhost");
-				var serializerFactory = new TestSerializerFactory(mockResolver.Object);
+				var serializerFactory = new TestSerializerFactory(nameResolver);
 
 				_mockClient = new Mock<IRestClient>();
 				_mockClient.SetupGet(x => x.ServiceBase)
