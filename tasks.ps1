@@ -16,9 +16,10 @@ task CleanUpMsBuildPath -depends PublishPackage {
 	}
 }
 
-task Compile -depends UpdatePackages { 
+task Compile -depends UpdatePackages {
+	$msbuild = Resolve-Path "${Env:ProgramFiles(x86)}\MSBuild\12.0\Bin\MSBuild.exe"
 	$options = "/p:configuration=$configuration;platform=$platform;VisualStudioVersion=12.0"
-	exec { C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe .\Linq2Rest.sln $options }
+	exec { & $msbuild .\Linq2Rest.sln $options }
 	'Executed Compile!'
 }
 
@@ -40,7 +41,6 @@ task RunTests -depends Compile {
 
 task PublishPackage -depends RunTests {
 	.\.nuget\nuget.exe pack Linq2Rest.nuspec
-	.\.nuget\nuget.exe pack Linq2Rest.Mvc.nuspec
 	.\.nuget\nuget.exe pack Linq2Rest.Reactive.nuspec
 }
 
