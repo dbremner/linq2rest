@@ -19,13 +19,13 @@
 				<dependency id="Rx-Providers"
 							version="2.2.4" />
 				<dependency id="Linq2Rest"
-							version="4.0.0.0" />
+							version="4.0.1.0" />
 			</group>
 			<group targetFramework="net45">
 				<dependency id="Rx-Providers"
 							version="2.2.4" />
 				<dependency id="Linq2Rest"
-							version="4.0.0.0" />
+							version="4.0.1.0" />
 			</group>
 			<group targetFramework="wp8">
 				<dependency id="Rx-Providers"
