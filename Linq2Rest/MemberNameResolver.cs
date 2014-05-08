@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MemberNameResolver.cs" company="Reimers.dk">
-//   Copyright © Reimers.dk 2014
+//   Copyright Å  Reimers.dk 2014
 //   This source is subject to the Microsoft Public License (Ms-PL).
 //   Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 //   All other rights reserved.
@@ -21,18 +21,32 @@ namespace Linq2Rest
 	using System.Runtime.Serialization;
 	using System.Xml.Serialization;
 
-	internal class MemberNameResolver : IMemberNameResolver
+	/// <summary>
+    /// Defines the public interface for a resolver of <see cref="MemberInfo"/> name.
+	/// </summary>
+	public class MemberNameResolver : IMemberNameResolver
 	{
 		private static readonly ConcurrentDictionary<MemberInfo, string> KnownMemberNames = new ConcurrentDictionary<MemberInfo, string>();
 		private static readonly ConcurrentDictionary<string, MemberInfo> KnownAliasNames = new ConcurrentDictionary<string, MemberInfo>();
 
-		public MemberInfo ResolveAlias(Type type, string alias)
+		/// <summary>
+        /// Returns the resolved <see cref="MemberInfo"/> for an alias.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> the alias relates to.</param>
+        /// <param name="alias">The name of the alias.</param>
+        /// <returns>The <see cref="MemberInfo"/> which is aliased.</returns>
+        public MemberInfo ResolveAlias(Type type, string alias)
 		{
 			var key = type.AssemblyQualifiedName + alias;
 			return KnownAliasNames.GetOrAdd(key, s => ResolveAliasInternal(type, alias));
 		}
 
-		public string ResolveName(MemberInfo member)
+		/// <summary>
+        /// Returns the resolved name for the <see cref="MemberInfo"/>.
+        /// </summary>
+        /// <param name="member">The <see cref="MemberInfo"/> to resolve the name of.</param>
+        /// <returns>The resolved name.</returns>
+        public string ResolveName(MemberInfo member)
 		{
 			var result = KnownMemberNames.GetOrAdd(member, ResolveNameInternal);
 
