@@ -22,7 +22,7 @@ namespace Linq2Rest
 	using System.Xml.Serialization;
 
 	/// <summary>
-    /// Defines the public interface for a resolver of <see cref="MemberInfo"/> name.
+	/// Resolves the name or alias for a type member based on the serialization attribute.
 	/// </summary>
 	public class MemberNameResolver : IMemberNameResolver
 	{
