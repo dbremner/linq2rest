@@ -63,21 +63,8 @@ namespace Linq2Rest.Provider.Writers
 				return "null";
 			}
 
-#if !NETFX_CORE
 			var type = value.GetType();
 
-			if (type.IsEnum)
-			{
-				return string.Format("'{0}'", value);
-			}
-
-#else
-			var type = value.GetType();
-			if (type.GetTypeInfo().IsEnum)
-			{
-				return string.Format("'{0}'", value);
-			}
-#endif
 			var writer = _valueWriters.FirstOrDefault(x => x.Handles(type));
 
 			if (writer != null)
