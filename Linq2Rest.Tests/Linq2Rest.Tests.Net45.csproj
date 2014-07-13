@@ -141,6 +141,7 @@
     <Compile Include="ODataCustomerServiceTests.cs" />
     <Compile Include="Fakes\ODataResponse.cs" />
     <Compile Include="Fakes\ODataResult.cs" />
+    <Compile Include="ODataExpressionWriterTests.cs" />
     <Compile Include="Parser\ExpressionTokenizerTests.cs" />
     <Compile Include="FakeItem.cs" />
     <Compile Include="Parser\FilterExpressionFactoryTests.cs" />
@@ -168,7 +169,6 @@
     <Compile Include="Provider\ChildDto.cs" />
     <Compile Include="Provider\CollectionDto.cs" />
     <Compile Include="Provider\ComplexDto.cs" />
-    <Compile Include="Provider\ODataExpressionWriterTests.cs" />
     <Compile Include="Provider\QueryableExtensionsTests.cs" />
     <Compile Include="Provider\RestContextInMemoryTests.cs" />
     <Compile Include="Provider\RestDeleteQueryableTests.cs" />
