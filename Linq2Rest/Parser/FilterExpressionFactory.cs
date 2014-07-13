@@ -329,6 +329,12 @@ namespace Linq2Rest.Parser
 				return null;
 			}
 
+			if (set.Left.IsFunction())
+			{
+				var functionName = set.Left.GetFunctionName();
+				return functionName.GetFunctionType();
+			}
+
 			var property = GetPropertyExpression<T>(set.Left, parameter, lambdaParameters) ?? GetPropertyExpression<T>(set.Right, parameter, lambdaParameters);
 			if (property != null)
 			{
