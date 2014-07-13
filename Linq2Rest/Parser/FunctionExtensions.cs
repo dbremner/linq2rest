@@ -20,6 +20,7 @@ namespace Linq2Rest.Parser
 		private static readonly Dictionary<string, Type> KnownFunctions = new Dictionary<string, Type>
 																			  {
 																				  { "length", typeof(int) },
+																				  { "substring", typeof(string) },
 																				  { "substringof", typeof(bool) },
 																				  { "endswith", typeof(bool) },
 																				  { "startswith", typeof(bool) },

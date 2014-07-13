@@ -181,7 +181,7 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingEqualityExpressionForFlagsEnumThenCallsRestServiceWithFilterParameter()
 			{
-				VerifyCall(x => x.Choice == Choice.That, "http://localhost/?$filter=Choice+eq+'That'");
+				VerifyCall(x => x.Choice == Choice.That, "http://localhost/?$filter=Choice+eq+Linq2Rest.Tests.Choice'That'");
 			}
 
 			[Test]
@@ -1015,7 +1015,7 @@ namespace Linq2Rest.Tests.Provider
 			[Test]
 			public void WhenApplyingEqualityExpressionForFlagsEnumThenCallsRestServiceWithFilterParameter()
 			{
-				VerifyCall(x => x.AliasChoice == Choice.That, "http://localhost/?$filter=Choice+eq+'That'");
+				VerifyCall(x => x.AliasChoice == Choice.That, "http://localhost/?$filter=Choice+eq+Linq2Rest.Tests.Choice'That'");
 			}
 
 			[Test]
