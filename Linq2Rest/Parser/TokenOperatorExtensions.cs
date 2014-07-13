@@ -24,8 +24,9 @@ namespace Linq2Rest.Parser
 		private static readonly string[] Arithmetic = new[] { "add", "sub", "mul", "div", "mod" };
 
 		private static readonly string[] BooleanFunctions = new[] { "substringof", "endswith", "startswith" };
-        private static readonly Regex CollectionFunctionRx = new Regex(@"^[0-9a-zA-Z_]+/(all|any)\((.+)\)$", RegexOptions.Compiled);
+		private static readonly Regex CollectionFunctionRx = new Regex(@"^[0-9a-zA-Z_]+/(all|any)\((.+)\)$", RegexOptions.Compiled);
 		private static readonly Regex CleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
+		private static readonly Regex FunctionRegex = new Regex(@"^(.+)\(.+\)$");
 		private static readonly Regex StringStartRx = new Regex("^[(]*'", RegexOptions.Compiled);
 		private static readonly Regex StringEndRx = new Regex("'[)]*$", RegexOptions.Compiled);
 
@@ -60,7 +61,7 @@ namespace Linq2Rest.Parser
 				return !split.Intersect(Operations).Any()
 				&& !split.Intersect(Combiners).Any()
 				&& (BooleanFunctions.Any(x => split[0].StartsWith(x, StringComparison.OrdinalIgnoreCase)) ||
-                    CollectionFunctionRx.IsMatch(expression));
+					CollectionFunctionRx.IsMatch(expression));
 			}
 
 			return false;
@@ -86,19 +87,30 @@ namespace Linq2Rest.Parser
 			return !string.IsNullOrWhiteSpace(expression) && StringStartRx.IsMatch(expression);
 		}
 
-		public static bool IsStringEnd(this string expression) 
+		public static bool IsStringEnd(this string expression)
 		{
 			return !string.IsNullOrWhiteSpace(expression) && StringEndRx.IsMatch(expression);
 		}
 
-		private static bool IsFunction(this string expression)
+		public static string GetFunctionName(this string expression)
+		{
+			var functionMatch = FunctionRegex.Match(expression);
+			if (functionMatch.Success)
+			{
+				return functionMatch.Groups[1].Value;
+			}
+
+			return string.Empty;
+		}
+
+		public static bool IsFunction(this string expression)
 		{
 			Contract.Requires<ArgumentNullException>(expression != null);
 
 			var open = expression.IndexOf('(');
 			var close = expression.IndexOf(')');
 
-			return open > -1 && close > -1;
+			return open > 0 && close > -1;
 		}
 	}
 }
