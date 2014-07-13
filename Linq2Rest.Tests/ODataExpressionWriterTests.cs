@@ -10,12 +10,12 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Linq2Rest.Tests.Provider
+namespace Linq2Rest.Tests
 {
 	using System;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using Linq2Rest.Provider;
+	using Linq2Rest.Tests.Provider;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -63,6 +63,30 @@ namespace Linq2Rest.Tests.Provider
 			var serialized = converter.Convert(expression);
 
 			Assert.AreEqual("length(Name) add 2 eq 7", serialized);
+		}
+
+		[Test]
+		public void ConvertsFilterToExpression()
+		{
+			const string Filter = "Name eq 'blah'";
+			var converter = new ODataExpressionConverter();
+			Expression<Func<ChildDto, bool>> expression = x => x.Name == "blah";
+
+			var converted = converter.Convert<ChildDto>(Filter);
+
+			Assert.AreEqual(converted.ToString(), expression.ToString());
+		}
+
+		[Test]
+		public void ConvertsFilterToExpression2()
+		{
+			const string Filter = "(length(Name) add 2) eq 7";
+			var converter = new ODataExpressionConverter();
+			Expression<Func<ChildDto, bool>> expression = x => x.Name.Length + (1 + 1) == 7;
+
+			var converted = converter.Convert<ChildDto>(Filter);
+
+			Assert.AreEqual(expression.ToString(), converted.ToString());
 		}
 	}
 }
