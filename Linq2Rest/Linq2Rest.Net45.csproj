@@ -150,8 +150,10 @@
     <Compile Include="MemberNameResolver.cs" />
     <Compile Include="MethodProvider.cs" />
     <Compile Include="ModelFilterExtensions.cs" />
+    <Compile Include="ODataExpressionConverter.cs" />
     <Compile Include="Parser\ExpressionTokenizer.cs" />
     <Compile Include="Parser\FilterExpressionFactory.cs" />
+    <Compile Include="Parser\FunctionExtensions.cs" />
     <Compile Include="Parser\FunctionTokenSet.cs" />
     <Compile Include="Parser\IFilterExpressionFactory.cs" />
     <Compile Include="Parser\IParameterParser.cs" />
@@ -199,7 +201,6 @@
     <Compile Include="Provider\IRestClient.cs" />
     <Compile Include="Provider\ISerializer.cs" />
     <Compile Include="Provider\ISerializerFactory.cs" />
-    <Compile Include="Provider\ODataExpressionConverter.cs" />
     <Compile Include="Provider\ParameterBuilder.cs" />
     <Compile Include="Implementations\JsonRestClient.cs" />
     <Compile Include="Provider\QueryableExtensions.cs" />
