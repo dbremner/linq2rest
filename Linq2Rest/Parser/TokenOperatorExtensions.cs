@@ -26,7 +26,7 @@ namespace Linq2Rest.Parser
 		private static readonly string[] BooleanFunctions = new[] { "substringof", "endswith", "startswith" };
 		private static readonly Regex CollectionFunctionRx = new Regex(@"^[0-9a-zA-Z_]+/(all|any)\((.+)\)$", RegexOptions.Compiled);
 		private static readonly Regex CleanRx = new Regex(@"^\((.+)\)$", RegexOptions.Compiled);
-		private static readonly Regex FunctionRegex = new Regex(@"^(.+)\(.+\)$");
+		private static readonly Regex FunctionRegex = new Regex(@"^([^()/]+)\(.+\)$");
 		private static readonly Regex StringStartRx = new Regex("^[(]*'", RegexOptions.Compiled);
 		private static readonly Regex StringEndRx = new Regex("'[)]*$", RegexOptions.Compiled);
 
