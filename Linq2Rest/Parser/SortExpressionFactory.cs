@@ -16,7 +16,6 @@ namespace Linq2Rest.Parser
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Linq.Expressions;
-	using System.Web.UI.WebControls;
 
 	/// <summary>
 	/// Defines the SortExpressionFactory´.

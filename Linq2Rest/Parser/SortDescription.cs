@@ -15,7 +15,6 @@ namespace Linq2Rest.Parser
 	using System;
 	using System.Diagnostics.Contracts;
 	using System.Linq.Expressions;
-	using System.Web.UI.WebControls;
 
 	/// <summary>
 	/// Defines a sort description.

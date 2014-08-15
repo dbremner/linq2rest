@@ -129,11 +129,11 @@
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="HttpUtility.cs" />
     <Compile Include="IMemberNameResolver.cs" />
     <Compile Include="IModelFilter.cs" />
     <Compile Include="Implementations\HttpRequestFactoryWithCertificate.cs" />
@@ -186,6 +186,7 @@
     <Compile Include="Parser\Readers\UnsignedShortExpressionFactory.cs" />
     <Compile Include="Parser\Readers\ValueExpressionFactoryBase.cs" />
     <Compile Include="Parser\SelectExpressionFactory.cs" />
+    <Compile Include="Parser\SortDirection.cs" />
     <Compile Include="Parser\TokenOperatorExtensions.cs" />
     <Compile Include="Parser\TokenSet.cs" />
     <Compile Include="PredicateConverter.cs" />
