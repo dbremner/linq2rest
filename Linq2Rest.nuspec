@@ -23,7 +23,6 @@
 			<frameworkAssembly assemblyName="System" />
 			<frameworkAssembly assemblyName="System.Core" />
 			<frameworkAssembly assemblyName="Microsoft.CSharp" />
-			<frameworkAssembly assemblyName="System.Web" />
 			<frameworkAssembly assemblyName="System.Xml" />
 			<frameworkAssembly assemblyName="System.Runtime.Serialization" />
 		</frameworkAssemblies>
